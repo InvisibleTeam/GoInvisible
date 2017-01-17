@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- look at http://findbugs.sourceforge.net/manual/filter.html -->
+
+<FindBugsFilter>
+  <Match>
+    <Or>
+      <Class name="~com\.google\..*" />
+      <Class name="~android\.support\..*" />
+    </Or>
+  </Match>
+  <Match>
+    <Or>
+      <Class name="~.*\.gradle\$.*"/>
+      <Class name="~.*\.R\$.*" />
+      <Class name="~.*\.Manifest\$.*" />
+    </Or>
+  </Match>
+  <Match>
+      <Class name="~.*\$*Kt.*" /> <!-- exclude Kotlin auto-generated classes -->
+  </Match>
+</FindBugsFilter>

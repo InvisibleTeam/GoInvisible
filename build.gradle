@@ -18,6 +18,55 @@ allprojects {
     }
 }
 
+configure(allprojects) {
+    apply plugin: 'findbugs'
+    apply plugin: 'checkstyle'
+
+    findbugs {
+        toolVersion = '3.0.1'
+    }
+
+    checkstyle {
+        toolVersion = '6.9'
+        configFile = file("${project.rootDir}/config/checkstyle/checkstyle.xml")
+    }
+
+    task findbugs(type: FindBugs) {
+        ignoreFailures = false
+        effort = "max"
+        reportLevel = "high"
+        excludeFilter = new File("${project.rootDir}/config/findbugs/findbugs-excluded.xml")
+        classes = files("$project.buildDir/intermediates/classes/")
+
+        source 'src'
+        include '**/*.java'
+        exclude '**/gen/**'
+
+        reports {
+            xml.enabled = false
+            html {
+                enabled = true
+                destination "$project.buildDir/reports/findbugs/findbugs.html"
+            }
+        }
+        classpath = files()
+    }
+
+    task checkstyle(type: Checkstyle) {
+
+        source 'src'
+        include '**/*.java'
+        exclude '**/gen/**'
+
+        reports {
+            xml.enabled = true
+            html.enabled = true
+        }
+
+        classpath = files()
+    }
+}
+
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
