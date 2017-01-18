@@ -19,8 +19,7 @@ android {
         }
     }
     lintOptions {
-        disable 'InvalidPackage'
-        disable 'GoogleAppIndexingWarning', 'UnusedResources', 'MissingConstraints'
+        disable 'GoogleAppIndexingWarning'
         abortOnError true
         warningsAsErrors true
     }

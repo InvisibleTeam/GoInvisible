@@ -16,7 +16,4 @@
       <Class name="~.*\.Manifest\$.*" />
     </Or>
   </Match>
-  <Match>
-      <Class name="~.*\$*Kt.*" /> <!-- exclude Kotlin auto-generated classes -->
-  </Match>
 </FindBugsFilter>
