@@ -15,7 +15,6 @@ task testReport(type: JacocoReport, dependsOn: "testDebugUnitTest") {
                        '**/*$ViewInjector*.*',
                        '**/BuildConfig.*',
                        '**/Manifest*.*'
-                       //'**/model/*'
             ]
     )
 
