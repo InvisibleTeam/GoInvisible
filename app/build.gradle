@@ -1,5 +1,8 @@
 apply plugin: 'com.android.application'
 apply from: 'nonnull.gradle'
+apply plugin: 'me.tatarka.retrolambda'
+apply plugin: 'android-apt'
+apply from: 'jacoco.gradle'
 
 android {
     compileSdkVersion 25
@@ -22,6 +25,10 @@ android {
         disable 'GoogleAppIndexingWarning'
         abortOnError true
         warningsAsErrors true
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 }
 
