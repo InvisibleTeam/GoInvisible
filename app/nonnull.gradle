@@ -1,0 +1,105 @@
+/**
+  *  File: nonnull.gradle
+  *
+  *  Generates package-info.java for appropriate packages
+  *  inside src/main/java folder.
+  *
+ */
+task generateNonNullJavaFiles(dependsOn: "assembleDebug", type: Copy) {
+    group = "Copying"
+    description = "Generate package-info.java classes"
+
+    def mainSrcPhrase = "src" + File.separatorChar + "main" + File.separatorChar +
+            "java" + File.separatorChar
+    def mainTestSrcPhrase = "src" + File.separatorChar + "test" + File.separatorChar +
+            "java" + File.separatorChar
+    def mainAndroidTestSrcPhrase = "src" + File.separatorChar + "androidTest" + File.separatorChar +
+            "java" + File.separatorChar
+
+    def sourceDir = file( "${projectDir}" + File.separatorChar + "src" + File.separatorChar +
+            "main" + File.separatorChar + "java" + File.separatorChar +
+            "com" + File.separatorChar + "invisibleteam" + File.separatorChar + "goinvisible" )
+    def testSourceDir = file( "${projectDir}" + File.separatorChar + "src" + File.separatorChar +
+            "test" + File.separatorChar + "java" + File.separatorChar +
+            "com" + File.separatorChar + "invisibleteam" + File.separatorChar + "goinvisible" )
+    def androidTestSourceDir = file( "${projectDir}" + File.separatorChar + "src" + File
+            .separatorChar +
+            "androidTest" + File.separatorChar + "java" + File.separatorChar +
+            "com" + File.separatorChar + "invisibleteam" + File.separatorChar + "goinvisible" )
+
+    generateInfoFiles(sourceDir, mainSrcPhrase);
+    sourceDir.eachDirRecurse { dir ->
+        generateInfoFiles(dir, mainSrcPhrase)
+    }
+    generateInfoFiles(testSourceDir, mainTestSrcPhrase);
+    testSourceDir.eachDirRecurse { dir ->
+        generateInfoFiles(dir, mainTestSrcPhrase)
+    }
+    generateInfoFiles(androidTestSourceDir, mainAndroidTestSrcPhrase);
+    androidTestSourceDir.eachDirRecurse { dir ->
+        generateInfoFiles(dir, mainAndroidTestSrcPhrase)
+    }
+    println "[SUCCESS] NonNull generator: package-info.java files checked"
+}
+
+private void generateInfoFiles(File dir, String mainSrcPhrase) {
+    def infoFileContentHeader = getFileContentHeader();
+    def infoFileContentFooter = getFileContentFooter();
+    def infoFilePath = dir.getAbsolutePath() + File.separatorChar + "package-info.java"
+
+    //file(infoFilePath).delete(); //do not use in production code
+    if (!file(infoFilePath).exists()) {
+        def infoFileContentPackage = getFileContentPackage(dir.getAbsolutePath(), mainSrcPhrase);
+        new File(infoFilePath).write(infoFileContentHeader +
+                infoFileContentPackage + infoFileContentFooter)
+        println "[dir] " + infoFilePath + "  created";
+    }
+}
+
+def getFileContentPackage(String path, String mainSrcPhrase) {
+    def mainSrcPhraseIndex = path.indexOf(mainSrcPhrase)
+    def output = path.substring(mainSrcPhraseIndex)
+
+    if (System.properties['os.name'].toLowerCase().contains('windows')) {
+        output = output.replace("\\", "/")
+        mainSrcPhrase = mainSrcPhrase.replace("\\", "/")
+    }
+
+    return "\npackage " + output.replaceAll(mainSrcPhrase, "").replaceAll(
+                "/", ".") + ";\n"
+}
+
+def getFileContentHeader() {
+    return  "/**\n" +
+            " *\n" +
+            " * Make all method parameters @NonNull by default.\n" +
+            " *\n" +
+            " * We assume that all method parameters and return types are NON-NULL by default.\n" +
+            " *\n" +
+            " * e.g.\n" +
+            " *\n" +
+            " * String trimExampleMethod(String value) {\n" +
+            " *     return value.trim();\n" +
+            " * }\n" +
+            " *\n" +
+            " * is equal to:\n" +
+            " *\n" +
+            " * @NonNull\n" +
+            " * String trimExampleMethod(@NonNull String value) {\n" +
+            " *     return value.trim();\n" +
+            " * }\n" +
+            " *\n" +
+            " * reverse this behaviour with: @Nullable annotation.\n" +
+            " *\n" +
+            " */\n" +
+            "@ParametersAreNonnullByDefault\n" +
+            "@ReturnValuesAreNonnullByDefault\n"
+}
+
+def getFileContentFooter() {
+    return  "\n" +
+            "import javax.annotation.ParametersAreNonnullByDefault;\n" +
+            "\n" +
+            "import edu.umd.cs.findbugs.annotations.ReturnValuesAreNonnullByDefault;"
+}
+
