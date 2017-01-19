@@ -3,16 +3,12 @@ jdk: oraclejdk8
 sudo: false
 
 android:
-    update_sdk: true
     components:
         - platform-tools
         - tools
         - build-tools-25.0.1
         - android-25
         - extra-android-m2repository
-
-licenses:
-    - '.+'
 
 script:
     - echo "Travis branch is $TRAVIS_BRANCH"
