@@ -19,8 +19,8 @@ android:
         - platform-tools
         - tools
         - build-tools-$ANDROID_BUILD_TOOLS_VERSION
-        - android-$ANDROID_API_LEVEL
         - android-$ANDROID_TARGET
+        - android-$ANDROID_API_LEVEL
         - extra-android-m2repository
         - sys-img-$ANDROID_ABI-$ANDROID_TARGET
 
