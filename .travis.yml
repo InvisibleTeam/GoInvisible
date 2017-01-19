@@ -21,7 +21,7 @@ android:
         - build-tools-$ANDROID_BUILD_TOOLS_VERSION
         - android-$ANDROID_API_LEVEL
         - extra-android-m2repository
-        - sys-img-$ANDROID_ABI-android-$ANDROID_TARGET
+        - sys-img-$ANDROID_ABI-$ANDROID_TARGET
 
 before_script:
     - android list targets
