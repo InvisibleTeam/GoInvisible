@@ -1,0 +1,19 @@
+language: android
+jdk: oraclejdk8
+sudo: false
+
+android:
+    update_sdk: true
+    components:
+        - platform-tools
+        - tools
+        - build-tools-25.0.0
+        - android-25
+
+licenses:
+    - '.+'
+
+script:
+    - echo "Travis branch is $TRAVIS_BRANCH"
+    - echo "Travis branch is in pull request $TRAVIS_PULL+REQUEST"
+    - ./gradlew build --stacktrace
