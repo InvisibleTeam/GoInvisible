@@ -3,12 +3,13 @@ jdk: oraclejdk8
 sudo: false
 
 env:
-  matrix:
-      - ANDROID_TARGET=android-21
-      - ANDROID_TARGET=android-24
+#  matrix:
+#      - ANDROID_TARGET=android-21
+#      - ANDROID_TARGET=android-24
   global:
       - ANDROID_API_LEVEL=25
       - ANDROID_BUILD_TOOLS_VERSION=25.0.1
+      - ANDROID_TARGET=android-21
       - ANDROID_ABI=armeabi-v7a
       - ADB_INSTALL_TIMEOUT=8 # minutes
 
@@ -19,7 +20,6 @@ android:
         - platform-tools
         - tools
         - build-tools-$ANDROID_BUILD_TOOLS_VERSION
-        - android-$ANDROID_TARGET
         - android-$ANDROID_API_LEVEL
         - extra-android-m2repository
         - sys-img-$ANDROID_ABI-$ANDROID_TARGET
