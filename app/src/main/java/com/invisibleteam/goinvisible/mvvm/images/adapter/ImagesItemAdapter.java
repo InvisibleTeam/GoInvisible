@@ -7,12 +7,13 @@ import android.view.ViewGroup;
 
 import com.invisibleteam.goinvisible.R;
 import com.invisibleteam.goinvisible.databinding.ImageItemViewBinding;
+import com.invisibleteam.goinvisible.model.ImageDetails;
 
 import java.util.ArrayList;
 import java.util.List;
 
 class ImagesItemAdapter extends RecyclerView.Adapter<ImagesItemAdapter.ViewHolder> {
-    private List<String> imageList;
+    private List<ImageDetails> imageList;
 
     ImagesItemAdapter() {
         imageList = new ArrayList<>();
@@ -26,7 +27,7 @@ class ImagesItemAdapter extends RecyclerView.Adapter<ImagesItemAdapter.ViewHolde
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.imageItemViewModel.setName(imageList.get(position));
+        holder.imageItemViewModel.setName(imageList.get(position).getName());
     }
 
     @Override
@@ -34,7 +35,7 @@ class ImagesItemAdapter extends RecyclerView.Adapter<ImagesItemAdapter.ViewHolde
         return imageList.size();
     }
 
-    void updateImageList(List<String> imageList) {
+    void updateImageList(List<ImageDetails> imageList) {
         this.imageList = imageList;
     }
 

@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.FrameLayout;
 
 import com.invisibleteam.goinvisible.R;
+import com.invisibleteam.goinvisible.model.ImageDetails;
 
 import java.util.List;
 
@@ -35,7 +36,7 @@ public class ImagesCompoundRecyclerView extends FrameLayout {
         recyclerView.setAdapter(imageItemAdapter);
     }
 
-    public void updateResults(List<String> imageList) {
+    public void updateResults(List<ImageDetails> imageList) {
         imageItemAdapter.updateImageList(imageList);
         imageItemAdapter.notifyDataSetChanged();
     }

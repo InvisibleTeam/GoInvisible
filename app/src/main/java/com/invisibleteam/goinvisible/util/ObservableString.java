@@ -2,6 +2,7 @@ package com.invisibleteam.goinvisible.util;
 
 
 import android.databinding.BaseObservable;
+import android.support.annotation.Nullable;
 
 public class ObservableString extends BaseObservable {
     private String value;
@@ -24,7 +25,7 @@ public class ObservableString extends BaseObservable {
         }
     }
 
-    private static boolean equals(Object a, Object b) {
+    private static boolean equals(@Nullable Object a, @Nullable Object b) {
         return (a == null) ? (b == null) : a.equals(b);
     }
 }

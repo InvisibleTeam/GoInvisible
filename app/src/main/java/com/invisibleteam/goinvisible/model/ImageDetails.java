@@ -1,10 +1,10 @@
 package com.invisibleteam.goinvisible.model;
 
-public class ImageModel {
+public class ImageDetails {
     private String path;
     private String name;
 
-    public ImageModel(String path, String name) {
+    public ImageDetails(String path, String name) {
         this.path = path;
         this.name = name;
     }
