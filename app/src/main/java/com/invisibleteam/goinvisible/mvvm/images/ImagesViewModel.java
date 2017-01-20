@@ -5,19 +5,21 @@ import com.invisibleteam.goinvisible.mvvm.images.adapter.ImagesCompoundRecyclerV
 
 import java.util.ArrayList;
 
-public class ImagesViewModel {
+class ImagesViewModel {
     private ImagesCompoundRecyclerView imagesCompoundRecyclerView;
 
-    public ImagesViewModel(ImagesCompoundRecyclerView imagesCompoundRecyclerView) {
+    ImagesViewModel(ImagesCompoundRecyclerView imagesCompoundRecyclerView) {
         this.imagesCompoundRecyclerView = imagesCompoundRecyclerView;
 
         init();
     }
 
-    private void init(){
-        imagesCompoundRecyclerView.updateResults(new ArrayList<String>() {{
-            add("test");
-            add("test1");
-        }});
+    private void init() {
+        imagesCompoundRecyclerView.updateResults(new ArrayList<String>() {
+            {
+                add("test");
+                add("test1");
+            }
+        });
     }
 }

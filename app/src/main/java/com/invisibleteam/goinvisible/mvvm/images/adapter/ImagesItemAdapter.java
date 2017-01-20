@@ -11,10 +11,10 @@ import com.invisibleteam.goinvisible.databinding.ImageItemViewBinding;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ImagesItemAdapter extends RecyclerView.Adapter<ImagesItemAdapter.ViewHolder> {
+class ImagesItemAdapter extends RecyclerView.Adapter<ImagesItemAdapter.ViewHolder> {
     private List<String> imageList;
 
-    public ImagesItemAdapter() {
+    ImagesItemAdapter() {
         imageList = new ArrayList<>();
     }
 
@@ -34,7 +34,7 @@ public class ImagesItemAdapter extends RecyclerView.Adapter<ImagesItemAdapter.Vi
         return imageList.size();
     }
 
-    public void updateImageList(List<String> imageList) {
+    void updateImageList(List<String> imageList) {
         this.imageList = imageList;
     }
 
@@ -43,7 +43,7 @@ public class ImagesItemAdapter extends RecyclerView.Adapter<ImagesItemAdapter.Vi
         private ImageItemViewBinding imageItemViewBinding;
         private ImageItemViewModel imageItemViewModel;
 
-        public ViewHolder(View itemView) {
+        protected ViewHolder(View itemView) {
             super(itemView);
 
             imageItemViewModel = new ImageItemViewModel();
