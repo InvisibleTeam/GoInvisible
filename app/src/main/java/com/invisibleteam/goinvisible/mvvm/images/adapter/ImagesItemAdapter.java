@@ -27,7 +27,7 @@ class ImagesItemAdapter extends RecyclerView.Adapter<ImagesItemAdapter.ViewHolde
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.imageItemViewModel.setName(imageList.get(position).getName());
+        holder.imageItemViewModel.setModel(imageList.get(position));
     }
 
     @Override

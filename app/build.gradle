@@ -22,7 +22,7 @@ android {
         }
     }
     lintOptions {
-        disable 'GoogleAppIndexingWarning'
+        disable 'GoogleAppIndexingWarning', 'ContentDescription'
         abortOnError true
         warningsAsErrors true
     }
@@ -43,7 +43,10 @@ dependencies {
         exclude group: 'com.google.code.findbugs', module: 'jsr305'
     }
     compile 'com.android.support:recyclerview-v7:25.1.0'
+    compile 'com.squareup.picasso:picasso:2.5.2'
+
     testCompile 'junit:junit:4.12'
+
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
