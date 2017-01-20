@@ -6,18 +6,18 @@ import com.invisibleteam.goinvisible.util.ObservableString;
 public class ImageItemViewModel {
 
     private final ObservableString name = new ObservableString("");
-    private String url = "";
+    private ObservableString url = new ObservableString("");
 
-    public void setModel(ImageDetails image) {
+    void setModel(ImageDetails image) {
         this.name.set(image.getName());
-        this.url = image.getPath();
+        this.url.set(image.getPath());
     }
 
     public ObservableString getName() {
         return name;
     }
 
-    public String getImageUrl() {
+    public ObservableString getImageUrl() {
         return url;
     }
 }

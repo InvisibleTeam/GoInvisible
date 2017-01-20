@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
 
         <variable
             name="viewModel"
-            type="com.invisibleteam.goinvisible.mvvm.images.adapter.ImageItemViewModel"/>
+            type="com.invisibleteam.goinvisible.mvvm.images.adapter.ImageItemViewModel" />
 
     </data>
 
@@ -19,7 +19,8 @@
             android:layout_width="match_parent"
             android:layout_height="200dp"
             android:layout_centerInParent="true"
-            app:imageUrl="@{viewModel.imageUrl}"/>
+            android:foreground="@drawable/gradient"
+            app:imageUrl="@{viewModel.imageUrl}" />
 
         <TextView
             android:id="@+id/text"
@@ -28,7 +29,11 @@
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
             android:background="@drawable/image_name"
-            android:text="@{viewModel.name}"/>
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:padding="8dp"
+            android:text="@{viewModel.name}"
+            android:textColor="@android:color/white" />
 
     </RelativeLayout>
 

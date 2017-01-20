@@ -1,18 +1,24 @@
 package com.invisibleteam.goinvisible.util.binding;
 
 import android.databinding.BindingAdapter;
+import android.net.Uri;
+import android.util.Log;
 import android.widget.ImageView;
 
 import com.invisibleteam.goinvisible.R;
+import com.invisibleteam.goinvisible.util.ObservableString;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
 
 public class ImageViewBindingAdapter {
     @BindingAdapter({"bind:imageUrl"})
-    public static void loadImage(ImageView view, final String imageUrl) {
+    public static void loadImage(ImageView view, ObservableString imageUrl) {
+        Uri uri = Uri.fromFile(new File(imageUrl.get()));
+        Log.d("ImageViewBindingAdapter", uri.toString());
+
         Picasso.with(view.getContext())
-                .load(new File(imageUrl))
+                .load(uri)
                 .fit()
                 .centerCrop()
                 .placeholder(R.drawable.ic_image_placeholder)
