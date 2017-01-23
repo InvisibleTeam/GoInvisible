@@ -9,7 +9,8 @@ class ImagesViewModel {
     private ImagesView imagesView;
 
     ImagesViewModel(ImagesCompoundRecyclerView imagesCompoundRecyclerView,
-                    ImagesProvider imagesProvider, ImagesView imagesView) {
+                    ImagesProvider imagesProvider,
+                    ImagesView imagesView) {
         this.imagesCompoundRecyclerView = imagesCompoundRecyclerView;
         this.imagesProvider = imagesProvider;
         this.imagesView = imagesView;

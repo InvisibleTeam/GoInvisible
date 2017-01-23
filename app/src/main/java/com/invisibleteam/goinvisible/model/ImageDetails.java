@@ -4,6 +4,20 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public class ImageDetails implements Parcelable {
+
+    @SuppressWarnings("unused")
+    public static final Parcelable.Creator<ImageDetails> CREATOR = new Parcelable.Creator<ImageDetails>() {
+        @Override
+        public ImageDetails createFromParcel(Parcel in) {
+            return new ImageDetails(in);
+        }
+
+        @Override
+        public ImageDetails[] newArray(int size) {
+            return new ImageDetails[size];
+        }
+    };
+
     private String path;
     private String name;
 
@@ -35,17 +49,4 @@ public class ImageDetails implements Parcelable {
         dest.writeString(path);
         dest.writeString(name);
     }
-
-    @SuppressWarnings("unused")
-    public static final Parcelable.Creator<ImageDetails> CREATOR = new Parcelable.Creator<ImageDetails>() {
-        @Override
-        public ImageDetails createFromParcel(Parcel in) {
-            return new ImageDetails(in);
-        }
-
-        @Override
-        public ImageDetails[] newArray(int size) {
-            return new ImageDetails[size];
-        }
-    };
 }

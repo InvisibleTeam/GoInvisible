@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ImagesItemAdapter extends RecyclerView.Adapter<ImagesItemAdapter.ViewHolder> {
-    private OnClickListener onClickListener;
+    private OnItemClickListener onItemClickListener;
     private List<ImageDetails> imageList;
 
     ImagesItemAdapter() {
@@ -24,9 +24,9 @@ public class ImagesItemAdapter extends RecyclerView.Adapter<ImagesItemAdapter.Vi
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.image_item_view, null, false);
         itemView.setOnClickListener(view1 -> {
-            if (onClickListener != null) {
+            if (onItemClickListener != null) {
                 ImageDetails imageDetails = (ImageDetails) view1.getTag();
-                onClickListener.onItemClick(imageDetails);
+                onItemClickListener.onItemClick(imageDetails);
             }
         });
         return new ViewHolder(itemView);
@@ -47,8 +47,8 @@ public class ImagesItemAdapter extends RecyclerView.Adapter<ImagesItemAdapter.Vi
         this.imageList = imageList;
     }
 
-    void setOnClickListener(OnClickListener onClickListener) {
-        this.onClickListener = onClickListener;
+    void setOnItemClickListener(OnItemClickListener onItemClickListener) {
+        this.onItemClickListener = onItemClickListener;
     }
 
     protected class ViewHolder extends RecyclerView.ViewHolder {
@@ -66,7 +66,7 @@ public class ImagesItemAdapter extends RecyclerView.Adapter<ImagesItemAdapter.Vi
 
     }
 
-    public interface OnClickListener {
+    public interface OnItemClickListener {
         void onItemClick(ImageDetails imageDetails);
     }
 }

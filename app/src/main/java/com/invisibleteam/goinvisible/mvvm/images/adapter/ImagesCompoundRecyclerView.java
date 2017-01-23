@@ -41,7 +41,7 @@ public class ImagesCompoundRecyclerView extends FrameLayout {
         imageItemAdapter.notifyDataSetChanged();
     }
 
-    public void setOnItemClickListener(ImagesItemAdapter.OnClickListener onItemClickListener) {
-        imageItemAdapter.setOnClickListener(onItemClickListener);
+    public void setOnItemClickListener(ImagesItemAdapter.OnItemClickListener listener) {
+        imageItemAdapter.setOnItemClickListener(listener);
     }
 }
