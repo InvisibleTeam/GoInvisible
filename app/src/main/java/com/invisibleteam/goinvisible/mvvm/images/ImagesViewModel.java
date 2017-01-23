@@ -1,23 +1,25 @@
 package com.invisibleteam.goinvisible.mvvm.images;
 
 
-import android.content.ContentResolver;
-
 import com.invisibleteam.goinvisible.mvvm.images.adapter.ImagesCompoundRecyclerView;
 
 class ImagesViewModel {
     private ImagesCompoundRecyclerView imagesCompoundRecyclerView;
-    private ContentResolver contentResolver;
+    private ImagesProvider imagesProvider;
+    private ImagesView imagesView;
 
-    ImagesViewModel(ImagesCompoundRecyclerView imagesCompoundRecyclerView, ContentResolver contentResolver) {
+    ImagesViewModel(ImagesCompoundRecyclerView imagesCompoundRecyclerView,
+                    ImagesProvider imagesProvider,
+                    ImagesView imagesView) {
         this.imagesCompoundRecyclerView = imagesCompoundRecyclerView;
-        this.contentResolver = contentResolver;
+        this.imagesProvider = imagesProvider;
+        this.imagesView = imagesView;
 
-        init();
+        initRecyclerView();
     }
 
-    private void init() {
-        ImagesProvider imagesProvider = new ImagesProvider(contentResolver);
+    private void initRecyclerView() {
         imagesCompoundRecyclerView.updateResults(imagesProvider.getImagesList());
+        imagesCompoundRecyclerView.setOnItemClickListener(imageDetails -> imagesView.navigateToEdit(imageDetails));
     }
 }
