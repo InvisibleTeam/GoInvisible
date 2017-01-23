@@ -3,16 +3,16 @@ package com.invisibleteam.goinvisible.mvvm.edition;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 
 import com.invisibleteam.goinvisible.R;
 import com.invisibleteam.goinvisible.model.ImageDetails;
+import com.invisibleteam.goinvisible.mvvm.edition.adapter.EditCompoundRecyclerView;
 
 public class EditActivity extends AppCompatActivity {
 
     private static final String TAG_IMAGE_DETAILS = "filePath";
-    private Parcelable imageDetails;
+    private ImageDetails imageDetails;
 
     public static Intent buildIntent(Context context, ImageDetails imageDetails) {
         Bundle bundle = new Bundle();
@@ -32,5 +32,9 @@ public class EditActivity extends AppCompatActivity {
         if (extras != null) {
             imageDetails = extras.getParcelable(TAG_IMAGE_DETAILS);
         }
+
+        EditCompoundRecyclerView editCompoundRecyclerView =
+                (EditCompoundRecyclerView) findViewById(R.id.edit_compound_recycler_view);
+        new EditViewModel(editCompoundRecyclerView, new TagsProvider(imageDetails));
     }
 }

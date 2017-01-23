@@ -1,4 +1,4 @@
-package com.invisibleteam.goinvisible.mvvm.images.adapter;
+package com.invisibleteam.goinvisible.mvvm.edition.adapter;
 
 
 import android.content.Context;
@@ -10,16 +10,16 @@ import android.view.View;
 import android.widget.FrameLayout;
 
 import com.invisibleteam.goinvisible.R;
-import com.invisibleteam.goinvisible.model.ImageDetails;
+import com.invisibleteam.goinvisible.model.Tag;
 
 import java.util.List;
 
-public class ImagesCompoundRecyclerView extends FrameLayout {
+public class EditCompoundRecyclerView extends FrameLayout {
 
     private RecyclerView recyclerView;
-    private ImagesItemAdapter imageItemAdapter;
+    private EditItemAdapter editItemAdapter;
 
-    public ImagesCompoundRecyclerView(Context context, AttributeSet attrs) {
+    public EditCompoundRecyclerView(Context context, AttributeSet attrs) {
         super(context, attrs);
 
         init();
@@ -32,16 +32,12 @@ public class ImagesCompoundRecyclerView extends FrameLayout {
 
         recyclerView = (RecyclerView) view.findViewById(R.id.recycler);
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
-        imageItemAdapter = new ImagesItemAdapter();
-        recyclerView.setAdapter(imageItemAdapter);
+        editItemAdapter = new EditItemAdapter();
+        recyclerView.setAdapter(editItemAdapter);
     }
 
-    public void updateResults(List<ImageDetails> imageList) {
-        imageItemAdapter.updateImageList(imageList);
-        imageItemAdapter.notifyDataSetChanged();
-    }
-
-    public void setOnItemClickListener(ImagesItemAdapter.OnItemClickListener listener) {
-        imageItemAdapter.setOnItemClickListener(listener);
+    public void updateResults(List<Tag> imageList) {
+        editItemAdapter.updateImageList(imageList);
+        editItemAdapter.notifyDataSetChanged();
     }
 }
