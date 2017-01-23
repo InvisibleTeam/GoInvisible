@@ -1,4 +1,4 @@
-package com.invisibleteam.goinvisible.mvvm.edit;
+package com.invisibleteam.goinvisible.mvvm.edition;
 
 import android.content.Context;
 import android.content.Intent;

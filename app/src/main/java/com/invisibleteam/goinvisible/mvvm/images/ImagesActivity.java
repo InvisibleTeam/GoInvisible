@@ -7,7 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.invisibleteam.goinvisible.R;
 import com.invisibleteam.goinvisible.model.ImageDetails;
-import com.invisibleteam.goinvisible.mvvm.edit.EditActivity;
+import com.invisibleteam.goinvisible.mvvm.edition.EditActivity;
 import com.invisibleteam.goinvisible.mvvm.images.adapter.ImagesCompoundRecyclerView;
 
 public class ImagesActivity extends AppCompatActivity implements ImagesView {
