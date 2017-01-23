@@ -12,7 +12,8 @@ import com.invisibleteam.goinvisible.model.ImageDetails;
 import java.util.ArrayList;
 import java.util.List;
 
-class ImagesItemAdapter extends RecyclerView.Adapter<ImagesItemAdapter.ViewHolder> {
+public class ImagesItemAdapter extends RecyclerView.Adapter<ImagesItemAdapter.ViewHolder> {
+    private OnClickListener onClickListener;
     private List<ImageDetails> imageList;
 
     ImagesItemAdapter() {
@@ -21,12 +22,19 @@ class ImagesItemAdapter extends RecyclerView.Adapter<ImagesItemAdapter.ViewHolde
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.image_item_view, null, false);
-        return new ViewHolder(view);
+        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.image_item_view, null, false);
+        itemView.setOnClickListener(view1 -> {
+            if (onClickListener != null) {
+                ImageDetails imageDetails = (ImageDetails) view1.getTag();
+                onClickListener.onItemClick(imageDetails);
+            }
+        });
+        return new ViewHolder(itemView);
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
+        holder.itemView.setTag(imageList.get(position));
         holder.imageItemViewModel.setModel(imageList.get(position));
     }
 
@@ -37,6 +45,10 @@ class ImagesItemAdapter extends RecyclerView.Adapter<ImagesItemAdapter.ViewHolde
 
     void updateImageList(List<ImageDetails> imageList) {
         this.imageList = imageList;
+    }
+
+    void setOnClickListener(OnClickListener onClickListener) {
+        this.onClickListener = onClickListener;
     }
 
     protected class ViewHolder extends RecyclerView.ViewHolder {
@@ -52,5 +64,9 @@ class ImagesItemAdapter extends RecyclerView.Adapter<ImagesItemAdapter.ViewHolde
             imageItemViewBinding.setViewModel(imageItemViewModel);
         }
 
+    }
+
+    public interface OnClickListener {
+        void onItemClick(ImageDetails imageDetails);
     }
 }
