@@ -14,7 +14,12 @@ task testReport(type: JacocoReport, dependsOn: "testDebugUnitTest") {
                        '**/R$*.class',
                        '**/*$ViewInjector*.*',
                        '**/BuildConfig.*',
-                       '**/Manifest*.*'
+                       '**/Manifest*.*',
+                       //excluded data binding auto generated classes
+                       '**/android/*',
+                       '**/databinding/*',
+                       '**/*BR.class',
+                       '**/model/*' //excluded model classes
             ]
     )
 
