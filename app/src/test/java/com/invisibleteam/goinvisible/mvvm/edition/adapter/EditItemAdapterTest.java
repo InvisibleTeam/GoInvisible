@@ -16,6 +16,8 @@ import org.robolectric.annotation.Config;
 
 import java.util.List;
 
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -46,19 +48,17 @@ public class EditItemAdapterTest {
 
         //Then
         boolean isItemViewTagProperlySet = holder.itemView.getTag() == TAGS_LIST.get(0);
-        boolean isItemViewModelKeyProperlySet = holder
+        String isItemViewModelKeyProperlySet = holder
                 .editItemViewModel
                 .getKey()
-                .get()
-                .equals("key");
-        boolean isItemViewModelValueProperlySet = holder
+                .get();
+        String isItemViewModelValueProperlySet = holder
                 .editItemViewModel
                 .getValue()
-                .get()
-                .equals("value");
+                .get();
 
         assertTrue(isItemViewTagProperlySet);
-        assertTrue(isItemViewModelKeyProperlySet);
-        assertTrue(isItemViewModelValueProperlySet);
+        assertThat(isItemViewModelKeyProperlySet, is("key"));
+        assertThat(isItemViewModelValueProperlySet, is("value"));
     }
 }
