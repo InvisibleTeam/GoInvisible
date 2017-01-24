@@ -19,6 +19,7 @@ public class ImagesActivity extends AppCompatActivity implements ImagesView {
 
         ImagesCompoundRecyclerView imagesCompoundRecyclerView =
                 (ImagesCompoundRecyclerView) findViewById(R.id.images_compound_recycler_view);
+
         new ImagesViewModel(
                 imagesCompoundRecyclerView,
                 new ImagesProvider(getContentResolver()),
