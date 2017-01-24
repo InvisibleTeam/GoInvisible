@@ -21,6 +21,7 @@ public class ImagesCompoundRecyclerView extends CompoundRecyclerView<ImageDetail
         init(itemAdapter, new GridLayoutManager(getContext(), 2));
     }
 
+    @Override
     public void updateResults(List<ImageDetails> imageList) {
         itemAdapter.updateImageList(imageList);
         itemAdapter.notifyDataSetChanged();

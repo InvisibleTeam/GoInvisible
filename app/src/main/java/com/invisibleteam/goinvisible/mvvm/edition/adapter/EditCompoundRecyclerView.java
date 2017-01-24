@@ -2,7 +2,7 @@ package com.invisibleteam.goinvisible.mvvm.edition.adapter;
 
 
 import android.content.Context;
-import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.util.AttributeSet;
 
 import com.invisibleteam.goinvisible.model.Tag;
@@ -18,9 +18,10 @@ public class EditCompoundRecyclerView extends CompoundRecyclerView<Tag, EditItem
         super(context, attrs);
 
         itemAdapter = new EditItemAdapter();
-        init(itemAdapter, new GridLayoutManager(getContext(), 1));
+        init(itemAdapter, new LinearLayoutManager(getContext()));
     }
 
+    @Override
     public void updateResults(List<Tag> imageList) {
         itemAdapter.updateImageList(imageList);
         itemAdapter.notifyDataSetChanged();

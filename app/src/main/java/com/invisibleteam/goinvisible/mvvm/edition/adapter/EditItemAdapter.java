@@ -43,7 +43,7 @@ public class EditItemAdapter extends RecyclerView.Adapter<EditItemAdapter.ViewHo
     class ViewHolder extends RecyclerView.ViewHolder {
 
         private EditItemViewBinding editItemViewBinding;
-        private EditItemViewModel editItemViewModel;
+        EditItemViewModel editItemViewModel;
 
         ViewHolder(View editView) {
             super(editView);
