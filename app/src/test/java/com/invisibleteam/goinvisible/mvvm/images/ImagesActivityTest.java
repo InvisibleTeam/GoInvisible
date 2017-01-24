@@ -6,7 +6,6 @@ import android.content.Intent;
 import com.invisibleteam.goinvisible.BuildConfig;
 import com.invisibleteam.goinvisible.model.ImageDetails;
 import com.invisibleteam.goinvisible.mvvm.edition.EditActivity;
-import com.invisibleteam.goinvisible.mvvm.images.adapter.ImagesCompoundRecyclerView;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -21,10 +20,7 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.when;
 
 @RunWith(RobolectricTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 21)
@@ -32,23 +28,10 @@ import static org.mockito.Mockito.when;
 public class ImagesActivityTest {
 
     private ImagesActivity spyActivity;
-    private ImagesViewModel imagesViewModel;
 
     @Before
     public void setUp() {
-        spyActivity = spy(Robolectric.buildActivity(ImagesActivity.class).get());
-        ImagesCompoundRecyclerView recyclerView = mock(ImagesCompoundRecyclerView.class);
-        ImagesProvider imagesProvider = mock(ImagesProvider.class);
-        ImagesView imagesView = mock(ImagesView.class);
-        imagesViewModel = new ImagesViewModel(recyclerView, imagesProvider, imagesView);
-        when(spyActivity.getLastCustomNonConfigurationInstance()).thenReturn(imagesViewModel);
-        spyActivity.onCreate(null);
-    }
-
-    @Test
-    public void whenActivityIsCreated_ViewModelIsInitialized() {
-        //then
-        assertTrue(imagesViewModel.isInitialized());
+        spyActivity = spy(Robolectric.buildActivity(ImagesActivity.class).create().get());
     }
 
     @Test
@@ -68,18 +51,4 @@ public class ImagesActivityTest {
         assertEquals("ImageName", editActivityImageDetails.getName());
         assertEquals(new ComponentName(spyActivity, EditActivity.class), editActivityIntent.getComponent());
     }
-
-    @Test
-    public void whenActivityIsStartedFirstTime_thenNewViewModelWillBeCreated() {
-        //given
-        ImagesActivity activity = spy(Robolectric.buildActivity(ImagesActivity.class).get());
-
-        //when
-        when(activity.getLastCustomNonConfigurationInstance()).thenReturn(null);
-        activity.onCreate(null);
-
-        //then
-        assertNotNull(activity.onRetainCustomNonConfigurationInstance());
-    }
-
 }
