@@ -43,9 +43,4 @@ public class EditActivity extends AppCompatActivity {
     ImageDetails getImageDetails() {
         return imageDetails;
     }
-
-    @VisibleForTesting
-    ImageDetails getImageDetails() {
-        return imageDetails;
-    }
 }
