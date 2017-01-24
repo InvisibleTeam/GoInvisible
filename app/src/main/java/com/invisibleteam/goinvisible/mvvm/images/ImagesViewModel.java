@@ -3,14 +3,15 @@ package com.invisibleteam.goinvisible.mvvm.images;
 
 import com.invisibleteam.goinvisible.mvvm.images.adapter.ImagesCompoundRecyclerView;
 
-class ImagesViewModel {
+public class ImagesViewModel {
+
     private ImagesCompoundRecyclerView imagesCompoundRecyclerView;
     private ImagesProvider imagesProvider;
     private ImagesView imagesView;
 
     ImagesViewModel(ImagesCompoundRecyclerView imagesCompoundRecyclerView,
-                    ImagesProvider imagesProvider,
-                    ImagesView imagesView) {
+                           ImagesProvider imagesProvider,
+                           ImagesView imagesView) {
         this.imagesCompoundRecyclerView = imagesCompoundRecyclerView;
         this.imagesProvider = imagesProvider;
         this.imagesView = imagesView;
