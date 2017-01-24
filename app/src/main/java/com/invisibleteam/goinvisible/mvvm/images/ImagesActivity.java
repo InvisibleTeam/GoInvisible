@@ -12,6 +12,8 @@ import com.invisibleteam.goinvisible.mvvm.images.adapter.ImagesCompoundRecyclerV
 
 public class ImagesActivity extends AppCompatActivity implements ImagesView {
 
+    private ImagesViewModel imagesViewModel;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -19,10 +21,21 @@ public class ImagesActivity extends AppCompatActivity implements ImagesView {
 
         ImagesCompoundRecyclerView imagesCompoundRecyclerView =
                 (ImagesCompoundRecyclerView) findViewById(R.id.images_compound_recycler_view);
-        new ImagesViewModel(
-                imagesCompoundRecyclerView,
-                new ImagesProvider(getContentResolver()),
-                this);
+
+        Object lastNonConfigurationInstanceObject = getLastCustomNonConfigurationInstance();
+        if (lastNonConfigurationInstanceObject == null) {
+            imagesViewModel = new ImagesViewModel(
+                    imagesCompoundRecyclerView,
+                    new ImagesProvider(getContentResolver()),
+                    this);
+        } else {
+            imagesViewModel = (ImagesViewModel) lastNonConfigurationInstanceObject;
+        }
+    }
+
+    @Override
+    public Object onRetainCustomNonConfigurationInstance() {
+        return imagesViewModel;
     }
 
     @Override
