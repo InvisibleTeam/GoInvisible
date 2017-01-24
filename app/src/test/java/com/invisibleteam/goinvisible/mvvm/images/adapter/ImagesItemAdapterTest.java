@@ -1,5 +1,6 @@
 package com.invisibleteam.goinvisible.mvvm.images.adapter;
 
+import android.databinding.repacked.google.common.collect.ImmutableList;
 import android.view.ViewGroup;
 
 import com.invisibleteam.goinvisible.BuildConfig;
@@ -13,7 +14,6 @@ import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -24,6 +24,8 @@ import static org.mockito.Mockito.when;
 @RunWith(RobolectricTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 21)
 public class ImagesItemAdapterTest {
+
+    private static final List<ImageDetails> IMAGES_DETAILS_LIST = ImmutableList.of(new ImageDetails("Path", "Name"));
 
     private ImagesActivity activity;
     private ImagesItemAdapter imagesItemAdapter;
@@ -41,12 +43,8 @@ public class ImagesItemAdapterTest {
         when(parent.getContext()).thenReturn(activity);
         ImagesItemAdapter.ViewHolder viewHolder = imagesItemAdapter.onCreateViewHolder(parent, 0);
 
-        ImageDetails imageDetails = new ImageDetails("Path", "Name");
-        List<ImageDetails> imagesList = new ArrayList<>();
-        imagesList.add(imageDetails);
-
         //when
-        imagesItemAdapter.updateImageList(imagesList);
+        imagesItemAdapter.updateImageList(IMAGES_DETAILS_LIST);
         imagesItemAdapter.onBindViewHolder(viewHolder, 0);
 
         //then
@@ -60,10 +58,8 @@ public class ImagesItemAdapterTest {
         when(parent.getContext()).thenReturn(activity);
         ImagesItemAdapter.ViewHolder viewHolder = imagesItemAdapter.onCreateViewHolder(parent, 0);
 
-        ImageDetails imageDetails = new ImageDetails("Path", "Name");
-        List<ImageDetails> imagesList = new ArrayList<>();
-        imagesList.add(imageDetails);
-        imagesItemAdapter.updateImageList(imagesList);
+        ImageDetails imageDetails = IMAGES_DETAILS_LIST.get(0);
+        imagesItemAdapter.updateImageList(IMAGES_DETAILS_LIST);
         imagesItemAdapter.onBindViewHolder(viewHolder, 0);
         ImagesItemAdapter.OnItemClickListener onItemClickListener = mock(ImagesItemAdapter.OnItemClickListener.class);
 

@@ -1,10 +1,12 @@
 package com.invisibleteam.goinvisible.mvvm.edition;
 
+import android.content.Context;
 import android.content.Intent;
 
 import com.invisibleteam.goinvisible.BuildConfig;
 import com.invisibleteam.goinvisible.model.ImageDetails;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
@@ -24,12 +26,18 @@ import static org.junit.Assert.assertNull;
 public class EditActivityTest {
 
     private EditActivity activity;
+    private Context context;
+
+    @Before
+    public void setUp() {
+        context = RuntimeEnvironment.application;
+    }
 
     @Test
-    public void whenActivityIsStartedWithIntentAndIntentContainsData_thenDataAreFetchedCorrectly() {
+    public void whenActivityIsStartedWithIntentAndIntentContainsData_thenDataIsFetchedCorrectly() {
         //given
         ImageDetails imageDetails = new ImageDetails("Path", "Name");
-        Intent editActivityIntent = EditActivity.buildIntent(RuntimeEnvironment.application, imageDetails);
+        Intent editActivityIntent = EditActivity.buildIntent(context, imageDetails);
 
         //when
         activity = Robolectric.buildActivity(EditActivity.class).withIntent(editActivityIntent).create().get();
@@ -43,7 +51,7 @@ public class EditActivityTest {
     @Test
     public void whenActivityIsStartedWithIntentAndIntentDoNotContainData_thenWillBeNoDataToFetch() {
         //given
-        Intent editActivityIntent = EditActivity.buildIntent(RuntimeEnvironment.application, null);
+        Intent editActivityIntent = EditActivity.buildIntent(context, null);
 
         //when
         activity = Robolectric.buildActivity(EditActivity.class).withIntent(editActivityIntent).create().get();

@@ -45,14 +45,18 @@ public class ImagesProviderTest {
         when(contentResolver.query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, columns, null, null, null)).thenReturn(cursor);
         when(cursor.moveToFirst()).thenReturn(true);
         when(cursor.getString(0)).thenReturn("Title");
-        when(cursor.getString(1)).thenReturn("Data");
+        when(cursor.getString(1)).thenReturn("Path");
         List<ImageDetails> imagesList = imagesProvider.getImagesList();
 
         //then
         assertEquals(1, imagesList.size());
         assertNotNull(imagesList.get(0));
-        assertEquals("Title", imagesList.get(0).getName());
-        assertEquals("Data", imagesList.get(0).getPath());
+
+        String imageName = imagesList.get(0).getName();
+        assertEquals("Title", imageName);
+
+        String imagePath = imagesList.get(0).getPath();
+        assertEquals("Path", imagePath);
     }
 
     @Test
