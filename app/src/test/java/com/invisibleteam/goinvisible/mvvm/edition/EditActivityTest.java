@@ -18,14 +18,12 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 
 @RunWith(RobolectricTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 21)
 @SuppressFBWarnings("NP_NONNULL_PARAM_VIOLATION")
 public class EditActivityTest {
 
-    private EditActivity activity;
     private Context context;
 
     @Before
@@ -40,23 +38,11 @@ public class EditActivityTest {
         Intent editActivityIntent = EditActivity.buildIntent(context, imageDetails);
 
         //when
-        activity = Robolectric.buildActivity(EditActivity.class).withIntent(editActivityIntent).create().get();
+        EditActivity activity = Robolectric.buildActivity(EditActivity.class).withIntent(editActivityIntent).create().get();
 
         //then
         assertNotNull(activity.getImageDetails());
         assertEquals("Path", activity.getImageDetails().getPath());
         assertEquals("Name", activity.getImageDetails().getName());
-    }
-
-    @Test
-    public void whenActivityIsStartedWithIntentAndIntentDoNotContainData_thenWillBeNoDataToFetch() {
-        //given
-        Intent editActivityIntent = EditActivity.buildIntent(context, null);
-
-        //when
-        activity = Robolectric.buildActivity(EditActivity.class).withIntent(editActivityIntent).create().get();
-
-        //then
-        assertNull(activity.getImageDetails());
     }
 }

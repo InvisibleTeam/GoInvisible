@@ -4,9 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBar;
 import android.support.annotation.VisibleForTesting;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
@@ -14,6 +13,8 @@ import com.invisibleteam.goinvisible.R;
 import com.invisibleteam.goinvisible.databinding.ActivityEditBinding;
 import com.invisibleteam.goinvisible.model.ImageDetails;
 import com.invisibleteam.goinvisible.mvvm.edition.adapter.EditCompoundRecyclerView;
+
+import javax.annotation.Nullable;
 
 public class EditActivity extends AppCompatActivity {
 
@@ -31,7 +32,7 @@ public class EditActivity extends AppCompatActivity {
     private ImageDetails imageDetails;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         ActivityEditBinding activityEditBinding = DataBindingUtil.setContentView(this, R.layout.activity_edit);
@@ -41,10 +42,9 @@ public class EditActivity extends AppCompatActivity {
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
+
         Bundle extras = getIntent().getExtras();
-        if (extras != null) {
-            imageDetails = extras.getParcelable(TAG_IMAGE_DETAILS);
-        }
+        imageDetails = extras.getParcelable(TAG_IMAGE_DETAILS);
 
         EditCompoundRecyclerView editCompoundRecyclerView =
                 (EditCompoundRecyclerView) findViewById(R.id.edit_compound_recycler_view);
