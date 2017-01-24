@@ -46,19 +46,19 @@ public class EditItemAdapterTest {
 
         //Then
         boolean isItemViewTagProperlySet = holder.itemView.getTag() == TAGS_LIST.get(0);
-        boolean isItemViewModeyKeyProperlySet = holder
+        boolean isItemViewModelKeyProperlySet = holder
                 .editItemViewModel
                 .getKey()
                 .get()
                 .equals("key");
-        boolean isItemViewModeyValueProperlySet = holder
+        boolean isItemViewModelValueProperlySet = holder
                 .editItemViewModel
                 .getValue()
                 .get()
                 .equals("value");
 
         assertTrue(isItemViewTagProperlySet);
-        assertTrue(isItemViewModeyKeyProperlySet);
-        assertTrue(isItemViewModeyValueProperlySet);
+        assertTrue(isItemViewModelKeyProperlySet);
+        assertTrue(isItemViewModelValueProperlySet);
     }
 }
