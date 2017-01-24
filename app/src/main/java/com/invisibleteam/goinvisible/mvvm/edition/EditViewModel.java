@@ -2,13 +2,22 @@ package com.invisibleteam.goinvisible.mvvm.edition;
 
 
 import com.invisibleteam.goinvisible.mvvm.edition.adapter.EditCompoundRecyclerView;
+import com.invisibleteam.goinvisible.util.ObservableString;
 
-class EditViewModel {
+public class EditViewModel {
 
-    private EditCompoundRecyclerView editCompoundRecyclerView;
-    private TagsProvider tagsProvider;
+    private final ObservableString title = new ObservableString("");
+    private final ObservableString imageUrl = new ObservableString("");
 
-    EditViewModel(EditCompoundRecyclerView editCompoundRecyclerView, TagsProvider tagsProvider) {
+    private final EditCompoundRecyclerView editCompoundRecyclerView;
+    private final TagsProvider tagsProvider;
+
+    EditViewModel(String title,
+                  String imageUrl,
+                  EditCompoundRecyclerView editCompoundRecyclerView,
+                  TagsProvider tagsProvider) {
+        this.title.set(title);
+        this.imageUrl.set(imageUrl);
         this.editCompoundRecyclerView = editCompoundRecyclerView;
         this.tagsProvider = tagsProvider;
 
@@ -17,5 +26,13 @@ class EditViewModel {
 
     private void initRecyclerView() {
         editCompoundRecyclerView.updateResults(tagsProvider.getTags());
+    }
+
+    public ObservableString getTitle() {
+        return title;
+    }
+
+    public ObservableString getImageUrl() {
+        return imageUrl;
     }
 }
