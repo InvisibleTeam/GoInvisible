@@ -3,45 +3,30 @@ package com.invisibleteam.goinvisible.mvvm.images.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.FrameLayout;
 
-import com.invisibleteam.goinvisible.R;
 import com.invisibleteam.goinvisible.model.ImageDetails;
+import com.invisibleteam.goinvisible.mvvm.common.CompoundRecyclerView;
 
 import java.util.List;
 
-public class ImagesCompoundRecyclerView extends FrameLayout {
+public class ImagesCompoundRecyclerView extends CompoundRecyclerView<ImageDetails, ImagesItemAdapter.ViewHolder> {
 
-    private RecyclerView recyclerView;
-    private ImagesItemAdapter imageItemAdapter;
+    private final ImagesItemAdapter itemAdapter;
 
     public ImagesCompoundRecyclerView(Context context, AttributeSet attrs) {
         super(context, attrs);
 
-        init();
-    }
-
-    private void init() {
-        View view = LayoutInflater
-                .from(getContext())
-                .inflate(R.layout.listview, this, true);
-
-        recyclerView = (RecyclerView) view.findViewById(R.id.recycler);
-        recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
-        imageItemAdapter = new ImagesItemAdapter();
-        recyclerView.setAdapter(imageItemAdapter);
+        itemAdapter = new ImagesItemAdapter();
+        init(itemAdapter, new GridLayoutManager(getContext(), 2));
     }
 
     public void updateResults(List<ImageDetails> imageList) {
-        imageItemAdapter.updateImageList(imageList);
-        imageItemAdapter.notifyDataSetChanged();
+        itemAdapter.updateImageList(imageList);
+        itemAdapter.notifyDataSetChanged();
     }
 
     public void setOnItemClickListener(ImagesItemAdapter.OnItemClickListener listener) {
-        imageItemAdapter.setOnItemClickListener(listener);
+        itemAdapter.setOnItemClickListener(listener);
     }
 }

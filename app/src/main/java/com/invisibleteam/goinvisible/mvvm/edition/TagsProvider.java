@@ -8,7 +8,7 @@ import java.util.List;
 
 public class TagsProvider {
 
-    private ImageDetails imageDetails;
+    private final ImageDetails imageDetails;
 
     public TagsProvider(ImageDetails imageDetails) {
         this.imageDetails = imageDetails;
