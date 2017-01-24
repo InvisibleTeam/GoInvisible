@@ -40,12 +40,12 @@ public class EditItemAdapter extends RecyclerView.Adapter<EditItemAdapter.ViewHo
         this.tagsList = imageList;
     }
 
-    protected class ViewHolder extends RecyclerView.ViewHolder {
+    class ViewHolder extends RecyclerView.ViewHolder {
 
         private EditItemViewBinding editItemViewBinding;
         private EditItemViewModel editItemViewModel;
 
-        protected ViewHolder(View editView) {
+        ViewHolder(View editView) {
             super(editView);
 
             editItemViewModel = new EditItemViewModel();
