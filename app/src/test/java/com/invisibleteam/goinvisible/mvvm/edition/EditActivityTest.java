@@ -32,31 +32,38 @@ public class EditActivityTest {
 
     @Test
     public void whenProperIntentIsPassed_ExtractionFinishWithSuccess() {
+        //Given
         Intent intent = EditActivity.buildIntent(context, new ImageDetails("path", "name"));
         EditActivity activity = Robolectric
                 .buildActivity(EditActivity.class)
                 .withIntent(intent)
                 .get();
 
+        //When
         boolean isExtractionSucceed = activity.extractBundle();
 
+        //Then
         assertTrue(isExtractionSucceed);
     }
 
     @Test
     public void whenNullIntentIsPassed_ExtractionFinishWithFailure() {
+        //Given
         EditActivity activity = Robolectric
                 .buildActivity(EditActivity.class)
                 .withIntent(null)
                 .get();
 
+        //When
         boolean isExtractionFailure = !activity.extractBundle();
 
+        //Then
         assertTrue(isExtractionFailure);
     }
 
     @Test
     public void whenWrongIntentIsPassed_ExtractionFinishWithFailure() {
+        //Given
         Bundle bundle = new Bundle();
         bundle.putParcelable("filePath", mock(Parcelable.class));
         Intent intent = new Intent(context, EditActivity.class);
@@ -67,35 +74,43 @@ public class EditActivityTest {
                 .withIntent(intent)
                 .get();
 
+        //When
         boolean isExtractionFailure = !activity.extractBundle();
 
+        //Then
         assertTrue(isExtractionFailure);
     }
 
     @Test
     public void whenProperIntentIsPassed_ViewModelIsInitiated() {
+        //Given
         Intent intent = EditActivity.buildIntent(context, new ImageDetails("path", "name"));
         EditActivity activity = Robolectric
                 .buildActivity(EditActivity.class)
                 .withIntent(intent)
                 .get();
 
+        //When
         activity.onCreate(null);
         boolean isViewModelInitiated = activity.getEditViewModel() != null;
 
+        //Then
         assertTrue(isViewModelInitiated);
     }
 
     @Test
     public void whenNullIntentIsPassed_ViewModelIsNotInitiated() {
+        //Given
         EditActivity activity = Robolectric
                 .buildActivity(EditActivity.class)
                 .withIntent(null)
                 .get();
 
+        //When
         activity.onCreate(null);
         boolean isViewModelNotInitiated = activity.getEditViewModel() == null;
 
+        //Then
         assertTrue(isViewModelNotInitiated);
     }
 }

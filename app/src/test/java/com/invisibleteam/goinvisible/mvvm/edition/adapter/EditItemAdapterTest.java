@@ -34,13 +34,17 @@ public class EditItemAdapterTest {
 
     @Test
     public void whenTagsListIsNotEmpty_ViewHolderIsBinded() {
+        //Given
         EditItemAdapter adapter = new EditItemAdapter();
         adapter.updateImageList(TAGS_LIST);
         ViewGroup view = mock(ViewGroup.class);
         when(view.getContext()).thenReturn(context);
 
+        //When
         EditItemAdapter.ViewHolder holder = adapter.onCreateViewHolder(view, 0);
         adapter.onBindViewHolder(holder, 0);
+
+        //Then
         boolean isItemViewTagProperlySet = holder.itemView.getTag() == TAGS_LIST.get(0);
         boolean isItemViewModeyKeyProperlySet = holder
                 .editItemViewModel
