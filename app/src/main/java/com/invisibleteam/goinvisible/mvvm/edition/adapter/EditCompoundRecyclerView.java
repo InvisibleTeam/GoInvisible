@@ -21,6 +21,7 @@ public class EditCompoundRecyclerView extends CompoundRecyclerView<Tag, EditItem
         init(itemAdapter, new GridLayoutManager(getContext(), 1));
     }
 
+    @Override
     public void updateResults(List<Tag> imageList) {
         itemAdapter.updateImageList(imageList);
         itemAdapter.notifyDataSetChanged();
