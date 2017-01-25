@@ -35,7 +35,6 @@ class ImagesProvider {
                     String title = cur.getString(0);
                     String data = cur.getString(1);
                     String mimeType = cur.getString(2);
-                    imagesList.add(new ImageDetails(data, title));
                     if (!mimeType.endsWith("png")) {
                         imagesList.add(new ImageDetails(data, title));
                     }
