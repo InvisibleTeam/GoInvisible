@@ -1,6 +1,5 @@
 package com.invisibleteam.goinvisible.mvvm.edition;
 
-import android.databinding.repacked.google.common.collect.ImmutableList;
 import android.media.ExifInterface;
 import android.os.Build;
 import android.support.annotation.VisibleForTesting;
@@ -15,15 +14,15 @@ import java.util.List;
 
 import static android.media.ExifInterface.*;
 
-public class TagsProvider {
+class TagsProvider {
 
-    private ImageDetails imageDetails;
+    private final ImageDetails imageDetails;
 
-    public TagsProvider(ImageDetails imageDetails) {
+    TagsProvider(ImageDetails imageDetails) {
         this.imageDetails = imageDetails;
     }
 
-    public List<Tag> getAllTags() {
+    List<Tag> getAllTags() {
         try {
             ExifInterface exif = new ExifInterface(imageDetails.getPath());
             return getAllTags(exif);
@@ -63,7 +62,7 @@ public class TagsProvider {
         return tagsList;
     }
 
-    private static final List<String> STRING_TAGS_LIST = ImmutableList.of(
+    private static final List<String> STRING_TAGS_LIST = Arrays.asList(
             TAG_GPS_DATESTAMP,
             TAG_GPS_LATITUDE_REF,
             TAG_GPS_TIMESTAMP,
