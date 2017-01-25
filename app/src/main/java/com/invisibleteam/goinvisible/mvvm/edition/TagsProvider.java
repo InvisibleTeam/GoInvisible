@@ -6,15 +6,15 @@ import com.invisibleteam.goinvisible.model.Tag;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TagsProvider {
+class TagsProvider {
 
     private final ImageDetails imageDetails;
 
-    public TagsProvider(ImageDetails imageDetails) {
+    TagsProvider(ImageDetails imageDetails) {
         this.imageDetails = imageDetails;
     }
 
-    public List<Tag> getTags() {
+    List<Tag> getTags() {
         return new ArrayList<Tag>() {
             {
                 add(new Tag("key1", "value1"));
