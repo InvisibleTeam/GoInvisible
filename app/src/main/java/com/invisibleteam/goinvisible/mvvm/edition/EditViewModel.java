@@ -16,6 +16,6 @@ class EditViewModel {
     }
 
     private void initRecyclerView() {
-        editCompoundRecyclerView.updateResults(tagsProvider.getTags());
+        editCompoundRecyclerView.updateResults(tagsProvider.getAllTags());
     }
 }
