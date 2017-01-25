@@ -12,7 +12,7 @@ import com.invisibleteam.goinvisible.model.Tag;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EditItemAdapter extends RecyclerView.Adapter<EditItemAdapter.ViewHolder> {
+class EditItemAdapter extends RecyclerView.Adapter<EditItemAdapter.ViewHolder> {
     private List<Tag> tagsList;
 
     EditItemAdapter() {
