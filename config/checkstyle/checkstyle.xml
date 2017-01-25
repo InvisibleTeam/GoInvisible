@@ -37,7 +37,7 @@
         </module>
         <module name="NoLineWrap"/>
         <module name="AvoidStarImport">
-            <property name="excludes" value="org.hamcrest,org.mockito,org.junit" />
+            <property name="excludes" value="org.hamcrest,org.mockito,org.junit,android.media.ExifInterface" />
         </module>
         <module name="SuppressWarningsHolder" />
         <module name="LineLength">

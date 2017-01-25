@@ -25,7 +25,7 @@ public class EditViewModel {
     }
 
     private void initRecyclerView() {
-        editCompoundRecyclerView.updateResults(tagsProvider.getTags());
+        editCompoundRecyclerView.updateResults(tagsProvider.getAllTags());
     }
 
     public ObservableString getTitle() {
