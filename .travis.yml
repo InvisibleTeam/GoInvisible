@@ -49,6 +49,11 @@ android:
         - sys-img-$ANDROID_ABI-$ANDROID_TARGET
 
 before_script:
+    - echo $_JAVA_TOOL_OPTIONS
+    - export _JAVA_TOOL_OPTIONS="-Xms=256m -Xmx1280m -XX:MaxPermSize=350m"
+    - echo $JAVA_OPTS
+    - export JAVA_OPTS="-Xms=256m -Xmx1280m -XX:MaxPermSize=350m"
+
     - android list targets
 
     # Create and start emulator
