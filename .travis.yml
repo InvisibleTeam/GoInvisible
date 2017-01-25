@@ -20,7 +20,7 @@ env:
       # Java Options
       # http://stackoverflow.com/questions/28327620/difference-between-java-options-java-tool-options-and-java-opts
       - JAVA_OPTS="-Xms256m -Xmx1280m"
-      - _JAVA_OPTIONS="-Xms256m -Xmx1280m"
+      # - _JAVA_OPTIONS="-Xms256m -Xmx1280m"
 
 before_cache:
     - rm -f $HOME/.gradle/caches/modules-2/modules-2.lock
@@ -49,9 +49,8 @@ android:
         - sys-img-$ANDROID_ABI-$ANDROID_TARGET
 
 before_script:
-#    - echo $_JAVA_OPTIONS
 #    - export _JAVA_OPTIONS="-Xms256m -Xmx1280m"
-#    - echo $JAVA_OPTS
+    - echo $JAVA_OPTS
 #    - export JAVA_OPTS="-Xms256m -Xmx1280m"
 
     - android list targets
