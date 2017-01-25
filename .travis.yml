@@ -14,7 +14,7 @@ env:
       - ANDROID_ABI=armeabi-v7a
 
       # Environment values
-      - JAVA_TOOL_OPTIONS="-Xms=256m -Xmx1280m -XX:MaxPermSize=350m"
+      - _JAVA_TOOL_OPTIONS="-Xms=256m -Xmx1280m -XX:MaxPermSize=350m"
       - ADB_INSTALL_TIMEOUT=8 # minutes
       - MALLOC_ARENA_MAX=2 # switch glibc to a memory conserving mode
 
