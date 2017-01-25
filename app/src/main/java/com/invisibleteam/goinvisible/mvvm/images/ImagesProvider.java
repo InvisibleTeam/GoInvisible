@@ -10,17 +10,18 @@ import com.invisibleteam.goinvisible.model.ImageDetails;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ImagesProvider {
+class ImagesProvider {
     private final ContentResolver contentResolver;
 
-    public ImagesProvider(ContentResolver contentResolver) {
+    ImagesProvider(ContentResolver contentResolver) {
         this.contentResolver = contentResolver;
     }
 
-    public List<ImageDetails> getImagesList() {
+    List<ImageDetails> getImagesList() {
         String[] columns = new String[]{
                 MediaStore.Images.ImageColumns.TITLE,
-                MediaStore.Images.ImageColumns.DATA};
+                MediaStore.Images.ImageColumns.DATA,
+                MediaStore.Images.ImageColumns.MIME_TYPE};
         Cursor cur = contentResolver.query(
                 MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
                 columns,
@@ -33,7 +34,11 @@ public class ImagesProvider {
                 do {
                     String title = cur.getString(0);
                     String data = cur.getString(1);
+                    String mimeType = cur.getString(2);
                     imagesList.add(new ImageDetails(data, title));
+                    if (!mimeType.endsWith("png")) {
+                        imagesList.add(new ImageDetails(data, title));
+                    }
                 } while (cur.moveToNext());
             }
             cur.close();
