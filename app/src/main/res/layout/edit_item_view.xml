@@ -21,22 +21,18 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@drawable/image_name"
-            android:ellipsize="end"
             android:maxLines="1"
             android:text="@{viewModel.key}"
-            android:textColor="@android:color/white"/>
+            android:textColor="@android:color/black"/>
 
         <TextView
             android:id="@+id/tag_value"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@drawable/image_name"
-            android:ellipsize="end"
             android:maxLines="1"
             android:text="@{viewModel.value}"
-            android:textColor="@android:color/white"/>
+            android:textColor="@android:color/black"/>
 
     </LinearLayout>
 
