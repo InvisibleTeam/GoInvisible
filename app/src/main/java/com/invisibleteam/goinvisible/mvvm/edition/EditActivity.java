@@ -45,7 +45,7 @@ public class EditActivity extends AppCompatActivity {
         editViewModel = new EditViewModel(editCompoundRecyclerView, new TagsProvider(imageDetails));
     }
 
-    @VisibleForTesting
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
     boolean extractBundle() {
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
