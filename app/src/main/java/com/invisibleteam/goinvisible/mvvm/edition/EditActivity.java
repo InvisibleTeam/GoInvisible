@@ -2,12 +2,16 @@ package com.invisibleteam.goinvisible.mvvm.edition;
 
 import android.content.Context;
 import android.content.Intent;
+import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.VisibleForTesting;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.view.MenuItem;
 
 import com.invisibleteam.goinvisible.R;
+import com.invisibleteam.goinvisible.databinding.ActivityEditBinding;
 import com.invisibleteam.goinvisible.model.ImageDetails;
 import com.invisibleteam.goinvisible.mvvm.edition.adapter.EditCompoundRecyclerView;
 
@@ -16,8 +20,6 @@ import javax.annotation.Nullable;
 public class EditActivity extends AppCompatActivity {
 
     private static final String TAG_IMAGE_DETAILS = "extra_image_details";
-    private ImageDetails imageDetails;
-    private EditViewModel editViewModel;
 
     public static Intent buildIntent(Context context, ImageDetails imageDetails) {
         Bundle bundle = new Bundle();
@@ -28,21 +30,31 @@ public class EditActivity extends AppCompatActivity {
         return intent;
     }
 
+    private ImageDetails imageDetails;
+    private EditViewModel editViewModel;
+
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_edit);
 
-        prepareRecyclerView();
-    }
+        ActivityEditBinding activityEditBinding = DataBindingUtil.setContentView(this, R.layout.activity_edit);
+        setSupportActionBar(activityEditBinding.mainToolbar);
 
-    private void prepareRecyclerView() {
-        if (!extractBundle()) {
-            return;
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
         }
-        EditCompoundRecyclerView editCompoundRecyclerView =
-                (EditCompoundRecyclerView) findViewById(R.id.edit_compound_recycler_view);
-        editViewModel = new EditViewModel(editCompoundRecyclerView, new TagsProvider(imageDetails));
+
+        if (extractBundle()) {
+            EditCompoundRecyclerView editCompoundRecyclerView =
+                    (EditCompoundRecyclerView) findViewById(R.id.edit_compound_recycler_view);
+            editViewModel = new EditViewModel(
+                    imageDetails.getName(),
+                    imageDetails.getPath(),
+                    editCompoundRecyclerView,
+                    new TagsProvider(imageDetails));
+            activityEditBinding.setViewModel(editViewModel);
+        } //TODO log exception to crashlitycs on else.
     }
 
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
@@ -58,14 +70,20 @@ public class EditActivity extends AppCompatActivity {
         return false;
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
     @VisibleForTesting
     @Nullable
     EditViewModel getEditViewModel() {
         return editViewModel;
-    }
-
-    @VisibleForTesting
-    ImageDetails getImageDetails() {
-        return imageDetails;
     }
 }
