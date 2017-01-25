@@ -63,9 +63,8 @@ public class EditActivity extends AppCompatActivity {
                 onBackPressed();
                 return true;
             default:
-                break;
+                return super.onOptionsItemSelected(item);
         }
-        return super.onOptionsItemSelected(item);
     }
 
     @VisibleForTesting
