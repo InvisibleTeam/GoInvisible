@@ -52,3 +52,7 @@ script:
 
 after_failure:
     - cat $TRAVIS_BUILD_DIR/app/build/outputs/lint-results-debug.xml
+
+after_script:
+    - java -XshowSettings:all
+    - echo "JAVA options ==============" && ( set -o posix ; set ) | grep JAVA && echo "JAVA options =============="
