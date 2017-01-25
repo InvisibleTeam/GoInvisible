@@ -19,8 +19,8 @@ env:
 
       # Java Options
       # http://stackoverflow.com/questions/28327620/difference-between-java-options-java-tool-options-and-java-opts
-      - JAVA_OPTS="-Xms=256m -Xmx1280m -XX:MaxPermSize=350m"
-      - _JAVA_OPTIONS="-Xms=256m -Xmx1280m -XX:MaxPermSize=350m"
+      - JAVA_OPTS="-Xms256m -Xmx1280m -XX:MaxPermSize=350m"
+      - _JAVA_OPTIONS="-Xms256m -Xmx1280m -XX:MaxPermSize=350m"
 
 before_cache:
     - rm -f $HOME/.gradle/caches/modules-2/modules-2.lock
