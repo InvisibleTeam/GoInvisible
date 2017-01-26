@@ -1,23 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    >
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
         <variable
             name="viewModel"
-            type="com.invisibleteam.goinvisible.mvvm.edition.adapter.EditItemViewModel"/>
+            type="com.invisibleteam.goinvisible.mvvm.edition.adapter.EditItemViewModel" />
 
     </data>
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp">
+        android:layout_height="wrap_content">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            tools:ignore="UselessParent">
 
             <TextView
                 android:id="@+id/tag_key"
@@ -26,7 +27,7 @@
                 android:maxLines="1"
                 android:text="@{viewModel.key}"
                 android:textColor="@android:color/black"
-                android:textSize="16sp"/>
+                android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/tag_value"
@@ -35,7 +36,7 @@
                 android:maxLines="1"
                 android:text="@{viewModel.value}"
                 android:textColor="@android:color/black"
-                android:textSize="16sp"/>
+                android:textSize="16sp" />
 
         </LinearLayout>
 

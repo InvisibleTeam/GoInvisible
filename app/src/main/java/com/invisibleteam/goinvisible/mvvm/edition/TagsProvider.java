@@ -2,6 +2,7 @@ package com.invisibleteam.goinvisible.mvvm.edition;
 
 import android.media.ExifInterface;
 import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.support.annotation.VisibleForTesting;
 
 import com.invisibleteam.goinvisible.model.ImageDetails;
@@ -72,6 +73,7 @@ class TagsProvider {
             TAG_MAKE,
             TAG_MODEL);
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     private static final List<String> STRING_TAGS_LIST_API_24 = Arrays.asList(
             TAG_COPYRIGHT,
             TAG_IMAGE_DESCRIPTION,
@@ -120,6 +122,7 @@ class TagsProvider {
             TAG_IMAGE_WIDTH,
             TAG_ORIENTATION);
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     private static final List<String> INTEGER_TAGS_LIST_API_24 = Arrays.asList(
             TAG_PHOTOMETRIC_INTERPRETATION,
             TAG_BITS_PER_SAMPLE,
@@ -166,6 +169,7 @@ class TagsProvider {
             TAG_GPS_LONGITUDE,
             TAG_EXPOSURE_TIME);
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     private static final List<String> DOUBLE_TAGS_LIST_API_24 = Arrays.asList(
             TAG_DIGITAL_ZOOM_RATIO,
             TAG_EXPOSURE_BIAS_VALUE,
