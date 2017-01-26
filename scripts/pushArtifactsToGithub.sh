@@ -14,10 +14,21 @@ git config user.name "InvisibleTeam-travis"
 git config user.email "travis"
 
 # copy necessary directories
-cp -R $BUILD_DIR/outputs/lint-results-debug.html $GH_ARTIFACTS_DIR
-cp -R $BUILD_DIR/outputs/lint-results-release-fatal.html $GH_ARTIFACTS_DIR
-cp -R $BUILD_DIR/reports/jacoco/testReport/html $GH_ARTIFACTS_DIR
-mv $GH_ARTIFACTS_DIR/index.html $GH_ARTIFACTS_DIR/jacoco-index.html
+if [ -e $BUILD_DIR/outputs/lint-results-debug.html ]
+then
+    cp -R $BUILD_DIR/outputs/lint-results-debug.html $GH_ARTIFACTS_DIR
+fi
+
+if [ -e $BUILD_DIR/outputs/lint-results-release-fatal.html ]
+then
+    cp -R $BUILD_DIR/outputs/lint-results-release-fatal.html $GH_ARTIFACTS_DIR
+fi
+
+if [ -e $BUILD_DIR/reports/jacoco/testReport/html ]
+then
+    cp -R $BUILD_DIR/reports/jacoco/testReport/html $GH_ARTIFACTS_DIR
+    mv $GH_ARTIFACTS_DIR/index.html $GH_ARTIFACTS_DIR/jacoco-index.html
+fi
 
 # generate directory tree in html
 tree -H . -P 'lint*html|index.html' -o $GH_ARTIFACTS_DIR/index.html
