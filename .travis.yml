@@ -70,3 +70,6 @@ script:
 
 after_failure:
     - cat $TRAVIS_BUILD_DIR/app/build/outputs/lint-results-debug.xml
+
+after_script:
+    -  script/pushArtifactsToGithub.sh
