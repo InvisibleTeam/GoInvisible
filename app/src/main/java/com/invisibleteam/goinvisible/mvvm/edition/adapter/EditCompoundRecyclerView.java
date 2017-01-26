@@ -7,6 +7,7 @@ import android.util.AttributeSet;
 
 import com.invisibleteam.goinvisible.model.Tag;
 import com.invisibleteam.goinvisible.mvvm.common.CompoundRecyclerView;
+import com.invisibleteam.goinvisible.mvvm.edition.OnTagActionListener;
 
 import java.util.List;
 
@@ -25,5 +26,13 @@ public class EditCompoundRecyclerView extends CompoundRecyclerView<Tag, EditItem
     public void updateResults(List<Tag> imageList) {
         itemAdapter.updateImageList(imageList);
         itemAdapter.notifyDataSetChanged();
+    }
+
+    public void setOnTagActionListener(OnTagActionListener listener) {
+        itemAdapter.setOnTagActionListener(listener);
+    }
+
+    public void clearTag(Tag tag) {
+        itemAdapter.clearTag(tag);
     }
 }

@@ -3,11 +3,13 @@ package com.invisibleteam.goinvisible.mvvm.edition;
 import android.content.Context;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
+import android.media.ExifInterface;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.VisibleForTesting;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.MenuItem;
 
 import com.invisibleteam.goinvisible.R;
@@ -15,11 +17,14 @@ import com.invisibleteam.goinvisible.databinding.ActivityEditBinding;
 import com.invisibleteam.goinvisible.model.ImageDetails;
 import com.invisibleteam.goinvisible.mvvm.edition.adapter.EditCompoundRecyclerView;
 
+import java.io.IOException;
+
 import javax.annotation.Nullable;
 
 public class EditActivity extends AppCompatActivity {
 
     private static final String TAG_IMAGE_DETAILS = "extra_image_details";
+    private static final String TAG = EditActivity.class.getSimpleName();
 
     public static Intent buildIntent(Context context, ImageDetails imageDetails) {
         Bundle bundle = new Bundle();
@@ -48,12 +53,19 @@ public class EditActivity extends AppCompatActivity {
         if (extractBundle()) {
             EditCompoundRecyclerView editCompoundRecyclerView =
                     (EditCompoundRecyclerView) findViewById(R.id.edit_compound_recycler_view);
-            editViewModel = new EditViewModel(
-                    imageDetails.getName(),
-                    imageDetails.getPath(),
-                    editCompoundRecyclerView,
-                    new TagsProvider(imageDetails));
-            activityEditBinding.setViewModel(editViewModel);
+
+            try {
+                ExifInterface exifInterface = new ExifInterface(imageDetails.getPath());
+                editViewModel = new EditViewModel(
+                        imageDetails.getName(),
+                        imageDetails.getPath(),
+                        editCompoundRecyclerView,
+                        new TagsManager(exifInterface));
+                activityEditBinding.setViewModel(editViewModel);
+            } catch (IOException e) {
+                Log.d(TAG, String.valueOf(e.getMessage()));
+                //TODO log exception to crashlitycs on else.
+            }
         } //TODO log exception to crashlitycs on else.
     }
 

@@ -5,6 +5,7 @@ import android.view.ViewGroup;
 
 import com.google.common.collect.ImmutableList;
 import com.invisibleteam.goinvisible.BuildConfig;
+import com.invisibleteam.goinvisible.model.ObjectType;
 import com.invisibleteam.goinvisible.model.Tag;
 
 import org.junit.Before;
@@ -26,7 +27,7 @@ import static org.mockito.Mockito.when;
 @Config(constants = BuildConfig.class, sdk = 21)
 public class EditItemAdapterTest {
 
-    private static final List<Tag> TAGS_LIST = ImmutableList.of(new Tag("key", "value"));
+    private static final List<Tag> TAGS_LIST = ImmutableList.of(new Tag("key", "value", ObjectType.STRING));
     private Context context;
 
     @Before
