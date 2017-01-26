@@ -2,6 +2,7 @@ package com.invisibleteam.goinvisible.mvvm.edition.adapter;
 
 
 import android.content.Context;
+import android.support.annotation.VisibleForTesting;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.AttributeSet;
 
@@ -13,7 +14,7 @@ import java.util.List;
 
 public class EditCompoundRecyclerView extends CompoundRecyclerView<Tag, EditItemAdapter.ViewHolder> {
 
-    private final EditItemAdapter itemAdapter;
+    private EditItemAdapter itemAdapter;
 
     public EditCompoundRecyclerView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -32,7 +33,12 @@ public class EditCompoundRecyclerView extends CompoundRecyclerView<Tag, EditItem
         itemAdapter.setOnTagActionListener(listener);
     }
 
-    public void clearTag(Tag tag) {
-        itemAdapter.clearTag(tag);
+    public void updateTag(Tag tag) {
+        itemAdapter.updateTag(tag);
+    }
+
+    @VisibleForTesting
+    void setItemAdapter(EditItemAdapter itemAdapter) {
+        this.itemAdapter = itemAdapter;
     }
 }

@@ -38,14 +38,14 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_toEndOf="@+id/tag_key"
-                android:layout_toStartOf="@+id/erase_button"
+                android:layout_toStartOf="@+id/clear_button"
                 android:maxLines="2"
                 android:text="@{viewModel.value}"
                 android:textColor="@android:color/black"
                 android:textSize="16sp"/>
 
             <ImageView
-                android:id="@+id/erase_button"
+                android:id="@+id/clear_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"

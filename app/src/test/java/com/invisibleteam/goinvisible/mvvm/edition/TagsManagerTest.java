@@ -14,12 +14,15 @@ import org.robolectric.annotation.Config;
 import java.io.IOException;
 import java.util.List;
 
+import static android.media.ExifInterface.TAG_EXPOSURE_TIME;
+import static android.media.ExifInterface.TAG_FLASH;
+import static android.media.ExifInterface.TAG_GPS_TIMESTAMP;
 import static android.media.ExifInterface.TAG_MAKE;
 import static android.media.ExifInterface.TAG_MODEL;
-import static com.invisibleteam.goinvisible.util.TagsMatcher.equalsTag;
-import static org.hamcrest.Matchers.is;
+import static com.invisibleteam.goinvisible.util.TagsMatcher.containsTag;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(RobolectricTestRunner.class)
@@ -27,16 +30,16 @@ import static org.mockito.Mockito.when;
 public class TagsManagerTest {
 
     @Test
-    public void whenThereIsNoImageAtPath_ReturnEmptyList() throws IOException {
+    public void whenThereIsNoImageAtPath_GetAttributeIsCalled() throws IOException {
         //Given
-        TagsManager provider = new TagsManager(new ExifInterface(""));
+        ExifInterface exifInterface = mock(ExifInterface.class);
+        TagsManager provider = new TagsManager(exifInterface);
 
         //When
-        List<Tag> tagList = provider.getAllTags();
+        provider.getAllTags();
 
         //Then
-        int defaultIntegerValuesCount = 7;
-        assertThat(tagList.size(), is(defaultIntegerValuesCount));
+        verify(exifInterface).getAttribute(TAG_MODEL);
     }
 
     @Test
@@ -51,21 +54,63 @@ public class TagsManagerTest {
         List<Tag> tagList = provider.getAllTags();
 
         //Then
-        assertThat(tagList.get(0), equalsTag(new Tag(TAG_MAKE, "tag1", ObjectType.STRING)));
-        assertThat(tagList.get(1), equalsTag(new Tag(TAG_MODEL, "tag2", ObjectType.STRING)));
+        assertThat(tagList, containsTag(new Tag(TAG_MAKE, "tag1", ObjectType.STRING)));
+        assertThat(tagList, containsTag(new Tag(TAG_MODEL, "tag2", ObjectType.STRING)));
     }
 
-//    @Test
-//    public void whenTagIsCleared_DefaultValueIsReturned() throws IOException {
-//        //Given
-//        ExifInterface exifInterface = new ExifInterface("");
-//        TagsManager tagsManager = new TagsManager(exifInterface);
-//
-//        //When
-//        tagsManager.clearTag(new Tag(TAG_GPS_TIMESTAMP, "", ObjectType.STRING));
-//
-//        //Then
-//        String attributeValue = exifInterface.getAttribute(TAG_GPS_TIMESTAMP);
-//        assertThat(attributeValue, is("00:00:00"));
-//    }
+    @Test
+    public void whenTimeStampTagIsCleared_DefaultValueIsReturned() throws IOException {
+        //Given
+        ExifInterface exifInterface = mock(ExifInterface.class);
+        TagsManager tagsManager = new TagsManager(exifInterface);
+
+        //When
+        tagsManager.clearTag(new Tag(TAG_GPS_TIMESTAMP, "", ObjectType.STRING));
+
+        //Then
+        verify(exifInterface).setAttribute(TAG_GPS_TIMESTAMP, "00:00:00");
+        verify(exifInterface).saveAttributes();
+    }
+
+    @Test
+    public void whenStringTagIsCleared_DefaultValueIsReturned() throws IOException {
+        //Given
+        ExifInterface exifInterface = mock(ExifInterface.class);
+        TagsManager tagsManager = new TagsManager(exifInterface);
+
+        //When
+        tagsManager.clearTag(new Tag(TAG_MAKE, "test", ObjectType.STRING));
+
+        //Then
+        verify(exifInterface).setAttribute(TAG_MAKE, "");
+        verify(exifInterface).saveAttributes();
+    }
+
+    @Test
+    public void whenIntegerTagIsCleared_DefaultValueIsReturned() throws IOException {
+        //Given
+        ExifInterface exifInterface = mock(ExifInterface.class);
+        TagsManager tagsManager = new TagsManager(exifInterface);
+
+        //When
+        tagsManager.clearTag(new Tag(TAG_FLASH, "test", ObjectType.INTEGER));
+
+        //Then
+        verify(exifInterface).setAttribute(TAG_FLASH, "0");
+        verify(exifInterface).saveAttributes();
+    }
+
+    @Test
+    public void whenDoubleTagIsCleared_DefaultValueIsReturned() throws IOException {
+        //Given
+        ExifInterface exifInterface = mock(ExifInterface.class);
+        TagsManager tagsManager = new TagsManager(exifInterface);
+
+        //When
+        tagsManager.clearTag(new Tag(TAG_EXPOSURE_TIME, "test", ObjectType.DOUBLE));
+
+        //Then
+        verify(exifInterface).setAttribute(TAG_EXPOSURE_TIME, "0");
+        verify(exifInterface).saveAttributes();
+    }
 }

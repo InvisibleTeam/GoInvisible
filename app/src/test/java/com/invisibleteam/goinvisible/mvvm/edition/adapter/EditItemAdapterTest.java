@@ -3,7 +3,6 @@ package com.invisibleteam.goinvisible.mvvm.edition.adapter;
 import android.content.Context;
 import android.view.ViewGroup;
 
-import com.google.common.collect.ImmutableList;
 import com.invisibleteam.goinvisible.BuildConfig;
 import com.invisibleteam.goinvisible.model.ObjectType;
 import com.invisibleteam.goinvisible.model.Tag;
@@ -15,8 +14,10 @@ import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import static com.invisibleteam.goinvisible.util.TagsMatcher.containsTag;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
@@ -27,7 +28,12 @@ import static org.mockito.Mockito.when;
 @Config(constants = BuildConfig.class, sdk = 21)
 public class EditItemAdapterTest {
 
-    private static final List<Tag> TAGS_LIST = ImmutableList.of(new Tag("key", "value", ObjectType.STRING));
+    private Tag TAG = new Tag("key", "value", ObjectType.STRING);
+    private List<Tag> TAGS_LIST = new ArrayList<Tag>() {
+        {
+            add(TAG);
+        }
+    };
     private Context context;
 
     @Before
@@ -61,5 +67,19 @@ public class EditItemAdapterTest {
         assertTrue(isItemViewTagProperlySet);
         assertThat(isItemViewModelKeyProperlySet, is("key"));
         assertThat(isItemViewModelValueProperlySet, is("value"));
+    }
+
+    @Test
+    public void whenTagIsUpdated_TagsListIsUpdated() {
+        //Given
+        EditItemAdapter adapter = new EditItemAdapter();
+        adapter.updateImageList(TAGS_LIST);
+
+        //When
+        Tag editedTag = new Tag("key", "editedValue", ObjectType.STRING);
+        adapter.updateTag(editedTag);
+
+        //Then
+        assertThat(adapter.getTagsList(), containsTag(editedTag));
     }
 }

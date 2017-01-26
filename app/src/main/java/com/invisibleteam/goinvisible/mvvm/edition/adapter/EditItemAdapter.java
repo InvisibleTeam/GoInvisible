@@ -34,7 +34,8 @@ class EditItemAdapter extends RecyclerView.Adapter<EditItemAdapter.ViewHolder> {
 
         holder.itemView.setTag(tag);
         holder.editItemViewModel.setModel(tag);
-        holder.editItemViewBinding.eraseButton.setOnClickListener(v -> onTagActionListener.onClear(tag));
+        holder.editItemViewBinding.clearButton.setOnClickListener(v -> onTagActionListener.onClear(tag));
+        // TODO "think about moving it to onCreateViewHolder in the future"
     }
 
     @Override
@@ -50,7 +51,7 @@ class EditItemAdapter extends RecyclerView.Adapter<EditItemAdapter.ViewHolder> {
         this.onTagActionListener = listener;
     }
 
-    void clearTag(Tag tag) {
+    void updateTag(Tag tag) {
         if (!tagsList.isEmpty()) {
             for (int index = 0; index < tagsList.size(); index++) {
                 if (tagsList.get(index).getKey().equals(tag.getKey())) {
@@ -75,6 +76,10 @@ class EditItemAdapter extends RecyclerView.Adapter<EditItemAdapter.ViewHolder> {
             editItemViewBinding = EditItemViewBinding.bind(editView);
             editItemViewBinding.setViewModel(editItemViewModel);
         }
+    }
 
+    @VisibleForTesting
+    List<Tag> getTagsList() {
+        return tagsList;
     }
 }

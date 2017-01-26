@@ -41,7 +41,7 @@ public class EditViewModel implements OnTagActionListener {
     @Override
     public void onClear(Tag tag) {
         if (tagsManager.clearTag(tag)) {
-            editCompoundRecyclerView.clearTag(tag);
+            editCompoundRecyclerView.updateTag(tag);
         }
     }
 
