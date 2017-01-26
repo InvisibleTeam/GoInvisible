@@ -20,10 +20,12 @@ public class Tag implements Parcelable {
 
     private String key;
     private String value;
+    private ObjectType objectType;
 
-    public Tag(String key, String value) {
+    public Tag(String key, String value, ObjectType objectType) {
         this.key = key;
         this.value = value;
+        this.objectType = objectType;
     }
 
     public String getKey() {
@@ -34,9 +36,12 @@ public class Tag implements Parcelable {
         return value;
     }
 
+    public ObjectType getObjectType() {
+        return objectType;
+    }
+
     protected Tag(Parcel in) {
-        key = in.readString();
-        value = in.readString();
+        this(in.readString(), in.readString(), (ObjectType) in.readSerializable());
     }
 
     @Override
@@ -48,5 +53,10 @@ public class Tag implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(key);
         dest.writeString(value);
+        dest.writeSerializable(objectType);
+    }
+
+    public void setValue(String value) {
+        this.value = value;
     }
 }
