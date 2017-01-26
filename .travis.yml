@@ -21,6 +21,11 @@ env:
       # http://stackoverflow.com/questions/28327620/difference-between-java-options-java-tool-options-and-java-opts
       - export _JAVA_OPTIONS="-Xms256m -Xmx1280m"
 
+addons:
+  apt:
+    packages:
+      - tree
+
 before_cache:
     - rm -f $HOME/.gradle/caches/modules-2/modules-2.lock
     - rm -fr $HOME/.gradle/caches/*/plugin-resolution
