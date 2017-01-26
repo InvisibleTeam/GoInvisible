@@ -12,9 +12,14 @@ env:
       - ANDROID_BUILD_TOOLS_VERSION=25.0.1
       - ANDROID_TARGET=android-21
       - ANDROID_ABI=armeabi-v7a
+
       # Environment values
       - ADB_INSTALL_TIMEOUT=8 # minutes
       - MALLOC_ARENA_MAX=2 # switch glibc to a memory conserving mode
+
+      # Java Options
+      # http://stackoverflow.com/questions/28327620/difference-between-java-options-java-tool-options-and-java-opts
+      - export _JAVA_OPTIONS="-Xms256m -Xmx1280m"
 
 before_cache:
     - rm -f $HOME/.gradle/caches/modules-2/modules-2.lock
@@ -22,6 +27,7 @@ before_cache:
 
 cache:
   directories:      #Cache all dirs under .gradle folder
+    - $HOME/.gradle/caches
     - $HOME/.gradle/daemon      #Cache daemon logs
     - $HOME/.gradle/native      #Cache library downloaded from the gradle dependency
     - $HOME/.gradle/wrapper     #Cache the gradle
@@ -29,16 +35,22 @@ cache:
 
 android:
     components:
-        - tools
+        - tools # to get the new `repository-11.xml`
         - platform-tools
-        - tools
+        - tools # to install Android SDK tools 25.1.x
         - build-tools-$ANDROID_BUILD_TOOLS_VERSION
         - android-$ANDROID_API_LEVEL
+
+        # Latest artifacts in local repository
         - extra-android-m2repository
+
+        # Specify at least one system image
         - sys-img-$ANDROID_ABI-$ANDROID_TARGET
 
 before_script:
     - android list targets
+
+    # Create and start emulator
     - echo no | android create avd --force --name test --target $ANDROID_TARGET --abi $ANDROID_ABI    #Create AVD for given api
     - emulator -avd test -no-skin -no-audio -no-window &    #Start emulator
     - android-wait-for-emulator

@@ -170,9 +170,6 @@ class TagsManager {
             switch (objectType) {
                 case STRING:
                     tagValue = exif.getAttribute(tagKey);
-                    if (TextUtils.isEmpty((String) tagValue)) {
-                        continue;
-                    }
                     break;
                 case INTEGER:
                     tagValue = exif.getAttributeInt(tagKey, 0);
