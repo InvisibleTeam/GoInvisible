@@ -43,7 +43,6 @@ fi
 if [ -e ${FULL_BUILD_DIR}/reports/jacoco/testReport/html ]
 then
     cp -R ${FULL_BUILD_DIR}/reports/jacoco/testReport/html ${GH_ARTIFACTS_DIR}
-    mv ${GH_ARTIFACTS_DIR}/index.html ${GH_ARTIFACTS_DIR}/jacoco-index.html
 fi
 
 # generate directory tree in html
