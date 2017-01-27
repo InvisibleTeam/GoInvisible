@@ -26,7 +26,7 @@ public class ItemDecorationAlbumColumnsTest {
     private RecyclerView.State recyclerViewState;
 
     @Test
-    public void whenItemDecorationInitializedAndViewInFirstRowAndColumn_spaceBetweenItemCorrect() {
+    public void whenItemDecorationInitializedAndViewInFirstRowAndColumn_SpaceBetweenItemCorrect() {
         //given
         int spaceInPx = 10;
         ItemDecorationAlbumColumns itemDecorationAlbumColumns = new ItemDecorationAlbumColumns(spaceInPx, 2);
@@ -40,11 +40,11 @@ public class ItemDecorationAlbumColumnsTest {
         assertEquals(0, rect.top);
         assertEquals(0, rect.bottom);
         assertEquals(0, rect.left);
-        assertEquals(spaceInPx/2, rect.right);
+        assertEquals(spaceInPx / 2, rect.right);
     }
 
     @Test
-    public void whenItemDecorationInitializedAndViewInFirstRowAndSecondColumn_spaceBetweenItemCorrect() {
+    public void whenItemDecorationInitializedAndViewInFirstRowAndSecondColumn_SpaceBetweenItemCorrect() {
         //given
         int spaceInPx = 10;
         ItemDecorationAlbumColumns itemDecorationAlbumColumns = new ItemDecorationAlbumColumns(spaceInPx, 2);
@@ -57,12 +57,12 @@ public class ItemDecorationAlbumColumnsTest {
         //then
         assertEquals(0, rect.top);
         assertEquals(0, rect.bottom);
-        assertEquals(spaceInPx/2, rect.left);
+        assertEquals(spaceInPx / 2, rect.left);
         assertEquals(0, rect.right);
     }
 
     @Test
-    public void whenItemDecorationInitializedAndViewNotInFirstRowAndInFirstColumn_spaceBetweenItemCorrect() {
+    public void whenItemDecorationInitializedAndViewNotInFirstRowAndInFirstColumn_SpaceBetweenItemCorrect() {
         //given
         int spaceInPx = 10;
         ItemDecorationAlbumColumns itemDecorationAlbumColumns = new ItemDecorationAlbumColumns(spaceInPx, 2);
@@ -76,11 +76,11 @@ public class ItemDecorationAlbumColumnsTest {
         assertEquals(spaceInPx, rect.top);
         assertEquals(0, rect.bottom);
         assertEquals(0, rect.left);
-        assertEquals(spaceInPx/2, rect.right);
+        assertEquals(spaceInPx / 2, rect.right);
     }
 
     @Test
-    public void whenItemDecorationInitializedAndViewNotInFirstRowAndInSecondColumn_spaceBetweenItemCorrect() {
+    public void whenItemDecorationInitializedAndViewNotInFirstRowAndInSecondColumn_SpaceBetweenItemCorrect() {
         //given
         int spaceInPx = 10;
         ItemDecorationAlbumColumns itemDecorationAlbumColumns = new ItemDecorationAlbumColumns(spaceInPx, 2);
@@ -93,7 +93,7 @@ public class ItemDecorationAlbumColumnsTest {
         //then
         assertEquals(spaceInPx, rect.top);
         assertEquals(0, rect.bottom);
-        assertEquals(spaceInPx/2, rect.left);
+        assertEquals(spaceInPx / 2, rect.left);
         assertEquals(0, rect.right);
     }
 }
