@@ -24,8 +24,11 @@ public abstract class CompoundRecyclerView<T, K extends RecyclerView.ViewHolder>
 
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recycler);
         recyclerView.setLayoutManager(manager);
+        initRecyclerViewItemDecorators(recyclerView);
         recyclerView.setAdapter(adapter);
     }
+
+    protected void initRecyclerViewItemDecorators(RecyclerView recyclerView){}
 
     public abstract void updateResults(List<T> imageList);
 }
