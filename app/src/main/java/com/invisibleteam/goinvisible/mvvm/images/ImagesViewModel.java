@@ -1,7 +1,9 @@
 package com.invisibleteam.goinvisible.mvvm.images;
 
 
+import com.invisibleteam.goinvisible.model.ImageDetails;
 import com.invisibleteam.goinvisible.mvvm.images.adapter.ImagesCompoundRecyclerView;
+import com.invisibleteam.goinvisible.mvvm.images.adapter.ImagesItemAdapter;
 
 public class ImagesViewModel {
 
@@ -21,6 +23,16 @@ public class ImagesViewModel {
 
     private void initRecyclerView() {
         imagesCompoundRecyclerView.updateResults(imagesProvider.getImagesList());
-        imagesCompoundRecyclerView.setOnItemClickListener(imageDetails -> imagesView.navigateToEdit(imageDetails));
+        imagesCompoundRecyclerView.setOnItemClickListener(new ImagesItemAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(ImageDetails imageDetails) {
+                imagesView.navigateToEdit(imageDetails);
+            }
+
+            @Override
+            public void onUnsupportedItemClick() {
+                imagesView.showUnsupportedImageInfo();
+            }
+        });
     }
 }
