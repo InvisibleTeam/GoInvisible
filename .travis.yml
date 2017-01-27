@@ -3,7 +3,11 @@ jdk: oraclejdk8
 sudo: false
 
 env:
-#  matrix:
+  matrix:
+      - EMULATOR_ENABLED=false
+      #TODO enable when
+      #- EMULATOR_ENABLED=true
+
 #      - ANDROID_TARGET=android-21
 #      - ANDROID_TARGET=android-24
   global:
@@ -22,10 +26,10 @@ env:
       - export _JAVA_OPTIONS="-Xms256m -Xmx1280m"
       - secure: "Vw1H6h5X6JBZtz75zM/MIGWT24rpXnqADn61JXbVfg/2RS/jYWU921UNIh4BnD1TLFQdq8/TfWaafiqz4C/m4qHa93V4x7wJbEQllmntmVaUpzB+ELyvmTzddqVjmH/sH3bt3ezbKtGT04J8XmYgje3gGmZDChK1BV9XhOlqINIgzAA9WJDYJda4SyoqAxpvii5aDS+wvE6Mm5NJ+O2TwF0qqTz5lkffmUBvLNU6SzJESfs7iHyi5s6cSKRuGnibuXmS43iaKuBfW3KmO9O8Z2BcWKslj3yVdjK0lRzLyik7dKtKihceHU1+KDHNLG/0IzzsldjFMeQ2MrCXrHNUSskj36rUbFfRcXORCPuQ6HZO/Cex92YlGzWx2i2IXCfX85pNnKXqb4pdTBTbu00BXwMMk855yrUp5CG0aQq1VGwSz9Pvlj2Qa3parXKEcDmxfpO1gq/z7l0HSVKutOFU9mJsh3tXfaQRmcA4q7p6JUeOwzNOyb+5lW0KHNDbXN2G8EVLaPEqxhx8iu0L9b2JoNqCaZUxEbzQW5g41bYHzlqLQ0PlZaQ1Q6/sq7KfbeNKZ9Gak/BeRWCaHL/XaFvYNuf25S8aI8JFLt3tGwrB1+wb5eirKTFkchi41F9JhK8ItJUAoYgjsQJnHKAj4ks+AWOra1gTLx9xb80DUU8mHKs="
 
-branches:
-  only:
-    - gh-pages
-    - /.*/
+#branches:
+#  only:
+#    - gh-pages
+#    - /.*/
 
 addons:
   apt:
@@ -61,20 +65,15 @@ android:
 before_script:
     - android list targets
 
-    # Create and start emulator
-    - echo no | android create avd --force --name test --target $ANDROID_TARGET --abi $ANDROID_ABI    #Create AVD for given api
-    - emulator -avd test -no-skin -no-audio -no-window &    #Start emulator
-    - android-wait-for-emulator
-    - adb devices   #Display list of devices
-    - adb shell input keyevent 82 &
+    - if [ "$EMULATOR_ENABLED" = true ]; then script/runAndroidEmulator.sh; fi
 
 script:
     - echo "Travis branch is $TRAVIS_BRANCH"
     - echo "Travis branch is in pull request $TRAVIS_PULL+REQUEST"
-    - ./gradlew build --stacktrace
+    - ./gradlew build lint checkstyle findbugs testReport --stacktrace
 
 after_failure:
     - cat $TRAVIS_BUILD_DIR/app/build/outputs/lint-results-debug.xml
 
 after_script:
-    -  script/pushArtifactsToGithub.sh
+    -  if [ "${TRAVIS_PULL_REQUEST}" = false ]; then script/pushArtifactsToGithub.sh; fi
