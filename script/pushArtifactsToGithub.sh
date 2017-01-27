@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -ev
+
 GH_REPO="@github.com/InvisibleTeam/GoInvisible.git"
 GH_ARTIFACTS_DIR="$TRAVIS_BUILD_DIR/gh-page"
 FULL_REPO="https://$GH_TOKEN$GH_REPO"
