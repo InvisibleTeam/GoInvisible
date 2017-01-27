@@ -3,7 +3,11 @@ jdk: oraclejdk8
 sudo: false
 
 env:
-#  matrix:
+  matrix:
+      - EMULATOR_ENABLED=false
+      #TODO enable when
+      #- EMULATOR_ENABLED=true
+
 #      - ANDROID_TARGET=android-21
 #      - ANDROID_TARGET=android-24
   global:
@@ -61,12 +65,7 @@ android:
 before_script:
     - android list targets
 
-    # Create and start emulator
-    - echo no | android create avd --force --name test --target $ANDROID_TARGET --abi $ANDROID_ABI    #Create AVD for given api
-    - emulator -avd test -no-skin -no-audio -no-window &    #Start emulator
-    - android-wait-for-emulator
-    - adb devices   #Display list of devices
-    - adb shell input keyevent 82 &
+    - if [ "$EMULATOR_ENABLED" = true ]; then script/runAndroidEmulator.sh; fi
 
 script:
     - echo "Travis branch is $TRAVIS_BRANCH"
