@@ -30,8 +30,7 @@ task testReport(type: JacocoReport, dependsOn: "testDebugUnitTest") {
                        '**/databinding/*',
                        '**/*BR.class',
                        '**/model/*', //excluded model classes
-                       '**/*BindingAdapter.class',
-                       '**/TextViewBindingAdapter.class'
+                       '**/*BindingAdapter.class'
             ]
     )
 
