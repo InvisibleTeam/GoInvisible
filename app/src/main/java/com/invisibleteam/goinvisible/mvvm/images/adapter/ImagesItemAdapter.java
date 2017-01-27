@@ -1,9 +1,11 @@
 package com.invisibleteam.goinvisible.mvvm.images.adapter;
 
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.invisibleteam.goinvisible.R;
 import com.invisibleteam.goinvisible.databinding.ImageItemViewBinding;
@@ -89,6 +91,12 @@ public class ImagesItemAdapter extends RecyclerView.Adapter<ImagesItemAdapter.Vi
         ViewHolder(View itemView) {
             super(itemView);
         }
+
+        void setupTextView(TextView textView) {
+            textView.setLines(1);
+            textView.setHorizontallyScrolling(true);
+            textView.setEllipsize(TextUtils.TruncateAt.END);
+        }
     }
 
     private class JpegImageViewHolder extends ViewHolder {
@@ -98,8 +106,11 @@ public class ImagesItemAdapter extends RecyclerView.Adapter<ImagesItemAdapter.Vi
 
         JpegImageViewHolder(View itemView) {
             super(itemView);
+
             viewModel = new ImageItemViewModel();
             binding = ImageItemViewBinding.bind(itemView);
+
+            setupTextView(binding.text);
             binding.setViewModel(viewModel);
         }
     }
@@ -114,6 +125,8 @@ public class ImagesItemAdapter extends RecyclerView.Adapter<ImagesItemAdapter.Vi
 
             viewModel = new ImageItemViewModel();
             binding = UnsupportedImageItemViewBinding.bind(itemView);
+
+            setupTextView(binding.text);
             binding.setViewModel(viewModel);
         }
     }
