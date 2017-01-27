@@ -34,5 +34,6 @@ fi
 tree -H . -P 'lint*html|index.html' -o $GH_ARTIFACTS_DIR/index.html
 
 git add .
-git commit -m "$TRAVIS_BUILD_NUMBER - artifacts deployed to github pages"
+# [skip ci] added as travis build for gh-pages should not run
+git commit -m "$TRAVIS_BUILD_NUMBER - artifacts deployed to github pages [skip ci]"
 git push --force --quiet $FULL_REPO master:gh-pages
