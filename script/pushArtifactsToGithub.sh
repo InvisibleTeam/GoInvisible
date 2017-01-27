@@ -15,7 +15,11 @@ git init
 git config user.name "InvisibleTeam-travis"
 git config user.email "travis"
 
-# copy necessary directories
+# if exist copy necessary directories and files:
+# - lint results
+# - checkstyle
+# - findbugs
+# - jacoco testReport
 if [ -e ${FULL_BUILD_DIR}/outputs/lint-results-debug.html ]
 then
     cp -R ${FULL_BUILD_DIR}/outputs/lint-results-debug.html ${GH_ARTIFACTS_DIR}
@@ -24,6 +28,16 @@ fi
 if [ -e ${FULL_BUILD_DIR}/outputs/lint-results-release-fatal.html ]
 then
     cp -R ${FULL_BUILD_DIR}/outputs/lint-results-release-fatal.html ${GH_ARTIFACTS_DIR}
+fi
+
+if [ -e ${FULL_BUILD_DIR}/reports/checkstyle/checkstyle.html ]
+then
+    cp -R ${FULL_BUILD_DIR}/reports/checkstyle/checkstyle.html ${GH_ARTIFACTS_DIR}
+fi
+
+if [ -e ${FULL_BUILD_DIR}/reports/findbugs/findbugs.html ]
+then
+    cp -R ${FULL_BUILD_DIR}/reports/findbugs/findbugs.html ${GH_ARTIFACTS_DIR}
 fi
 
 if [ -e ${FULL_BUILD_DIR}/reports/jacoco/testReport/html ]
