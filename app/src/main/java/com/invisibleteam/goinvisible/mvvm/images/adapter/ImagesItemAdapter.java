@@ -1,6 +1,7 @@
 package com.invisibleteam.goinvisible.mvvm.images.adapter;
 
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -61,7 +62,15 @@ public class ImagesItemAdapter extends RecyclerView.Adapter<ImagesItemAdapter.Vi
 
             imageItemViewModel = new ImageItemViewModel();
             imageItemViewBinding = ImageItemViewBinding.bind(itemView);
+
+            setupTextView();
             imageItemViewBinding.setViewModel(imageItemViewModel);
+        }
+
+        private void setupTextView() {
+            imageItemViewBinding.text.setLines(1);
+            imageItemViewBinding.text.setHorizontallyScrolling(true);
+            imageItemViewBinding.text.setEllipsize(TextUtils.TruncateAt.END);
         }
 
     }

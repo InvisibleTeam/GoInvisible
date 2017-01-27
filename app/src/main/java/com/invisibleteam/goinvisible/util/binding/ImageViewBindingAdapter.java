@@ -21,8 +21,8 @@ public class ImageViewBindingAdapter {
                 .load(uri)
                 .fit()
                 .centerCrop()
-                .placeholder(R.drawable.ic_image_placeholder)
-                .error(R.drawable.ic_image_error)
+                .placeholder(R.drawable.ic_image_placeholder_small)
+                .error(R.drawable.ic_image_error_small)
                 .into(view);
     }
 }
