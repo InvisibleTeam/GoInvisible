@@ -29,7 +29,8 @@ task testReport(type: JacocoReport, dependsOn: "testDebugUnitTest") {
                        '**/android/*',
                        '**/databinding/*',
                        '**/*BR.class',
-                       '**/model/*' //excluded model classes
+                       '**/model/*', //excluded model classes
+                       '**/*BindingAdapter.class'
             ]
     )
 
