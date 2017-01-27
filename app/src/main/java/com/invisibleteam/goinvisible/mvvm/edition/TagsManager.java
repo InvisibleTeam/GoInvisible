@@ -6,18 +6,109 @@ import android.support.annotation.RequiresApi;
 import android.support.annotation.VisibleForTesting;
 import android.util.Log;
 
-import com.invisibleteam.goinvisible.model.ObjectType;
+import com.invisibleteam.goinvisible.model.InputType;
 import com.invisibleteam.goinvisible.model.Tag;
+import com.invisibleteam.goinvisible.model.TagType;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import static android.media.ExifInterface.*;
-import static com.invisibleteam.goinvisible.model.ObjectType.DOUBLE;
-import static com.invisibleteam.goinvisible.model.ObjectType.INTEGER;
-import static com.invisibleteam.goinvisible.model.ObjectType.STRING;
+import static android.media.ExifInterface.TAG_ARTIST;
+import static android.media.ExifInterface.TAG_BITS_PER_SAMPLE;
+import static android.media.ExifInterface.TAG_CFA_PATTERN;
+import static android.media.ExifInterface.TAG_COLOR_SPACE;
+import static android.media.ExifInterface.TAG_COMPONENTS_CONFIGURATION;
+import static android.media.ExifInterface.TAG_COMPRESSION;
+import static android.media.ExifInterface.TAG_CONTRAST;
+import static android.media.ExifInterface.TAG_COPYRIGHT;
+import static android.media.ExifInterface.TAG_CUSTOM_RENDERED;
+import static android.media.ExifInterface.TAG_DATETIME;
+import static android.media.ExifInterface.TAG_DATETIME_DIGITIZED;
+import static android.media.ExifInterface.TAG_DATETIME_ORIGINAL;
+import static android.media.ExifInterface.TAG_DEVICE_SETTING_DESCRIPTION;
+import static android.media.ExifInterface.TAG_DIGITAL_ZOOM_RATIO;
+import static android.media.ExifInterface.TAG_EXIF_VERSION;
+import static android.media.ExifInterface.TAG_EXPOSURE_BIAS_VALUE;
+import static android.media.ExifInterface.TAG_EXPOSURE_MODE;
+import static android.media.ExifInterface.TAG_EXPOSURE_PROGRAM;
+import static android.media.ExifInterface.TAG_EXPOSURE_TIME;
+import static android.media.ExifInterface.TAG_FILE_SOURCE;
+import static android.media.ExifInterface.TAG_FLASH;
+import static android.media.ExifInterface.TAG_FLASHPIX_VERSION;
+import static android.media.ExifInterface.TAG_FOCAL_LENGTH_IN_35MM_FILM;
+import static android.media.ExifInterface.TAG_FOCAL_PLANE_RESOLUTION_UNIT;
+import static android.media.ExifInterface.TAG_F_NUMBER;
+import static android.media.ExifInterface.TAG_GAIN_CONTROL;
+import static android.media.ExifInterface.TAG_GPS_ALTITUDE_REF;
+import static android.media.ExifInterface.TAG_GPS_AREA_INFORMATION;
+import static android.media.ExifInterface.TAG_GPS_DATESTAMP;
+import static android.media.ExifInterface.TAG_GPS_DEST_DISTANCE_REF;
+import static android.media.ExifInterface.TAG_GPS_DEST_LATITUDE_REF;
+import static android.media.ExifInterface.TAG_GPS_DEST_LONGITUDE_REF;
+import static android.media.ExifInterface.TAG_GPS_DIFFERENTIAL;
+import static android.media.ExifInterface.TAG_GPS_LATITUDE_REF;
+import static android.media.ExifInterface.TAG_GPS_LONGITUDE_REF;
+import static android.media.ExifInterface.TAG_GPS_MAP_DATUM;
+import static android.media.ExifInterface.TAG_GPS_MEASURE_MODE;
+import static android.media.ExifInterface.TAG_GPS_PROCESSING_METHOD;
+import static android.media.ExifInterface.TAG_GPS_SATELLITES;
+import static android.media.ExifInterface.TAG_GPS_SPEED_REF;
+import static android.media.ExifInterface.TAG_GPS_STATUS;
+import static android.media.ExifInterface.TAG_GPS_TIMESTAMP;
+import static android.media.ExifInterface.TAG_GPS_TRACK_REF;
+import static android.media.ExifInterface.TAG_GPS_VERSION_ID;
+import static android.media.ExifInterface.TAG_IMAGE_DESCRIPTION;
+import static android.media.ExifInterface.TAG_IMAGE_LENGTH;
+import static android.media.ExifInterface.TAG_IMAGE_UNIQUE_ID;
+import static android.media.ExifInterface.TAG_IMAGE_WIDTH;
+import static android.media.ExifInterface.TAG_INTEROPERABILITY_INDEX;
+import static android.media.ExifInterface.TAG_ISO_SPEED_RATINGS;
+import static android.media.ExifInterface.TAG_JPEG_INTERCHANGE_FORMAT;
+import static android.media.ExifInterface.TAG_JPEG_INTERCHANGE_FORMAT_LENGTH;
+import static android.media.ExifInterface.TAG_LIGHT_SOURCE;
+import static android.media.ExifInterface.TAG_MAKE;
+import static android.media.ExifInterface.TAG_MAKER_NOTE;
+import static android.media.ExifInterface.TAG_METERING_MODE;
+import static android.media.ExifInterface.TAG_MODEL;
+import static android.media.ExifInterface.TAG_OECF;
+import static android.media.ExifInterface.TAG_ORIENTATION;
+import static android.media.ExifInterface.TAG_PHOTOMETRIC_INTERPRETATION;
+import static android.media.ExifInterface.TAG_PIXEL_X_DIMENSION;
+import static android.media.ExifInterface.TAG_PIXEL_Y_DIMENSION;
+import static android.media.ExifInterface.TAG_PLANAR_CONFIGURATION;
+import static android.media.ExifInterface.TAG_RELATED_SOUND_FILE;
+import static android.media.ExifInterface.TAG_RESOLUTION_UNIT;
+import static android.media.ExifInterface.TAG_ROWS_PER_STRIP;
+import static android.media.ExifInterface.TAG_SAMPLES_PER_PIXEL;
+import static android.media.ExifInterface.TAG_SATURATION;
+import static android.media.ExifInterface.TAG_SCENE_CAPTURE_TYPE;
+import static android.media.ExifInterface.TAG_SCENE_TYPE;
+import static android.media.ExifInterface.TAG_SENSING_METHOD;
+import static android.media.ExifInterface.TAG_SHARPNESS;
+import static android.media.ExifInterface.TAG_SOFTWARE;
+import static android.media.ExifInterface.TAG_SPATIAL_FREQUENCY_RESPONSE;
+import static android.media.ExifInterface.TAG_SPECTRAL_SENSITIVITY;
+import static android.media.ExifInterface.TAG_STRIP_BYTE_COUNTS;
+import static android.media.ExifInterface.TAG_STRIP_OFFSETS;
+import static android.media.ExifInterface.TAG_SUBJECT_AREA;
+import static android.media.ExifInterface.TAG_SUBJECT_DISTANCE;
+import static android.media.ExifInterface.TAG_SUBJECT_DISTANCE_RANGE;
+import static android.media.ExifInterface.TAG_SUBJECT_LOCATION;
+import static android.media.ExifInterface.TAG_SUBSEC_TIME;
+import static android.media.ExifInterface.TAG_SUBSEC_TIME_DIGITIZED;
+import static android.media.ExifInterface.TAG_SUBSEC_TIME_ORIGINAL;
+import static android.media.ExifInterface.TAG_THUMBNAIL_IMAGE_LENGTH;
+import static android.media.ExifInterface.TAG_THUMBNAIL_IMAGE_WIDTH;
+import static android.media.ExifInterface.TAG_TRANSFER_FUNCTION;
+import static android.media.ExifInterface.TAG_USER_COMMENT;
+import static android.media.ExifInterface.TAG_WHITE_BALANCE;
+import static android.media.ExifInterface.TAG_Y_CB_CR_POSITIONING;
+import static android.media.ExifInterface.TAG_Y_CB_CR_SUB_SAMPLING;
+import static com.invisibleteam.goinvisible.model.InputType.TextString;
 
 class TagsManager {
 
@@ -40,7 +131,7 @@ class TagsManager {
     }
 
     boolean clearTag(Tag tag) {
-        if (tag.getKey().equals(TAG_GPS_TIMESTAMP)) {
+        /*if (tag.getKey().equals(TAG_GPS_TIMESTAMP)) {
             tag.setValue("00:00:00");
         } else {
             switch (tag.getObjectType()) {
@@ -52,50 +143,69 @@ class TagsManager {
                     tag.setValue("0");
                 default:
             }
-        }
+        }*/
         return editTag(tag);
     }
 
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
     List<Tag> getAllTags() {
         List<Tag> tagsList = new ArrayList<>();
-        tagsList.addAll(getAllTags(exifInterface, STRING_TAGS_LIST, STRING));
-        tagsList.addAll(getAllTags(exifInterface, INTEGER_TAGS_LIST, INTEGER));
-        tagsList.addAll(getAllTags(exifInterface, DOUBLE_TAGS_LIST, DOUBLE));
-
+        tagsList.addAll(getAllTags(TAG_LIST));
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            tagsList.addAll(getAllTags(exifInterface, STRING_TAGS_LIST_API_24, STRING));
-            tagsList.addAll(getAllTags(exifInterface, INTEGER_TAGS_LIST_API_24, INTEGER));
-            tagsList.addAll(getAllTags(exifInterface, DOUBLE_TAGS_LIST_API_24, DOUBLE));
+            //TODO add N tags
         }
         return tagsList;
     }
 
-    private List<Tag> getAllTags(ExifInterface exif, List<String> keysList, ObjectType objectType) {
+    private List<Tag> getAllTags(Map<String, InputType> keysList) {
         List<Tag> tagsList = new ArrayList<>();
-        Object tagValue;
-        String tagKey;
-        for (int index = 0; index < keysList.size(); index++) {
-            tagKey = keysList.get(index);
+        for (Map.Entry<String, InputType> entry : keysList.entrySet()) {
+            String key = entry.getKey();
+            InputType inputType = entry.getValue();
+            Object tagValue;
 
-            switch (objectType) {
-                case STRING:
-                    tagValue = exif.getAttribute(tagKey);
+            switch (inputType) {
+                case TextString:
+                case DateString:
+                    tagValue = exifInterface.getAttribute(key);
                     break;
-                case INTEGER:
-                    tagValue = exif.getAttributeInt(tagKey, 0);
+                case BooleanInteger:
+                case ValueInteger:
+                    tagValue = exifInterface.getAttributeInt(key, 0);
                     break;
-                case DOUBLE:
-                    tagValue = exif.getAttributeDouble(tagKey, 0);
+                case ValueDouble:
+                case PositionDouble:
+                    tagValue = exifInterface.getAttributeDouble(key, 0);
                     break;
                 default:
                     continue;
             }
 
-            tagsList.add(new Tag(tagKey, String.valueOf(tagValue), objectType));
+            String stringValue = String.valueOf(tagValue);
+            tagsList.add(new Tag(key, stringValue, TagType.build(inputType)));
+
         }
         return tagsList;
     }
+
+    private static final Map<String, InputType> TAG_LIST = new HashMap<String, InputType>() {{
+        put(TAG_GPS_DATESTAMP, TextString);
+        put(TAG_GPS_LATITUDE_REF, TextString);
+        put(TAG_GPS_TIMESTAMP, TextString);
+        put(TAG_GPS_LONGITUDE_REF, TextString);
+        put(TAG_GPS_PROCESSING_METHOD, TextString);
+        put(TAG_DATETIME, TextString);
+        put(TAG_MAKE, TextString);
+        put(TAG_MODEL, TextString);
+        put(TAG_IMAGE_LENGTH, InputType.ValueInteger);
+        put(TAG_WHITE_BALANCE, InputType.ValueInteger);
+        put(TAG_GPS_ALTITUDE_REF, InputType.ValueInteger);
+        put(TAG_FLASH, InputType.ValueInteger);
+        put(TAG_IMAGE_WIDTH, InputType.ValueInteger);
+        put(TAG_ORIENTATION, InputType.ValueInteger);
+        put(TAG_EXPOSURE_TIME, InputType.ValueDouble);
+
+    }};
 
     private static final List<String> STRING_TAGS_LIST = Arrays.asList(
             TAG_GPS_DATESTAMP,
@@ -106,6 +216,17 @@ class TagsManager {
             TAG_DATETIME,
             TAG_MAKE,
             TAG_MODEL);
+
+    private static final List<String> DOUBLE_TAGS_LIST = Arrays.asList(
+            TAG_EXPOSURE_TIME);
+
+    private static final List<String> INTEGER_TAGS_LIST = Arrays.asList(
+            TAG_IMAGE_LENGTH,
+            TAG_WHITE_BALANCE,
+            TAG_GPS_ALTITUDE_REF,
+            TAG_FLASH,
+            TAG_IMAGE_WIDTH,
+            TAG_ORIENTATION);
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     private static final List<String> STRING_TAGS_LIST_API_24 = Arrays.asList(
@@ -145,14 +266,6 @@ class TagsManager {
             TAG_GPS_VERSION_ID,
             TAG_INTEROPERABILITY_INDEX);
 
-
-    private static final List<String> INTEGER_TAGS_LIST = Arrays.asList(
-            TAG_IMAGE_LENGTH,
-            TAG_WHITE_BALANCE,
-            TAG_GPS_ALTITUDE_REF,
-            TAG_FLASH,
-            TAG_IMAGE_WIDTH,
-            TAG_ORIENTATION);
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     private static final List<String> INTEGER_TAGS_LIST_API_24 = Arrays.asList(
@@ -194,8 +307,6 @@ class TagsManager {
             TAG_THUMBNAIL_IMAGE_LENGTH,
             TAG_THUMBNAIL_IMAGE_WIDTH);
 
-    private static final List<String> DOUBLE_TAGS_LIST = Arrays.asList(
-            TAG_EXPOSURE_TIME);
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     private static final List<String> DOUBLE_TAGS_LIST_API_24 = Arrays.asList(
