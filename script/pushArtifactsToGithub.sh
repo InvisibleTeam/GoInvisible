@@ -46,7 +46,7 @@ then
 fi
 
 # generate directory tree in html
-tree -H . -P 'lint*html|index.html' -o ${GH_ARTIFACTS_DIR}/index.html
+tree -H . -P 'lint*html|checkstyle*html|findbugs*html|index.html' -o ${GH_ARTIFACTS_DIR}/index.html
 
 git add .
 # [skip ci] added as travis build for gh-pages should not run
