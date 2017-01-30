@@ -11,7 +11,6 @@ import com.invisibleteam.goinvisible.R;
 import com.invisibleteam.goinvisible.databinding.ImageItemViewBinding;
 import com.invisibleteam.goinvisible.databinding.UnsupportedImageItemViewBinding;
 import com.invisibleteam.goinvisible.model.ImageDetails;
-import com.invisibleteam.goinvisible.util.ImageUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,7 +60,6 @@ public class ImagesItemAdapter extends RecyclerView.Adapter<ImagesItemAdapter.Vi
             ((JpegImageViewHolder) holder).viewModel.setModel(imageList.get(position));
         } else if (holder instanceof UnsupprotedImageViewHolder) {
             ((UnsupprotedImageViewHolder) holder).viewModel.setModel(imageList.get(position));
-            ImageUtil.grayedOut(((UnsupprotedImageViewHolder) holder).binding.image);
         }
     }
 
@@ -73,7 +71,7 @@ public class ImagesItemAdapter extends RecyclerView.Adapter<ImagesItemAdapter.Vi
     @Override
     public int getItemViewType(int position) {
         ImageDetails image = imageList.get(position);
-        if (image.getPath().matches(".*jpg$")) {
+        if (!image.isJpeg()) {
             return JPEG_IMAGE;
         }
         return UNSUPPORTED_EXTENSION_IMAGE;
