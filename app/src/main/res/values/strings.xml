@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">GoInvisible</string>
+    <string name="unsupported_extension">Editing works only for JPEG images</string>
 </resources>
