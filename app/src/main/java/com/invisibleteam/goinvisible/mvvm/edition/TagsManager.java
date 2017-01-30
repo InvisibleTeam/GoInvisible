@@ -6,18 +6,19 @@ import android.support.annotation.RequiresApi;
 import android.support.annotation.VisibleForTesting;
 import android.util.Log;
 
-import com.invisibleteam.goinvisible.model.ObjectType;
+import com.invisibleteam.goinvisible.model.InputType;
 import com.invisibleteam.goinvisible.model.Tag;
+import com.invisibleteam.goinvisible.model.TagType;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static android.media.ExifInterface.*;
-import static com.invisibleteam.goinvisible.model.ObjectType.DOUBLE;
-import static com.invisibleteam.goinvisible.model.ObjectType.INTEGER;
-import static com.invisibleteam.goinvisible.model.ObjectType.STRING;
+import static com.invisibleteam.goinvisible.model.InputType.TextString;
 
 class TagsManager {
 
@@ -40,7 +41,7 @@ class TagsManager {
     }
 
     boolean clearTag(Tag tag) {
-        if (tag.getKey().equals(TAG_GPS_TIMESTAMP)) {
+        /*if (tag.getKey().equals(TAG_GPS_TIMESTAMP)) {
             tag.setValue("00:00:00");
         } else {
             switch (tag.getObjectType()) {
@@ -52,50 +53,71 @@ class TagsManager {
                     tag.setValue("0");
                 default:
             }
-        }
+        }*/
         return editTag(tag);
     }
 
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
     List<Tag> getAllTags() {
         List<Tag> tagsList = new ArrayList<>();
-        tagsList.addAll(getAllTags(exifInterface, STRING_TAGS_LIST, STRING));
-        tagsList.addAll(getAllTags(exifInterface, INTEGER_TAGS_LIST, INTEGER));
-        tagsList.addAll(getAllTags(exifInterface, DOUBLE_TAGS_LIST, DOUBLE));
-
+        tagsList.addAll(getAllTags(TAG_LIST));
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            tagsList.addAll(getAllTags(exifInterface, STRING_TAGS_LIST_API_24, STRING));
-            tagsList.addAll(getAllTags(exifInterface, INTEGER_TAGS_LIST_API_24, INTEGER));
-            tagsList.addAll(getAllTags(exifInterface, DOUBLE_TAGS_LIST_API_24, DOUBLE));
+            //TODO add N tags
         }
         return tagsList;
     }
 
-    private List<Tag> getAllTags(ExifInterface exif, List<String> keysList, ObjectType objectType) {
+    private List<Tag> getAllTags(Map<String, InputType> keysList) {
         List<Tag> tagsList = new ArrayList<>();
-        Object tagValue;
-        String tagKey;
-        for (int index = 0; index < keysList.size(); index++) {
-            tagKey = keysList.get(index);
+        for (Map.Entry<String, InputType> entry : keysList.entrySet()) {
+            String key = entry.getKey();
+            InputType inputType = entry.getValue();
+            Object tagValue;
 
-            switch (objectType) {
-                case STRING:
-                    tagValue = exif.getAttribute(tagKey);
+            switch (inputType) {
+                case TextString:
+                case DateString:
+                    tagValue = exifInterface.getAttribute(key);
                     break;
-                case INTEGER:
-                    tagValue = exif.getAttributeInt(tagKey, 0);
+                case BooleanInteger:
+                case ValueInteger:
+                    tagValue = exifInterface.getAttributeInt(key, 0);
                     break;
-                case DOUBLE:
-                    tagValue = exif.getAttributeDouble(tagKey, 0);
+                case ValueDouble:
+                case PositionDouble:
+                    tagValue = exifInterface.getAttributeDouble(key, 0);
                     break;
                 default:
                     continue;
             }
 
-            tagsList.add(new Tag(tagKey, String.valueOf(tagValue), objectType));
+            String stringValue = String.valueOf(tagValue);
+            tagsList.add(new Tag(key, stringValue, TagType.build(inputType)));
+
         }
         return tagsList;
     }
+
+    private static final Map<String, InputType> TAG_LIST = new HashMap<String, InputType>() {
+        {
+            put(TAG_GPS_DATESTAMP, TextString);
+            put(TAG_GPS_LATITUDE_REF, TextString);
+            put(TAG_GPS_TIMESTAMP, TextString);
+            put(TAG_GPS_LONGITUDE_REF, TextString);
+            put(TAG_GPS_PROCESSING_METHOD, TextString);
+            put(TAG_DATETIME, TextString);
+            put(TAG_MAKE, TextString);
+            put(TAG_MODEL, TextString);
+            put(TAG_IMAGE_LENGTH, InputType.ValueInteger);
+            put(TAG_WHITE_BALANCE, InputType.ValueInteger);
+            put(TAG_GPS_ALTITUDE_REF, InputType.ValueInteger);
+            put(TAG_FLASH, InputType.ValueInteger);
+            put(TAG_IMAGE_WIDTH, InputType.ValueInteger);
+            put(TAG_ORIENTATION, InputType.ValueInteger);
+            put(TAG_EXPOSURE_TIME, InputType.ValueDouble);
+
+        }
+    };
 
     private static final List<String> STRING_TAGS_LIST = Arrays.asList(
             TAG_GPS_DATESTAMP,
@@ -106,6 +128,17 @@ class TagsManager {
             TAG_DATETIME,
             TAG_MAKE,
             TAG_MODEL);
+
+    private static final List<String> DOUBLE_TAGS_LIST = Arrays.asList(
+            TAG_EXPOSURE_TIME);
+
+    private static final List<String> INTEGER_TAGS_LIST = Arrays.asList(
+            TAG_IMAGE_LENGTH,
+            TAG_WHITE_BALANCE,
+            TAG_GPS_ALTITUDE_REF,
+            TAG_FLASH,
+            TAG_IMAGE_WIDTH,
+            TAG_ORIENTATION);
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     private static final List<String> STRING_TAGS_LIST_API_24 = Arrays.asList(
@@ -145,14 +178,6 @@ class TagsManager {
             TAG_GPS_VERSION_ID,
             TAG_INTEROPERABILITY_INDEX);
 
-
-    private static final List<String> INTEGER_TAGS_LIST = Arrays.asList(
-            TAG_IMAGE_LENGTH,
-            TAG_WHITE_BALANCE,
-            TAG_GPS_ALTITUDE_REF,
-            TAG_FLASH,
-            TAG_IMAGE_WIDTH,
-            TAG_ORIENTATION);
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     private static final List<String> INTEGER_TAGS_LIST_API_24 = Arrays.asList(
@@ -194,8 +219,6 @@ class TagsManager {
             TAG_THUMBNAIL_IMAGE_LENGTH,
             TAG_THUMBNAIL_IMAGE_WIDTH);
 
-    private static final List<String> DOUBLE_TAGS_LIST = Arrays.asList(
-            TAG_EXPOSURE_TIME);
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     private static final List<String> DOUBLE_TAGS_LIST_API_24 = Arrays.asList(
