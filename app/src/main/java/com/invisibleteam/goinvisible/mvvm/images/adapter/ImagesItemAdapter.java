@@ -71,7 +71,7 @@ public class ImagesItemAdapter extends RecyclerView.Adapter<ImagesItemAdapter.Vi
     @Override
     public int getItemViewType(int position) {
         ImageDetails image = imageList.get(position);
-        if (!image.isJpeg()) {
+        if (image.isJpeg()) {
             return JPEG_IMAGE;
         }
         return UNSUPPORTED_EXTENSION_IMAGE;
