@@ -2,6 +2,6 @@
     <string name="app_name">GoInvisible</string>
     <string name="unsupported_extension">Editing works only for JPEG images</string>
     <string name="permissions_dialog_title">Missing permissions</string>
-    <string name="permissions_dialog_message">Storage permission is necessary to use this application</string>
+    <string name="permissions_dialog_message">Storage permission is necessary to use this application.</string>
     <string name="exit_app">exit application</string>
 </resources>
