@@ -18,8 +18,8 @@ env:
       - ANDROID_ABI=armeabi-v7a
 
       # Environment values
-      - ADB_INSTALL_TIMEOUT=8 # minutes
-      - MALLOC_ARENA_MAX=2 # switch glibc to a memory conserving mode
+      - ADB_INSTALL_TIMEOUT=8 # Minutes
+      - MALLOC_ARENA_MAX=2 # Switch glibc to a memory conserving mode
 
       # Java Options
       # http://stackoverflow.com/questions/28327620/difference-between-java-options-java-tool-options-and-java-opts
@@ -36,18 +36,19 @@ before_cache:
     - rm -fr $HOME/.gradle/caches/*/plugin-resolution
 
 cache:
-  directories:      #Cache all dirs under .gradle folder
+  directories:
+    # Cache dirs under .gradle folder
     - $HOME/.gradle/caches
-    - $HOME/.gradle/daemon      #Cache daemon logs
-    - $HOME/.gradle/native      #Cache library downloaded from the gradle dependency
-    - $HOME/.gradle/wrapper     #Cache the gradle
+    - $HOME/.gradle/daemon      # Cache daemon logs
+    - $HOME/.gradle/native      # Cache library downloaded from the gradle dependency
+    - $HOME/.gradle/wrapper     # Cache the gradle
     - $HOME/.android/build-cache
 
 android:
     components:
-        - tools # to get the new `repository-11.xml`
+        - tools # To get the new `repository-11.xml`
         - platform-tools
-        - tools # to install Android SDK tools 25.1.x
+        - tools # To install Android SDK tools 25.1.x
         - build-tools-$ANDROID_BUILD_TOOLS_VERSION
         - android-$ANDROID_API_LEVEL
 
@@ -70,4 +71,5 @@ after_failure:
     - cat $TRAVIS_BUILD_DIR/app/build/outputs/lint-results-debug.xml
 
 after_script:
-    -  if [ "${TRAVIS_PULL_REQUEST}" = false ]; then script/pushArtifactsToGithub.sh; fi
+    # Publish artifacts on gh-pages only for develop branch
+    -  if [ "${TRAVIS_BRANCH}" = "develop" ]; then script/pushArtifactsToGithub.sh; fi
