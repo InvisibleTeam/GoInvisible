@@ -12,6 +12,8 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.invisibleteam.goinvisible.R;
 
+import java.util.Locale;
+
 public abstract class CommonActivity extends AppCompatActivity {
 
     private static final int REQUEST_FOR_PERMISSIONS_REQUEST_CODE = 0;
@@ -69,8 +71,10 @@ public abstract class CommonActivity extends AppCompatActivity {
                 .Builder(this, R.style.AlertDialogStyle)
                 .setTitle(R.string.permissions_dialog_title)
                 .setMessage(R.string.permissions_dialog_message)
-                .setPositiveButton(getString(android.R.string.ok).toUpperCase(), (dialog, which) -> requestForPermissions())
-                .setNegativeButton(getString(R.string.exit_app).toUpperCase(), (dialog, which) -> System.exit(0))
+                .setPositiveButton(getString(android.R.string.ok)
+                        .toUpperCase(Locale.getDefault()), (dialog, which) -> requestForPermissions())
+                .setNegativeButton(getString(R.string.exit_app)
+                        .toUpperCase(Locale.getDefault()), (dialog, which) -> System.exit(0))
                 .setCancelable(false)
                 .show();
     }
