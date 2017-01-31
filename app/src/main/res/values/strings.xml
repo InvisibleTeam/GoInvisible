@@ -4,4 +4,5 @@
     <string name="permissions_dialog_title">Missing permissions</string>
     <string name="permissions_dialog_message">Permissions are necessary to use this application.</string>
     <string name="exit_app">exit application</string>
+    <string name="no_images_info">There are no images to edit</string>
 </resources>

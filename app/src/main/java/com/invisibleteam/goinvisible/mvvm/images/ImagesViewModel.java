@@ -1,15 +1,20 @@
 package com.invisibleteam.goinvisible.mvvm.images;
 
 
+import android.databinding.ObservableBoolean;
+
 import com.invisibleteam.goinvisible.model.ImageDetails;
 import com.invisibleteam.goinvisible.mvvm.images.adapter.ImagesCompoundRecyclerView;
 import com.invisibleteam.goinvisible.mvvm.images.adapter.ImagesItemAdapter;
+
+import java.util.List;
 
 public class ImagesViewModel {
 
     private ImagesCompoundRecyclerView imagesCompoundRecyclerView;
     private ImagesProvider imagesProvider;
     private ImagesView imagesView;
+    public ObservableBoolean isInformationTextVisible = new ObservableBoolean(false);
 
     ImagesViewModel(ImagesCompoundRecyclerView imagesCompoundRecyclerView,
                     ImagesProvider imagesProvider,
@@ -22,7 +27,9 @@ public class ImagesViewModel {
     }
 
     private void initRecyclerView() {
-        imagesCompoundRecyclerView.updateResults(imagesProvider.getImagesList());
+        List<ImageDetails> imagesDetailsList = imagesProvider.getImagesList();
+        isInformationTextVisible.set(imagesDetailsList.isEmpty());
+        imagesCompoundRecyclerView.updateResults(imagesDetailsList);
         imagesCompoundRecyclerView.setOnItemClickListener(new ImagesItemAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(ImageDetails imageDetails) {
