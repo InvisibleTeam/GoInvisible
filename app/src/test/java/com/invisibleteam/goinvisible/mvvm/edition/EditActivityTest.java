@@ -12,7 +12,6 @@ import com.invisibleteam.goinvisible.model.ImageDetails;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
@@ -20,6 +19,7 @@ import org.robolectric.annotation.Config;
 
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -29,10 +29,12 @@ import static org.mockito.Mockito.when;
 public class EditActivityTest {
 
     private Context context;
+    private EditActivity activity;
 
     @Before
     public void init() {
         context = RuntimeEnvironment.application;
+        activity = Robolectric.buildActivity(EditActivity.class).get();
     }
 
     @Test
@@ -57,10 +59,10 @@ public class EditActivityTest {
         ImageDetails imageDetails = new ImageDetails("Path", "Name");
         Intent editActivityIntent = EditActivity.buildIntent(context, imageDetails);
         EditActivity activity = Robolectric.buildActivity(EditActivity.class).withIntent(editActivityIntent).get();
-        EditActivity spyActivity = Mockito.spy(activity);
+        EditActivity spyActivity = spy(activity);
         spyActivity.onCreate(null);
 
-        MenuItem menuItem = Mockito.mock(MenuItem.class);
+        MenuItem menuItem = mock(MenuItem.class);
         when(menuItem.getItemId()).thenReturn(android.R.id.home);
 
         //when
@@ -76,10 +78,10 @@ public class EditActivityTest {
         ImageDetails imageDetails = new ImageDetails("Path", "Name");
         Intent editActivityIntent = EditActivity.buildIntent(context, imageDetails);
         EditActivity activity = Robolectric.buildActivity(EditActivity.class).withIntent(editActivityIntent).get();
-        EditActivity spyActivity = Mockito.spy(activity);
+        EditActivity spyActivity = spy(activity);
         spyActivity.onCreate(null);
 
-        MenuItem menuItem = Mockito.mock(MenuItem.class);
+        MenuItem menuItem = mock(MenuItem.class);
         when(menuItem.getItemId()).thenReturn(-1);
 
         //when
@@ -155,5 +157,17 @@ public class EditActivityTest {
 
         //Then
         assertTrue(isViewModelNotInitiated);
+    }
+
+    @Test
+    public void whenAllNecessaryPermissionsAreGranted_prepareViewIsCalled() {
+        //Given
+        EditActivity spyActivity = spy(activity);
+
+        //When
+        spyActivity.onCreate(null);
+
+        //Then
+        verify(spyActivity).prepareView();
     }
 }

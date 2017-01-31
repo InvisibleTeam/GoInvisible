@@ -8,20 +8,20 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.VisibleForTesting;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
 
 import com.invisibleteam.goinvisible.R;
 import com.invisibleteam.goinvisible.databinding.ActivityEditBinding;
 import com.invisibleteam.goinvisible.model.ImageDetails;
+import com.invisibleteam.goinvisible.mvvm.common.CommonActivity;
 import com.invisibleteam.goinvisible.mvvm.edition.adapter.EditCompoundRecyclerView;
 
 import java.io.IOException;
 
 import javax.annotation.Nullable;
 
-public class EditActivity extends AppCompatActivity {
+public class EditActivity extends CommonActivity {
 
     private static final String TAG_IMAGE_DETAILS = "extra_image_details";
     private static final String TAG = EditActivity.class.getSimpleName();
@@ -39,35 +39,14 @@ public class EditActivity extends AppCompatActivity {
     private EditViewModel editViewModel;
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        ActivityEditBinding activityEditBinding = DataBindingUtil.setContentView(this, R.layout.activity_edit);
-        setSupportActionBar(activityEditBinding.mainToolbar);
-
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
-
-        if (extractBundle()) {
-            EditCompoundRecyclerView editCompoundRecyclerView =
-                    (EditCompoundRecyclerView) findViewById(R.id.edit_compound_recycler_view);
-
-            try {
-                ExifInterface exifInterface = new ExifInterface(imageDetails.getPath());
-                editViewModel = new EditViewModel(
-                        imageDetails.getName(),
-                        imageDetails.getPath(),
-                        editCompoundRecyclerView,
-                        new TagsManager(exifInterface));
-                activityEditBinding.setViewModel(editViewModel);
-            } catch (IOException e) {
-                Log.d(TAG, String.valueOf(e.getMessage()));
-                //TODO log exception to crashlitycs on else.
-            }
-        } //TODO log exception to crashlitycs on else.
     }
+
 
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
     boolean extractBundle() {
@@ -97,5 +76,28 @@ public class EditActivity extends AppCompatActivity {
     @Nullable
     EditViewModel getEditViewModel() {
         return editViewModel;
+    }
+
+    @Override
+    public void prepareView() {
+        ActivityEditBinding activityEditBinding = DataBindingUtil.setContentView(this, R.layout.activity_edit);
+        setSupportActionBar(activityEditBinding.mainToolbar);
+        if (extractBundle()) {
+            EditCompoundRecyclerView editCompoundRecyclerView =
+                    (EditCompoundRecyclerView) findViewById(R.id.edit_compound_recycler_view);
+
+            try {
+                ExifInterface exifInterface = new ExifInterface(imageDetails.getPath());
+                editViewModel = new EditViewModel(
+                        imageDetails.getName(),
+                        imageDetails.getPath(),
+                        editCompoundRecyclerView,
+                        new TagsManager(exifInterface));
+                activityEditBinding.setViewModel(editViewModel);
+            } catch (IOException e) {
+                Log.d(TAG, String.valueOf(e.getMessage()));
+                //TODO log exception to crashlitycs on else.
+            }
+        } //TODO log exception to crashlitycs on else.
     }
 }
