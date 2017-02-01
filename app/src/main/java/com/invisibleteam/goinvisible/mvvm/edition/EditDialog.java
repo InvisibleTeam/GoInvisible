@@ -26,10 +26,25 @@ public class EditDialog extends DialogFragment {
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        if (!extractTag()) {
-            throw new IllegalStateException("Tag is null");
-        }
+        if (extractTag()) {
+            prepareView();
+        } //TODO log exception to crashlitycs on else.
 
+        return super.onCreateDialog(savedInstanceState);
+    }
+
+    private boolean extractTag() {
+        if (getArguments() != null && !getArguments().isEmpty()) {
+            Parcelable extra = getArguments().getParcelable(EXTRA_TAG);
+            if (extra instanceof Tag) {
+                tag = (Tag) extra;
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void prepareView() {
         InputType inputType = tag.getTagType().getInputType();
         switch (inputType) {
             case TEXT_STRING:
@@ -54,17 +69,5 @@ public class EditDialog extends DialogFragment {
                 //todo do sth
                 break;
         }
-        return super.onCreateDialog(savedInstanceState);
-    }
-
-    private boolean extractTag() {
-        if (getArguments() != null && !getArguments().isEmpty()) {
-            Parcelable extra = getArguments().getParcelable(EXTRA_TAG);
-            if (extra instanceof Tag) {
-                tag = (Tag) extra;
-                return true;
-            }
-        }
-        return false;
     }
 }
