@@ -60,9 +60,6 @@ class TagsManager {
                 default:
             }
         }*/
-        if (tag.getKey().equals(TAG_ORIENTATION)) {
-            tag.setValue("14");
-        }
         return editTag(tag);
     }
 
