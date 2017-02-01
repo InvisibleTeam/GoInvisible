@@ -50,10 +50,19 @@ public class EditDialog extends DialogFragment {
             case TEXT_STRING:
                 //todo change layout and view model
                 break;
+            case TIMESTAMP_STRING:
+                //todo change layout and view model
+                break;
+            case DATETIME_STRING:
+                //todo change layout and view model
+                break;
             case DATE_STRING:
                 //todo change layout and view model
                 break;
-            case BOOLEAN_INTEGER:
+            case RANGED_STRING:
+                //todo change layout and view model
+                break;
+            case RANGED_INTEGER:
                 //todo change layout and view model
                 break;
             case VALUE_INTEGER:
