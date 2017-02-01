@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 class EditItemAdapter extends RecyclerView.Adapter<EditItemAdapter.ViewHolder> {
+
     private List<Tag> tagsList;
     private OnTagActionListener onTagActionListener;
 
@@ -24,18 +25,29 @@ class EditItemAdapter extends RecyclerView.Adapter<EditItemAdapter.ViewHolder> {
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.edit_item_view, null, false);
-        return new ViewHolder(itemView);
+        final View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.edit_item_view, null, false);
+        ViewHolder viewHolder = new ViewHolder(itemView);
+        viewHolder.editItemViewBinding.clearButton.setOnClickListener(v -> {
+            if (onTagActionListener != null) {
+                Tag tag = (Tag) itemView.getTag();
+                onTagActionListener.onClear(tag);
+            }
+        });
+        viewHolder.itemView.setOnClickListener(view -> {
+            if (onTagActionListener != null) {
+                Tag tag = (Tag) itemView.getTag();
+                onTagActionListener.onEdit(tag);
+            }
+        });
+
+        return viewHolder;
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         final Tag tag = tagsList.get(position);
-
         holder.itemView.setTag(tag);
         holder.editItemViewModel.setModel(tag);
-        holder.editItemViewBinding.clearButton.setOnClickListener(v -> onTagActionListener.onClear(tag));
-        // TODO "think about moving it to onCreateViewHolder in the future"
     }
 
     @Override
@@ -63,23 +75,24 @@ class EditItemAdapter extends RecyclerView.Adapter<EditItemAdapter.ViewHolder> {
         }
     }
 
+    @VisibleForTesting
+    List<Tag> getTagsList() {
+        return tagsList;
+    }
+
     class ViewHolder extends RecyclerView.ViewHolder {
 
         @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
         EditItemViewModel editItemViewModel;
-        private EditItemViewBinding editItemViewBinding;
 
-        ViewHolder(View editView) {
-            super(editView);
+        EditItemViewBinding editItemViewBinding;
+
+        ViewHolder(View itemView) {
+            super(itemView);
 
             editItemViewModel = new EditItemViewModel();
-            editItemViewBinding = EditItemViewBinding.bind(editView);
+            editItemViewBinding = EditItemViewBinding.bind(itemView);
             editItemViewBinding.setViewModel(editItemViewModel);
         }
-    }
-
-    @VisibleForTesting
-    List<Tag> getTagsList() {
-        return tagsList;
     }
 }

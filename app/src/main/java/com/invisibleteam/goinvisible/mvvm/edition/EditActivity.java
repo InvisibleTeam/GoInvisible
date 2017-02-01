@@ -15,13 +15,14 @@ import android.view.MenuItem;
 import com.invisibleteam.goinvisible.R;
 import com.invisibleteam.goinvisible.databinding.ActivityEditBinding;
 import com.invisibleteam.goinvisible.model.ImageDetails;
+import com.invisibleteam.goinvisible.model.Tag;
 import com.invisibleteam.goinvisible.mvvm.edition.adapter.EditCompoundRecyclerView;
 
 import java.io.IOException;
 
 import javax.annotation.Nullable;
 
-public class EditActivity extends AppCompatActivity {
+public class EditActivity extends AppCompatActivity implements EditTagListener {
 
     private static final String TAG_IMAGE_DETAILS = "extra_image_details";
     private static final String TAG = EditActivity.class.getSimpleName();
@@ -60,7 +61,8 @@ public class EditActivity extends AppCompatActivity {
                         imageDetails.getName(),
                         imageDetails.getPath(),
                         editCompoundRecyclerView,
-                        new TagsManager(exifInterface));
+                        new TagsManager(exifInterface),
+                        this);
                 activityEditBinding.setViewModel(editViewModel);
             } catch (IOException e) {
                 Log.d(TAG, String.valueOf(e.getMessage()));
@@ -97,5 +99,11 @@ public class EditActivity extends AppCompatActivity {
     @Nullable
     EditViewModel getEditViewModel() {
         return editViewModel;
+    }
+
+    @Override
+    public void openEditDialog(Tag tag) {
+        EditDialog dialog = EditDialog.newInstance(this, tag);
+        dialog.show(getFragmentManager(), EditDialog.FRAGMENT_TAG);
     }
 }

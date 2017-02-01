@@ -75,16 +75,16 @@ class TagsManager {
             Object tagValue;
 
             switch (inputType) {
-                case TextString:
-                case DateString:
+                case TEXT_STRING:
+                case DATE_STRING:
                     tagValue = exifInterface.getAttribute(key);
                     break;
-                case BooleanInteger:
-                case ValueInteger:
+                case BOOLEAN_INTEGER:
+                case VALUE_INTEGER:
                     tagValue = exifInterface.getAttributeInt(key, 0);
                     break;
-                case ValueDouble:
-                case PositionDouble:
+                case VALUE_DOUBLE:
+                case POSITION_DOUBLE:
                     tagValue = exifInterface.getAttributeDouble(key, 0);
                     break;
                 default:
@@ -100,21 +100,21 @@ class TagsManager {
 
     private static final Map<String, InputType> TAG_LIST = new HashMap<String, InputType>() {
         {
-            put(TAG_GPS_DATESTAMP, TextString);
-            put(TAG_GPS_LATITUDE_REF, TextString);
-            put(TAG_GPS_TIMESTAMP, TextString);
-            put(TAG_GPS_LONGITUDE_REF, TextString);
-            put(TAG_GPS_PROCESSING_METHOD, TextString);
-            put(TAG_DATETIME, TextString);
-            put(TAG_MAKE, TextString);
-            put(TAG_MODEL, TextString);
-            put(TAG_IMAGE_LENGTH, InputType.ValueInteger);
-            put(TAG_WHITE_BALANCE, InputType.ValueInteger);
-            put(TAG_GPS_ALTITUDE_REF, InputType.ValueInteger);
-            put(TAG_FLASH, InputType.ValueInteger);
-            put(TAG_IMAGE_WIDTH, InputType.ValueInteger);
-            put(TAG_ORIENTATION, InputType.ValueInteger);
-            put(TAG_EXPOSURE_TIME, InputType.ValueDouble);
+            put(TAG_GPS_DATESTAMP, TEXT_STRING);
+            put(TAG_GPS_LATITUDE_REF, TEXT_STRING);
+            put(TAG_GPS_TIMESTAMP, TEXT_STRING);
+            put(TAG_GPS_LONGITUDE_REF, TEXT_STRING);
+            put(TAG_GPS_PROCESSING_METHOD, TEXT_STRING);
+            put(TAG_DATETIME, TEXT_STRING);
+            put(TAG_MAKE, TEXT_STRING);
+            put(TAG_MODEL, TEXT_STRING);
+            put(TAG_IMAGE_LENGTH, InputType.VALUE_INTEGER);
+            put(TAG_WHITE_BALANCE, InputType.VALUE_INTEGER);
+            put(TAG_GPS_ALTITUDE_REF, InputType.VALUE_INTEGER);
+            put(TAG_FLASH, InputType.VALUE_INTEGER);
+            put(TAG_IMAGE_WIDTH, InputType.VALUE_INTEGER);
+            put(TAG_ORIENTATION, InputType.VALUE_INTEGER);
+            put(TAG_EXPOSURE_TIME, InputType.VALUE_DOUBLE);
 
         }
     };
