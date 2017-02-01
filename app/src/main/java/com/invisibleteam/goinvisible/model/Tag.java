@@ -36,7 +36,7 @@ public class Tag implements Parcelable {
         return value;
     }
 
-    public TagType getTagType(){
+    public TagType getTagType() {
         return tagType;
     }
 
