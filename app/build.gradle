@@ -22,7 +22,7 @@ android {
         }
     }
     lintOptions {
-        disable 'GoogleAppIndexingWarning', 'ContentDescription'
+        disable 'GoogleAppIndexingWarning', 'ContentDescription', 'InlinedApi'
         abortOnError true
         warningsAsErrors true
     }
