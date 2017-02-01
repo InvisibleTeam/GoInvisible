@@ -103,7 +103,7 @@ class TagsManager {
         return tagsList;
     }
 
-    private static final Map<String, InputType> TAG_LIST = new HashMap<String, InputType>() { // V
+    private static final Map<String, InputType> TAG_LIST = new HashMap<String, InputType>() {
         {
             put(TAG_GPS_DATESTAMP, DATE_STRING);
             put(TAG_GPS_TIMESTAMP, TIMESTAMP_STRING);
