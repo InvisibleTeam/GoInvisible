@@ -20,10 +20,12 @@ public class ImageDetails implements Parcelable {
 
     private String path;
     private String name;
+    private boolean isJpeg;
 
     public ImageDetails(String path, String name) {
         this.path = path;
         this.name = name;
+        isJpeg = path.matches(".*jpg$");
     }
 
     public String getPath() {
@@ -37,6 +39,7 @@ public class ImageDetails implements Parcelable {
     protected ImageDetails(Parcel in) {
         path = in.readString();
         name = in.readString();
+        isJpeg = in.readByte() != 0;
     }
 
     @Override
@@ -48,5 +51,10 @@ public class ImageDetails implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(path);
         dest.writeString(name);
+        dest.writeByte((byte) (isJpeg ? 1 : 0));
+    }
+
+    public boolean isJpeg() {
+        return isJpeg;
     }
 }

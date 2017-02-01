@@ -12,4 +12,6 @@
         <item name="android:elevation">4dp</item>
     </style>
 
+    <style name="AlertDialogStyle" parent="Theme.AppCompat.Light.Dialog.Alert"/>
+
 </resources>
