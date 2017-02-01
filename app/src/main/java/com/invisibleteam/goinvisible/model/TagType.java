@@ -7,6 +7,9 @@ public class TagType implements Parcelable {
 
     private static final String REGEXP_TEXT_STRING = "";
     private static final String REGEXP_DATE_STRING = "";
+    private static final String REGEXP_TIMESTAMP_STRING = "";
+    private static final String REGEXP_DATETIME_STRING = "";
+    private static final String REGEXT_RANGED_STRING = "";
     private static final String REGEXP_BOOLEAN_INTEGER = "";
     private static final String REGEXP_VALUE_INTEGER = "";
     private static final String REGEXP_POSITION_DOUBLE = "";
@@ -30,7 +33,13 @@ public class TagType implements Parcelable {
                 return new TagType(inputType, REGEXP_TEXT_STRING);
             case DATE_STRING:
                 return new TagType(inputType, REGEXP_DATE_STRING);
-            case BOOLEAN_INTEGER:
+            case TIMESTAMP_STRING:
+                return new TagType(inputType, REGEXP_TIMESTAMP_STRING);
+            case DATETIME_STRING:
+                return new TagType(inputType, REGEXP_DATETIME_STRING);
+            case RANGED_STRING:
+                return new TagType(inputType, REGEXT_RANGED_STRING);
+            case RANGED_INTEGER:
                 return new TagType(inputType, REGEXP_BOOLEAN_INTEGER);
             case VALUE_INTEGER:
                 return new TagType(inputType, REGEXP_VALUE_INTEGER);

@@ -1,8 +1,7 @@
 package com.invisibleteam.goinvisible.mvvm.edition;
 
+import android.annotation.TargetApi;
 import android.media.ExifInterface;
-import android.os.Build;
-import android.support.annotation.RequiresApi;
 import android.support.annotation.VisibleForTesting;
 import android.util.Log;
 
@@ -12,13 +11,18 @@ import com.invisibleteam.goinvisible.model.TagType;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import static android.media.ExifInterface.*;
+import static com.invisibleteam.goinvisible.model.InputType.DATETIME_STRING;
+import static com.invisibleteam.goinvisible.model.InputType.DATE_STRING;
+import static com.invisibleteam.goinvisible.model.InputType.RANGED_INTEGER;
+import static com.invisibleteam.goinvisible.model.InputType.RANGED_STRING;
 import static com.invisibleteam.goinvisible.model.InputType.TEXT_STRING;
+import static com.invisibleteam.goinvisible.model.InputType.TIMESTAMP_STRING;
 import static com.invisibleteam.goinvisible.model.InputType.VALUE_DOUBLE;
 import static com.invisibleteam.goinvisible.model.InputType.VALUE_INTEGER;
 
@@ -63,9 +67,7 @@ class TagsManager {
     List<Tag> getAllTags() {
         List<Tag> tagsList = new ArrayList<>();
         tagsList.addAll(getAllTags(TAG_LIST));
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            //TODO add N tags
-        }
+        tagsList.addAll(getAllTags(TAG_LIST_N));
         return tagsList;
     }
 
@@ -79,9 +81,10 @@ class TagsManager {
             switch (inputType) {
                 case TEXT_STRING:
                 case DATE_STRING:
+                case TIMESTAMP_STRING:
                     tagValue = exifInterface.getAttribute(key);
                     break;
-                case BOOLEAN_INTEGER:
+                case RANGED_INTEGER:
                 case VALUE_INTEGER:
                     tagValue = exifInterface.getAttributeInt(key, 0);
                     break;
@@ -100,132 +103,124 @@ class TagsManager {
         return tagsList;
     }
 
-    private static final Map<String, InputType> TAG_LIST = new HashMap<String, InputType>() {
-        {
-            put(TAG_GPS_DATESTAMP, TEXT_STRING);
-            put(TAG_GPS_LATITUDE_REF, TEXT_STRING);
-            put(TAG_GPS_TIMESTAMP, TEXT_STRING);
-            put(TAG_GPS_LONGITUDE_REF, TEXT_STRING);
-            put(TAG_GPS_PROCESSING_METHOD, TEXT_STRING);
-            put(TAG_DATETIME, TEXT_STRING);
-            put(TAG_MAKE, TEXT_STRING);
-            put(TAG_MODEL, TEXT_STRING);
-            put(TAG_IMAGE_LENGTH, VALUE_INTEGER);
-            put(TAG_WHITE_BALANCE, VALUE_INTEGER);
-            put(TAG_GPS_ALTITUDE_REF, VALUE_INTEGER);
-            put(TAG_FLASH, VALUE_INTEGER);
-            put(TAG_IMAGE_WIDTH, VALUE_INTEGER);
-            put(TAG_ORIENTATION, VALUE_INTEGER);
-            put(TAG_EXPOSURE_TIME, VALUE_DOUBLE);
+    private static final Map<String, InputType> TAG_LIST;
+    private static final Map<String, InputType> TAG_LIST_N;
 
-        }
-    };
+    static {
+        TAG_LIST = getTags();
+        TAG_LIST_N = getNougatTags();
+    }
 
-    private static final List<String> STRING_TAGS_LIST = Arrays.asList(
-            TAG_GPS_DATESTAMP,
-            TAG_GPS_LATITUDE_REF,
-            TAG_GPS_TIMESTAMP,
-            TAG_GPS_LONGITUDE_REF,
-            TAG_GPS_PROCESSING_METHOD,
-            TAG_DATETIME,
-            TAG_MAKE,
-            TAG_MODEL);
+    static private Map<String, InputType> getTags() {
+        Map<String, InputType> map = new HashMap<>();
+        map.put(TAG_GPS_DATESTAMP, DATE_STRING);
+        map.put(TAG_GPS_TIMESTAMP, TIMESTAMP_STRING);
+        map.put(TAG_GPS_LATITUDE_REF, RANGED_STRING);
+        map.put(TAG_GPS_LONGITUDE_REF, RANGED_STRING);
+        map.put(TAG_GPS_PROCESSING_METHOD, TEXT_STRING);
+        map.put(TAG_DATETIME, DATETIME_STRING);
+        map.put(TAG_MAKE, TEXT_STRING);
+        map.put(TAG_MODEL, TEXT_STRING);
+        map.put(TAG_IMAGE_LENGTH, VALUE_INTEGER);
+        map.put(TAG_WHITE_BALANCE, RANGED_INTEGER);
+        map.put(TAG_GPS_ALTITUDE_REF, RANGED_INTEGER);
+        map.put(TAG_FLASH, RANGED_INTEGER);
+        map.put(TAG_IMAGE_WIDTH, VALUE_INTEGER);
+        map.put(TAG_ORIENTATION, RANGED_INTEGER);
+        map.put(TAG_EXPOSURE_TIME, VALUE_DOUBLE);
 
-    private static final List<String> DOUBLE_TAGS_LIST = Arrays.asList(
-            TAG_EXPOSURE_TIME);
+        return Collections.unmodifiableMap(map);
+    }
 
-    private static final List<String> INTEGER_TAGS_LIST = Arrays.asList(
-            TAG_IMAGE_LENGTH,
-            TAG_WHITE_BALANCE,
-            TAG_GPS_ALTITUDE_REF,
-            TAG_FLASH,
-            TAG_IMAGE_WIDTH,
-            TAG_ORIENTATION);
+    /**
+     * We are using these tags below N android version.
+     * Annotation prevents from generating lint error.
+     */
+    @TargetApi(24)
+    static private Map<String, InputType> getNougatTags() {
+        Map<String, InputType> map = new HashMap<>();
+        map.put(TAG_COPYRIGHT, TEXT_STRING);
+        map.put(TAG_IMAGE_DESCRIPTION, TEXT_STRING);
+        map.put(TAG_ARTIST, TEXT_STRING);
+        map.put(TAG_DATETIME_DIGITIZED, DATETIME_STRING);
+        map.put(TAG_DATETIME_ORIGINAL, DATETIME_STRING);
+        map.put(TAG_USER_COMMENT, TEXT_STRING);
+        map.put(TAG_RESOLUTION_UNIT, RANGED_INTEGER);
+        map.put(TAG_MAX_APERTURE_VALUE, VALUE_DOUBLE);
+        map.put(TAG_BRIGHTNESS_VALUE, VALUE_DOUBLE);
+        map.put(TAG_DIGITAL_ZOOM_RATIO, VALUE_DOUBLE);
+        map.put(TAG_CONTRAST, RANGED_INTEGER);
+        map.put(TAG_EXPOSURE_MODE, RANGED_INTEGER);
+        map.put(TAG_EXPOSURE_PROGRAM, RANGED_INTEGER);
+        map.put(TAG_GAIN_CONTROL, VALUE_INTEGER);
+        map.put(TAG_ISO_SPEED_RATINGS, VALUE_INTEGER);
+        map.put(TAG_METERING_MODE, RANGED_INTEGER);
+        map.put(TAG_SATURATION, RANGED_INTEGER);
+        map.put(TAG_SCENE_CAPTURE_TYPE, RANGED_INTEGER);
+        map.put(TAG_SHARPNESS, VALUE_INTEGER);
+        map.put(TAG_F_NUMBER, VALUE_DOUBLE); // Aperture
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
-    private static final List<String> STRING_TAGS_LIST_API_24 = Arrays.asList(
-            TAG_COPYRIGHT,
-            TAG_IMAGE_DESCRIPTION,
-            TAG_ARTIST,
-            TAG_SOFTWARE,
-            TAG_CFA_PATTERN,
-            TAG_COMPONENTS_CONFIGURATION,
-            TAG_DATETIME_DIGITIZED,
-            TAG_DATETIME_ORIGINAL,
-            TAG_DEVICE_SETTING_DESCRIPTION,
-            TAG_EXIF_VERSION,
-            TAG_FILE_SOURCE,
-            TAG_FLASHPIX_VERSION,
-            TAG_SPATIAL_FREQUENCY_RESPONSE,
-            TAG_SPECTRAL_SENSITIVITY,
-            TAG_SUBSEC_TIME,
-            TAG_SCENE_TYPE,
-            TAG_RELATED_SOUND_FILE,
-            TAG_IMAGE_UNIQUE_ID,
-            TAG_MAKER_NOTE,
-            TAG_OECF,
-            TAG_SUBSEC_TIME_DIGITIZED,
-            TAG_SUBSEC_TIME_ORIGINAL,
-            TAG_GPS_AREA_INFORMATION,
-            TAG_GPS_DEST_DISTANCE_REF,
-            TAG_GPS_DEST_LATITUDE_REF,
-            TAG_GPS_DEST_LONGITUDE_REF,
-            TAG_GPS_MAP_DATUM,
-            TAG_GPS_MEASURE_MODE,
-            TAG_GPS_SATELLITES,
-            TAG_GPS_SPEED_REF,
-            TAG_GPS_STATUS,
-            TAG_USER_COMMENT,
-            TAG_GPS_TRACK_REF,
-            TAG_GPS_VERSION_ID,
-            TAG_INTEROPERABILITY_INDEX);
+        map.put(TAG_SOFTWARE, TEXT_STRING);
+        map.put(TAG_CFA_PATTERN, TEXT_STRING);
+        map.put(TAG_COMPONENTS_CONFIGURATION, TEXT_STRING); // null
+        map.put(TAG_DEVICE_SETTING_DESCRIPTION, TEXT_STRING);
+        map.put(TAG_EXIF_VERSION, TEXT_STRING);
+        map.put(TAG_FILE_SOURCE, TEXT_STRING);
+        map.put(TAG_FLASHPIX_VERSION, TEXT_STRING);
+        map.put(TAG_SPATIAL_FREQUENCY_RESPONSE, TEXT_STRING);
+        map.put(TAG_SPECTRAL_SENSITIVITY, TEXT_STRING);
+        map.put(TAG_SUBSEC_TIME, TEXT_STRING); // null
+        map.put(TAG_SCENE_TYPE, TEXT_STRING);
+        map.put(TAG_RELATED_SOUND_FILE, TEXT_STRING);
+        map.put(TAG_IMAGE_UNIQUE_ID, TEXT_STRING);
+        map.put(TAG_MAKER_NOTE, TEXT_STRING);
+        map.put(TAG_OECF, TEXT_STRING);
+        map.put(TAG_SUBSEC_TIME_DIGITIZED, TEXT_STRING);
+        map.put(TAG_SUBSEC_TIME_ORIGINAL, TEXT_STRING);
+        map.put(TAG_GPS_AREA_INFORMATION, TEXT_STRING); // null
+        map.put(TAG_GPS_DEST_DISTANCE_REF, TEXT_STRING);
+        map.put(TAG_GPS_DEST_LATITUDE_REF, TEXT_STRING);
+        map.put(TAG_GPS_DEST_LONGITUDE_REF, TEXT_STRING);
+        map.put(TAG_GPS_MAP_DATUM, TEXT_STRING);
+        map.put(TAG_GPS_MEASURE_MODE, TEXT_STRING);
+        map.put(TAG_GPS_SATELLITES, TEXT_STRING);
+        map.put(TAG_GPS_SPEED_REF, TEXT_STRING);
+        map.put(TAG_GPS_STATUS, TEXT_STRING);
+        map.put(TAG_GPS_TRACK_REF, TEXT_STRING);
+        map.put(TAG_GPS_VERSION_ID, TEXT_STRING);
+        map.put(TAG_INTEROPERABILITY_INDEX, TEXT_STRING);
+        map.put(TAG_PHOTOMETRIC_INTERPRETATION, VALUE_INTEGER);
+        map.put(TAG_BITS_PER_SAMPLE, VALUE_INTEGER);
+        map.put(TAG_COMPRESSED_BITS_PER_PIXEL, VALUE_INTEGER);
+        map.put(TAG_COMPRESSION, VALUE_INTEGER);
+        map.put(TAG_JPEG_INTERCHANGE_FORMAT, VALUE_INTEGER);
+        map.put(TAG_JPEG_INTERCHANGE_FORMAT_LENGTH, VALUE_INTEGER);
+        map.put(TAG_PLANAR_CONFIGURATION, VALUE_INTEGER);
+        map.put(TAG_ROWS_PER_STRIP, VALUE_INTEGER);
+        map.put(TAG_SAMPLES_PER_PIXEL, VALUE_INTEGER);
+        map.put(TAG_STRIP_BYTE_COUNTS, VALUE_INTEGER);
+        map.put(TAG_STRIP_OFFSETS, VALUE_INTEGER);
+        map.put(TAG_TRANSFER_FUNCTION, VALUE_INTEGER);
+        map.put(TAG_Y_CB_CR_POSITIONING, VALUE_INTEGER);
+        map.put(TAG_Y_CB_CR_SUB_SAMPLING, VALUE_INTEGER);
+        map.put(TAG_COLOR_SPACE, VALUE_INTEGER);
+        map.put(TAG_CUSTOM_RENDERED, VALUE_INTEGER);
+        map.put(TAG_FOCAL_LENGTH_IN_35MM_FILM, VALUE_INTEGER);
+        map.put(TAG_FOCAL_PLANE_RESOLUTION_UNIT, VALUE_INTEGER); // 0
+        map.put(TAG_LIGHT_SOURCE, VALUE_INTEGER);
+        map.put(TAG_PIXEL_X_DIMENSION, VALUE_INTEGER); // 0
+        map.put(TAG_PIXEL_Y_DIMENSION, VALUE_INTEGER);
+        map.put(TAG_SENSING_METHOD, VALUE_INTEGER);
+        map.put(TAG_SUBJECT_AREA, VALUE_INTEGER);
+        map.put(TAG_SUBJECT_DISTANCE_RANGE, VALUE_INTEGER);
+        map.put(TAG_SUBJECT_LOCATION, VALUE_INTEGER);
+        map.put(TAG_GPS_DIFFERENTIAL, VALUE_INTEGER);
+        map.put(TAG_THUMBNAIL_IMAGE_LENGTH, VALUE_INTEGER);
+        map.put(TAG_THUMBNAIL_IMAGE_WIDTH, VALUE_INTEGER);
+        map.put(TAG_DIGITAL_ZOOM_RATIO, VALUE_DOUBLE);
+        map.put(TAG_EXPOSURE_BIAS_VALUE, VALUE_DOUBLE);
+        map.put(TAG_SUBJECT_DISTANCE, VALUE_DOUBLE);
 
-
-    @RequiresApi(api = Build.VERSION_CODES.N)
-    private static final List<String> INTEGER_TAGS_LIST_API_24 = Arrays.asList(
-            TAG_PHOTOMETRIC_INTERPRETATION,
-            TAG_BITS_PER_SAMPLE,
-            TAG_COMPRESSION,
-            TAG_JPEG_INTERCHANGE_FORMAT,
-            TAG_JPEG_INTERCHANGE_FORMAT_LENGTH,
-            TAG_PLANAR_CONFIGURATION,
-            TAG_RESOLUTION_UNIT,
-            TAG_ROWS_PER_STRIP,
-            TAG_SAMPLES_PER_PIXEL,
-            TAG_STRIP_BYTE_COUNTS,
-            TAG_STRIP_OFFSETS,
-            TAG_TRANSFER_FUNCTION,
-            TAG_Y_CB_CR_POSITIONING,
-            TAG_Y_CB_CR_SUB_SAMPLING,
-            TAG_COLOR_SPACE,
-            TAG_CONTRAST,
-            TAG_CUSTOM_RENDERED,
-            TAG_EXPOSURE_MODE,
-            TAG_EXPOSURE_PROGRAM,
-            TAG_FOCAL_LENGTH_IN_35MM_FILM,
-            TAG_FOCAL_PLANE_RESOLUTION_UNIT,
-            TAG_GAIN_CONTROL,
-            TAG_ISO_SPEED_RATINGS,
-            TAG_LIGHT_SOURCE,
-            TAG_METERING_MODE,
-            TAG_PIXEL_X_DIMENSION,
-            TAG_PIXEL_Y_DIMENSION,
-            TAG_SATURATION,
-            TAG_SCENE_CAPTURE_TYPE,
-            TAG_SENSING_METHOD,
-            TAG_SHARPNESS,
-            TAG_SUBJECT_AREA,
-            TAG_SUBJECT_DISTANCE_RANGE,
-            TAG_SUBJECT_LOCATION,
-            TAG_GPS_DIFFERENTIAL,
-            TAG_THUMBNAIL_IMAGE_LENGTH,
-            TAG_THUMBNAIL_IMAGE_WIDTH);
-
-
-    @RequiresApi(api = Build.VERSION_CODES.N)
-    private static final List<String> DOUBLE_TAGS_LIST_API_24 = Arrays.asList(
-            TAG_DIGITAL_ZOOM_RATIO,
-            TAG_EXPOSURE_BIAS_VALUE,
-            TAG_F_NUMBER,
-            TAG_SUBJECT_DISTANCE);
+        return Collections.unmodifiableMap(map);
+    }
 }
