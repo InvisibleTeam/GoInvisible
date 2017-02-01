@@ -26,17 +26,17 @@ public class TagType implements Parcelable {
 
     public static TagType build(InputType inputType) {
         switch (inputType) {
-            case TextString:
+            case TEXT_STRING:
                 return new TagType(inputType, REGEXP_TEXT_STRING);
-            case DateString:
+            case DATE_STRING:
                 return new TagType(inputType, REGEXP_DATE_STRING);
-            case BooleanInteger:
+            case BOOLEAN_INTEGER:
                 return new TagType(inputType, REGEXP_BOOLEAN_INTEGER);
-            case ValueInteger:
+            case VALUE_INTEGER:
                 return new TagType(inputType, REGEXP_VALUE_INTEGER);
-            case ValueDouble:
+            case VALUE_DOUBLE:
                 return new TagType(inputType, REGEXP_VALUE_DOUBLE);
-            case PositionDouble:
+            case POSITION_DOUBLE:
                 return new TagType(inputType, REGEXP_POSITION_DOUBLE);
             default:
                 throw new IllegalStateException("Wrong input type");

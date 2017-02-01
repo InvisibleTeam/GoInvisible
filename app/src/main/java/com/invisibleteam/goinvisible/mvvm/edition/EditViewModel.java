@@ -12,15 +12,18 @@ public class EditViewModel implements OnTagActionListener {
 
     private final EditCompoundRecyclerView editCompoundRecyclerView;
     private final TagsManager tagsManager;
+    private final EditTagListener editTagListener;
 
     EditViewModel(String title,
                   String imageUrl,
                   EditCompoundRecyclerView editCompoundRecyclerView,
-                  TagsManager tagsManager) {
+                  TagsManager tagsManager,
+                  EditTagListener editTagListener) {
         this.title.set(title);
         this.imageUrl.set(imageUrl);
         this.editCompoundRecyclerView = editCompoundRecyclerView;
         this.tagsManager = tagsManager;
+        this.editTagListener = editTagListener;
 
         initRecyclerView();
     }
@@ -47,6 +50,8 @@ public class EditViewModel implements OnTagActionListener {
 
     @Override
     public void onEdit(Tag tag) {
-        tagsManager.editTag(tag);
+        editTagListener.openEditDialog(tag);
+        //todo execute this when dialog will be closed
+//        tagsManager.editTag(tag);
     }
 }

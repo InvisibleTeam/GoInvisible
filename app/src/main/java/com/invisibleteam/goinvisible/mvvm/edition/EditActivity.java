@@ -15,13 +15,14 @@ import com.invisibleteam.goinvisible.R;
 import com.invisibleteam.goinvisible.databinding.ActivityEditBinding;
 import com.invisibleteam.goinvisible.model.ImageDetails;
 import com.invisibleteam.goinvisible.mvvm.common.CommonActivity;
+import com.invisibleteam.goinvisible.model.Tag;
 import com.invisibleteam.goinvisible.mvvm.edition.adapter.EditCompoundRecyclerView;
 
 import java.io.IOException;
 
 import javax.annotation.Nullable;
 
-public class EditActivity extends CommonActivity {
+public class EditActivity extends CommonActivity implements EditTagListener {
 
     private static final String TAG_IMAGE_DETAILS = "extra_image_details";
     private static final String TAG = EditActivity.class.getSimpleName();
@@ -46,7 +47,6 @@ public class EditActivity extends CommonActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
     }
-
 
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
     boolean extractBundle() {
@@ -92,12 +92,19 @@ public class EditActivity extends CommonActivity {
                         imageDetails.getName(),
                         imageDetails.getPath(),
                         editCompoundRecyclerView,
-                        new TagsManager(exifInterface));
+                        new TagsManager(exifInterface),
+                        this);
                 activityEditBinding.setViewModel(editViewModel);
             } catch (IOException e) {
                 Log.d(TAG, String.valueOf(e.getMessage()));
                 //TODO log exception to crashlitycs on else.
             }
         } //TODO log exception to crashlitycs on else.
+    }
+
+    @Override
+    public void openEditDialog(Tag tag) {
+        EditDialog dialog = EditDialog.newInstance(this, tag);
+        dialog.show(getFragmentManager(), EditDialog.FRAGMENT_TAG);
     }
 }
