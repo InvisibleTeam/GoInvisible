@@ -5,15 +5,18 @@ import android.os.Parcelable;
 
 public class TagType implements Parcelable {
 
-    private static final String REGEXP_TEXT_STRING = "";
-    private static final String REGEXP_DATE_STRING = "";
-    private static final String REGEXP_TIMESTAMP_STRING = "";
-    private static final String REGEXP_DATETIME_STRING = "";
-    private static final String REGEXT_RANGED_STRING = "";
-    private static final String REGEXP_BOOLEAN_INTEGER = "";
-    private static final String REGEXP_VALUE_INTEGER = "";
-    private static final String REGEXP_POSITION_DOUBLE = "";
-    private static final String REGEXP_VALUE_DOUBLE = "";
+    private static final String REGEXP_VALUE_INTEGER = "[0-9]*";
+    private static final String REGEXP_VALUE_DOUBLE = "^[0-9]{1,6}\\.[0-9]{1,6}$";
+    private static final String REGEXP_TEXT_STRING = ".*";
+    private static final String REGEXP_DATE_STRING = "^\\d{4}\\-(0?[1-9]|1[012])\\-(0[1-9]|[12][0-9]|3[01])$";
+    private static final String REGEXP_TIMESTAMP_STRING = "^([01][0-9]|2[0-3])\\:([0-5][0-9])\\:([0-5][0-9])$";
+    private static final String REGEXP_DATETIME_STRING;
+
+    static {
+        REGEXP_DATETIME_STRING =
+                "^\\d{4}\\-(0?[1-9]|1[012])\\-(0[1-9]|[12][0-9]|3[01])" +
+                        " ([01][0-9]|2[0-3])\\:([0-5][0-9])\\:([0-5][0-9])$";
+    }
 
     public static final Parcelable.Creator<TagType> CREATOR = new Parcelable.Creator<TagType>() {
         @Override
@@ -38,15 +41,15 @@ public class TagType implements Parcelable {
             case DATETIME_STRING:
                 return new TagType(inputType, REGEXP_DATETIME_STRING);
             case RANGED_STRING:
-                return new TagType(inputType, REGEXT_RANGED_STRING);
+                return new TagType(inputType, REGEXP_TEXT_STRING);
             case RANGED_INTEGER:
-                return new TagType(inputType, REGEXP_BOOLEAN_INTEGER);
+                return new TagType(inputType, REGEXP_VALUE_INTEGER);
             case VALUE_INTEGER:
                 return new TagType(inputType, REGEXP_VALUE_INTEGER);
             case VALUE_DOUBLE:
                 return new TagType(inputType, REGEXP_VALUE_DOUBLE);
             case POSITION_DOUBLE:
-                return new TagType(inputType, REGEXP_POSITION_DOUBLE);
+                return new TagType(inputType, REGEXP_VALUE_DOUBLE);
             default:
                 throw new IllegalStateException("Wrong input type");
         }
