@@ -4,25 +4,37 @@ public enum InputType {
     /**
      * Text with no restrictions.
      */
-    TextString,
+    TEXT_STRING,
+    /**
+     * Text containing timestamp.
+     */
+    TIMESTAMP_STRING,
+    /**
+     * Text containing datetime.
+     */
+    DATETIME_STRING,
     /**
      * Text containing date.
      */
-    DateString,
+    DATE_STRING,
+    /**
+     * Ranged text.
+     */
+    RANGED_STRING,
     /**
      * 0/1 number.
      */
-    BooleanInteger,
+    RANGED_INTEGER,
     /**
      * Integer with no restrictions.
      */
-    ValueInteger,
+    VALUE_INTEGER,
     /**
      * Double with no restrictions.
      */
-    ValueDouble,
+    VALUE_DOUBLE,
     /**
      * Latitude, longitude double.
      */
-    PositionDouble
+    POSITION_DOUBLE
 }

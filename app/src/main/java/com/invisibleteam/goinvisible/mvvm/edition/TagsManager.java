@@ -17,7 +17,14 @@ import java.util.List;
 import java.util.Map;
 
 import static android.media.ExifInterface.*;
-import static com.invisibleteam.goinvisible.model.InputType.TextString;
+import static com.invisibleteam.goinvisible.model.InputType.DATETIME_STRING;
+import static com.invisibleteam.goinvisible.model.InputType.DATE_STRING;
+import static com.invisibleteam.goinvisible.model.InputType.RANGED_INTEGER;
+import static com.invisibleteam.goinvisible.model.InputType.RANGED_STRING;
+import static com.invisibleteam.goinvisible.model.InputType.TEXT_STRING;
+import static com.invisibleteam.goinvisible.model.InputType.TIMESTAMP_STRING;
+import static com.invisibleteam.goinvisible.model.InputType.VALUE_DOUBLE;
+import static com.invisibleteam.goinvisible.model.InputType.VALUE_INTEGER;
 
 class TagsManager {
 
@@ -53,6 +60,9 @@ class TagsManager {
                 default:
             }
         }*/
+        if (tag.getKey().equals(TAG_ORIENTATION)) {
+            tag.setValue("14");
+        }
         return editTag(tag);
     }
 
@@ -60,9 +70,7 @@ class TagsManager {
     List<Tag> getAllTags() {
         List<Tag> tagsList = new ArrayList<>();
         tagsList.addAll(getAllTags(TAG_LIST));
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            tagsList.addAll(getAllTags(TAG_LIST_N));
-        }
+        tagsList.addAll(getAllTags(TAG_LIST_N));
         return tagsList;
     }
 
@@ -74,16 +82,17 @@ class TagsManager {
             Object tagValue;
 
             switch (inputType) {
-                case TextString:
-                case DateString:
+                case TEXT_STRING:
+                case DATE_STRING:
+                case TIMESTAMP_STRING:
                     tagValue = exifInterface.getAttribute(key);
                     break;
-                case BooleanInteger:
-                case ValueInteger:
+                case RANGED_INTEGER:
+                case VALUE_INTEGER:
                     tagValue = exifInterface.getAttributeInt(key, 0);
                     break;
-                case ValueDouble:
-                case PositionDouble:
+                case VALUE_DOUBLE:
+                case POSITION_DOUBLE:
                     tagValue = exifInterface.getAttributeDouble(key, 0);
                     break;
                 default:
@@ -97,106 +106,114 @@ class TagsManager {
         return tagsList;
     }
 
-    private static final Map<String, InputType> TAG_LIST = new HashMap<String, InputType>() {
+    private static final Map<String, InputType> TAG_LIST = new HashMap<String, InputType>() { // V
         {
-            put(TAG_GPS_DATESTAMP, TextString);
-            put(TAG_GPS_LATITUDE_REF, TextString);
-            put(TAG_GPS_TIMESTAMP, TextString);
-            put(TAG_GPS_LONGITUDE_REF, TextString);
-            put(TAG_GPS_PROCESSING_METHOD, TextString);
-            put(TAG_DATETIME, TextString);
-            put(TAG_MAKE, TextString);
-            put(TAG_MODEL, TextString);
-            put(TAG_IMAGE_LENGTH, InputType.ValueInteger);
-            put(TAG_WHITE_BALANCE, InputType.ValueInteger);
-            put(TAG_GPS_ALTITUDE_REF, InputType.ValueInteger);
-            put(TAG_FLASH, InputType.ValueInteger);
-            put(TAG_IMAGE_WIDTH, InputType.ValueInteger);
-            put(TAG_ORIENTATION, InputType.ValueInteger);
-            put(TAG_EXPOSURE_TIME, InputType.ValueDouble);
-
+            put(TAG_GPS_DATESTAMP, DATE_STRING);
+            put(TAG_GPS_TIMESTAMP, TIMESTAMP_STRING);
+            put(TAG_GPS_LATITUDE_REF, RANGED_STRING);
+            put(TAG_GPS_LONGITUDE_REF, RANGED_STRING);
+            put(TAG_GPS_PROCESSING_METHOD, TEXT_STRING);
+            put(TAG_DATETIME, DATETIME_STRING);
+            put(TAG_MAKE, TEXT_STRING);
+            put(TAG_MODEL, TEXT_STRING);
+            put(TAG_IMAGE_LENGTH, VALUE_INTEGER);
+            put(TAG_WHITE_BALANCE, RANGED_INTEGER);
+            put(TAG_GPS_ALTITUDE_REF, RANGED_INTEGER);
+            put(TAG_FLASH, RANGED_INTEGER);
+            put(TAG_IMAGE_WIDTH, VALUE_INTEGER);
+            put(TAG_ORIENTATION, RANGED_INTEGER);
+            put(TAG_EXPOSURE_TIME, VALUE_DOUBLE);
         }
     };
 
+    /**
+     * We are using these tags below N android version.
+     * Annotation prevents from generating lint error.
+     */
     @RequiresApi(api = Build.VERSION_CODES.N)
     private static final Map<String, InputType> TAG_LIST_N = new HashMap<String, InputType>() {
         {
-            put(TAG_COPYRIGHT, TextString);
-            put(TAG_IMAGE_DESCRIPTION, TextString);
-            put(TAG_ARTIST, TextString);
-            put(TAG_SOFTWARE, TextString);
-            put(TAG_CFA_PATTERN, TextString);
-            put(TAG_COMPONENTS_CONFIGURATION, TextString);
-            put(TAG_DATETIME_DIGITIZED, TextString);
-            put(TAG_DATETIME_ORIGINAL, TextString);
-            put(TAG_DEVICE_SETTING_DESCRIPTION, TextString);
-            put(TAG_EXIF_VERSION, TextString);
-            put(TAG_FILE_SOURCE, TextString);
-            put(TAG_FLASHPIX_VERSION, TextString);
-            put(TAG_SPATIAL_FREQUENCY_RESPONSE, TextString);
-            put(TAG_SPECTRAL_SENSITIVITY, TextString);
-            put(TAG_SUBSEC_TIME, TextString);
-            put(TAG_SCENE_TYPE, TextString);
-            put(TAG_RELATED_SOUND_FILE, TextString);
-            put(TAG_IMAGE_UNIQUE_ID, TextString);
-            put(TAG_MAKER_NOTE, TextString);
-            put(TAG_OECF, TextString);
-            put(TAG_SUBSEC_TIME_DIGITIZED, TextString);
-            put(TAG_SUBSEC_TIME_ORIGINAL, TextString);
-            put(TAG_GPS_AREA_INFORMATION, TextString);
-            put(TAG_GPS_DEST_DISTANCE_REF, TextString);
-            put(TAG_GPS_DEST_LATITUDE_REF, TextString);
-            put(TAG_GPS_DEST_LONGITUDE_REF, TextString);
-            put(TAG_GPS_MAP_DATUM, TextString);
-            put(TAG_GPS_MEASURE_MODE, TextString);
-            put(TAG_GPS_SATELLITES, TextString);
-            put(TAG_GPS_SPEED_REF, TextString);
-            put(TAG_GPS_STATUS, TextString);
-            put(TAG_USER_COMMENT, TextString);
-            put(TAG_GPS_TRACK_REF, TextString);
-            put(TAG_GPS_VERSION_ID, TextString);
-            put(TAG_INTEROPERABILITY_INDEX, TextString);
-            put(TAG_PHOTOMETRIC_INTERPRETATION, InputType.ValueInteger);
-            put(TAG_BITS_PER_SAMPLE, InputType.ValueInteger);
-            put(TAG_COMPRESSION, InputType.ValueInteger);
-            put(TAG_JPEG_INTERCHANGE_FORMAT, InputType.ValueInteger);
-            put(TAG_JPEG_INTERCHANGE_FORMAT_LENGTH, InputType.ValueInteger);
-            put(TAG_PLANAR_CONFIGURATION, InputType.ValueInteger);
-            put(TAG_RESOLUTION_UNIT, InputType.ValueInteger);
-            put(TAG_ROWS_PER_STRIP, InputType.ValueInteger);
-            put(TAG_SAMPLES_PER_PIXEL, InputType.ValueInteger);
-            put(TAG_STRIP_BYTE_COUNTS, InputType.ValueInteger);
-            put(TAG_STRIP_OFFSETS, InputType.ValueInteger);
-            put(TAG_TRANSFER_FUNCTION, InputType.ValueInteger);
-            put(TAG_Y_CB_CR_POSITIONING, InputType.ValueInteger);
-            put(TAG_Y_CB_CR_SUB_SAMPLING, InputType.ValueInteger);
-            put(TAG_COLOR_SPACE, InputType.ValueInteger);
-            put(TAG_CONTRAST, InputType.ValueInteger);
-            put(TAG_CUSTOM_RENDERED, InputType.ValueInteger);
-            put(TAG_EXPOSURE_MODE, InputType.ValueInteger);
-            put(TAG_EXPOSURE_PROGRAM, InputType.ValueInteger);
-            put(TAG_FOCAL_LENGTH_IN_35MM_FILM, InputType.ValueInteger);
-            put(TAG_FOCAL_PLANE_RESOLUTION_UNIT, InputType.ValueInteger);
-            put(TAG_GAIN_CONTROL, InputType.ValueInteger);
-            put(TAG_ISO_SPEED_RATINGS, InputType.ValueInteger);
-            put(TAG_LIGHT_SOURCE, InputType.ValueInteger);
-            put(TAG_METERING_MODE, InputType.ValueInteger);
-            put(TAG_PIXEL_X_DIMENSION, InputType.ValueInteger);
-            put(TAG_PIXEL_Y_DIMENSION, InputType.ValueInteger);
-            put(TAG_SATURATION, InputType.ValueInteger);
-            put(TAG_SCENE_CAPTURE_TYPE, InputType.ValueInteger);
-            put(TAG_SENSING_METHOD, InputType.ValueInteger);
-            put(TAG_SHARPNESS, InputType.ValueInteger);
-            put(TAG_SUBJECT_AREA, InputType.ValueInteger);
-            put(TAG_SUBJECT_DISTANCE_RANGE, InputType.ValueInteger);
-            put(TAG_SUBJECT_LOCATION, InputType.ValueInteger);
-            put(TAG_GPS_DIFFERENTIAL, InputType.ValueInteger);
-            put(TAG_THUMBNAIL_IMAGE_LENGTH, InputType.ValueInteger);
-            put(TAG_THUMBNAIL_IMAGE_WIDTH, InputType.ValueInteger);
-            put(TAG_DIGITAL_ZOOM_RATIO, InputType.ValueDouble);
-            put(TAG_EXPOSURE_BIAS_VALUE, InputType.ValueDouble);
-            put(TAG_F_NUMBER, InputType.ValueDouble);
-            put(TAG_SUBJECT_DISTANCE, InputType.ValueDouble);
+            put(TAG_COPYRIGHT, TEXT_STRING);
+            put(TAG_IMAGE_DESCRIPTION, TEXT_STRING);
+            put(TAG_ARTIST, TEXT_STRING);
+            put(TAG_DATETIME_DIGITIZED, DATETIME_STRING);
+            put(TAG_DATETIME_ORIGINAL, DATETIME_STRING);
+            put(TAG_USER_COMMENT, TEXT_STRING);
+            put(TAG_RESOLUTION_UNIT, RANGED_INTEGER);
+            put(TAG_MAX_APERTURE_VALUE, VALUE_DOUBLE);
+            put(TAG_BRIGHTNESS_VALUE, VALUE_DOUBLE);
+            put(TAG_DIGITAL_ZOOM_RATIO, VALUE_DOUBLE);
+            put(TAG_CONTRAST, RANGED_INTEGER);
+            put(TAG_EXPOSURE_MODE, RANGED_INTEGER);
+            put(TAG_EXPOSURE_PROGRAM, RANGED_INTEGER);
+            put(TAG_GAIN_CONTROL, VALUE_INTEGER);
+            put(TAG_ISO_SPEED_RATINGS, VALUE_INTEGER);
+            put(TAG_METERING_MODE, RANGED_INTEGER);
+            put(TAG_SATURATION, RANGED_INTEGER);
+            put(TAG_SCENE_CAPTURE_TYPE, RANGED_INTEGER);
+            put(TAG_SHARPNESS, VALUE_INTEGER);
+            put(TAG_F_NUMBER, VALUE_DOUBLE); // Aperture
+
+            put(TAG_SOFTWARE, TEXT_STRING);
+            put(TAG_CFA_PATTERN, TEXT_STRING);
+            put(TAG_COMPONENTS_CONFIGURATION, TEXT_STRING); // null
+            put(TAG_DEVICE_SETTING_DESCRIPTION, TEXT_STRING);
+            put(TAG_EXIF_VERSION, TEXT_STRING);
+            put(TAG_FILE_SOURCE, TEXT_STRING);
+            put(TAG_FLASHPIX_VERSION, TEXT_STRING);
+            put(TAG_SPATIAL_FREQUENCY_RESPONSE, TEXT_STRING);
+            put(TAG_SPECTRAL_SENSITIVITY, TEXT_STRING);
+            put(TAG_SUBSEC_TIME, TEXT_STRING); // null
+            put(TAG_SCENE_TYPE, TEXT_STRING);
+            put(TAG_RELATED_SOUND_FILE, TEXT_STRING);
+            put(TAG_IMAGE_UNIQUE_ID, TEXT_STRING);
+            put(TAG_MAKER_NOTE, TEXT_STRING);
+            put(TAG_OECF, TEXT_STRING);
+            put(TAG_SUBSEC_TIME_DIGITIZED, TEXT_STRING);
+            put(TAG_SUBSEC_TIME_ORIGINAL, TEXT_STRING);
+            put(TAG_GPS_AREA_INFORMATION, TEXT_STRING); // null
+            put(TAG_GPS_DEST_DISTANCE_REF, TEXT_STRING);
+            put(TAG_GPS_DEST_LATITUDE_REF, TEXT_STRING);
+            put(TAG_GPS_DEST_LONGITUDE_REF, TEXT_STRING);
+            put(TAG_GPS_MAP_DATUM, TEXT_STRING);
+            put(TAG_GPS_MEASURE_MODE, TEXT_STRING);
+            put(TAG_GPS_SATELLITES, TEXT_STRING);
+            put(TAG_GPS_SPEED_REF, TEXT_STRING);
+            put(TAG_GPS_STATUS, TEXT_STRING);
+            put(TAG_GPS_TRACK_REF, TEXT_STRING);
+            put(TAG_GPS_VERSION_ID, TEXT_STRING);
+            put(TAG_INTEROPERABILITY_INDEX, TEXT_STRING);
+            put(TAG_PHOTOMETRIC_INTERPRETATION, VALUE_INTEGER);
+            put(TAG_BITS_PER_SAMPLE, VALUE_INTEGER);
+            put(TAG_COMPRESSED_BITS_PER_PIXEL, VALUE_INTEGER);
+            put(TAG_COMPRESSION, VALUE_INTEGER);
+            put(TAG_JPEG_INTERCHANGE_FORMAT, VALUE_INTEGER);
+            put(TAG_JPEG_INTERCHANGE_FORMAT_LENGTH, VALUE_INTEGER);
+            put(TAG_PLANAR_CONFIGURATION, VALUE_INTEGER);
+            put(TAG_ROWS_PER_STRIP, VALUE_INTEGER);
+            put(TAG_SAMPLES_PER_PIXEL, VALUE_INTEGER);
+            put(TAG_STRIP_BYTE_COUNTS, VALUE_INTEGER);
+            put(TAG_STRIP_OFFSETS, VALUE_INTEGER);
+            put(TAG_TRANSFER_FUNCTION, VALUE_INTEGER);
+            put(TAG_Y_CB_CR_POSITIONING, VALUE_INTEGER);
+            put(TAG_Y_CB_CR_SUB_SAMPLING, VALUE_INTEGER);
+            put(TAG_COLOR_SPACE, VALUE_INTEGER);
+            put(TAG_CUSTOM_RENDERED, VALUE_INTEGER);
+            put(TAG_FOCAL_LENGTH_IN_35MM_FILM, VALUE_INTEGER);
+            put(TAG_FOCAL_PLANE_RESOLUTION_UNIT, VALUE_INTEGER); // 0
+            put(TAG_LIGHT_SOURCE, VALUE_INTEGER);
+            put(TAG_PIXEL_X_DIMENSION, VALUE_INTEGER); // 0
+            put(TAG_PIXEL_Y_DIMENSION, VALUE_INTEGER);
+            put(TAG_SENSING_METHOD, VALUE_INTEGER);
+            put(TAG_SUBJECT_AREA, VALUE_INTEGER);
+            put(TAG_SUBJECT_DISTANCE_RANGE, VALUE_INTEGER);
+            put(TAG_SUBJECT_LOCATION, VALUE_INTEGER);
+            put(TAG_GPS_DIFFERENTIAL, VALUE_INTEGER);
+            put(TAG_THUMBNAIL_IMAGE_LENGTH, VALUE_INTEGER);
+            put(TAG_THUMBNAIL_IMAGE_WIDTH, VALUE_INTEGER);
+            put(TAG_DIGITAL_ZOOM_RATIO, VALUE_DOUBLE);
+            put(TAG_EXPOSURE_BIAS_VALUE, VALUE_DOUBLE);
+            put(TAG_SUBJECT_DISTANCE, VALUE_DOUBLE);
         }
     };
 }

@@ -7,6 +7,9 @@ public class TagType implements Parcelable {
 
     private static final String REGEXP_TEXT_STRING = "";
     private static final String REGEXP_DATE_STRING = "";
+    private static final String REGEXP_TIMESTAMP_STRING = "";
+    private static final String REGEXP_DATETIME_STRING = "";
+    private static final String REGEXT_RANGED_STRING = "";
     private static final String REGEXP_BOOLEAN_INTEGER = "";
     private static final String REGEXP_VALUE_INTEGER = "";
     private static final String REGEXP_POSITION_DOUBLE = "";
@@ -26,17 +29,23 @@ public class TagType implements Parcelable {
 
     public static TagType build(InputType inputType) {
         switch (inputType) {
-            case TextString:
+            case TEXT_STRING:
                 return new TagType(inputType, REGEXP_TEXT_STRING);
-            case DateString:
+            case DATE_STRING:
                 return new TagType(inputType, REGEXP_DATE_STRING);
-            case BooleanInteger:
+            case TIMESTAMP_STRING:
+                return new TagType(inputType, REGEXP_TIMESTAMP_STRING);
+            case DATETIME_STRING:
+                return new TagType(inputType, REGEXP_DATETIME_STRING);
+            case RANGED_STRING:
+                return new TagType(inputType, REGEXT_RANGED_STRING);
+            case RANGED_INTEGER:
                 return new TagType(inputType, REGEXP_BOOLEAN_INTEGER);
-            case ValueInteger:
+            case VALUE_INTEGER:
                 return new TagType(inputType, REGEXP_VALUE_INTEGER);
-            case ValueDouble:
+            case VALUE_DOUBLE:
                 return new TagType(inputType, REGEXP_VALUE_DOUBLE);
-            case PositionDouble:
+            case POSITION_DOUBLE:
                 return new TagType(inputType, REGEXP_POSITION_DOUBLE);
             default:
                 throw new IllegalStateException("Wrong input type");
