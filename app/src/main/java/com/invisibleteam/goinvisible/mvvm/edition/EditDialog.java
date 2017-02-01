@@ -10,6 +10,8 @@ import android.os.Parcelable;
 import com.invisibleteam.goinvisible.model.InputType;
 import com.invisibleteam.goinvisible.model.Tag;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 public class EditDialog extends DialogFragment {
 
     public static final String FRAGMENT_TAG = EditDialog.class.getName();
@@ -44,6 +46,7 @@ public class EditDialog extends DialogFragment {
         return false;
     }
 
+    @SuppressFBWarnings("UC_USELESS_VOID_METHOD")
     private void prepareView() {
         InputType inputType = tag.getTagType().getInputType();
         switch (inputType) {
