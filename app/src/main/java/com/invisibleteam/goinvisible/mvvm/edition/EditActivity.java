@@ -47,7 +47,6 @@ public class EditActivity extends CommonActivity {
         }
     }
 
-
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
     boolean extractBundle() {
         Bundle extras = getIntent().getExtras();
@@ -99,5 +98,6 @@ public class EditActivity extends CommonActivity {
                 //TODO log exception to crashlitycs on else.
             }
         } //TODO log exception to crashlitycs on else.
+        getWindow().getSharedElementEnterTransition();
     }
 }

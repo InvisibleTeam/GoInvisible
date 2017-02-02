@@ -2,6 +2,7 @@ package com.invisibleteam.goinvisible.mvvm.images;
 
 
 import android.databinding.ObservableBoolean;
+import android.widget.ImageView;
 
 import com.invisibleteam.goinvisible.model.ImageDetails;
 import com.invisibleteam.goinvisible.mvvm.images.adapter.ImagesCompoundRecyclerView;
@@ -32,8 +33,8 @@ public class ImagesViewModel {
         imagesCompoundRecyclerView.updateResults(imagesDetailsList);
         imagesCompoundRecyclerView.setOnItemClickListener(new ImagesItemAdapter.OnItemClickListener() {
             @Override
-            public void onItemClick(ImageDetails imageDetails) {
-                imagesView.navigateToEdit(imageDetails);
+            public void onItemClick(ImageView view, ImageDetails imageDetails) {
+                imagesView.navigateToEdit(view, imageDetails);
             }
 
             @Override
