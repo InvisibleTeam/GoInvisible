@@ -36,6 +36,10 @@ public class Tag implements Parcelable {
         return value;
     }
 
+    public TagType getTagType() {
+        return tagType;
+    }
+
     public void setValue(String value) {
         this.value = value;
     }
