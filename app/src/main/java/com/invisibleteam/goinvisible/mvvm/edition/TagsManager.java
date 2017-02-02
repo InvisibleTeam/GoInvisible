@@ -152,12 +152,12 @@ class TagsManager {
         map.put(TAG_CONTRAST, RANGED_INTEGER);
         map.put(TAG_EXPOSURE_MODE, RANGED_INTEGER);
         map.put(TAG_EXPOSURE_PROGRAM, RANGED_INTEGER);
-        map.put(TAG_GAIN_CONTROL, VALUE_INTEGER);
+        map.put(TAG_GAIN_CONTROL, RANGED_INTEGER);
         map.put(TAG_ISO_SPEED_RATINGS, VALUE_INTEGER);
         map.put(TAG_METERING_MODE, RANGED_INTEGER);
         map.put(TAG_SATURATION, RANGED_INTEGER);
         map.put(TAG_SCENE_CAPTURE_TYPE, RANGED_INTEGER);
-        map.put(TAG_SHARPNESS, VALUE_INTEGER);
+        map.put(TAG_SHARPNESS, RANGED_INTEGER);
         map.put(TAG_F_NUMBER, VALUE_DOUBLE); // Aperture
 
         map.put(TAG_SOFTWARE, TEXT_STRING);

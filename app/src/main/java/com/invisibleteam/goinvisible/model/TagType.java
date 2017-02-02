@@ -2,15 +2,22 @@ package com.invisibleteam.goinvisible.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.VisibleForTesting;
 
 public class TagType implements Parcelable {
 
-    private static final String REGEXP_VALUE_INTEGER = "[0-9]*";
-    private static final String REGEXP_VALUE_DOUBLE = "^[0-9]{1,6}\\.[0-9]{1,6}$";
-    private static final String REGEXP_TEXT_STRING = ".*";
-    private static final String REGEXP_DATE_STRING = "^\\d{4}\\-(0?[1-9]|1[012])\\-(0[1-9]|[12][0-9]|3[01])$";
-    private static final String REGEXP_TIMESTAMP_STRING = "^([01][0-9]|2[0-3])\\:([0-5][0-9])\\:([0-5][0-9])$";
-    private static final String REGEXP_DATETIME_STRING;
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    static final String REGEXP_VALUE_INTEGER = "0|^[1-9]([0-9]{0,5})$";
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    static final String REGEXP_VALUE_DOUBLE = "^(0|[1-9]([0-9]{0,5}))(\\.[0-9]{1,6}){0,1}$";
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    static final String REGEXP_TEXT_STRING = ".*";
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    static final String REGEXP_DATE_STRING = "^\\d{4}\\-(0?[1-9]|1[012])\\-(0[1-9]|[12][0-9]|3[01])$";
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    static final String REGEXP_TIMESTAMP_STRING = "^([01][0-9]|2[0-3])\\:([0-5][0-9])\\:([0-5][0-9])$";
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    static final String REGEXP_DATETIME_STRING;
 
     static {
         REGEXP_DATETIME_STRING =
