@@ -47,19 +47,19 @@ class TagsManager {
     }
 
     boolean clearTag(Tag tag) {
-        /*if (tag.getKey().equals(TAG_GPS_TIMESTAMP)) {
+        if (tag.getKey().equals(TAG_GPS_TIMESTAMP)) {
             tag.setValue("00:00:00");
         } else {
-            switch (tag.getObjectType()) {
-                case STRING:
+            switch (tag.getTagType().getInputType()) {
+                case TEXT_STRING:
                     tag.setValue("");
                     break;
-                case INTEGER:
-                case DOUBLE:
+                case VALUE_INTEGER:
+                case VALUE_DOUBLE:
                     tag.setValue("0");
                 default:
             }
-        }*/
+        }
         return editTag(tag);
     }
 

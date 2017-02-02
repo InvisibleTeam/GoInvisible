@@ -1,15 +1,29 @@
 package com.invisibleteam.goinvisible.mvvm.edition.adapter;
 
 
-import com.invisibleteam.goinvisible.BuildConfig;
+import android.content.Context;
+import android.util.AttributeSet;
 
+import com.invisibleteam.goinvisible.BuildConfig;
+import com.invisibleteam.goinvisible.model.InputType;
+import com.invisibleteam.goinvisible.model.Tag;
+import com.invisibleteam.goinvisible.model.TagType;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.robolectric.RobolectricTestRunner;
+import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 
-//@RunWith(RobolectricTestRunner.class)
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+
+@RunWith(RobolectricTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 21)
 public class EditCompoundRecyclerViewTest {
 
-    /*private static final Tag TAG = new Tag("key", "value", InputType.STRING);
+    private static final Tag TAG = new Tag("key", "value", TagType.build(InputType.TEXT_STRING));
     private Context context;
 
     @Before
@@ -30,7 +44,5 @@ public class EditCompoundRecyclerViewTest {
 
         //Then
         verify(adapter).updateTag(TAG);
-    }*/
-
-
+    }
 }
