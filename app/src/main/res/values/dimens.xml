@@ -2,5 +2,5 @@
 <resources>
     <dimen name="images_grid_margin">4dp</dimen>
     <dimen name="text_view_margin">16dp</dimen>
-    <dimen name="information_text_size">32sp</dimen>
+    <dimen name="information_text_size">20sp</dimen>
 </resources>
