@@ -128,10 +128,10 @@ public class TagsManagerTest {
     @Test
     public void whenRangedStringTagIsCleared_DefaultValueIsReturned() throws IOException {
         //When
-        tagsManager.clearTag(new Tag(TAG_GPS_LATITUDE_REF, "35.09234", TagType.build(InputType.RANGED_STRING)));
+        tagsManager.clearTag(new Tag(TAG_GPS_LATITUDE_REF, "NE", TagType.build(InputType.RANGED_STRING)));
 
         //Then
-        verify(exifInterface).setAttribute(TAG_GPS_LATITUDE_REF, "0.00000");
+        verify(exifInterface).setAttribute(TAG_GPS_LATITUDE_REF, "0");
         verify(exifInterface).saveAttributes();
     }
 
