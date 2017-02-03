@@ -61,6 +61,34 @@ public class EditDialogTest {
     }
 
     @Test
+    public void whenWrongNullBundleIsPassed_BundleExtractionIsFailure() {
+        //Given
+        EditDialog dialog = spy(EditDialog.newInstance(activity, TAG));
+        when(dialog.getArguments()).thenReturn(null);
+
+        //When
+        boolean isExtractionFailure = !dialog.extractTag();
+
+        //Then
+        assertTrue(isExtractionFailure);
+    }
+
+    @Test
+    public void whenWrongNullBundleIsPassed_ErrorDialogIsCreated() {
+        //Given
+        EditDialog dialog = spy(EditDialog.newInstance(activity, TAG));
+        when(dialog.getArguments()).thenReturn(null);
+
+        //When
+        dialog.show(activity.getFragmentManager(), EditDialog.FRAGMENT_TAG);
+
+        //Then
+        verify(dialog, times(0)).createTextDialogBinding();
+        verify(dialog).showErrorDialog();
+    }
+
+
+    @Test
     public void whenTextStringTagIsPassed_ProperDialogIsCreated() {
         //Given
         EditDialog dialog = spy(EditDialog.newInstance(activity, TAG));
@@ -72,20 +100,6 @@ public class EditDialogTest {
         //Then
         verify(dialog).createTextDialogBinding();
         verify(dialog, times(0)).showErrorDialog();
-    }
-
-    @Test
-    public void whenInappropriateTagIsPassed_ErrorDialogIsCreated() {
-        //Given
-        EditDialog dialog = spy(EditDialog.newInstance(activity, null));
-
-
-        //When
-        dialog.show(activity.getFragmentManager(), EditDialog.FRAGMENT_TAG);
-
-        //Then
-        verify(dialog, times(0)).createTextDialogBinding();
-        verify(dialog).showErrorDialog();
     }
 
     @Test
