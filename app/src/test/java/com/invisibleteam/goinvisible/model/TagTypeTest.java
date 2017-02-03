@@ -26,7 +26,7 @@ public class TagTypeTest {
             "1.0,       false",
             "1234567,   false"
     })
-    public void whenValueIntegerRegularExpressionVerifiesText_ReturningCorrectValues(String text, boolean result) {
+    public void whenValueIntegerRegularExpressionVerifiesText_CorrectValuesAreReturned(String text, boolean result) {
         assertEquals(result, IsMatch(text, REGEXP_VALUE_INTEGER));
     }
 
@@ -39,14 +39,14 @@ public class TagTypeTest {
             "1234567.0, false",
             "0.1234567, false"
     })
-    public void whenValueDoubleRegularExpressionVerifiesText_ReturningCorrectValues(String text, boolean result) {
+    public void whenValueDoubleRegularExpressionVerifiesText_CorrectValuesAreReturned(String text, boolean result) {
         assertEquals(result, IsMatch(text, REGEXP_VALUE_DOUBLE));
     }
 
     @TestWith({
             "AnyText-NoRestrictions,       true"
     })
-    public void whenTextStringRegularExpressionVerifiesText_ReturningCorrectValues(String text, boolean result) {
+    public void whenTextStringRegularExpressionVerifiesText_CorrectValuesAreReturned(String text, boolean result) {
         assertEquals(result, IsMatch(text, REGEXP_TEXT_STRING));
     }
 
@@ -59,7 +59,7 @@ public class TagTypeTest {
             "9999-12-32,       false",
             "2000:12:22,       false",
     })
-    public void whenDateStringRegularExpressionVerifiesText_ReturningCorrectValues(String text, boolean result) {
+    public void whenDateStringRegularExpressionVerifiesText_CorrectValuesAreReturned(String text, boolean result) {
         assertEquals(result, IsMatch(text, REGEXP_DATE_STRING));
     }
 
@@ -69,7 +69,7 @@ public class TagTypeTest {
             "24:00:00,       false",
             "13:60:60,       false"
     })
-    public void whenTimeStampStringRegularExpressionVerifiesText_ReturningCorrectValues(String text, boolean result) {
+    public void whenTimeStampStringRegularExpressionVerifiesText_CorrectValuesAreReturned(String text, boolean result) {
         assertEquals(result, IsMatch(text, REGEXP_TIMESTAMP_STRING));
     }
 
@@ -79,14 +79,14 @@ public class TagTypeTest {
             "12004-11-12 00:00:00,      false",
             "2004-13-12 00:00:00,       false",
     })
-    public void whenDateTimeStringRegularExpressionVerifiesText_ReturningCorrectValues(String text, boolean result) {
+    public void whenDateTimeStringRegularExpressionVerifiesText_CorrectValuesAreReturned(String text, boolean result) {
         assertEquals(result, IsMatch(text, REGEXP_DATETIME_STRING));
     }
 
-    private static boolean IsMatch(String s, String pattern) {
+    private static boolean IsMatch(String text, String pattern) {
         try {
-            Pattern patt = Pattern.compile(pattern);
-            Matcher matcher = patt.matcher(s);
+            Pattern patternObject = Pattern.compile(pattern);
+            Matcher matcher = patternObject.matcher(text);
             return matcher.matches();
         } catch (Exception e) {
             return false;
