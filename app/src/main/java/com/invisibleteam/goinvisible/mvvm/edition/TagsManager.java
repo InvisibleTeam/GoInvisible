@@ -103,6 +103,7 @@ class TagsManager {
                     tagValue = exifInterface.getAttribute(key);
                     break;
                 case RANGED_INTEGER:
+                case RANGED_STRING:
                 case VALUE_INTEGER:
                     tagValue = exifInterface.getAttributeInt(key, 0);
                     break;
