@@ -47,18 +47,36 @@ class TagsManager {
     }
 
     boolean clearTag(Tag tag) {
-        if (tag.getKey().equals(TAG_GPS_TIMESTAMP)) {
-            tag.setValue("00:00:00");
-        } else {
-            switch (tag.getTagType().getInputType()) {
-                case TEXT_STRING:
-                    tag.setValue("");
-                    break;
-                case VALUE_INTEGER:
-                case VALUE_DOUBLE:
-                    tag.setValue("0");
-                default:
-            }
+        switch (tag.getTagType().getInputType()) {
+            case TEXT_STRING:
+                tag.setValue("");
+                break;
+            case TIMESTAMP_STRING:
+                tag.setValue("00:00:00");
+                break;
+            case DATETIME_STRING:
+                tag.setValue("2001-01-01 00:00:00");
+                break;
+            case DATE_STRING:
+                tag.setValue("2001-01-01");
+                break;
+            case RANGED_STRING:
+                tag.setValue("0.00000");
+                break;
+            case RANGED_INTEGER:
+                tag.setValue("0");
+                break;
+            case VALUE_INTEGER:
+                tag.setValue("0");
+                break;
+            case VALUE_DOUBLE:
+                tag.setValue("0.0");
+                break;
+            case POSITION_DOUBLE:
+                //todo clear this tag when lat long fields will be available
+                break;
+            default:
+                break;
         }
         return editTag(tag);
     }

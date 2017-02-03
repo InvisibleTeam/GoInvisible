@@ -23,7 +23,7 @@ import static org.mockito.Mockito.verify;
 @Config(constants = BuildConfig.class, sdk = 21)
 public class EditCompoundRecyclerViewTest {
 
-    private static final Tag TAG = new Tag("key", "value", TagType.build(InputType.TEXT_STRING));
+    private final Tag tag = new Tag("key", "value", TagType.build(InputType.TEXT_STRING));
     private Context context;
 
     @Before
@@ -40,9 +40,9 @@ public class EditCompoundRecyclerViewTest {
         editCompoundRecyclerView.setItemAdapter(adapter);
 
         //When
-        editCompoundRecyclerView.updateTag(TAG);
+        editCompoundRecyclerView.updateTag(tag);
 
         //Then
-        verify(adapter).updateTag(TAG);
+        verify(adapter).updateTag(tag);
     }
 }

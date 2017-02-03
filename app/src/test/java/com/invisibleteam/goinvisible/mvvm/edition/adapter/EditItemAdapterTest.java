@@ -29,10 +29,10 @@ import static org.mockito.Mockito.when;
 @Config(constants = BuildConfig.class, sdk = 21)
 public class EditItemAdapterTest {
 
-    private Tag TAG = new Tag("key", "value", TagType.build(InputType.TEXT_STRING));
-    private List<Tag> TAGS_LIST = new ArrayList<Tag>() {
+    private final Tag tag = new Tag("key", "value", TagType.build(InputType.TEXT_STRING));
+    private final List<Tag> tagList = new ArrayList<Tag>() {
         {
-            add(TAG);
+            add(tag);
         }
     };
     private Context context;
@@ -43,10 +43,10 @@ public class EditItemAdapterTest {
     }
 
     @Test
-    public void whenTagsListIsNotEmpty_ViewHolderIsBinded() {
+    public void whenTagsListIsNotEmpty_ViewHolderIsBound() {
         //Given
         EditItemAdapter adapter = new EditItemAdapter();
-        adapter.updateImageList(TAGS_LIST);
+        adapter.updateImageList(tagList);
         ViewGroup view = mock(ViewGroup.class);
         when(view.getContext()).thenReturn(context);
 
@@ -55,7 +55,7 @@ public class EditItemAdapterTest {
         adapter.onBindViewHolder(holder, 0);
 
         //Then
-        boolean isItemViewTagProperlySet = holder.itemView.getTag() == TAGS_LIST.get(0);
+        boolean isItemViewTagProperlySet = holder.itemView.getTag() == tagList.get(0);
         String isItemViewModelKeyProperlySet = holder
                 .editItemViewModel
                 .getKey()
@@ -65,6 +65,7 @@ public class EditItemAdapterTest {
                 .getValue()
                 .get();
 
+        assertThat(adapter.getTagsList().size(), is(tagList.size()));
         assertTrue(isItemViewTagProperlySet);
         assertThat(isItemViewModelKeyProperlySet, is("key"));
         assertThat(isItemViewModelValueProperlySet, is("value"));
@@ -74,7 +75,7 @@ public class EditItemAdapterTest {
     public void whenTagIsUpdated_TagsListIsUpdated() {
         //Given
         EditItemAdapter adapter = new EditItemAdapter();
-        adapter.updateImageList(TAGS_LIST);
+        adapter.updateImageList(tagList);
 
         //When
         Tag editedTag = new Tag("key", "editedValue", TagType.build(InputType.TEXT_STRING));
