@@ -14,6 +14,7 @@ public class TagType implements Parcelable {
     private static final String REGEXP_VALUE_INTEGER = "";
     private static final String REGEXP_POSITION_DOUBLE = "";
     private static final String REGEXP_VALUE_DOUBLE = "";
+    private static final String REGEXP_EMPTY = "";
 
     public static final Parcelable.Creator<TagType> CREATOR = new Parcelable.Creator<TagType>() {
         @Override
@@ -48,7 +49,7 @@ public class TagType implements Parcelable {
             case POSITION_DOUBLE:
                 return new TagType(inputType, REGEXP_POSITION_DOUBLE);
             default:
-                throw new IllegalStateException("Wrong input type");
+                return new TagType(InputType.INDEFINITE, REGEXP_EMPTY);
         }
     }
 
