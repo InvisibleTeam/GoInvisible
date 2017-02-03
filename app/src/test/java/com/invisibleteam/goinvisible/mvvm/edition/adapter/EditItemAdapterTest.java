@@ -18,10 +18,12 @@ import org.robolectric.annotation.Config;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.invisibleteam.goinvisible.util.TagsMatcher.containsItem;
+import static com.invisibleteam.goinvisible.util.TagsMatcher.containsKey;
 import static com.invisibleteam.goinvisible.util.TagsMatcher.containsTag;
+import static com.invisibleteam.goinvisible.util.TagsMatcher.containsValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -55,20 +57,12 @@ public class EditItemAdapterTest {
         adapter.onBindViewHolder(holder, 0);
 
         //Then
-        boolean isItemViewTagProperlySet = holder.itemView.getTag() == tagList.get(0);
-        String isItemViewModelKeyProperlySet = holder
-                .editItemViewModel
-                .getKey()
-                .get();
-        String isItemViewModelValueProperlySet = holder
-                .editItemViewModel
-                .getValue()
-                .get();
+        EditItemViewModel editItemViewModel = holder.editItemViewModel;
 
         assertThat(adapter.getTagsList().size(), is(tagList.size()));
-        assertTrue(isItemViewTagProperlySet);
-        assertThat(isItemViewModelKeyProperlySet, is("key"));
-        assertThat(isItemViewModelValueProperlySet, is("value"));
+        assertThat(holder.itemView, containsItem(tagList.get(0)));
+        assertThat(editItemViewModel, containsKey("key"));
+        assertThat(editItemViewModel, containsValue("value"));
     }
 
     @Test
