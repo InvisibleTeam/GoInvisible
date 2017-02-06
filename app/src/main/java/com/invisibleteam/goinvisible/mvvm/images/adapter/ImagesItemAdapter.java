@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.invisibleteam.goinvisible.R;
@@ -37,7 +38,7 @@ public class ImagesItemAdapter extends RecyclerView.Adapter<ImagesItemAdapter.Vi
             itemView.setOnClickListener(view1 -> {
                 if (onItemClickListener != null) {
                     ImageDetails imageDetails = (ImageDetails) view1.getTag();
-                    onItemClickListener.onItemClick(imageDetails);
+                    onItemClickListener.onItemClick((ImageView) itemView.findViewById(R.id.image), imageDetails);
                 }
             });
             return new JpegImageViewHolder(itemView);
@@ -130,7 +131,7 @@ public class ImagesItemAdapter extends RecyclerView.Adapter<ImagesItemAdapter.Vi
     }
 
     public interface OnItemClickListener {
-        void onItemClick(ImageDetails imageDetails);
+        void onItemClick(ImageView view, ImageDetails imageDetails);
 
         void onUnsupportedItemClick();
     }

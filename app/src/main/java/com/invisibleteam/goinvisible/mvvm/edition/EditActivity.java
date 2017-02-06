@@ -104,5 +104,6 @@ public class EditActivity extends CommonActivity {
                 //TODO log exception to crashlitycs on else.
             }
         } //TODO log exception to crashlitycs on else.
+        getWindow().getSharedElementEnterTransition();
     }
 }

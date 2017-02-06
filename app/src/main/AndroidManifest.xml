@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest package="com.invisibleteam.goinvisible"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          package="com.invisibleteam.goinvisible">
 
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 
     <application
+        android:name=".GoInvisibleApplication"
         android:allowBackup="true"
         android:fullBackupContent="@xml/goinvisible_backup_scheme"
         android:icon="@mipmap/ic_launcher"
@@ -14,12 +15,12 @@
         android:theme="@style/AppTheme">
         <activity android:name=".mvvm.images.ImagesActivity">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.MAIN"/>
 
-                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".mvvm.edition.EditActivity" />
+        <activity android:name=".mvvm.edition.EditActivity"/>
     </application>
 
 </manifest>

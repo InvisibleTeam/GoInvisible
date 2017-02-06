@@ -3,6 +3,7 @@ package com.invisibleteam.goinvisible.mvvm.images;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.support.design.widget.Snackbar;
+import android.widget.ImageView;
 
 import com.invisibleteam.goinvisible.BuildConfig;
 import com.invisibleteam.goinvisible.model.ImageDetails;
@@ -43,9 +44,10 @@ public class ImagesActivityTest {
         //given
         ImageDetails imageDetails = new ImageDetails("ImagePath", "ImageName");
         ShadowActivity shadowActivity = shadowOf(activity);
+        ImageView imageView = new ImageView(activity);
 
         //when
-        activity.navigateToEdit(imageDetails);
+        activity.navigateToEdit(imageView, imageDetails);
 
         //then
         Intent editActivityIntent = shadowActivity.peekNextStartedActivity();
@@ -58,8 +60,11 @@ public class ImagesActivityTest {
 
     @Test
     public void whenSupportedImageIsClicked_EditActivityIsStarted() {
+        //Given
+        ImageView imageView = new ImageView(activity);
+
         //When
-        activity.navigateToEdit(new ImageDetails("path", "name"));
+        activity.navigateToEdit(imageView, new ImageDetails("path", "name"));
 
         //Then
         Intent startedIntent = shadowOf(activity).getNextStartedActivity();

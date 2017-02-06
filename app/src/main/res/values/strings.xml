@@ -5,4 +5,5 @@
     <string name="permissions_dialog_message">Storage permission is necessary to use this application.</string>
     <string name="exit_app">exit application</string>
     <string name="no_images_info">There are no images to edit</string>
+    <string name="transition">transition</string>
 </resources>

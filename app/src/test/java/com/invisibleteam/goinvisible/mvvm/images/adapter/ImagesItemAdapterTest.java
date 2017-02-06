@@ -1,9 +1,11 @@
 package com.invisibleteam.goinvisible.mvvm.images.adapter;
 
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.google.common.collect.ImmutableList;
 import com.invisibleteam.goinvisible.BuildConfig;
+import com.invisibleteam.goinvisible.R;
 import com.invisibleteam.goinvisible.model.ImageDetails;
 import com.invisibleteam.goinvisible.mvvm.images.ImagesActivity;
 
@@ -70,7 +72,8 @@ public class ImagesItemAdapterTest {
         viewHolder.itemView.performClick();
 
         //then
-        verify(onItemClickListener).onItemClick(imageDetails);
+        ImageView imageView = (ImageView) viewHolder.itemView.findViewById(R.id.image);
+        verify(onItemClickListener).onItemClick(imageView, imageDetails);
     }
 
     @Test
