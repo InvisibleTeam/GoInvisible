@@ -61,11 +61,7 @@ class TagsManager {
                 tag.setValue("2001-01-01");
                 break;
             case RANGED_STRING:
-                tag.setValue("0");
-                break;
             case RANGED_INTEGER:
-                tag.setValue("0");
-                break;
             case VALUE_INTEGER:
                 tag.setValue("0");
                 break;
