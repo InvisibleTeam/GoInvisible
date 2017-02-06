@@ -29,12 +29,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/text_view_margin"
-            app:errorEnabled="@{viewModel.error}">
+            app:errorEnabled="@{viewModel.error}"
+            app:hintEnabled="false">
 
             <com.invisibleteam.goinvisible.mvvm.view.EditTextField
                 android:id="@+id/value_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:hint="@string/enter_value_hint"
                 android:imeOptions="actionDone"
                 android:inputType="textFilter"
                 android:lines="1"
