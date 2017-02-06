@@ -6,7 +6,7 @@ import android.os.Parcelable;
 public class Tag implements Parcelable {
 
     @SuppressWarnings("unused")
-    public static final Creator<Tag> CREATOR = new Creator<Tag>() {
+    public static final Parcelable.Creator<Tag> CREATOR = new Parcelable.Creator<Tag>() {
         @Override
         public Tag createFromParcel(Parcel in) {
             return new Tag(in);
@@ -20,12 +20,12 @@ public class Tag implements Parcelable {
 
     private String key;
     private String value;
-    private ObjectType objectType;
+    private TagType tagType;
 
-    public Tag(String key, String value, ObjectType objectType) {
+    public Tag(String key, String value, TagType tagType) {
         this.key = key;
         this.value = value;
-        this.objectType = objectType;
+        this.tagType = tagType;
     }
 
     public String getKey() {
@@ -36,12 +36,18 @@ public class Tag implements Parcelable {
         return value;
     }
 
-    public ObjectType getObjectType() {
-        return objectType;
+    public TagType getTagType() {
+        return tagType;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
     }
 
     protected Tag(Parcel in) {
-        this(in.readString(), in.readString(), (ObjectType) in.readSerializable());
+        key = in.readString();
+        value = in.readString();
+        tagType = (TagType) in.readValue(TagType.class.getClassLoader());
     }
 
     @Override
@@ -53,10 +59,6 @@ public class Tag implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(key);
         dest.writeString(value);
-        dest.writeSerializable(objectType);
-    }
-
-    public void setValue(String value) {
-        this.value = value;
+        dest.writeValue(tagType);
     }
 }

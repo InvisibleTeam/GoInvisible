@@ -35,6 +35,11 @@ public class EditActivity extends CommonActivity {
         return intent;
     }
 
+    private final EditTagListener editTagListener = tag -> {
+        EditDialog dialog = EditDialog.newInstance(this, tag);
+        dialog.show(getFragmentManager(), EditDialog.FRAGMENT_TAG);
+    };
+
     private ImageDetails imageDetails;
     private EditViewModel editViewModel;
 
@@ -46,7 +51,6 @@ public class EditActivity extends CommonActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
     }
-
 
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
     boolean extractBundle() {
@@ -92,7 +96,8 @@ public class EditActivity extends CommonActivity {
                         imageDetails.getName(),
                         imageDetails.getPath(),
                         editCompoundRecyclerView,
-                        new TagsManager(exifInterface));
+                        new TagsManager(exifInterface),
+                        editTagListener);
                 activityEditBinding.setViewModel(editViewModel);
             } catch (IOException e) {
                 Log.d(TAG, String.valueOf(e.getMessage()));
