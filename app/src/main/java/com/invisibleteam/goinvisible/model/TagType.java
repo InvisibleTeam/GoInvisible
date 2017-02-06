@@ -12,19 +12,7 @@ public class TagType implements Parcelable {
     static final String REGEXP_VALUE_DOUBLE = "^(0|[1-9]([0-9]{0,5}))(\\.[0-9]{1,6}){0,1}$";
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
     static final String REGEXP_TEXT_STRING = ".*";
-    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
-    static final String REGEXP_DATE_STRING = "^\\d{4}\\-(0?[1-9]|1[012])\\-(0[1-9]|[12][0-9]|3[01])$";
-    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
-    static final String REGEXP_TIMESTAMP_STRING = "^([01][0-9]|2[0-3])\\:([0-5][0-9])\\:([0-5][0-9])$";
-    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
-    static final String REGEXP_DATETIME_STRING;
     private static final String REGEXP_EMPTY = "";
-
-    static {
-        REGEXP_DATETIME_STRING =
-                "^\\d{4}\\-(0?[1-9]|1[012])\\-(0[1-9]|[12][0-9]|3[01])" +
-                        " ([01][0-9]|2[0-3])\\:([0-5][0-9])\\:([0-5][0-9])$";
-    }
 
     public static final Parcelable.Creator<TagType> CREATOR = new Parcelable.Creator<TagType>() {
         @Override
@@ -42,12 +30,6 @@ public class TagType implements Parcelable {
         switch (inputType) {
             case TEXT_STRING:
                 return new TagType(inputType, REGEXP_TEXT_STRING);
-            case DATE_STRING:
-                return new TagType(inputType, REGEXP_DATE_STRING);
-            case TIMESTAMP_STRING:
-                return new TagType(inputType, REGEXP_TIMESTAMP_STRING);
-            case DATETIME_STRING:
-                return new TagType(inputType, REGEXP_DATETIME_STRING);
             case RANGED_STRING:
                 return new TagType(inputType, REGEXP_TEXT_STRING);
             case RANGED_INTEGER:
@@ -58,6 +40,10 @@ public class TagType implements Parcelable {
                 return new TagType(inputType, REGEXP_VALUE_DOUBLE);
             case POSITION_DOUBLE:
                 return new TagType(inputType, REGEXP_VALUE_DOUBLE);
+            case DATE_STRING:
+            case TIMESTAMP_STRING:
+            case DATETIME_STRING:
+                return new TagType(inputType, REGEXP_EMPTY);
             default:
                 return new TagType(InputType.INDEFINITE, REGEXP_EMPTY);
         }
@@ -79,7 +65,7 @@ public class TagType implements Parcelable {
         return validationRegexp;
     }
 
-    protected TagType(Parcel in) {
+    private TagType(Parcel in) {
         inputType = (InputType) in.readValue(InputType.class.getClassLoader());
         validationRegexp = in.readString();
     }

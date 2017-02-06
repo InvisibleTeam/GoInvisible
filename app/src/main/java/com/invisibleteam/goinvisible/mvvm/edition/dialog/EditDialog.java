@@ -1,10 +1,8 @@
 package com.invisibleteam.goinvisible.mvvm.edition.dialog;
 
-import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.Fragment;
-import android.app.TimePickerDialog;
 import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.databinding.ViewDataBinding;
@@ -23,7 +21,6 @@ import com.invisibleteam.goinvisible.model.InputType;
 import com.invisibleteam.goinvisible.model.Tag;
 import com.invisibleteam.goinvisible.mvvm.edition.OnTagActionListener;
 
-import java.util.Calendar;
 import java.util.Locale;
 
 public class EditDialog extends DialogFragment {
@@ -68,16 +65,17 @@ public class EditDialog extends DialogFragment {
     private Dialog createDialog() {
         InputType inputType = tag.getTagType().getInputType();
         ViewDataBinding binding;
+        DateDialog dialog = new DateDialog(tag, listener, getActivity());
         switch (inputType) {
             case TEXT_STRING:
                 binding = createTextDialogBinding();
                 break;
             case TIMESTAMP_STRING:
-                return createTimeDialog();
+                return dialog.createTimeDialog();
             case DATETIME_STRING:
-                return createTimeDialog();
+                return dialog.createDateTimeDialog();
             case DATE_STRING:
-                return createDateDialog();
+                return dialog.createDateDialog();
 //            case RANGED_STRING://TODO other dialog types
 //                break;
 //            case RANGED_INTEGER:
@@ -93,32 +91,10 @@ public class EditDialog extends DialogFragment {
         }
 
         ((TextDialogBinding) binding).cancelButton.setOnClickListener(v -> getDialog().cancel());
-        return new AlertDialog.Builder(getActivity(), R.style.AlertDialogStyle)
+        return new AlertDialog
+                .Builder(getActivity(), R.style.AlertDialogStyle)
                 .setView(binding.getRoot())
                 .create();
-    }
-
-    private Dialog createDateDialog() {
-        DatePickerDialog dialog = new DatePickerDialog(getActivity());
-        dialog.setOnDateSetListener((view, year, month, dayOfMonth) -> {
-            dialog.cancel();
-        });
-        return dialog;
-    }
-
-    private Dialog createTimeDialog() {
-        Calendar cal = Calendar.getInstance();
-        int hour = cal.get(Calendar.HOUR_OF_DAY);
-        int minute = cal.get(Calendar.MINUTE);
-        TimePickerDialog.OnTimeSetListener listener = (view, hourOfDay, minute1) -> {
-        };
-
-        return new TimePickerDialog(
-                getActivity(),
-                listener,
-                hour,
-                minute,
-                true);
     }
 
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
@@ -145,7 +121,7 @@ public class EditDialog extends DialogFragment {
             String textValue = binding.valueText.getText().toString();
             if (textValue.matches(validationRegexp)) {
                 tag.setValue(textValue);
-                listener.onUpdate(tag);
+                listener.onEditEnded(tag);
                 dismiss();
                 return;
             }

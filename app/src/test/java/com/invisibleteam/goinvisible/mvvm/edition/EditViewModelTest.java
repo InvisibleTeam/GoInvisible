@@ -13,6 +13,8 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -65,10 +67,10 @@ public class EditViewModelTest {
     @Test
     public void whenTagIsEdited_EditionIsPropagate() {
         //When
-        editViewModel.onEdit(tag);
+        editViewModel.onEditStarted(tag);
 
         //Then
-        verify(listener).openEditDialog(tag);
+        verify(listener).openEditDialog(eq(tag), any());
     }
 
     @Test

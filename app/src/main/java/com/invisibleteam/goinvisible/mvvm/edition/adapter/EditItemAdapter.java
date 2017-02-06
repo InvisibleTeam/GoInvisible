@@ -36,7 +36,7 @@ class EditItemAdapter extends RecyclerView.Adapter<EditItemAdapter.ViewHolder> {
         viewHolder.itemView.setOnClickListener(view -> {
             if (onTagActionListener != null) {
                 Tag tag = (Tag) itemView.getTag();
-                onTagActionListener.onEdit(tag);
+                onTagActionListener.onEditStarted(tag);
             }
         });
 
