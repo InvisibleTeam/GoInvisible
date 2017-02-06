@@ -9,8 +9,8 @@ public class EditItemViewModel {
     private final ObservableString value = new ObservableString("");
 
     void setModel(Tag image) {
-        this.key.set(image.getKey());
-        this.value.set(image.getValue());
+        this.key.set(image.getFormattedKey());
+        this.value.set(image.getFormattedValue());
     }
 
     public ObservableString getKey() {
