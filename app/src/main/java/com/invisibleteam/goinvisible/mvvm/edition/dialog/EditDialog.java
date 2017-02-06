@@ -93,7 +93,7 @@ public class EditDialog extends DialogFragment {
                 .create();
     }
 
-    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE) //TODO maybe move this into different class
     ViewDataBinding createTextDialogBinding() {
         TextDialogBinding binding = DataBindingUtil.inflate(
                 LayoutInflater.from(getActivity()),
@@ -125,7 +125,7 @@ public class EditDialog extends DialogFragment {
     Dialog showErrorDialog() {
         return new AlertDialog
                 .Builder(getActivity(), R.style.AlertDialogStyle)
-                .setTitle(R.string.error_message)
+                .setTitle(R.string.error)
                 .setMessage(R.string.error_message)
                 .setPositiveButton(getString(android.R.string.ok).toUpperCase(Locale.getDefault()), null)
                 .setCancelable(false)

@@ -11,7 +11,7 @@ public class TextDialogViewModel {
     private final ObservableString value = new ObservableString("");
     private ObservableBoolean isError = new ObservableBoolean(false);
 
-    public TextDialogViewModel(Tag image) {
+    TextDialogViewModel(Tag image) {
         this.key.set(image.getKey());
         this.value.set(image.getValue());
     }
@@ -28,7 +28,7 @@ public class TextDialogViewModel {
         return isError;
     }
 
-    public void setIsError(boolean isError) {
+    void setIsError(boolean isError) {
         this.isError.set(isError);
     }
 }
