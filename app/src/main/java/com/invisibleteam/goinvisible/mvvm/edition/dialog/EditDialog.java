@@ -1,8 +1,10 @@
 package com.invisibleteam.goinvisible.mvvm.edition.dialog;
 
+import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.Fragment;
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.databinding.ViewDataBinding;
@@ -19,7 +21,9 @@ import com.invisibleteam.goinvisible.R;
 import com.invisibleteam.goinvisible.databinding.TextDialogBinding;
 import com.invisibleteam.goinvisible.model.InputType;
 import com.invisibleteam.goinvisible.model.Tag;
+import com.invisibleteam.goinvisible.mvvm.edition.OnTagActionListener;
 
+import java.util.Calendar;
 import java.util.Locale;
 
 public class EditDialog extends DialogFragment {
@@ -27,6 +31,7 @@ public class EditDialog extends DialogFragment {
     public static final String FRAGMENT_TAG = EditDialog.class.getName();
     public static final String EXTRA_TAG = "extra_tag";
     public static final String TAG = EditDialog.class.getSimpleName();
+    private OnTagActionListener listener;
 
     public static EditDialog newInstance(Context context, Tag tag) {
         Bundle bundle = new Bundle();
@@ -67,13 +72,13 @@ public class EditDialog extends DialogFragment {
             case TEXT_STRING:
                 binding = createTextDialogBinding();
                 break;
-//            case TIMESTAMP_STRING: //TODO other dialog types
-//                break;
-//            case DATETIME_STRING:
-//                break;
-//            case DATE_STRING:
-//                break;
-//            case RANGED_STRING:
+            case TIMESTAMP_STRING:
+                return createTimeDialog();
+            case DATETIME_STRING:
+                return createTimeDialog();
+            case DATE_STRING:
+                return createDateDialog();
+//            case RANGED_STRING://TODO other dialog types
 //                break;
 //            case RANGED_INTEGER:
 //                break;
@@ -93,7 +98,30 @@ public class EditDialog extends DialogFragment {
                 .create();
     }
 
-    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE) //TODO maybe move this into different class
+    private Dialog createDateDialog() {
+        DatePickerDialog dialog = new DatePickerDialog(getActivity());
+        dialog.setOnDateSetListener((view, year, month, dayOfMonth) -> {
+            dialog.cancel();
+        });
+        return dialog;
+    }
+
+    private Dialog createTimeDialog() {
+        Calendar cal = Calendar.getInstance();
+        int hour = cal.get(Calendar.HOUR_OF_DAY);
+        int minute = cal.get(Calendar.MINUTE);
+        TimePickerDialog.OnTimeSetListener listener = (view, hourOfDay, minute1) -> {
+        };
+
+        return new TimePickerDialog(
+                getActivity(),
+                listener,
+                hour,
+                minute,
+                true);
+    }
+
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
     ViewDataBinding createTextDialogBinding() {
         TextDialogBinding binding = DataBindingUtil.inflate(
                 LayoutInflater.from(getActivity()),
@@ -113,7 +141,14 @@ public class EditDialog extends DialogFragment {
         });
 
         binding.okButton.setOnClickListener(v -> {
-            // TODO validation
+            String validationRegexp = tag.getTagType().getValidationRegexp();
+            String textValue = binding.valueText.getText().toString();
+            if (textValue.matches(validationRegexp)) {
+                tag.setValue(textValue);
+                listener.onUpdate(tag);
+                dismiss();
+                return;
+            }
             viewModel.setIsError(true);
             binding.valueTextLayout.setError("Error");
         });
@@ -130,5 +165,9 @@ public class EditDialog extends DialogFragment {
                 .setPositiveButton(getString(android.R.string.ok).toUpperCase(Locale.getDefault()), null)
                 .setCancelable(false)
                 .show();
+    }
+
+    public void setActionTagListener(OnTagActionListener actionTagListener) {
+        listener = actionTagListener;
     }
 }

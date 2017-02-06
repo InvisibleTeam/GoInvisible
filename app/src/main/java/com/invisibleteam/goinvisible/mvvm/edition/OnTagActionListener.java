@@ -7,4 +7,6 @@ public interface OnTagActionListener {
     void onClear(Tag tag);
 
     void onEdit(Tag tag);
+
+    void onUpdate(Tag tag);
 }
