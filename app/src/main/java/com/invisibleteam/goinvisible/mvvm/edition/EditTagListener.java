@@ -4,5 +4,5 @@ import com.invisibleteam.goinvisible.model.Tag;
 
 interface EditTagListener {
 
-    void openEditDialog(Tag tag);
+    void openEditDialog(Tag tag, OnTagActionListener listener);
 }
