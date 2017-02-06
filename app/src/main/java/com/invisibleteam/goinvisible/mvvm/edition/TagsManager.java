@@ -5,6 +5,7 @@ import android.media.ExifInterface;
 import android.support.annotation.VisibleForTesting;
 import android.util.Log;
 
+import com.invisibleteam.goinvisible.model.GeolocationTag;
 import com.invisibleteam.goinvisible.model.InputType;
 import com.invisibleteam.goinvisible.model.Tag;
 import com.invisibleteam.goinvisible.model.TagType;
@@ -19,6 +20,7 @@ import java.util.Map;
 import static android.media.ExifInterface.*;
 import static com.invisibleteam.goinvisible.model.InputType.DATETIME_STRING;
 import static com.invisibleteam.goinvisible.model.InputType.DATE_STRING;
+import static com.invisibleteam.goinvisible.model.InputType.POSITION_DOUBLE;
 import static com.invisibleteam.goinvisible.model.InputType.RANGED_INTEGER;
 import static com.invisibleteam.goinvisible.model.InputType.RANGED_STRING;
 import static com.invisibleteam.goinvisible.model.InputType.TEXT_STRING;
@@ -77,9 +79,22 @@ class TagsManager {
         return editTag(tag);
     }
 
+    private GeolocationTag getGeolocationTag() {
+        TagType tagType = TagType.build(POSITION_DOUBLE);
+        Double lat = exifInterface.getAttributeDouble(TAG_GPS_LATITUDE, 0);
+        Double lng = exifInterface.getAttributeDouble(TAG_GPS_LONGITUDE, 0);
+        return new GeolocationTag(
+                TAG_GPS_LATITUDE,
+                TAG_GPS_LONGITUDE,
+                String.valueOf(lat),
+                String.valueOf(lng),
+                tagType);
+    }
+
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
     List<Tag> getAllTags() {
         List<Tag> tagsList = new ArrayList<>();
+        tagsList.add(getGeolocationTag());
         tagsList.addAll(getAllTags(TAG_LIST));
         tagsList.addAll(getAllTags(TAG_LIST_N));
         return tagsList;
