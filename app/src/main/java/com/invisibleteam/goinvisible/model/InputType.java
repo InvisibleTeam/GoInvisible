@@ -36,5 +36,9 @@ public enum InputType {
     /**
      * Latitude, longitude double.
      */
-    POSITION_DOUBLE
+    POSITION_DOUBLE,
+    /**
+     * For unknown type.
+     */
+    INDEFINITE
 }

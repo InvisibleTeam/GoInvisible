@@ -18,6 +18,7 @@ public class TagType implements Parcelable {
     static final String REGEXP_TIMESTAMP_STRING = "^([01][0-9]|2[0-3])\\:([0-5][0-9])\\:([0-5][0-9])$";
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
     static final String REGEXP_DATETIME_STRING;
+    private static final String REGEXP_EMPTY = "";
 
     static {
         REGEXP_DATETIME_STRING =
@@ -58,7 +59,7 @@ public class TagType implements Parcelable {
             case POSITION_DOUBLE:
                 return new TagType(inputType, REGEXP_VALUE_DOUBLE);
             default:
-                throw new IllegalStateException("Wrong input type");
+                return new TagType(InputType.INDEFINITE, REGEXP_EMPTY);
         }
     }
 

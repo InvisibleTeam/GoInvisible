@@ -34,6 +34,23 @@ public class TagsMatcher {
         };
     }
 
+    public static Matcher<Tag> equals(final Tag tag) {
+        return new TypeSafeMatcher<Tag>() {
+
+            @Override
+            public boolean matchesSafely(Tag expectedTag) {
+                return expectedTag.getKey().equals(tag.getKey())
+                        && expectedTag.getValue().equals(tag.getValue())
+                        && expectedTag.getTagType().equals(tag.getTagType());
+            }
+
+            @Override
+            public void describeTo(Description description) {
+                description.appendValue("List doesn't contain expected tag");
+            }
+        };
+    }
+
     public static Matcher<EditItemViewModel> containsKey(final String key) {
         return new TypeSafeMatcher<EditItemViewModel>() {
 
@@ -76,6 +93,8 @@ public class TagsMatcher {
             @Override
             public void describeTo(Description description) {
                 description.appendValue("ViewModel doesn't contain expected value");
+                description
+                        .appendValue("Tags are not containing the same values");
             }
         };
     }
