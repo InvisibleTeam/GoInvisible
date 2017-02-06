@@ -47,19 +47,33 @@ class TagsManager {
     }
 
     boolean clearTag(Tag tag) {
-        /*if (tag.getKey().equals(TAG_GPS_TIMESTAMP)) {
-            tag.setValue("00:00:00");
-        } else {
-            switch (tag.getObjectType()) {
-                case STRING:
-                    tag.setValue("");
-                    break;
-                case INTEGER:
-                case DOUBLE:
-                    tag.setValue("0");
-                default:
-            }
-        }*/
+        switch (tag.getTagType().getInputType()) {
+            case TEXT_STRING:
+                tag.setValue("");
+                break;
+            case TIMESTAMP_STRING:
+                tag.setValue("00:00:00");
+                break;
+            case DATETIME_STRING:
+                tag.setValue("2001-01-01 00:00:00");
+                break;
+            case DATE_STRING:
+                tag.setValue("2001-01-01");
+                break;
+            case RANGED_STRING:
+            case RANGED_INTEGER:
+            case VALUE_INTEGER:
+                tag.setValue("0");
+                break;
+            case VALUE_DOUBLE:
+                tag.setValue("0.0");
+                break;
+            case POSITION_DOUBLE:
+                //todo clear this tag when lat long fields will be available
+                break;
+            default:
+                break;
+        }
         return editTag(tag);
     }
 
@@ -85,6 +99,7 @@ class TagsManager {
                     tagValue = exifInterface.getAttribute(key);
                     break;
                 case RANGED_INTEGER:
+                case RANGED_STRING:
                 case VALUE_INTEGER:
                     tagValue = exifInterface.getAttributeInt(key, 0);
                     break;
@@ -152,12 +167,12 @@ class TagsManager {
         map.put(TAG_CONTRAST, RANGED_INTEGER);
         map.put(TAG_EXPOSURE_MODE, RANGED_INTEGER);
         map.put(TAG_EXPOSURE_PROGRAM, RANGED_INTEGER);
-        map.put(TAG_GAIN_CONTROL, VALUE_INTEGER);
+        map.put(TAG_GAIN_CONTROL, RANGED_INTEGER);
         map.put(TAG_ISO_SPEED_RATINGS, VALUE_INTEGER);
         map.put(TAG_METERING_MODE, RANGED_INTEGER);
         map.put(TAG_SATURATION, RANGED_INTEGER);
         map.put(TAG_SCENE_CAPTURE_TYPE, RANGED_INTEGER);
-        map.put(TAG_SHARPNESS, VALUE_INTEGER);
+        map.put(TAG_SHARPNESS, RANGED_INTEGER);
         map.put(TAG_F_NUMBER, VALUE_DOUBLE); // Aperture
 
         map.put(TAG_SOFTWARE, TEXT_STRING);
