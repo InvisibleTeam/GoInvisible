@@ -2,8 +2,6 @@ package com.invisibleteam.goinvisible.model;
 
 public class GeolocationTag extends Tag {
 
-    private static final String tagKey = "Geolocation";
-
     public GeolocationTag(
             String key,
             String secondKey,
@@ -12,11 +10,6 @@ public class GeolocationTag extends Tag {
             TagType tagType) {
 
         super(key, secondKey, value, secondValue, tagType);
-    }
-
-    @Override
-    protected String generateFormattedKey() {
-        return tagKey;
     }
 
     @Override

@@ -23,7 +23,6 @@ public class Tag implements Parcelable {
     private @Nullable String secondKey;
     private String value;
     private @Nullable String secondValue;
-    private String formattedKey;
     private String formattedValue;
     private TagType tagType;
 
@@ -43,7 +42,6 @@ public class Tag implements Parcelable {
         this.secondValue = secondValue;
         this.tagType = tagType;
 
-        updateFormattedKey();
         updateFormattedValue();
     }
 
@@ -52,17 +50,8 @@ public class Tag implements Parcelable {
         this.secondKey = in.readString();
         this.value = in.readString();
         this.secondValue = in.readString();
-        this.formattedKey = in.readString();
         this.formattedValue = in.readString();
         this.tagType = in.readParcelable(TagType.class.getClassLoader());
-    }
-
-    private void updateFormattedKey() {
-        formattedKey = generateFormattedKey();
-    }
-
-    protected String generateFormattedKey() {
-        return key;
     }
 
     private void updateFormattedValue() {
@@ -103,9 +92,6 @@ public class Tag implements Parcelable {
         updateFormattedValue();
     }
 
-    public String getFormattedKey() {
-        return formattedKey;
-    }
 
     public String getFormattedValue() {
         return formattedValue;
@@ -126,7 +112,6 @@ public class Tag implements Parcelable {
         dest.writeString(this.secondKey);
         dest.writeString(this.value);
         dest.writeString(this.secondValue);
-        dest.writeString(this.formattedKey);
         dest.writeString(this.formattedValue);
         dest.writeParcelable(this.tagType, flags);
     }
