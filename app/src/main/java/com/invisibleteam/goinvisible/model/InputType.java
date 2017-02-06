@@ -38,7 +38,7 @@ public enum InputType {
      */
     POSITION_DOUBLE,
     /**
-     * Indefinite, for test purpose.
+     * For unknown type.
      */
     INDEFINITE
 }

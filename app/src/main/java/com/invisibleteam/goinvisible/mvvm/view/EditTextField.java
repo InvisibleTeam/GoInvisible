@@ -21,11 +21,11 @@ public class EditTextField extends AutoCompleteTextView {
 
     @Override
     public boolean onKeyPreIme(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK &&
-                event.getAction() == KeyEvent.ACTION_UP) {
+        if (keyCode == KeyEvent.KEYCODE_BACK
+                && event.getAction() == KeyEvent.ACTION_UP) {
             clearFocus();
             return false;
         }
-        return super.dispatchKeyEvent(event);
+        return dispatchKeyEvent(event);
     }
 }
