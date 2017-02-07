@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.databinding.DataBindingUtil;
-import android.support.annotation.Nullable;
 import android.support.annotation.VisibleForTesting;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
@@ -16,6 +15,8 @@ import com.invisibleteam.goinvisible.model.Tag;
 import com.invisibleteam.goinvisible.mvvm.edition.OnTagActionListener;
 
 import java.util.Locale;
+
+import javax.annotation.Nullable;
 
 class DialogFactory {
 
@@ -76,7 +77,15 @@ class DialogFactory {
         binding.setViewModel(viewModel);
 
         binding.okButton.setOnClickListener(v -> {
-            validateText(dialog, binding, viewModel, tag, listener, binding.valueText.getText().toString());
+            validateText(
+                    dialog,
+                    binding,
+                    viewModel,
+                    tag,
+                    listener,
+                    binding.valueText
+                            .getText()
+                            .toString());
         });
 
         binding.cancelButton.setOnClickListener(v -> dialog.dismiss());
