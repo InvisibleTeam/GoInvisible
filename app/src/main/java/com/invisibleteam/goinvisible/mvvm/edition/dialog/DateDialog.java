@@ -19,21 +19,21 @@ class DateDialog {
     private Calendar calendar;
     private Tag tag;
 
-    DateDialog(Tag tag, OnTagActionListener listener, Activity activity) {
+    DateDialog(Activity activity, Tag tag, OnTagActionListener listener) {
+        this.activity = activity;
         this.tag = tag;
         this.listener = listener;
-        this.activity = activity;
         this.calendar = Calendar.getInstance();
     }
 
     Dialog createDateDialog() {
-        DatePickerDialog dialog = new DatePickerDialog(activity);
-        dialog.setOnDateSetListener((view, year, month, day) -> {
+        DatePickerDialog.OnDateSetListener listener = (view, year, month, day) -> {
             Calendar calendar = new GregorianCalendar(year, month, day, 0, 0, 0);
             tag.setValue(DateFormatterUtil.format(tag, calendar));
             this.listener.onEditEnded(tag);
-        });
-        return dialog;
+        };
+
+        return createDateTimeDialog(listener);
     }
 
     Dialog createTimeDialog() {
@@ -53,13 +53,21 @@ class DateDialog {
     }
 
     Dialog createDateTimeDialog() {
-        DatePickerDialog dialog = new DatePickerDialog(activity);
-        dialog.setOnDateSetListener((view, year, month, day) -> {
+        DatePickerDialog.OnDateSetListener listener = (view, year, month, day) -> {
             calendar.set(Calendar.YEAR, year);
             calendar.set(Calendar.MONTH, month);
             calendar.set(Calendar.DAY_OF_MONTH, day);
             createTimeDialog().show();
-        });
-        return dialog;
+        };
+
+        return createDateTimeDialog(listener);
+    }
+
+    private Dialog createDateTimeDialog(DatePickerDialog.OnDateSetListener listener) {
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH);
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+        return new DatePickerDialog(activity, listener, year, month, day);
     }
 }
