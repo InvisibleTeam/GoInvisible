@@ -18,8 +18,8 @@ import org.robolectric.annotation.Config;
 
 import static junit.framework.Assert.assertTrue;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -74,47 +74,14 @@ public class EditDialogTest {
     }
 
     @Test
-    public void whenWrongNullBundleIsPassed_ErrorDialogIsCreated() {
-        //Given
-        EditDialog dialog = spy(EditDialog.newInstance(activity, TAG));
-        when(dialog.getArguments()).thenReturn(null);
-
-        //When
-        dialog.show(activity.getFragmentManager(), EditDialog.FRAGMENT_TAG);
-
-        //Then
-        verify(dialog, times(0)).createTextDialogBinding();
-        verify(dialog).showErrorDialog();
-    }
-
-
-    @Test
-    public void whenTextStringTagIsPassed_ProperDialogIsCreated() {
+    public void whenDialogIsInitiated_onCreateDialogIsCalled() {
         //Given
         EditDialog dialog = spy(EditDialog.newInstance(activity, TAG));
 
-
         //When
         dialog.show(activity.getFragmentManager(), EditDialog.FRAGMENT_TAG);
 
         //Then
-        verify(dialog).createTextDialogBinding();
-        verify(dialog, times(0)).showErrorDialog();
-    }
-
-    @Test
-    public void whenIndefiniteInputTtypeIsPassed_ErrorDialogIsCreated() {
-        //Given
-        EditDialog dialog = spy(EditDialog.newInstance(
-                activity,
-                new Tag("key", "value", TagType.build(InputType.INDEFINITE))));
-
-
-        //When
-        dialog.show(activity.getFragmentManager(), EditDialog.FRAGMENT_TAG);
-
-        //Then
-        verify(dialog, times(0)).createTextDialogBinding();
-        verify(dialog).showErrorDialog();
+        verify(dialog).onCreateDialog(any());
     }
 }
