@@ -1,5 +1,6 @@
 package com.invisibleteam.goinvisible.mvvm.edition;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
@@ -10,7 +11,13 @@ import android.support.annotation.VisibleForTesting;
 import android.support.v7.app.ActionBar;
 import android.util.Log;
 import android.view.MenuItem;
+import android.widget.Toast;
 
+import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesRepairableException;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlacePicker;
 import com.invisibleteam.goinvisible.R;
 import com.invisibleteam.goinvisible.databinding.ActivityEditBinding;
 import com.invisibleteam.goinvisible.model.ImageDetails;
@@ -26,7 +33,9 @@ import javax.annotation.Nullable;
 public class EditActivity extends CommonActivity {
 
     private static final String TAG_IMAGE_DETAILS = "extra_image_details";
+    private static final String TAG_MODEL = "tag";
     private static final String TAG = EditActivity.class.getSimpleName();
+    private static final int PLACE_REQUEST_ID = 1;
 
     public static Intent buildIntent(Context context, ImageDetails imageDetails) {
         Bundle bundle = new Bundle();
@@ -38,13 +47,17 @@ public class EditActivity extends CommonActivity {
     }
 
     private final EditTagListener editTagListener = (tag, listener) -> {
-        EditDialog dialog = EditDialog.newInstance(EditActivity.this, tag);
-        dialog.setActionTagListener(listener);
-        dialog.show(getFragmentManager(), EditDialog.FRAGMENT_TAG);
+        if (tag.getKey().equals(ExifInterface.TAG_GPS_LATITUDE)) {
+            this.tag = tag;
+            startPlaceIntent();
+        } else {
+            openEditDialog(tag, listener);
+        }
     };
 
     private ImageDetails imageDetails;
     private EditViewModel editViewModel;
+    private Tag tag;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -53,6 +66,16 @@ public class EditActivity extends CommonActivity {
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
+
+        if (savedInstanceState != null) {
+            tag = savedInstanceState.getParcelable(TAG_MODEL);
+        }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putParcelable(TAG_MODEL, tag);
+        super.onSaveInstanceState(outState);
     }
 
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
@@ -107,5 +130,38 @@ public class EditActivity extends CommonActivity {
                 //TODO log exception to crashlitycs on else.
             }
         } //TODO log exception to crashlitycs on else.
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == PLACE_REQUEST_ID && resultCode == Activity.RESULT_OK) {
+            Place place = PlacePicker.getPlace(this, data);
+            tag.setValue(String.valueOf(place.getLatLng().latitude));
+            tag.setSecondValue(String.valueOf(place.getLatLng().longitude));
+            editViewModel.onEditEnded(tag);
+        }
+    }
+
+    private void openEditDialog(Tag tag, OnTagActionListener listener) {
+        EditDialog dialog = EditDialog.newInstance(EditActivity.this, tag);
+        dialog.setActionTagListener(listener);
+        dialog.show(getFragmentManager(), EditDialog.FRAGMENT_TAG);
+    }
+
+    private void startPlaceIntent() {
+        try {
+            PlacePicker.IntentBuilder intentBuilder = new PlacePicker.IntentBuilder();
+            Intent intent = intentBuilder.build(this);
+            startActivityForResult(intent, PLACE_REQUEST_ID);
+
+        } catch (GooglePlayServicesRepairableException e) {
+            GoogleApiAvailability.getInstance().getErrorDialog(this, e.getConnectionStatusCode(), 0);
+        } catch (GooglePlayServicesNotAvailableException e) {
+            Toast.makeText(this, "Google Play Services is not available.",
+                    Toast.LENGTH_LONG).show();
+
+        }
     }
 }
