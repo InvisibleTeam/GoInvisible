@@ -20,9 +20,11 @@ import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
+import static android.media.ExifInterface.TAG_ORIENTATION;
 import static com.invisibleteam.goinvisible.model.InputType.DATETIME_STRING;
 import static com.invisibleteam.goinvisible.model.InputType.DATE_STRING;
 import static com.invisibleteam.goinvisible.model.InputType.INDEFINITE;
+import static com.invisibleteam.goinvisible.model.InputType.RANGED_INTEGER;
 import static com.invisibleteam.goinvisible.model.InputType.TEXT_STRING;
 import static com.invisibleteam.goinvisible.model.InputType.TIMESTAMP_STRING;
 import static org.mockito.ArgumentMatchers.any;
@@ -99,6 +101,39 @@ public class DialogFactoryTest {
 
         //Then
         verify(dialogFactory).createDateTimeDialog();
+    }
+
+    @Test
+    public void whenTagWithRangedIntegerInputTypeIsPassed_CreateRangedDialogIsCalledWithError() {
+        //Given
+        Tag tag = createTag(RANGED_INTEGER);
+
+        //When
+        dialogFactory.createDialog(dialog, tag, mock(OnTagActionListener.class));
+
+        //Then
+        verify(dialogFactory).createRangedDialog(
+                eq(activity),
+                eq(tag),
+                any(OnTagActionListener.class));
+        verify(dialogFactory).createErrorDialog(activity);
+    }
+
+    @Test
+    public void whenTagWithRangedIntegerInputTypeIsPassed_CreateRangedDialogIsCalled() {
+        //Given
+        TagType tagType = TagType.build(RANGED_INTEGER);
+        Tag tag = new Tag(TAG_ORIENTATION, "value", tagType);
+
+        //When
+        dialogFactory.createDialog(dialog, tag, mock(OnTagActionListener.class));
+
+        //Then
+        verify(dialogFactory).createRangedDialog(
+                eq(activity),
+                eq(tag),
+                any(OnTagActionListener.class));
+        verify(dialogFactory, times(0)).createErrorDialog(activity);
     }
 
     @Test
