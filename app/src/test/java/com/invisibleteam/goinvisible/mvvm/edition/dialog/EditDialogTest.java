@@ -16,8 +16,9 @@ import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
-import static junit.framework.Assert.assertTrue;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsNull.nullValue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
@@ -41,8 +42,7 @@ public class EditDialogTest {
         EditDialog dialog = EditDialog.newInstance(activity, TAG);
 
         //Then
-        assertTrue(dialog.extractTag());
-        assertThat(dialog.tag, TagsMatcher.equals(TAG));
+        assertThat(dialog.extractTag(), TagsMatcher.equals(TAG));
     }
 
     @Test
@@ -54,10 +54,10 @@ public class EditDialogTest {
         when(dialog.getArguments()).thenReturn(new Bundle());
 
         //When
-        boolean isExtractionFailure = !dialog.extractTag();
+        Tag tag = dialog.extractTag();
 
         //Then
-        assertTrue(isExtractionFailure);
+        assertThat(tag, is(nullValue()));
     }
 
     @Test
@@ -67,10 +67,10 @@ public class EditDialogTest {
         when(dialog.getArguments()).thenReturn(null);
 
         //When
-        boolean isExtractionFailure = !dialog.extractTag();
+        Tag tag = dialog.extractTag();
 
         //Then
-        assertTrue(isExtractionFailure);
+        assertThat(tag, is(nullValue()));
     }
 
     @Test
