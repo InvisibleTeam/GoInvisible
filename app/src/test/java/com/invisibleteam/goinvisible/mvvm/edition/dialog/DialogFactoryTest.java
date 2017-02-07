@@ -21,12 +21,17 @@ import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
 import static android.media.ExifInterface.TAG_ORIENTATION;
+import static android.text.InputType.TYPE_CLASS_NUMBER;
+import static android.text.InputType.TYPE_NUMBER_FLAG_DECIMAL;
+import static android.text.InputType.TYPE_TEXT_VARIATION_FILTER;
 import static com.invisibleteam.goinvisible.model.InputType.DATETIME_STRING;
 import static com.invisibleteam.goinvisible.model.InputType.DATE_STRING;
 import static com.invisibleteam.goinvisible.model.InputType.INDEFINITE;
 import static com.invisibleteam.goinvisible.model.InputType.RANGED_INTEGER;
 import static com.invisibleteam.goinvisible.model.InputType.TEXT_STRING;
 import static com.invisibleteam.goinvisible.model.InputType.TIMESTAMP_STRING;
+import static com.invisibleteam.goinvisible.model.InputType.VALUE_DOUBLE;
+import static com.invisibleteam.goinvisible.model.InputType.VALUE_INTEGER;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
@@ -56,7 +61,7 @@ public class DialogFactoryTest {
     }
 
     @Test
-    public void whenTagWithTextStringInputTypeIsPassed_CreateTextDialogIsCalled() {
+    public void whenTagWithTextStringInputTypeIsPassed_CreateTextDialogWithTextKeyboardIsCalled() {
         //Given
         Tag tag = createTag(TEXT_STRING);
 
@@ -64,7 +69,46 @@ public class DialogFactoryTest {
         dialogFactory.createDialog(dialog, tag, mock(OnTagActionListener.class));
 
         //Then
-        verify(dialogFactory).createTextDialog(eq(activity), eq(dialog), eq(tag), any(OnTagActionListener.class));
+        verify(dialogFactory).createDialog(
+                eq(activity),
+                eq(dialog),
+                eq(TYPE_TEXT_VARIATION_FILTER),
+                eq(tag),
+                any(OnTagActionListener.class));
+    }
+
+    @Test
+    public void whenTagWithValueIntegerInputTypeIsPassed_CreateTextDialogWithNumberKeyboardIsCalled() {
+        //Given
+        Tag tag = createTag(VALUE_INTEGER);
+
+        //When
+        dialogFactory.createDialog(dialog, tag, mock(OnTagActionListener.class));
+
+        //Then
+        verify(dialogFactory).createDialog(
+                eq(activity),
+                eq(dialog),
+                eq(TYPE_CLASS_NUMBER),
+                eq(tag),
+                any(OnTagActionListener.class));
+    }
+
+    @Test
+    public void whenTagWithValueDoubleInputTypeIsPassed_CreateTextDialogWithdecimalNumberKeyboardIsCalled() {
+        //Given
+        Tag tag = createTag(VALUE_DOUBLE);
+
+        //When
+        dialogFactory.createDialog(dialog, tag, mock(OnTagActionListener.class));
+
+        //Then
+        verify(dialogFactory).createDialog(
+                eq(activity),
+                eq(dialog),
+                eq(TYPE_CLASS_NUMBER | TYPE_NUMBER_FLAG_DECIMAL),
+                eq(tag),
+                any(OnTagActionListener.class));
     }
 
     @Test

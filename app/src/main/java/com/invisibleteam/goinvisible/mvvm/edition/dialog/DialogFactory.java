@@ -33,21 +33,41 @@ class DialogFactory {
 
         switch (inputType) {
             case TEXT_STRING:
-                return createTextDialog(activity, dialog, tag, listener);
+                return createDialog(
+                        activity,
+                        dialog,
+                        android.text.InputType.TYPE_TEXT_VARIATION_FILTER,
+                        tag,
+                        listener);
+
+            case VALUE_INTEGER:
+                return createDialog(
+                        activity,
+                        dialog,
+                        android.text.InputType.TYPE_CLASS_NUMBER,
+                        tag,
+                        listener);
+
+            case VALUE_DOUBLE:
+                return createDialog(
+                        activity,
+                        dialog,
+                        android.text.InputType.TYPE_CLASS_NUMBER |  android.text.InputType.TYPE_NUMBER_FLAG_DECIMAL,
+                        tag,
+                        listener);
+
             case RANGED_INTEGER:
                 return createRangedDialog(activity, tag, listener);
-//            case VALUE_INTEGER://TODO other dialog types
-//                break;
-//            case VALUE_DOUBLE:
-//                break;
-//            case POSITION_DOUBLE:
-//                break;
+
             case TIMESTAMP_STRING:
                 return createTimeDialog();
+
             case DATETIME_STRING:
                 return createDateTimeDialog();
+
             case DATE_STRING:
                 return createDateDialog();
+
             default:
                 return createErrorDialog(activity);
         }
@@ -83,15 +103,24 @@ class DialogFactory {
     }
 
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
-    Dialog createTextDialog(Activity activity, DialogFragment dialog, Tag tag, OnTagActionListener listener) {
+    Dialog createDialog(
+            Activity activity,
+            DialogFragment dialog,
+            int keyboardInputType,
+            Tag tag,
+            OnTagActionListener listener) {
+
+        //Viewmodel
+        TextDialogViewModel viewModel = new TextDialogViewModel(tag);
+
+        //Binding configuration
         TextDialogBinding binding = DataBindingUtil.inflate(
                 LayoutInflater.from(activity),
                 R.layout.text_dialog,
                 null,
                 false);
-        TextDialogViewModel viewModel = new TextDialogViewModel(tag);
         binding.setViewModel(viewModel);
-
+        binding.valueText.setInputType(keyboardInputType);
         binding.okButton.setOnClickListener(v -> {
             validateText(
                     dialog,
@@ -103,8 +132,9 @@ class DialogFactory {
                             .getText()
                             .toString());
         });
-
         binding.cancelButton.setOnClickListener(v -> dialog.dismiss());
+
+        //Dialog builder
         return new AlertDialog
                 .Builder(activity, R.style.AlertDialogStyle)
                 .setView(binding.getRoot())
