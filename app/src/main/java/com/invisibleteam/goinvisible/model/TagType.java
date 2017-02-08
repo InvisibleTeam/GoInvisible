@@ -65,7 +65,7 @@ public class TagType implements Parcelable {
         return validationRegexp;
     }
 
-    private TagType(Parcel in) {
+    protected TagType(Parcel in) {
         inputType = (InputType) in.readValue(InputType.class.getClassLoader());
         validationRegexp = in.readString();
     }
