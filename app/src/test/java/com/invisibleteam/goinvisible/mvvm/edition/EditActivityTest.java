@@ -8,6 +8,10 @@ import android.view.MenuItem;
 
 import com.invisibleteam.goinvisible.BuildConfig;
 import com.invisibleteam.goinvisible.model.ImageDetails;
+import com.invisibleteam.goinvisible.model.InputType;
+import com.invisibleteam.goinvisible.model.Tag;
+import com.invisibleteam.goinvisible.model.TagType;
+import com.invisibleteam.goinvisible.mvvm.edition.adapter.EditCompoundRecyclerView;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -16,6 +20,9 @@ import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
+
+import java.util.Arrays;
+import java.util.List;
 
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
@@ -29,22 +36,16 @@ import static org.mockito.Mockito.when;
 public class EditActivityTest {
 
     private Context context;
-    private EditActivity activity;
 
     @Before
     public void init() {
         context = RuntimeEnvironment.application;
-        activity = Robolectric.buildActivity(EditActivity.class).get();
     }
 
     @Test
     public void whenProperIntentIsPassed_ExtractionFinishWithSuccess() {
         //Given
-        Intent intent = EditActivity.buildIntent(context, new ImageDetails("path", "name"));
-        EditActivity activity = Robolectric
-                .buildActivity(EditActivity.class)
-                .withIntent(intent)
-                .get();
+        EditActivity activity = createActivity();
 
         //When
         boolean isExtractionSucceed = activity.extractBundle();
@@ -54,41 +55,48 @@ public class EditActivityTest {
     }
 
     @Test
-    public void whenOptionItemSelected_properMethodIsCalled() {
-        //given
-        ImageDetails imageDetails = new ImageDetails("Path", "Name");
-        Intent editActivityIntent = EditActivity.buildIntent(context, imageDetails);
-        EditActivity activity = Robolectric.buildActivity(EditActivity.class).withIntent(editActivityIntent).get();
-        EditActivity spyActivity = spy(activity);
-        spyActivity.onCreate(null);
+    public void whenOptionItemSelectedAndTagsAreChanged_TagsAreSavedAndBackToImageActivityIsCalled() {
+        //Given
+        EditActivity activity = spy(createActivity());
+        activity.onCreate(null);
+
+        List<Tag> tagsList = Arrays.asList(
+                createTag("key1", "value1"),
+                createTag("key1", "value1"));
+
+        TagsManager tagsManager = mock(TagsManager.class);
+        EditCompoundRecyclerView recyclerView = mock(EditCompoundRecyclerView.class);
+        when(recyclerView.getChangedTags()).thenReturn(tagsList);
+
+        activity.setTagsManager(tagsManager);
+        activity.setEditCompoundRecyclerView(recyclerView);
 
         MenuItem menuItem = mock(MenuItem.class);
         when(menuItem.getItemId()).thenReturn(android.R.id.home);
 
         //when
-        spyActivity.onOptionsItemSelected(menuItem);
+        activity.onOptionsItemSelected(menuItem);
 
         //then
-        verify(spyActivity).onBackPressed();
+        verify(recyclerView).getChangedTags();
+        verify(tagsManager).editTags(tagsList);
+        verify(activity).onBackPressed();
     }
 
     @Test
     public void whenUnknownOptionItemSelected_defaultMethodIsCalled() {
         //given
-        ImageDetails imageDetails = new ImageDetails("Path", "Name");
-        Intent editActivityIntent = EditActivity.buildIntent(context, imageDetails);
-        EditActivity activity = Robolectric.buildActivity(EditActivity.class).withIntent(editActivityIntent).get();
-        EditActivity spyActivity = spy(activity);
-        spyActivity.onCreate(null);
+        EditActivity activity = spy(createActivity());
+        activity.onCreate(null);
 
         MenuItem menuItem = mock(MenuItem.class);
         when(menuItem.getItemId()).thenReturn(-1);
 
         //when
-        spyActivity.onOptionsItemSelected(menuItem);
+        activity.onOptionsItemSelected(menuItem);
 
         //then
-        verify(spyActivity, times(0)).onBackPressed();
+        verify(activity, times(0)).onBackPressed();
     }
 
     @Test
@@ -162,6 +170,7 @@ public class EditActivityTest {
     @Test
     public void whenAllNecessaryPermissionsAreGranted_prepareViewIsCalled() {
         //Given
+        EditActivity activity = Robolectric.buildActivity(EditActivity.class).get();
         EditActivity spyActivity = spy(activity);
 
         //When
@@ -169,5 +178,18 @@ public class EditActivityTest {
 
         //Then
         verify(spyActivity).prepareView();
+    }
+
+    private EditActivity createActivity() {
+        ImageDetails imageDetails = new ImageDetails("Path", "Name");
+        Intent editActivityIntent = EditActivity.buildIntent(context, imageDetails);
+        return Robolectric
+                .buildActivity(EditActivity.class)
+                .withIntent(editActivityIntent)
+                .get();
+    }
+
+    private Tag createTag(String key, String value) {
+        return new Tag(key, value, TagType.build(InputType.DATETIME_STRING));
     }
 }

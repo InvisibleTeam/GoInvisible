@@ -14,11 +14,13 @@ import android.view.MenuItem;
 import com.invisibleteam.goinvisible.R;
 import com.invisibleteam.goinvisible.databinding.ActivityEditBinding;
 import com.invisibleteam.goinvisible.model.ImageDetails;
+import com.invisibleteam.goinvisible.model.Tag;
 import com.invisibleteam.goinvisible.mvvm.common.CommonActivity;
 import com.invisibleteam.goinvisible.mvvm.edition.adapter.EditCompoundRecyclerView;
 import com.invisibleteam.goinvisible.mvvm.edition.dialog.EditDialog;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.annotation.Nullable;
 
@@ -26,6 +28,10 @@ public class EditActivity extends CommonActivity {
 
     private static final String TAG_IMAGE_DETAILS = "extra_image_details";
     private static final String TAG = EditActivity.class.getSimpleName();
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    EditCompoundRecyclerView editCompoundRecyclerView;
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    TagsManager tagsManager;
 
     public static Intent buildIntent(Context context, ImageDetails imageDetails) {
         Bundle bundle = new Bundle();
@@ -71,6 +77,8 @@ public class EditActivity extends CommonActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
+                List<Tag> changedTags = editCompoundRecyclerView.getChangedTags();
+                tagsManager.editTags(changedTags);
                 onBackPressed();
                 return true;
             default:
@@ -89,16 +97,17 @@ public class EditActivity extends CommonActivity {
         ActivityEditBinding activityEditBinding = DataBindingUtil.setContentView(this, R.layout.activity_edit);
         setSupportActionBar(activityEditBinding.mainToolbar);
         if (extractBundle()) {
-            EditCompoundRecyclerView editCompoundRecyclerView =
+            editCompoundRecyclerView =
                     (EditCompoundRecyclerView) findViewById(R.id.edit_compound_recycler_view);
 
             try {
                 ExifInterface exifInterface = new ExifInterface(imageDetails.getPath());
+                tagsManager = new TagsManager(exifInterface);
                 editViewModel = new EditViewModel(
                         imageDetails.getName(),
                         imageDetails.getPath(),
                         editCompoundRecyclerView,
-                        new TagsManager(exifInterface),
+                        tagsManager,
                         editTagListener);
                 activityEditBinding.setViewModel(editViewModel);
             } catch (IOException e) {
@@ -106,5 +115,13 @@ public class EditActivity extends CommonActivity {
                 //TODO log exception to crashlitycs on else.
             }
         } //TODO log exception to crashlitycs on else.
+    }
+
+    public void setEditCompoundRecyclerView(EditCompoundRecyclerView editCompoundRecyclerView) {
+        this.editCompoundRecyclerView = editCompoundRecyclerView;
+    }
+
+    public void setTagsManager(TagsManager tagsManager) {
+        this.tagsManager = tagsManager;
     }
 }

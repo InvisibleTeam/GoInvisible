@@ -17,6 +17,7 @@ import java.util.List;
 class EditItemAdapter extends RecyclerView.Adapter<EditItemAdapter.ViewHolder> {
 
     private List<Tag> tagsList;
+    private List<Tag> baseTagsList;
     private OnTagActionListener onTagActionListener;
 
     EditItemAdapter() {
@@ -57,6 +58,25 @@ class EditItemAdapter extends RecyclerView.Adapter<EditItemAdapter.ViewHolder> {
 
     void updateImageList(List<Tag> imageList) {
         this.tagsList = imageList;
+        if (baseTagsList == null) {
+            baseTagsList = new ArrayList<>(imageList);
+        }
+    }
+
+    List<Tag> getChangedTags() {
+        List<Tag> changedTags = new ArrayList<>();
+        for (Tag tag : tagsList) {
+            for (Tag baseTag : baseTagsList) {
+                if (tag.getKey().equals(baseTag.getKey())) {
+                    if (!tag.getValue().equals(baseTag.getValue())) {
+                        changedTags.add(tag);
+                        break;
+                    }
+                }
+            }
+        }
+        return changedTags;
+
     }
 
     void setOnTagActionListener(OnTagActionListener listener) {

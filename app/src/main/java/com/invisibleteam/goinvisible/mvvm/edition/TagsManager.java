@@ -48,6 +48,22 @@ class TagsManager {
         }
     }
 
+    boolean editTags(List<Tag> tags) {
+        if (tags.isEmpty()) {
+            return false;
+        }
+        for (Tag tag : tags) {
+            exifInterface.setAttribute(tag.getKey(), tag.getValue());
+        }
+        try {
+            exifInterface.saveAttributes();
+            return true;
+        } catch (IOException e) {
+            Log.d(TAG, String.valueOf(e.getMessage()));
+            return false;
+        }
+    }
+
     boolean clearTag(Tag tag) {
         switch (tag.getTagType().getInputType()) {
             case TEXT_STRING:

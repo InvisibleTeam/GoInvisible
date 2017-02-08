@@ -41,4 +41,8 @@ public class EditCompoundRecyclerView extends CompoundRecyclerView<Tag, EditItem
     void setItemAdapter(EditItemAdapter itemAdapter) {
         this.itemAdapter = itemAdapter;
     }
+
+    public List<Tag> getChangedTags() {
+        return itemAdapter.getChangedTags();
+    }
 }
