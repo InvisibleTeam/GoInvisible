@@ -9,6 +9,7 @@ import com.invisibleteam.goinvisible.model.GeolocationTag;
 import com.invisibleteam.goinvisible.model.InputType;
 import com.invisibleteam.goinvisible.model.Tag;
 import com.invisibleteam.goinvisible.model.TagType;
+import com.invisibleteam.goinvisible.util.TagUtil;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -71,7 +72,7 @@ class TagsManager {
                 tag.setValue("0.0");
                 break;
             case POSITION_DOUBLE:
-                //todo clear this tag when lat long fields will be available
+                tag.setValue(TagUtil.parseDoubleGPSToRationalGPS(0.000000));
                 break;
             default:
                 break;
@@ -81,13 +82,19 @@ class TagsManager {
 
     private GeolocationTag getGeolocationTag() {
         TagType tagType = TagType.build(POSITION_DOUBLE);
-        Double lat = exifInterface.getAttributeDouble(TAG_GPS_LATITUDE, 0);
-        Double lng = exifInterface.getAttributeDouble(TAG_GPS_LONGITUDE, 0);
+        String rationalLat = exifInterface.getAttribute(TAG_GPS_LATITUDE);
+        String rationalLng = exifInterface.getAttribute(TAG_GPS_LONGITUDE);
+        String latRef = exifInterface.getAttribute(TAG_GPS_LATITUDE_REF);
+        String lngRef = exifInterface.getAttribute(TAG_GPS_LONGITUDE_REF);
+
+        String geoLat = TagUtil.parseRationalGPSToGeoGPS(rationalLat, latRef);
+        String geoLng = TagUtil.parseRationalGPSToGeoGPS(rationalLng, lngRef);
+
         return new GeolocationTag(
                 TAG_GPS_LATITUDE,
                 TAG_GPS_LONGITUDE,
-                String.valueOf(lat),
-                String.valueOf(lng),
+                geoLat,
+                geoLng,
                 tagType);
     }
 

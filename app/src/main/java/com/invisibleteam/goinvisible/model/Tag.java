@@ -21,19 +21,19 @@ public class Tag implements Parcelable {
 
     private String key;
     private @Nullable String secondKey;
-    private String value;
+    private @Nullable String value;
     private @Nullable String secondValue;
     private String formattedValue;
     private TagType tagType;
 
-    public Tag(String key, String value, TagType tagType) {
+    public Tag(String key, @Nullable String value, TagType tagType) {
         this(key, null, value, null, tagType);
     }
 
     public Tag(
             String key,
             @Nullable String secondKey,
-            String value,
+            @Nullable String value,
             @Nullable String secondValue,
             TagType tagType) {
         this.key = key;
@@ -58,6 +58,7 @@ public class Tag implements Parcelable {
         formattedValue = generateFormattedValue();
     }
 
+    @Nullable
     protected String generateFormattedValue() {
         return value;
     }
@@ -71,6 +72,7 @@ public class Tag implements Parcelable {
         return secondKey;
     }
 
+    @Nullable
     public String getValue() {
         return value;
     }
