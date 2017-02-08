@@ -117,10 +117,12 @@ public class EditActivity extends CommonActivity {
         } //TODO log exception to crashlitycs on else.
     }
 
+    @VisibleForTesting
     public void setEditCompoundRecyclerView(EditCompoundRecyclerView editCompoundRecyclerView) {
         this.editCompoundRecyclerView = editCompoundRecyclerView;
     }
 
+    @VisibleForTesting
     public void setTagsManager(TagsManager tagsManager) {
         this.tagsManager = tagsManager;
     }
