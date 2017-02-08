@@ -31,8 +31,8 @@ public class EditDialog extends DialogFragment {
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        DialogFactory factory = new DialogFactory();
-        return factory.createDialog(this, extractTag(), editViewModel);
+        DialogFactory factory = new DialogFactory(this, extractTag(), editViewModel);
+        return factory.createDialog();
     }
 
     @Nullable
