@@ -11,6 +11,7 @@ import com.invisibleteam.goinvisible.databinding.TextDialogBinding;
 import com.invisibleteam.goinvisible.model.InputType;
 import com.invisibleteam.goinvisible.model.Tag;
 import com.invisibleteam.goinvisible.model.TagType;
+import com.invisibleteam.goinvisible.mvvm.edition.EditViewModel;
 import com.invisibleteam.goinvisible.mvvm.edition.OnTagActionListener;
 
 import org.junit.Before;
@@ -34,7 +35,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(constants = BuildConfig.class, sdk = 22)
+@Config(constants = BuildConfig.class, sdk = 21)
 public class DialogFactoryTest {
 
     private Activity activity;
@@ -59,7 +60,7 @@ public class DialogFactoryTest {
         Tag tag = createTag(TEXT_STRING);
 
         //When
-        dialogFactory.createDialog(dialog, tag, mock(OnTagActionListener.class));
+        dialogFactory.createDialog(dialog, tag, mock(EditViewModel.class));
 
         //Then
         verify(dialogFactory).createTextDialog(eq(activity), eq(dialog), eq(tag), any(OnTagActionListener.class));
@@ -71,7 +72,7 @@ public class DialogFactoryTest {
         Tag tag = createTag(TIMESTAMP_STRING);
 
         //When
-        dialogFactory.createDialog(dialog, tag, mock(OnTagActionListener.class));
+        dialogFactory.createDialog(dialog, tag, mock(EditViewModel.class));
 
         //Then
         verify(dialogFactory).createTimeDialog();
@@ -83,7 +84,7 @@ public class DialogFactoryTest {
         Tag tag = createTag(DATE_STRING);
 
         //When
-        dialogFactory.createDialog(dialog, tag, mock(OnTagActionListener.class));
+        dialogFactory.createDialog(dialog, tag, mock(EditViewModel.class));
 
         //Then
         verify(dialogFactory).createDateDialog();
@@ -95,7 +96,7 @@ public class DialogFactoryTest {
         Tag tag = createTag(DATETIME_STRING);
 
         //When
-        dialogFactory.createDialog(dialog, tag, mock(OnTagActionListener.class));
+        dialogFactory.createDialog(dialog, tag, mock(EditViewModel.class));
 
         //Then
         verify(dialogFactory).createDateTimeDialog();
@@ -104,7 +105,7 @@ public class DialogFactoryTest {
     @Test
     public void whenNullTagIsPassed_CreateErrorDialogIsCalled() {
         //When
-        dialogFactory.createDialog(dialog, null, mock(OnTagActionListener.class));
+        dialogFactory.createDialog(dialog, null, mock(EditViewModel.class));
 
         //Then
         verify(dialogFactory).createErrorDialog(activity);
@@ -116,7 +117,7 @@ public class DialogFactoryTest {
         Tag tag = createTag(INDEFINITE);
 
         //When
-        dialogFactory.createDialog(dialog, tag, mock(OnTagActionListener.class));
+        dialogFactory.createDialog(dialog, tag, mock(EditViewModel.class));
 
         //Then
         verify(dialogFactory).createErrorDialog(activity);

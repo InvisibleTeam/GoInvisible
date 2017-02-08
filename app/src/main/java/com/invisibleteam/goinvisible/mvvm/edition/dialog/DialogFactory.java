@@ -1,8 +1,8 @@
 package com.invisibleteam.goinvisible.mvvm.edition.dialog;
 
-import android.app.Activity;
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.support.annotation.VisibleForTesting;
 import android.support.v7.app.AlertDialog;
@@ -12,6 +12,7 @@ import com.invisibleteam.goinvisible.R;
 import com.invisibleteam.goinvisible.databinding.TextDialogBinding;
 import com.invisibleteam.goinvisible.model.InputType;
 import com.invisibleteam.goinvisible.model.Tag;
+import com.invisibleteam.goinvisible.mvvm.edition.EditViewModel;
 import com.invisibleteam.goinvisible.mvvm.edition.OnTagActionListener;
 
 import java.util.Locale;
@@ -22,17 +23,17 @@ class DialogFactory {
 
     private DateDialog dateDialog;
 
-    Dialog createDialog(DialogFragment dialog, @Nullable Tag tag, OnTagActionListener listener) {
-        Activity activity = dialog.getActivity();
+    Dialog createDialog(DialogFragment dialog, @Nullable Tag tag, EditViewModel viewModel) {
+        Context context = dialog.getActivity();
         if (tag == null) {
-            return createErrorDialog(activity);
+            return createErrorDialog(context);
         }
-        dateDialog = new DateDialog(activity, tag, listener);
+        dateDialog = new DateDialog(context, tag, viewModel);
         InputType inputType = tag.getTagType().getInputType();
 
         switch (inputType) {
             case TEXT_STRING:
-                return createTextDialog(activity, dialog, tag, listener);
+                return createTextDialog(context, dialog, tag, viewModel);
 //            case RANGED_STRING://TODO other dialog types
 //                break;
 //            case RANGED_INTEGER:
@@ -50,7 +51,7 @@ class DialogFactory {
             case DATE_STRING:
                 return createDateDialog();
             default:
-                return createErrorDialog(activity);
+                return createErrorDialog(context);
         }
     }
 
@@ -67,9 +68,9 @@ class DialogFactory {
     }
 
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
-    Dialog createTextDialog(Activity activity, DialogFragment dialog, Tag tag, OnTagActionListener listener) {
+    Dialog createTextDialog(Context context, DialogFragment dialog, Tag tag, OnTagActionListener listener) {
         TextDialogBinding binding = DataBindingUtil.inflate(
-                LayoutInflater.from(activity),
+                LayoutInflater.from(context),
                 R.layout.text_dialog,
                 null,
                 false);
@@ -90,7 +91,7 @@ class DialogFactory {
 
         binding.cancelButton.setOnClickListener(v -> dialog.dismiss());
         return new AlertDialog
-                .Builder(activity, R.style.AlertDialogStyle)
+                .Builder(context, R.style.AlertDialogStyle)
                 .setView(binding.getRoot())
                 .create();
     }
@@ -115,12 +116,12 @@ class DialogFactory {
     }
 
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
-    Dialog createErrorDialog(Activity activity) {
+    Dialog createErrorDialog(Context context) {
         return new AlertDialog
-                .Builder(activity, R.style.AlertDialogStyle)
+                .Builder(context, R.style.AlertDialogStyle)
                 .setTitle(R.string.error)
                 .setMessage(R.string.error_message)
-                .setPositiveButton(activity.getString(android.R.string.ok).toUpperCase(Locale.getDefault()), null)
+                .setPositiveButton(context.getString(android.R.string.ok).toUpperCase(Locale.getDefault()), null)
                 .setCancelable(false)
                 .show();
     }

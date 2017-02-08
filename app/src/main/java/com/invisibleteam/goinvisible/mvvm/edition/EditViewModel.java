@@ -50,7 +50,7 @@ public class EditViewModel implements OnTagActionListener {
 
     @Override
     public void onEditStarted(Tag tag) {
-        listener.openEditDialog(tag, this);
+        listener.openEditDialog(tag);
     }
 
     @Override
