@@ -192,6 +192,7 @@ public class EditActivity extends CommonActivity {
                                     GPS_REQUEST_ID);
                         } catch (IntentSender.SendIntentException e) {
                             //TODO log crashlytics error
+                            Log.e(TAG, e.getMessage(), e);
                         }
                         break;
                     default:
@@ -216,7 +217,7 @@ public class EditActivity extends CommonActivity {
                         .addApi(LocationServices.API)
                         .addConnectionCallbacks(new GoogleApiClient.ConnectionCallbacks() {
                             @Override
-                            public void onConnected(@android.support.annotation.Nullable Bundle bundle) {
+                            public void onConnected(@Nullable Bundle bundle) {
                                 LocationRequest locationRequest = buildLocationRequest();
                                 LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
                                         .addLocationRequest(locationRequest);
