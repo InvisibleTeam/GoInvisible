@@ -9,141 +9,141 @@ import static org.hamcrest.Matchers.nullValue;
 public class TagUtilTest {
 
     @Test
-    public void whenDoubleGPSIsGiven_GeoGPSWillBeReturn() {
-        //given
+    public void whenDoubleGPSIsGiven_GeoGPSIsReturned() {
+        //Given
         double gpsValue = 17.071711;
 
-        //when
+        //When
         String result = TagUtil.parseDoubleGPSToGeoGPS(gpsValue);
 
-        //then
+        //Then
         String expectedValue = "17" + TagUtil.DEGREE_CHAR + " 4\' 18\'\'";
         assertThat(result, is(expectedValue));
     }
 
     @Test
-    public void whenRationalGPSIsGiven_GeoGPSWillBeReturn() {
-        //given
+    public void whenRationalGPSIsGiven_GeoGPSIsReturned() {
+        //Given
         String gpsValue = "17/1,4/1,1816/100";
         String gpsValueReference = "N";
 
-        //when
+        //When
         String result = TagUtil.parseRationalGPSToGeoGPS(gpsValue, gpsValueReference);
 
-        //then
+        //Then
         String expectedValue = "17" + TagUtil.DEGREE_CHAR + " 4\' 18\'\' N";
         assertThat(result, is(expectedValue));
     }
 
     @Test
-    public void whenNullRationalGPSIsGiven_NullValueWillBeReturn() {
-        //given
+    public void whenNullRationalGPSIsGiven_NullValueIsReturned() {
+        //Given
         String gpsValue = null;
         String gpsValueReference = "N";
 
-        //when
+        //When
         String result = TagUtil.parseRationalGPSToGeoGPS(gpsValue, gpsValueReference);
 
-        //then
+        //Then
         assertThat(result, is(nullValue()));
     }
 
     @Test
-    public void whenEmptyRationalGPSIsGiven_NullValueWillBeReturn() {
-        //given
+    public void whenEmptyRationalGPSIsGiven_NullValueIsReturned() {
+        //Given
         String gpsValue = "";
         String gpsValueReference = "N";
 
-        //when
+        //When
         String result = TagUtil.parseRationalGPSToGeoGPS(gpsValue, gpsValueReference);
 
-        //then
+        //Then
         assertThat(result, is(nullValue()));
     }
 
     @Test
-    public void whenIncorrectRationalGPSIsGiven_NullValueWillBeReturn() {
-        //given
+    public void whenIncorrectRationalGPSIsGiven_NullValueIsReturned() {
+        //Given
         String gpsValue = "18.3";
         String gpsValueReference = "N";
 
-        //when
+        //When
         String result = TagUtil.parseRationalGPSToGeoGPS(gpsValue, gpsValueReference);
 
-        //then
+        //Then
         assertThat(result, is(nullValue()));
     }
 
     @Test
-    public void whenDoubleGPSIsGiven_RationalGPSWillBeReturn() {
-        //given
+    public void whenDoubleGPSIsGiven_RationalGPSIsReturned() {
+        //Given
         double gpsValue = 17.071711;
 
-        //when
+        //When
         String result = TagUtil.parseDoubleGPSToRationalGPS(gpsValue);
 
-        //then
+        //Then
         String expectedValue = "17/1,4/1,18159600/1000000";
         assertThat(result, is(expectedValue));
     }
 
     @Test
-    public void whenRationalValueIsGiven_StringValueWillBeReturn() {
-        //given
+    public void whenRationalValueIsGiven_StringValueIsReturned() {
+        //Given
         String rational = "18/5";
 
-        //when
+        //When
         String result = TagUtil.parseRationalToString(rational);
 
-        //then
+        //Then
         assertThat(result, is(String.valueOf(3.6)));
     }
 
     @Test
-    public void whenNullRationalValueIsGiven_NullValueWillBeReturn() {
-        //given
+    public void whenNullRationalValueIsGiven_NullValueIsReturned() {
+        //Given
         String rational = null;
 
-        //when
+        //When
         String result = TagUtil.parseRationalToString(rational);
 
-        //then
+        //Then
         assertThat(result, is(nullValue()));
     }
 
     @Test
-    public void whenEmptyRationalValueIsGiven_NullValueWillBeReturn() {
-        //given
+    public void whenEmptyRationalValueIsGiven_NullValueIsReturned() {
+        //Given
         String rational = "";
 
-        //when
+        //When
         String result = TagUtil.parseRationalToString(rational);
 
-        //then
+        //Then
         assertThat(result, is(nullValue()));
     }
 
     @Test
-    public void whenIncorrectRationalValueIsGiven_NullValueWillBeReturn() {
-        //given
+    public void whenIncorrectRationalValueIsGiven_NullValueIsReturned() {
+        //Given
         String rational = "34#2";
 
-        //when
+        //When
         String result = TagUtil.parseRationalToString(rational);
 
-        //then
+        //Then
         assertThat(result, is(nullValue()));
     }
 
     @Test
-    public void whenRationalValueIsGiven_DoubleValueWillBeReturn() {
-        //given
+    public void whenRationalValueIsGiven_DoubleValueIsReturned() {
+        //Given
         String rational = "18/5";
 
-        //when
+        //When
         double result = TagUtil.parseRationalValueToDouble(rational);
 
-        //then
+        //Then
         assertThat(result, is(3.6));
     }
 

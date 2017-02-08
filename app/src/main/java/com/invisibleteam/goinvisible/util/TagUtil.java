@@ -14,12 +14,19 @@ public class TagUtil {
     private static final String DEFAULT_DENOMINATOR = "/1,";
     private static final String DENOMINATOR_CHAR = "/";
     private static final int GEO_SECONDS_DENOMINATOR_VALUE = 1000000;
+    private static final int SIX_DECIMAL_NUMBER_SCALE = 6;
+    private static final int HOUR_IN_MINUTES = 60;
+    private static final int HOUR_IN_SECONDS = 3600;
 
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
     static final char DEGREE_CHAR = (char) 0x00B0;
-    public static final int SIX_DECIMAL_NUMBER_SCALE = 6;
 
     public static String parseDoubleGPSToGeoGPS(double value) {
+        final StringBuilder geoGPSBuilder = buildGeoGPSValueFromDoubleValue(value);
+        return geoGPSBuilder.toString();
+    }
+
+    private static StringBuilder buildGeoGPSValueFromDoubleValue(double value) {
         final int[] geoGPS = convertDoubleGPSValueToGeoGPSValue(value);
 
         int degrees = geoGPS[0];
@@ -34,8 +41,7 @@ public class TagUtil {
                 .append(GEO_MINUTES_CHAR)
                 .append(" ")
                 .append(seconds)
-                .append(GEO_SECONDS_CHAR)
-                .toString();
+                .append(GEO_SECONDS_CHAR);
     }
 
     /**
@@ -50,8 +56,8 @@ public class TagUtil {
     private static int[] convertDoubleGPSValueToGeoGPSValue(double value) {
         final int[] result = new int[3];
         result[0] = (int) value;
-        result[1] = (int) (60 * (value - result[0]));
-        result[2] = (int) ((3600 * (value - result[0])) - (60 * result[1]));
+        result[1] = (int) (HOUR_IN_MINUTES * (value - result[0]));
+        result[2] = (int) ((HOUR_IN_SECONDS * (value - result[0])) - (HOUR_IN_MINUTES * result[1]));
 
         return result;
     }
@@ -63,21 +69,9 @@ public class TagUtil {
         }
 
         final double rationalGPS = parseRationalGPSToDoubleGPS(rational);
-        final int[] geoGPS = convertDoubleGPSValueToGeoGPSValue(rationalGPS);
+        final StringBuilder geoGPSBuilder = buildGeoGPSValueFromDoubleValue(rationalGPS);
 
-        int degrees = geoGPS[0];
-        int minutes = geoGPS[1];
-        int seconds = geoGPS[2];
-
-        return new StringBuilder()
-                .append(degrees)
-                .append(DEGREE_CHAR)
-                .append(" ")
-                .append(minutes)
-                .append(GEO_MINUTES_CHAR)
-                .append(" ")
-                .append(seconds)
-                .append(GEO_SECONDS_CHAR)
+        return geoGPSBuilder
                 .append(" ")
                 .append(rationalRef)
                 .toString();
@@ -90,7 +84,7 @@ public class TagUtil {
         double minutes = parseRationalValueToDouble(rationalParts[1]);
         double seconds = parseRationalValueToDouble(rationalParts[2]);
 
-        double result = degrees + minutes / 60 + seconds / 3600;
+        double result = degrees + minutes / HOUR_IN_MINUTES + seconds / HOUR_IN_SECONDS;
 
         return new BigDecimal(result).setScale(SIX_DECIMAL_NUMBER_SCALE, BigDecimal.ROUND_HALF_UP).doubleValue();
     }
@@ -103,8 +97,8 @@ public class TagUtil {
 
     public static String parseDoubleGPSToRationalGPS(double value) {
         long degrees = (long) value;
-        long minutes = (long) (60 * (value - degrees));
-        double seconds = Math.abs((3600 * (value - degrees)) - (60 * minutes));
+        long minutes = (long) (HOUR_IN_MINUTES * (value - degrees));
+        double seconds = Math.abs((HOUR_IN_SECONDS * (value - degrees)) - (HOUR_IN_MINUTES * minutes));
 
         long exactSecondsValue = getExactSecondsValue(seconds);
 
