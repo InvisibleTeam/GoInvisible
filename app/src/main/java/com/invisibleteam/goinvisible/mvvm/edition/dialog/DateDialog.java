@@ -43,13 +43,14 @@ class DateDialog {
             tag.setValue(DateFormatterUtil.format(tag, calendar));
             viewModel.onEditEnded(tag);
         };
-
-        return new TimePickerDialog(
+        TimePickerDialog dialog = new TimePickerDialog(
                 context,
                 listener,
                 calendar.get(Calendar.HOUR_OF_DAY),
                 calendar.get(Calendar.MINUTE),
                 true);
+        dialog.setTitle("");
+        return dialog;
     }
 
     Dialog createDateTimeDialog() {
