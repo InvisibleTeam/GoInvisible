@@ -57,42 +57,32 @@ public class DialogFactoryTest {
         dialog.show(activity.getFragmentManager(), EditDialog.FRAGMENT_TAG);
         dialog = spy(dialog);
         when(dialog.getActivity()).thenReturn(activity);
-
-        dialogFactory = spy(new DialogFactory());
     }
 
     @Test
     public void whenTagWithTextStringInputTypeIsPassed_CreateTextDialogWithTextKeyboardIsCalled() {
         //Given
         Tag tag = createTag(TEXT_STRING);
+        dialogFactory = spy(new DialogFactory(dialog, tag, mock(EditViewModel.class)));
 
         //When
-        dialogFactory.createDialog(dialog, tag, mock(EditViewModel.class));
+        dialogFactory.createDialog();
 
         //Then
-        verify(dialogFactory).createDialog(
-                eq(activity),
-                eq(dialog),
-                eq(TYPE_TEXT_VARIATION_FILTER),
-                eq(tag),
-                any(OnTagActionListener.class));
+        verify(dialogFactory).createDialog(eq(TYPE_TEXT_VARIATION_FILTER));
     }
 
     @Test
     public void whenTagWithValueIntegerInputTypeIsPassed_CreateTextDialogWithNumberKeyboardIsCalled() {
         //Given
         Tag tag = createTag(VALUE_INTEGER);
+        dialogFactory = spy(new DialogFactory(dialog, tag, mock(EditViewModel.class)));
 
         //When
-        dialogFactory.createDialog(dialog, tag, mock(EditViewModel.class));
+        dialogFactory.createDialog();
 
         //Then
-        verify(dialogFactory).createDialog(
-                eq(activity),
-                eq(dialog),
-                eq(TYPE_CLASS_NUMBER),
-                eq(tag),
-                any(OnTagActionListener.class));
+        verify(dialogFactory).createDialog(eq(TYPE_CLASS_NUMBER));
     }
 
     @Test
@@ -101,24 +91,21 @@ public class DialogFactoryTest {
         Tag tag = createTag(VALUE_DOUBLE);
 
         //When
-        dialogFactory.createDialog(dialog, tag, mock(EditViewModel.class));
+        dialogFactory = spy(new DialogFactory(dialog, tag, mock(EditViewModel.class)));
+        dialogFactory.createDialog();
 
         //Then
-        verify(dialogFactory).createDialog(
-                eq(activity),
-                eq(dialog),
-                eq(TYPE_CLASS_NUMBER | TYPE_NUMBER_FLAG_DECIMAL),
-                eq(tag),
-                any(EditViewModel.class));
+        verify(dialogFactory).createDialog(eq(TYPE_CLASS_NUMBER | TYPE_NUMBER_FLAG_DECIMAL));
     }
 
     @Test
     public void whenTagWithTimestampStringInputTypeIsPassed_CreateTimeDialogIsCalled() {
         //Given
         Tag tag = createTag(TIMESTAMP_STRING);
+        dialogFactory = spy(new DialogFactory(dialog, tag, mock(EditViewModel.class)));
 
         //When
-        dialogFactory.createDialog(dialog, tag, mock(EditViewModel.class));
+        dialogFactory.createDialog();
 
         //Then
         verify(dialogFactory).createTimeDialog();
@@ -128,9 +115,10 @@ public class DialogFactoryTest {
     public void whenTagWithDateStringInputTypeIsPassed_CreateDateDialogIsCalled() {
         //Given
         Tag tag = createTag(DATE_STRING);
+        dialogFactory = spy(new DialogFactory(dialog, tag, mock(EditViewModel.class)));
 
         //When
-        dialogFactory.createDialog(dialog, tag, mock(EditViewModel.class));
+        dialogFactory.createDialog();
 
         //Then
         verify(dialogFactory).createDateDialog();
@@ -140,9 +128,10 @@ public class DialogFactoryTest {
     public void whenTagWithDatetimeStringInputTypeIsPassed_CreateDateTimeDialogIsCalled() {
         //Given
         Tag tag = createTag(DATETIME_STRING);
+        dialogFactory = spy(new DialogFactory(dialog, tag, mock(EditViewModel.class)));
 
         //When
-        dialogFactory.createDialog(dialog, tag, mock(EditViewModel.class));
+        dialogFactory.createDialog();
 
         //Then
         verify(dialogFactory).createDateTimeDialog();
@@ -152,16 +141,17 @@ public class DialogFactoryTest {
     public void whenTagWithRangedIntegerInputTypeIsPassed_CreateRangedDialogIsCalledWithError() {
         //Given
         Tag tag = createTag(RANGED_INTEGER);
+        dialogFactory = spy(new DialogFactory(dialog, tag, mock(EditViewModel.class)));
 
         //When
-        dialogFactory.createDialog(dialog, tag, mock(EditViewModel.class));
+        dialogFactory.createDialog();
 
         //Then
         verify(dialogFactory).createRangedDialog(
                 eq(activity),
                 eq(tag),
                 any(EditViewModel.class));
-        verify(dialogFactory).createErrorDialog(activity);
+        verify(dialogFactory).createErrorDialog();
     }
 
     @Test
@@ -169,62 +159,59 @@ public class DialogFactoryTest {
         //Given
         TagType tagType = TagType.build(RANGED_INTEGER);
         Tag tag = new Tag(TAG_ORIENTATION, "value", tagType);
+        dialogFactory = spy(new DialogFactory(dialog, tag, mock(EditViewModel.class)));
 
         //When
-        dialogFactory.createDialog(dialog, tag, mock(EditViewModel.class));
+        dialogFactory.createDialog();
 
         //Then
         verify(dialogFactory).createRangedDialog(
                 eq(activity),
                 eq(tag),
                 any(EditViewModel.class));
-        verify(dialogFactory, times(0)).createErrorDialog(activity);
+        verify(dialogFactory, times(0)).createErrorDialog();
     }
 
     @Test
     public void whenNullTagIsPassed_CreateErrorDialogIsCalled() {
         //When
-        dialogFactory.createDialog(dialog, null, mock(EditViewModel.class));
+        dialogFactory = spy(new DialogFactory(dialog, null, mock(EditViewModel.class)));
+        dialogFactory.createDialog();
 
         //Then
-        verify(dialogFactory).createErrorDialog(activity);
+        verify(dialogFactory).createErrorDialog();
     }
 
     @Test
     public void whenTagWithIndefiniteInputTypeIsPassed_CreateErrorDialogIsCalled() {
         //Given
         Tag tag = createTag(INDEFINITE);
+        dialogFactory = spy(new DialogFactory(dialog, tag, mock(EditViewModel.class)));
 
         //When
-        dialogFactory.createDialog(dialog, tag, mock(EditViewModel.class));
+        dialogFactory.createDialog();
 
         //Then
-        verify(dialogFactory).createErrorDialog(activity);
+        verify(dialogFactory).createErrorDialog();
     }
 
     @Test
     public void whenProperTextIsSet_ValidationPassed() {
         //Given
-        OnTagActionListener listener = spy(OnTagActionListener.class);
-
+        EditViewModel editViewModel = mock(EditViewModel.class);
         Tag tag = createTag(".*");
 
+        dialogFactory = spy(new DialogFactory(dialog, tag, editViewModel));
         TextDialogViewModel viewModel = new TextDialogViewModel(tag);
 
-        TextDialogBinding binding = creteBinding();
+        TextDialogBinding binding = createBinding();
         binding.setViewModel(viewModel);
 
         //When
-        dialogFactory.validateText(
-                dialog,
-                binding,
-                viewModel,
-                tag,
-                listener,
-                "test");
+        dialogFactory.validateText(binding, viewModel);
 
         //Then
-        verify(listener).onEditEnded(tag);
+        verify(editViewModel).onEditEnded(tag);
         verify(dialog).dismiss();
     }
 
@@ -235,19 +222,15 @@ public class DialogFactoryTest {
 
         Tag tag = createTag("0|^[1-9]([0-9]{0,5})$");
 
+        dialogFactory = spy(new DialogFactory(dialog, tag, mock(EditViewModel.class)));
+
         TextDialogViewModel viewModel = new TextDialogViewModel(tag);
 
-        TextDialogBinding binding = creteBinding();
+        TextDialogBinding binding = createBinding();
         binding.setViewModel(viewModel);
 
         //When
-        dialogFactory.validateText(
-                dialog,
-                binding,
-                viewModel,
-                tag,
-                listener,
-                "test");
+        dialogFactory.validateText(binding, viewModel);
 
         //Then
         verify(listener, times(0)).onEditEnded(tag);
@@ -267,7 +250,7 @@ public class DialogFactoryTest {
         return new Tag("key", "value", tagType);
     }
 
-    private TextDialogBinding creteBinding() {
+    private TextDialogBinding createBinding() {
         return DataBindingUtil.inflate(
                 LayoutInflater.from(activity),
                 R.layout.text_dialog,
