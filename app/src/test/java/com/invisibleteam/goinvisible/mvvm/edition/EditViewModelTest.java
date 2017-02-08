@@ -13,7 +13,6 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -70,7 +69,7 @@ public class EditViewModelTest {
         editViewModel.onEditStarted(tag);
 
         //Then
-        verify(listener).openEditDialog(eq(tag), any());
+        verify(listener).openEditDialog(eq(tag));
     }
 
     @Test

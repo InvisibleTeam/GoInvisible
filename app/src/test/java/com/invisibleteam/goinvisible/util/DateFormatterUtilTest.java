@@ -36,11 +36,12 @@ public class DateFormatterUtilTest {
         calendar.set(Calendar.YEAR, 2017);
         calendar.set(Calendar.MONTH, 5);
         calendar.set(Calendar.DAY_OF_MONTH, 21);
-
         Tag tag = createTag(DATE_STRING);
 
+        //When
         String formatedDate = DateFormatterUtil.format(tag, calendar);
 
+        //Then
         assertThat(formatedDate, is("2017-06-21"));
     }
 
@@ -50,11 +51,12 @@ public class DateFormatterUtilTest {
         calendar.set(Calendar.HOUR_OF_DAY, 15);
         calendar.set(Calendar.MINUTE, 45);
         calendar.set(Calendar.SECOND, 21);
-
         Tag tag = createTag(TIMESTAMP_STRING);
 
+        //When
         String formatedDate = DateFormatterUtil.format(tag, calendar);
 
+        //Then
         assertThat(formatedDate, is("15:45:21"));
     }
 
@@ -67,11 +69,12 @@ public class DateFormatterUtilTest {
         calendar.set(Calendar.HOUR_OF_DAY, 15);
         calendar.set(Calendar.MINUTE, 45);
         calendar.set(Calendar.SECOND, 21);
-
         Tag tag = createTag(DATETIME_STRING);
 
+        //When
         String formatedDate = DateFormatterUtil.format(tag, calendar);
 
+        //Then
         assertThat(formatedDate, is("2017-06-21 15:45:21"));
     }
 

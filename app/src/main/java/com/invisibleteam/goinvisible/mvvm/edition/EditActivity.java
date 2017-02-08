@@ -42,14 +42,14 @@ public class EditActivity extends CommonActivity {
         return intent;
     }
 
-    private final EditTagListener editTagListener = (tag, listener) -> {
-        EditDialog dialog = EditDialog.newInstance(EditActivity.this, tag);
-        dialog.setActionTagListener(listener);
-        dialog.show(getFragmentManager(), EditDialog.FRAGMENT_TAG);
-    };
-
     private ImageDetails imageDetails;
     private EditViewModel editViewModel;
+
+    private final EditTagListener editTagListener = (tag) -> {
+        EditDialog dialog = EditDialog.newInstance(EditActivity.this, tag);
+        dialog.setViewModel(editViewModel);
+        dialog.show(getFragmentManager(), EditDialog.FRAGMENT_TAG);
+    };
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
