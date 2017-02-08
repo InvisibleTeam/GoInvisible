@@ -100,17 +100,17 @@ public class EditItemAdapterTest {
         adapter.updateImageList(tagList);
 
         //When
-        Tag tag1 = createTag("key1", "changedValue");
-        Tag tag3 = createTag("key3", "changedValue");
-        adapter.updateTag(tag1);
+        TAG1.setValue("changedValue");
+        TAG3.setValue("changedValue");
+        adapter.updateTag(TAG1);
         adapter.updateTag(TAG2);
-        adapter.updateTag(tag3);
+        adapter.updateTag(TAG3);
         List<Tag> changedTags = adapter.getChangedTags();
 
         //Then
-        assertThat(changedTags, containsTag(tag1));
+        assertThat(changedTags, containsTag(TAG1));
         assertThat(changedTags, notContainsTag(TAG2));
-        assertThat(changedTags, containsTag(tag3));
+        assertThat(changedTags, containsTag(TAG3));
         assertThat(changedTags, notContainsTag(TAG4));
         assertThat(changedTags, notContainsTag(TAG5));
         assertThat(changedTags, notContainsTag(TAG6));

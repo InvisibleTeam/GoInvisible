@@ -26,6 +26,10 @@ public class Tag implements Parcelable {
     private String formattedValue;
     private TagType tagType;
 
+    public Tag(Tag tag) {
+        this(tag.getKey(), tag.getSecondKey(), tag.getValue(), tag.getSecondValue(), tag.getTagType());
+    }
+
     public Tag(String key, String value, TagType tagType) {
         this(key, null, value, null, tagType);
     }
