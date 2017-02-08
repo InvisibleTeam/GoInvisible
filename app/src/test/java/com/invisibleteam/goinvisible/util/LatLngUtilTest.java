@@ -16,7 +16,7 @@ public class LatLngUtilTest {
             "17.5,      17.5,       20000,      17.679774668960636,     17.688780123834924",
             "0,         0,          1000,       0.00899320331800169,    0.008993203428783377"
     })
-    public void test(double lat, double lng, long radius, double boundsLat, double boundsLng) {
+    public void whenLatLngAndRangedAreProvided_CorrectBoundsAreGenerated(double lat, double lng, long radius, double boundsLat, double boundsLng) {
         //when
         LatLngBounds bounds = LatLngUtil.generateBoundsWithZoom(new LatLng(lat, lng), radius);
 

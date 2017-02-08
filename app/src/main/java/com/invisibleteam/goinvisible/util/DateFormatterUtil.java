@@ -9,7 +9,7 @@ import java.util.Calendar;
 public class DateFormatterUtil {
 
     private static final String DATE_STRING_FORMATTER = "yyyy-MM-dd";
-    private static final String TIMESTAMP_STRING_FORMATTER = "hh:mm:ss";
+    private static final String TIMESTAMP_STRING_FORMATTER = "HH:mm:ss";
     private static final String DATETIME_STRING_FORMATTER = DATE_STRING_FORMATTER + " " + TIMESTAMP_STRING_FORMATTER;
     private static final String EMPTY_FORMATTER = "";
 
@@ -33,8 +33,6 @@ public class DateFormatterUtil {
 
             default:
                 return EMPTY_FORMATTER;
-
         }
     }
-
 }

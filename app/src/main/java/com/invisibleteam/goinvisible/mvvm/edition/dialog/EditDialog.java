@@ -10,7 +10,9 @@ import android.support.annotation.VisibleForTesting;
 import android.util.Log;
 
 import com.invisibleteam.goinvisible.model.Tag;
-import com.invisibleteam.goinvisible.mvvm.edition.OnTagActionListener;
+import com.invisibleteam.goinvisible.mvvm.edition.EditViewModel;
+
+import javax.annotation.Nullable;
 
 public class EditDialog extends DialogFragment {
 
@@ -18,9 +20,7 @@ public class EditDialog extends DialogFragment {
     public static final String EXTRA_TAG = "extra_tag";
     public static final String TAG = EditDialog.class.getSimpleName();
 
-    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
-    Tag tag;
-    private OnTagActionListener listener;
+    private EditViewModel editViewModel;
 
     public static EditDialog newInstance(Context context, Tag tag) {
         Bundle bundle = new Bundle();
@@ -31,26 +31,25 @@ public class EditDialog extends DialogFragment {
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        extractTag();
         DialogFactory factory = new DialogFactory();
-        return factory.createDialog(this, tag, listener);
+        return factory.createDialog(this, extractTag(), editViewModel);
     }
 
+    @Nullable
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
-    boolean extractTag() {
+    Tag extractTag() {
         Bundle bundle = getArguments();
         if (bundle != null && !bundle.isEmpty()) {
             Parcelable extra = bundle.getParcelable(EXTRA_TAG);
             if (extra instanceof Tag) {
-                tag = (Tag) extra;
-                return true;
+                return  (Tag) extra;
             }
         }
         Log.e(TAG, "There is some tag extraction error");
-        return false;
+        return null;
     }
 
-    public void setActionTagListener(OnTagActionListener actionTagListener) {
-        listener = actionTagListener;
+    public void setViewModel(EditViewModel viewModel) {
+        editViewModel = viewModel;
     }
 }

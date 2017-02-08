@@ -65,18 +65,18 @@ public class EditActivity extends CommonActivity {
         return intent;
     }
 
-    private final EditTagListener editTagListener = (tag, listener) -> {
+    private ImageDetails imageDetails;
+    private EditViewModel editViewModel;
+    private Tag tag;
+
+    private final EditTagListener editTagListener = (tag) -> {
         if (tag.getKey().equals(ExifInterface.TAG_GPS_LATITUDE)) {
             this.tag = tag;
             startPlaceIntent();
         } else {
-            openEditDialog(tag, listener);
+            openEditDialog(tag);
         }
     };
-
-    private ImageDetails imageDetails;
-    private EditViewModel editViewModel;
-    private Tag tag;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -169,9 +169,9 @@ public class EditActivity extends CommonActivity {
         editViewModel.onEditEnded(tag);
     }
 
-    private void openEditDialog(Tag tag, OnTagActionListener listener) {
+    private void openEditDialog(Tag tag) {
         EditDialog dialog = EditDialog.newInstance(EditActivity.this, tag);
-        dialog.setActionTagListener(listener);
+        dialog.setViewModel(editViewModel);
         dialog.show(getFragmentManager(), EditDialog.FRAGMENT_TAG);
     }
 
