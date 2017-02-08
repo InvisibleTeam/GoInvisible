@@ -23,10 +23,10 @@ public class LatLngUtilTest {
             double boundsLat,
             double boundsLng
     ) {
-        //when
+        //When
         LatLngBounds bounds = LatLngUtil.generateBoundsWithZoom(new LatLng(lat, lng), radius);
 
-        //then
+        //Then
         assertEquals(boundsLat, bounds.northeast.latitude, 0.000000001);
         assertEquals(boundsLng, bounds.northeast.longitude, 0.000000001);
     }
