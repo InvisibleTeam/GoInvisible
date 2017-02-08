@@ -13,7 +13,6 @@ import com.invisibleteam.goinvisible.databinding.TextDialogBinding;
 import com.invisibleteam.goinvisible.model.InputType;
 import com.invisibleteam.goinvisible.model.Tag;
 import com.invisibleteam.goinvisible.mvvm.edition.EditViewModel;
-import com.invisibleteam.goinvisible.mvvm.edition.OnTagActionListener;
 import com.invisibleteam.goinvisible.util.DialogRangedValuesUtil;
 
 import java.util.Locale;
@@ -22,40 +21,37 @@ import javax.annotation.Nullable;
 
 class DialogFactory {
 
+    private final DialogFragment dialog;
+    private final Context context;
+    private final EditViewModel viewModel;
     private DateDialog dateDialog;
+    @Nullable
+    private Tag tag;
 
-    Dialog createDialog(DialogFragment dialog, @Nullable Tag tag, EditViewModel viewModel) {
-        Context context = dialog.getActivity();
+    DialogFactory(DialogFragment dialog, @Nullable Tag tag, EditViewModel viewModel) {
+        this.dialog = dialog;
+        this.tag = tag;
+        this.viewModel = viewModel;
+        context = dialog.getActivity();
+    }
+
+    Dialog createDialog() {
         if (tag == null) {
-            return createErrorDialog(context);
+            return createErrorDialog();
         }
         dateDialog = new DateDialog(context, tag, viewModel);
         InputType inputType = tag.getTagType().getInputType();
 
         switch (inputType) {
             case TEXT_STRING:
-                return createDialog(
-                        context,
-                        dialog,
-                        android.text.InputType.TYPE_TEXT_VARIATION_FILTER,
-                        tag,
-                        viewModel);
+                return createDialog(android.text.InputType.TYPE_TEXT_VARIATION_FILTER);
 
             case VALUE_INTEGER:
-                return createDialog(
-                        context,
-                        dialog,
-                        android.text.InputType.TYPE_CLASS_NUMBER,
-                        tag,
-                        viewModel);
+                return createDialog(android.text.InputType.TYPE_CLASS_NUMBER);
 
             case VALUE_DOUBLE:
-                return createDialog(
-                        context,
-                        dialog,
-                        android.text.InputType.TYPE_CLASS_NUMBER | android.text.InputType.TYPE_NUMBER_FLAG_DECIMAL,
-                        tag,
-                        viewModel);
+                return createDialog(android.text.InputType.TYPE_CLASS_NUMBER
+                        | android.text.InputType.TYPE_NUMBER_FLAG_DECIMAL);
 
             case RANGED_INTEGER:
                 return createRangedDialog(context, tag, viewModel);
@@ -70,7 +66,7 @@ class DialogFactory {
                 return createDateDialog();
 
             default:
-                return createErrorDialog(context);
+                return createErrorDialog();
         }
     }
 
@@ -80,7 +76,7 @@ class DialogFactory {
 
         String[] values = DialogRangedValuesUtil.getValues(tag.getKey());
         if (values == null || values.length == 0) {
-            return createErrorDialog(context);
+            return createErrorDialog();
         }
         alertDialog.setItems(values, (dialog, index) -> {
             dialog.dismiss();
@@ -104,12 +100,7 @@ class DialogFactory {
     }
 
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
-    Dialog createDialog(
-            Context context,
-            DialogFragment dialog,
-            int keyboardInputType,
-            Tag tag,
-            OnTagActionListener listener) {
+    Dialog createDialog(int keyboardInputType) {
 
         //Viewmodel
         TextDialogViewModel viewModel = new TextDialogViewModel(tag);
@@ -123,15 +114,7 @@ class DialogFactory {
         binding.setViewModel(viewModel);
         binding.valueText.setInputType(keyboardInputType);
         binding.okButton.setOnClickListener(v -> {
-            validateText(
-                    dialog,
-                    binding,
-                    viewModel,
-                    tag,
-                    listener,
-                    binding.valueText
-                            .getText()
-                            .toString());
+            validateText(binding, viewModel);
         });
         binding.cancelButton.setOnClickListener(v -> dialog.dismiss());
 
@@ -143,17 +126,14 @@ class DialogFactory {
     }
 
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
-    void validateText(DialogFragment dialog,
-                      TextDialogBinding binding,
-                      TextDialogViewModel viewModel,
-                      Tag tag,
-                      OnTagActionListener listener,
-                      String textValue) {
+    void validateText(TextDialogBinding binding,
+                      TextDialogViewModel viewModel) {
         String validationRegexp = tag.getTagType().getValidationRegexp();
+        String textValue = binding.valueText.getText().toString();
 
         if (textValue.matches(validationRegexp)) {
             tag.setValue(textValue);
-            listener.onEditEnded(tag);
+            this.viewModel.onEditEnded(tag);
             dialog.dismiss();
             return;
         }
@@ -162,7 +142,7 @@ class DialogFactory {
     }
 
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
-    Dialog createErrorDialog(Context context) {
+    Dialog createErrorDialog() {
         return new AlertDialog
                 .Builder(context, R.style.AlertDialogStyle)
                 .setTitle(R.string.error)
