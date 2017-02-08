@@ -14,6 +14,7 @@ import com.invisibleteam.goinvisible.model.InputType;
 import com.invisibleteam.goinvisible.model.Tag;
 import com.invisibleteam.goinvisible.mvvm.edition.EditViewModel;
 import com.invisibleteam.goinvisible.mvvm.edition.OnTagActionListener;
+import com.invisibleteam.goinvisible.util.DialogRangedValuesUtil;
 
 import java.util.Locale;
 
@@ -34,11 +35,9 @@ class DialogFactory {
         switch (inputType) {
             case TEXT_STRING:
                 return createTextDialog(context, dialog, tag, viewModel);
-//            case RANGED_STRING://TODO other dialog types
-//                break;
-//            case RANGED_INTEGER:
-//                break;
-//            case VALUE_INTEGER:
+            case RANGED_INTEGER:
+                return createRangedDialog(context, tag, viewModel);
+//            case VALUE_INTEGER://TODO other dialog types
 //                break;
 //            case VALUE_DOUBLE:
 //                break;
@@ -53,6 +52,23 @@ class DialogFactory {
             default:
                 return createErrorDialog(context);
         }
+    }
+
+    Dialog createRangedDialog(Context context, Tag tag, OnTagActionListener listener) {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
+        alertDialog.setTitle(tag.getKey());
+
+        String[] values = DialogRangedValuesUtil.getValues(tag.getKey());
+        if (values == null || values.length == 0) {
+            return createErrorDialog(context);
+        }
+        alertDialog.setItems(values, (dialog, index) -> {
+            dialog.dismiss();
+            tag.setValue(values[index]);
+            listener.onEditEnded(tag);
+        });
+
+        return alertDialog.show();
     }
 
     Dialog createDateDialog() {
