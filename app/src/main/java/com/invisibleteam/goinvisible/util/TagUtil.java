@@ -2,7 +2,6 @@ package com.invisibleteam.goinvisible.util;
 
 
 import android.support.annotation.VisibleForTesting;
-import android.text.TextUtils;
 
 import java.math.BigDecimal;
 
@@ -120,7 +119,7 @@ public class TagUtil {
                 .toString();
     }
 
-    private static long getExactSecondsValue(double seconds) {
+    private static Long getExactSecondsValue(double seconds) {
         BigDecimal big = new BigDecimal(seconds).setScale(SIX_DECIMAL_NUMBER_SCALE, BigDecimal.ROUND_HALF_DOWN);
         String bigString = big.toString().replace(".", "");
         return Long.valueOf(bigString);
@@ -137,7 +136,7 @@ public class TagUtil {
         return String.valueOf(result);
     }
 
-    private static boolean isRationalValueCorrect(@Nullable String rational){
+    private static boolean isRationalValueCorrect(@Nullable String rational) {
         return rational == null || rational.length() == 0 || !rational.contains("/");
     }
 
