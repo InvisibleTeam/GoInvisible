@@ -54,6 +54,7 @@ android:
 
         # Latest artifacts in local repository
         - extra-android-m2repository
+        - extra-google-google_play_services
 
         # Specify at least one system image
         - sys-img-$ANDROID_ABI-$ANDROID_TARGET
