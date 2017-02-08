@@ -44,14 +44,17 @@ public class EditViewModel implements OnTagActionListener {
     @Override
     public void onClear(Tag tag) {
         if (manager.clearTag(tag)) {
-            editCompoundRecyclerView.updateTag(tag);
+            onEditEnded(tag);
         }
     }
 
     @Override
-    public void onEdit(Tag tag) {
+    public void onEditStarted(Tag tag) {
         listener.openEditDialog(tag);
-        //todo execute this when dialog will be closed
-//        manager.editTag(tag);
+    }
+
+    @Override
+    public void onEditEnded(Tag tag) {
+        editCompoundRecyclerView.updateTag(tag);
     }
 }

@@ -16,10 +16,11 @@ import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
-import static junit.framework.Assert.assertTrue;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsNull.nullValue;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -41,8 +42,7 @@ public class EditDialogTest {
         EditDialog dialog = EditDialog.newInstance(activity, TAG);
 
         //Then
-        assertTrue(dialog.extractTag());
-        assertThat(dialog.tag, TagsMatcher.equals(TAG));
+        assertThat(dialog.extractTag(), TagsMatcher.equals(TAG));
     }
 
     @Test
@@ -54,10 +54,10 @@ public class EditDialogTest {
         when(dialog.getArguments()).thenReturn(new Bundle());
 
         //When
-        boolean isExtractionFailure = !dialog.extractTag();
+        Tag tag = dialog.extractTag();
 
         //Then
-        assertTrue(isExtractionFailure);
+        assertThat(tag, is(nullValue()));
     }
 
     @Test
@@ -67,54 +67,21 @@ public class EditDialogTest {
         when(dialog.getArguments()).thenReturn(null);
 
         //When
-        boolean isExtractionFailure = !dialog.extractTag();
+        Tag tag = dialog.extractTag();
 
         //Then
-        assertTrue(isExtractionFailure);
+        assertThat(tag, is(nullValue()));
     }
 
     @Test
-    public void whenWrongNullBundleIsPassed_ErrorDialogIsCreated() {
-        //Given
-        EditDialog dialog = spy(EditDialog.newInstance(activity, TAG));
-        when(dialog.getArguments()).thenReturn(null);
-
-        //When
-        dialog.show(activity.getFragmentManager(), EditDialog.FRAGMENT_TAG);
-
-        //Then
-        verify(dialog, times(0)).createTextDialogBinding();
-        verify(dialog).showErrorDialog();
-    }
-
-
-    @Test
-    public void whenTextStringTagIsPassed_ProperDialogIsCreated() {
+    public void whenDialogIsInitiated_onCreateDialogIsCalled() {
         //Given
         EditDialog dialog = spy(EditDialog.newInstance(activity, TAG));
 
-
         //When
         dialog.show(activity.getFragmentManager(), EditDialog.FRAGMENT_TAG);
 
         //Then
-        verify(dialog).createTextDialogBinding();
-        verify(dialog, times(0)).showErrorDialog();
-    }
-
-    @Test
-    public void whenIndefiniteInputTtypeIsPassed_ErrorDialogIsCreated() {
-        //Given
-        EditDialog dialog = spy(EditDialog.newInstance(
-                activity,
-                new Tag("key", "value", TagType.build(InputType.INDEFINITE))));
-
-
-        //When
-        dialog.show(activity.getFragmentManager(), EditDialog.FRAGMENT_TAG);
-
-        //Then
-        verify(dialog, times(0)).createTextDialogBinding();
-        verify(dialog).showErrorDialog();
+        verify(dialog).onCreateDialog(any());
     }
 }

@@ -110,6 +110,7 @@ class TagsManager {
             switch (inputType) {
                 case TEXT_STRING:
                 case DATE_STRING:
+                case DATETIME_STRING:
                 case TIMESTAMP_STRING:
                     tagValue = exifInterface.getAttribute(key);
                     break;
