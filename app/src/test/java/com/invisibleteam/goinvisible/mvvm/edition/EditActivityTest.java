@@ -83,7 +83,7 @@ public class EditActivityTest {
 
         //then
         verify(recyclerView).getChangedTags();
-        verify(activity).showAproveChangeTagsDialog(tagsList);
+        verify(activity).showApproveChangeTagsDialog(tagsList);
         verify(activity).onBackPressed();
     }
 
@@ -105,7 +105,7 @@ public class EditActivityTest {
 
         //then
         verify(recyclerView).getChangedTags();
-        verify(activity, times(0)).showAproveChangeTagsDialog(any());
+        verify(activity, times(0)).showApproveChangeTagsDialog(any());
         verify(activity).onBackPressed();
     }
 

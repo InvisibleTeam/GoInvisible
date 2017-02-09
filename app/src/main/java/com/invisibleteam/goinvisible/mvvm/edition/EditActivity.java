@@ -290,14 +290,14 @@ public class EditActivity extends CommonActivity {
     private boolean updateTags() {
         List<Tag> changedTags = editCompoundRecyclerView.getChangedTags();
         if (!changedTags.isEmpty()) {
-            showAproveChangeTagsDialog(changedTags);
+            showApproveChangeTagsDialog(changedTags);
             return true;
         }
         return false;
     }
 
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
-    void showAproveChangeTagsDialog(List<Tag> changedTags) {
+    void showApproveChangeTagsDialog(List<Tag> changedTags) {
         new AlertDialog
                 .Builder(this, R.style.AlertDialogStyle)
                 .setTitle(R.string.tag_changed_title)
