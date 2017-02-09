@@ -313,7 +313,7 @@ public class EditActivity extends CommonActivity {
                         (dialog, which) -> {
                             finish();
                         })
-                .setCancelable(false)
+                .setCancelable(true)
                 .show();
     }
 }
