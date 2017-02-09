@@ -9,4 +9,6 @@ public interface OnTagActionListener {
     void onEditStarted(Tag tag);
 
     void onEditEnded(Tag tag);
+
+    void onTagsUpdated();
 }

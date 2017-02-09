@@ -73,17 +73,17 @@ public class EditActivityTest {
         EditCompoundRecyclerView recyclerView = mock(EditCompoundRecyclerView.class);
         when(recyclerView.getChangedTags()).thenReturn(tagsList);
 
-        activity.setEditCompoundRecyclerView(recyclerView);
-
         MenuItem menuItem = mock(MenuItem.class);
         when(menuItem.getItemId()).thenReturn(android.R.id.home);
+
+        activity.setEditCompoundRecyclerView(recyclerView);
 
         //when
         activity.onOptionsItemSelected(menuItem);
 
         //then
         verify(recyclerView).getChangedTags();
-        verify(activity).showApproveChangeTagsDialog(tagsList);
+        verify(activity).showApproveChangeTagsDialog();
         verify(activity).onBackPressed();
     }
 
@@ -105,7 +105,7 @@ public class EditActivityTest {
 
         //then
         verify(recyclerView).getChangedTags();
-        verify(activity, times(0)).showApproveChangeTagsDialog(any());
+        verify(activity, times(0)).showApproveChangeTagsDialog();
         verify(activity).onBackPressed();
     }
 
