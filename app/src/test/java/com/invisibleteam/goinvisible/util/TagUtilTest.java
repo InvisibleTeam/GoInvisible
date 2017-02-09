@@ -49,6 +49,20 @@ public class TagUtilTest {
     }
 
     @Test
+    public void whenRationalGPSIsGivenWithNullRationalRef_GeoGPSValueWithEmptyRefIsReturned() {
+        //Given
+        String gpsValue = "17/1,4/1,1816/100";
+        String gpsValueReference = null;
+
+        //When
+        String result = TagUtil.parseRationalGPSToGeoGPS(gpsValue, gpsValueReference);
+
+        //Then
+        String expectedValue = "17" + TagUtil.DEGREE_CHAR + " 4\' 18\'\'";
+        assertThat(result, is(expectedValue));
+    }
+
+    @Test
     public void whenEmptyRationalGPSIsGiven_NullValueIsReturned() {
         //Given
         String gpsValue = "";

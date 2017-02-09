@@ -39,14 +39,28 @@ class TagsManager {
     }
 
     boolean editTag(Tag tag) {
-        exifInterface.setAttribute(tag.getKey(), tag.getValue());
         try {
-            exifInterface.saveAttributes();
+            if (tag.getValue() != null) {
+                saveTagAttributes(tag.getKey(), tag.getValue());
+            }
+            if (isPositionTag(tag)) {
+                GeolocationTag geolocationTag = (GeolocationTag) tag;
+                saveTagAttributes(geolocationTag.getSecondKey(), geolocationTag.getSecondValue());
+            }
             return true;
         } catch (IOException e) {
-            Log.d(TAG, String.valueOf(e.getMessage()));
+            Log.d(TAG, e.getMessage());
             return false;
         }
+    }
+
+    private boolean isPositionTag(Tag tag) {
+        return tag instanceof GeolocationTag;
+    }
+
+    private void saveTagAttributes(String key, String value) throws IOException {
+        exifInterface.setAttribute(key, value);
+        exifInterface.saveAttributes();
     }
 
     boolean clearTag(Tag tag) {
@@ -72,12 +86,22 @@ class TagsManager {
                 tag.setValue("0.0");
                 break;
             case POSITION_DOUBLE:
-                tag.setValue(TagUtil.parseDoubleGPSToRationalGPS(0.000000));
+                clearPositionTag((GeolocationTag) tag);
                 break;
             default:
                 break;
         }
         return editTag(tag);
+    }
+
+    private void clearPositionTag(GeolocationTag tag) {
+        final String defaultGPSValue = TagUtil.parseDoubleGPSToRationalGPS(0.000000);
+        tag.setValue(defaultGPSValue);
+        tag.setSecondValue(defaultGPSValue);
+        final Tag latitudeRef = new Tag(TAG_GPS_LATITUDE_REF, "", TagType.build(InputType.POSITION_DOUBLE));
+        editTag(latitudeRef);
+        final Tag longitudeRef = new Tag(TAG_GPS_LONGITUDE_REF, "", TagType.build(InputType.POSITION_DOUBLE));
+        editTag(longitudeRef);
     }
 
     private GeolocationTag getGeolocationTag() {
@@ -87,14 +111,13 @@ class TagsManager {
         String latRef = exifInterface.getAttribute(TAG_GPS_LATITUDE_REF);
         String lngRef = exifInterface.getAttribute(TAG_GPS_LONGITUDE_REF);
 
-        String geoLat = TagUtil.parseRationalGPSToGeoGPS(rationalLat, latRef);
-        String geoLng = TagUtil.parseRationalGPSToGeoGPS(rationalLng, lngRef);
-
         return new GeolocationTag(
                 TAG_GPS_LATITUDE,
                 TAG_GPS_LONGITUDE,
-                geoLat,
-                geoLng,
+                rationalLat,
+                rationalLng,
+                latRef,
+                lngRef,
                 tagType);
     }
 

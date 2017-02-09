@@ -63,7 +63,7 @@ public class TagUtil {
     }
 
     @Nullable
-    public static String parseRationalGPSToGeoGPS(@Nullable String rational, String rationalRef) {
+    public static String parseRationalGPSToGeoGPS(@Nullable String rational, @Nullable String rationalRef) {
         if (isRationalValueCorrect(rational)) {
             return null;
         }
@@ -71,10 +71,15 @@ public class TagUtil {
         final double rationalGPS = parseRationalGPSToDoubleGPS(rational);
         final StringBuilder geoGPSBuilder = buildGeoGPSValueFromDoubleValue(rationalGPS);
 
-        return geoGPSBuilder
-                .append(" ")
-                .append(rationalRef)
-                .toString();
+        if (rationalRef != null) {
+            geoGPSBuilder
+                    .append(" ")
+                    .append(rationalRef);
+        } else {
+            geoGPSBuilder.append("");
+        }
+
+        return geoGPSBuilder.toString();
     }
 
     private static double parseRationalGPSToDoubleGPS(String value) {
@@ -113,10 +118,10 @@ public class TagUtil {
                 .toString();
     }
 
-    private static Long getExactSecondsValue(double seconds) {
+    private static long getExactSecondsValue(double seconds) {
         BigDecimal big = new BigDecimal(seconds).setScale(SIX_DECIMAL_NUMBER_SCALE, BigDecimal.ROUND_HALF_DOWN);
         String bigString = big.toString().replace(".", "");
-        return Long.valueOf(bigString);
+        return Long.parseLong(bigString);
     }
 
     @Nullable
