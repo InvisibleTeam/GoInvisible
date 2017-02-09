@@ -13,6 +13,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 
 import static android.media.ExifInterface.TAG_DATETIME;
@@ -143,5 +144,29 @@ public class TagsManagerTest {
         //Then
         verify(exifInterface).setAttribute(TAG_WHITE_BALANCE, "0");
         verify(exifInterface).saveAttributes();
+    }
+
+    @Test
+    public void whenTagsListIsPassedToManager_TagsListIsSaved() throws IOException {
+        //Given
+        List<Tag> tagsList = Arrays.asList(
+                createTag("key1", "value1"),
+                createTag("key2", "value2"),
+                createTag("key3", "value3"),
+                createTag("key4", "value4"));
+
+        //When
+        tagsManager.editTags(tagsList);
+
+        //Then
+        verify(exifInterface).setAttribute("key1", "value1");
+        verify(exifInterface).setAttribute("key2", "value2");
+        verify(exifInterface).setAttribute("key3", "value3");
+        verify(exifInterface).setAttribute("key4", "value4");
+        verify(exifInterface).saveAttributes();
+    }
+
+    private Tag createTag(String key, String value) {
+        return new Tag(key, value, TagType.build(InputType.DATETIME_STRING));
     }
 }

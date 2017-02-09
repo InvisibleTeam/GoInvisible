@@ -49,9 +49,21 @@ class TagsManager {
             }
             return true;
         } catch (IOException e) {
-            Log.d(TAG, e.getMessage());
+            Log.d(TAG, String.valueOf(e.getMessage()));
             return false;
         }
+    }
+
+    boolean editTags(List<Tag> tags) {
+        boolean result = true;
+        if (tags.isEmpty()) {
+            return false;
+        }
+        for (Tag tag : tags) {
+            result &= editTag(tag);
+        }
+
+        return result;
     }
 
     private boolean isPositionTag(Tag tag) {

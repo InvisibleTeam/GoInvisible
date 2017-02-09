@@ -34,6 +34,26 @@ public class TagsMatcher {
         };
     }
 
+    public static Matcher<List<Tag>> notContainsTag(final Tag tag) {
+        return new TypeSafeMatcher<List<Tag>>() {
+
+            @Override
+            public boolean matchesSafely(List<Tag> tagList) {
+                for (Tag expectedTag : tagList) {
+                    if (expectedTag.getKey().equals(tag.getKey())) {
+                        return false;
+                    }
+                }
+                return true;
+            }
+
+            @Override
+            public void describeTo(Description description) {
+                description.appendValue("List doesn't contain expected tag");
+            }
+        };
+    }
+
     public static Matcher<Tag> equals(final Tag tag) {
         return new TypeSafeMatcher<Tag>() {
 
