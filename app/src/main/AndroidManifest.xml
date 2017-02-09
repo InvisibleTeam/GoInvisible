@@ -6,6 +6,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
+        android:name=".GoInvisibleApplication"
         android:allowBackup="true"
         android:fullBackupContent="@xml/goinvisible_backup_scheme"
         android:icon="@mipmap/ic_launcher"
