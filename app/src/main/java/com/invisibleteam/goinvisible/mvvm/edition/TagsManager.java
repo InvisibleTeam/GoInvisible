@@ -46,6 +46,8 @@ class TagsManager {
             if (isPositionTag(tag)) {
                 GeolocationTag geolocationTag = (GeolocationTag) tag;
                 saveTagAttributes(geolocationTag.getSecondKey(), geolocationTag.getSecondValue());
+                saveTagAttributes(TAG_GPS_LATITUDE_REF, geolocationTag.getLatitudeRef());
+                saveTagAttributes(TAG_GPS_LONGITUDE_REF, geolocationTag.getLongitudeRef());
             }
             return true;
         } catch (IOException e) {
