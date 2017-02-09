@@ -6,7 +6,7 @@ apply from: 'jacoco.gradle'
 
 android {
     compileSdkVersion 25
-    buildToolsVersion "25.0.1"
+    buildToolsVersion "25.0.2"
     defaultConfig {
         applicationId "com.invisibleteam.goinvisible"
         minSdkVersion 21
@@ -45,6 +45,9 @@ dependencies {
     compile 'com.android.support:recyclerview-v7:25.1.1'
     compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'com.android.support:design:25.1.1'
+    compile 'com.google.android.gms:play-services-places:10.0.1'
+    compile 'com.google.android.gms:play-services-location:10.0.1'
+    compile 'com.google.maps.android:android-maps-utils:0.5'
 
     testCompile 'junit:junit:4.12'
     testCompile 'org.mockito:mockito-core:2.6.5'

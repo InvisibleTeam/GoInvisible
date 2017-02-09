@@ -36,17 +36,22 @@ import static org.mockito.Mockito.when;
 public class EditActivityTest {
 
     private Context context;
+    private EditActivity activity;
 
     @Before
     public void init() {
         context = RuntimeEnvironment.application;
+        ImageDetails imageDetails = new ImageDetails("Path", "Name");
+        Intent editActivityIntent = EditActivity.buildIntent(context, imageDetails);
+        activity = Robolectric
+                .buildActivity(EditActivity.class)
+                .withIntent(editActivityIntent)
+                .get();
+        activity = spy(activity);
     }
 
     @Test
     public void whenProperIntentIsPassed_ExtractionFinishWithSuccess() {
-        //Given
-        EditActivity activity = createActivity();
-
         //When
         boolean isExtractionSucceed = activity.extractBundle();
 
@@ -57,7 +62,6 @@ public class EditActivityTest {
     @Test
     public void whenOptionItemSelectedAndTagsAreChanged_TagsAreSavedAndBackToImageActivityIsCalled() {
         //Given
-        EditActivity activity = spy(createActivity());
         activity.onCreate(null);
 
         List<Tag> tagsList = Arrays.asList(
@@ -86,7 +90,6 @@ public class EditActivityTest {
     @Test
     public void whenUnknownOptionItemSelected_defaultMethodIsCalled() {
         //given
-        EditActivity activity = spy(createActivity());
         activity.onCreate(null);
 
         MenuItem menuItem = mock(MenuItem.class);
@@ -178,15 +181,6 @@ public class EditActivityTest {
 
         //Then
         verify(spyActivity).prepareView();
-    }
-
-    private EditActivity createActivity() {
-        ImageDetails imageDetails = new ImageDetails("Path", "Name");
-        Intent editActivityIntent = EditActivity.buildIntent(context, imageDetails);
-        return Robolectric
-                .buildActivity(EditActivity.class)
-                .withIntent(editActivityIntent)
-                .get();
     }
 
     private Tag createTag(String key, String value) {
