@@ -303,13 +303,13 @@ public class EditActivity extends CommonActivity {
                 .setTitle(R.string.tag_changed_title)
                 .setMessage(R.string.tag_changed_message)
                 .setPositiveButton(
-                        getString(android.R.string.ok).toUpperCase(Locale.getDefault()),
+                        getString(android.R.string.yes).toUpperCase(Locale.getDefault()),
                         (dialog, which) -> {
                             tagsManager.editTags(changedTags);
                             finish();
                         })
                 .setNegativeButton(
-                        getString(android.R.string.cancel).toUpperCase(Locale.getDefault()),
+                        getString(android.R.string.no).toUpperCase(Locale.getDefault()),
                         (dialog, which) -> {
                             finish();
                         })
