@@ -41,6 +41,7 @@ import com.invisibleteam.goinvisible.mvvm.edition.dialog.EditDialog;
 import com.invisibleteam.goinvisible.util.LatLngUtil;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.annotation.Nullable;
 
@@ -53,8 +54,10 @@ public class EditActivity extends CommonActivity {
     private static final int GPS_REQUEST_ID = 2;
     private static final long LOCATION_REQUEST_INTERVAL = 100;
     private static final long LOCATION_REQUEST_FASTEST_INTERVAL = 100;
-    private static int initialMapRadius = 20000;
+    private static final int initialMapRadius = 20000;
     private GoogleApiClient mGoogleApiClient;
+    private EditCompoundRecyclerView editCompoundRecyclerView;
+    private TagsManager tagsManager;
 
     public static Intent buildIntent(Context context, ImageDetails imageDetails) {
         Bundle bundle = new Bundle();
@@ -121,6 +124,11 @@ public class EditActivity extends CommonActivity {
         }
     }
 
+    private void updateTags() {
+        List<Tag> changedTags = editCompoundRecyclerView.getChangedTags();
+        tagsManager.editTags(changedTags);
+    }
+
     @VisibleForTesting
     @Nullable
     EditViewModel getEditViewModel() {
@@ -132,16 +140,17 @@ public class EditActivity extends CommonActivity {
         ActivityEditBinding activityEditBinding = DataBindingUtil.setContentView(this, R.layout.activity_edit);
         setSupportActionBar(activityEditBinding.mainToolbar);
         if (extractBundle()) {
-            EditCompoundRecyclerView editCompoundRecyclerView =
+            editCompoundRecyclerView =
                     (EditCompoundRecyclerView) findViewById(R.id.edit_compound_recycler_view);
 
             try {
                 ExifInterface exifInterface = new ExifInterface(imageDetails.getPath());
+                tagsManager = new TagsManager(exifInterface);
                 editViewModel = new EditViewModel(
                         imageDetails.getName(),
                         imageDetails.getPath(),
                         editCompoundRecyclerView,
-                        new TagsManager(exifInterface),
+                        tagsManager,
                         editTagListener);
                 activityEditBinding.setViewModel(editViewModel);
             } catch (IOException e) {
@@ -267,5 +276,21 @@ public class EditActivity extends CommonActivity {
             Toast.makeText(this, R.string.google_services_error,
                     Toast.LENGTH_LONG).show();
         }
+    }
+
+    @VisibleForTesting
+    void setEditCompoundRecyclerView(EditCompoundRecyclerView editCompoundRecyclerView) {
+        this.editCompoundRecyclerView = editCompoundRecyclerView;
+    }
+
+    @VisibleForTesting
+    void setTagsManager(TagsManager tagsManager) {
+        this.tagsManager = tagsManager;
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        updateTags();
     }
 }
