@@ -288,4 +288,10 @@ public class EditActivity extends CommonActivity {
     void setTagsManager(TagsManager tagsManager) {
         this.tagsManager = tagsManager;
     }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        updateTags();
+    }
 }
