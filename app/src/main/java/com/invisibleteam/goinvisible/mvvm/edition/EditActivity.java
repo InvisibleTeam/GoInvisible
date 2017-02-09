@@ -50,16 +50,14 @@ public class EditActivity extends CommonActivity {
     private static final String TAG_IMAGE_DETAILS = "extra_image_details";
     private static final String TAG_MODEL = "tag";
     private static final String TAG = EditActivity.class.getSimpleName();
-    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
-    EditCompoundRecyclerView editCompoundRecyclerView;
-    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
-    TagsManager tagsManager;
     private static final int PLACE_REQUEST_ID = 1;
     private static final int GPS_REQUEST_ID = 2;
     private static final long LOCATION_REQUEST_INTERVAL = 100;
     private static final long LOCATION_REQUEST_FASTEST_INTERVAL = 100;
-    private static int initialMapRadius = 20000;
+    private static final int initialMapRadius = 20000;
     private GoogleApiClient mGoogleApiClient;
+    private EditCompoundRecyclerView editCompoundRecyclerView;
+    private TagsManager tagsManager;
 
     public static Intent buildIntent(Context context, ImageDetails imageDetails) {
         Bundle bundle = new Bundle();
@@ -282,12 +280,12 @@ public class EditActivity extends CommonActivity {
     }
 
     @VisibleForTesting
-    public void setEditCompoundRecyclerView(EditCompoundRecyclerView editCompoundRecyclerView) {
+    void setEditCompoundRecyclerView(EditCompoundRecyclerView editCompoundRecyclerView) {
         this.editCompoundRecyclerView = editCompoundRecyclerView;
     }
 
     @VisibleForTesting
-    public void setTagsManager(TagsManager tagsManager) {
+    void setTagsManager(TagsManager tagsManager) {
         this.tagsManager = tagsManager;
     }
 }
