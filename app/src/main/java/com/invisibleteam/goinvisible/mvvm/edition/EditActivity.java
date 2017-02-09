@@ -117,7 +117,6 @@ public class EditActivity extends CommonActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                updateTags();
                 onBackPressed();
                 return true;
             default:
