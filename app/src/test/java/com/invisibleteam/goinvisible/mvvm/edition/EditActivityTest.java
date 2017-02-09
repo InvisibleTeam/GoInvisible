@@ -21,10 +21,12 @@ import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
@@ -60,7 +62,7 @@ public class EditActivityTest {
     }
 
     @Test
-    public void whenOptionItemSelectedAndTagsAreChanged_TagsAreSavedAndBackToImageActivityIsCalled() {
+    public void whenOptionItemIsSelectedAndTagsAreChanged_TagsAreSavedAndBackToImageActivityIsCalled() {
         //Given
         activity.onCreate(null);
 
@@ -68,11 +70,9 @@ public class EditActivityTest {
                 createTag("key1", "value1"),
                 createTag("key1", "value1"));
 
-        TagsManager tagsManager = mock(TagsManager.class);
         EditCompoundRecyclerView recyclerView = mock(EditCompoundRecyclerView.class);
         when(recyclerView.getChangedTags()).thenReturn(tagsList);
 
-        activity.setTagsManager(tagsManager);
         activity.setEditCompoundRecyclerView(recyclerView);
 
         MenuItem menuItem = mock(MenuItem.class);
@@ -83,9 +83,32 @@ public class EditActivityTest {
 
         //then
         verify(recyclerView).getChangedTags();
-        verify(tagsManager).editTags(tagsList);
+        verify(activity).showAproveChangeTagsDialog(tagsList);
         verify(activity).onBackPressed();
     }
+
+    @Test
+    public void whenOptionItemIsSelectedAndTagsAreNotChanged_OnlyBackToImageActivityIsCalled() {
+        //Given
+        activity.onCreate(null);
+
+        EditCompoundRecyclerView recyclerView = mock(EditCompoundRecyclerView.class);
+        when(recyclerView.getChangedTags()).thenReturn(new ArrayList<>());
+
+        activity.setEditCompoundRecyclerView(recyclerView);
+
+        MenuItem menuItem = mock(MenuItem.class);
+        when(menuItem.getItemId()).thenReturn(android.R.id.home);
+
+        //when
+        activity.onOptionsItemSelected(menuItem);
+
+        //then
+        verify(recyclerView).getChangedTags();
+        verify(activity, times(0)).showAproveChangeTagsDialog(any());
+        verify(activity).onBackPressed();
+    }
+
 
     @Test
     public void whenUnknownOptionItemSelected_defaultMethodIsCalled() {

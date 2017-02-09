@@ -9,4 +9,6 @@
     <string name="error_message">There are some problems with editing this tag</string>
     <string name="enter_value_hint">Enter value</string>
     <string name="google_services_error">Google Play Services is not available.</string>
+    <string name="tag_changed_title">Some tags were changed</string>
+    <string name="tag_changed_message">Do you want to save changing?</string>
 </resources>

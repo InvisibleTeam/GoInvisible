@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.VisibleForTesting;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -42,6 +43,7 @@ import com.invisibleteam.goinvisible.util.LatLngUtil;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Locale;
 
 import javax.annotation.Nullable;
 
@@ -122,11 +124,6 @@ public class EditActivity extends CommonActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
-    }
-
-    private void updateTags() {
-        List<Tag> changedTags = editCompoundRecyclerView.getChangedTags();
-        tagsManager.editTags(changedTags);
     }
 
     @VisibleForTesting
@@ -283,14 +280,40 @@ public class EditActivity extends CommonActivity {
         this.editCompoundRecyclerView = editCompoundRecyclerView;
     }
 
-    @VisibleForTesting
-    void setTagsManager(TagsManager tagsManager) {
-        this.tagsManager = tagsManager;
-    }
-
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
-        updateTags();
+        if (!updateTags()) {
+            super.onBackPressed();
+        }
+    }
+
+    private boolean updateTags() {
+        List<Tag> changedTags = editCompoundRecyclerView.getChangedTags();
+        if (!changedTags.isEmpty()) {
+            showAproveChangeTagsDialog(changedTags);
+            return true;
+        }
+        return false;
+    }
+
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    void showAproveChangeTagsDialog(List<Tag> changedTags) {
+        new AlertDialog
+                .Builder(this, R.style.AlertDialogStyle)
+                .setTitle(R.string.tag_changed_title)
+                .setMessage(R.string.tag_changed_message)
+                .setPositiveButton(
+                        getString(android.R.string.ok).toUpperCase(Locale.getDefault()),
+                        (dialog, which) -> {
+                            tagsManager.editTags(changedTags);
+                            finish();
+                        })
+                .setNegativeButton(
+                        getString(android.R.string.cancel).toUpperCase(Locale.getDefault()),
+                        (dialog, which) -> {
+                            finish();
+                        })
+                .setCancelable(false)
+                .show();
     }
 }
