@@ -55,10 +55,11 @@ class TagsManager {
     }
 
     boolean editTags(List<Tag> tags) {
-        boolean result = true;
         if (tags.isEmpty()) {
             return false;
         }
+
+        boolean result = true;
         for (Tag tag : tags) {
             result &= editTag(tag);
         }

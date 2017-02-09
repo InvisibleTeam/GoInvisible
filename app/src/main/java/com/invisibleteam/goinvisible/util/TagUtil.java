@@ -82,8 +82,8 @@ public class TagUtil {
         return geoGPSBuilder.toString();
     }
 
-    private static double parseRationalGPSToDoubleGPS(String value) {
-        String[] rationalParts = value.split(",");
+    public static double parseRationalGPSToDoubleGPS(String rational) {
+        String[] rationalParts = rational.split(",");
 
         double degrees = parseRationalValueToDouble(rationalParts[0]);
         double minutes = parseRationalValueToDouble(rationalParts[1]);

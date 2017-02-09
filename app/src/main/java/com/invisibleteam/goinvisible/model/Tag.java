@@ -34,6 +34,13 @@ public class Tag implements Parcelable {
         this.formattedValue = value;
     }
 
+    public Tag(Tag tag) {
+        this.key = tag.getKey();
+        this.value = tag.getValue();
+        this.tagType = tag.getTagType();
+        this.formattedValue = tag.getValue();
+    }
+
     protected Tag(Parcel in) {
         this.key = in.readString();
         this.value = in.readString();
