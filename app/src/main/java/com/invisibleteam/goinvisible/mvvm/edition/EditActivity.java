@@ -277,24 +277,20 @@ public class EditActivity extends CommonActivity {
     }
 
     private void openPlacePicker() {
-        GeolocationTag geolocationTag = (GeolocationTag) tag;
-        if (geolocationTag.getValue() == null) {
-            Log.e(TAG, "GPS position is null");
-            return;
-        }
-
         try {
-            LatLng center = new LatLng(
-                    TagUtil.parseRationalGPSToDoubleGPS(geolocationTag.getValue()),
-                    TagUtil.parseRationalGPSToDoubleGPS(geolocationTag.getSecondValue())
-            );
-            LatLngBounds bounds = LatLngUtil.generateBoundsWithZoom(center, initialMapRadius);
-
+            GeolocationTag geolocationTag = (GeolocationTag) tag;
             PlacePicker.IntentBuilder intentBuilder = new PlacePicker.IntentBuilder();
-            intentBuilder.setLatLngBounds(bounds);
+            if (geolocationTag.getValue() != null) {
+                LatLng center = new LatLng(
+                        TagUtil.parseRationalGPSToDoubleGPS(geolocationTag.getValue()),
+                        TagUtil.parseRationalGPSToDoubleGPS(geolocationTag.getSecondValue())
+                );
+                LatLngBounds bounds = LatLngUtil.generateBoundsWithZoom(center, initialMapRadius);
+                intentBuilder.setLatLngBounds(bounds);
+            }
+
             Intent intent = intentBuilder.build(this);
             startActivityForResult(intent, PLACE_REQUEST_ID);
-
         } catch (GooglePlayServicesRepairableException e) {
             GoogleApiAvailability.getInstance().getErrorDialog(this, e.getConnectionStatusCode(), 0);
         } catch (GooglePlayServicesNotAvailableException e) {
