@@ -9,4 +9,5 @@
     <string name="error_message">There are some problems with editing this tag</string>
     <string name="enter_value_hint">Enter value</string>
     <string name="google_services_error">Google Play Services is not available.</string>
+    <string name="google_api_connection_error">Could not connect with google api.</string>
 </resources>
