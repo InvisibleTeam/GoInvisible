@@ -50,7 +50,7 @@ public class ImagesItemAdapter extends RecyclerView.Adapter<ImagesItemAdapter.Vi
                 onItemClickListener.onUnsupportedItemClick();
             }
         });
-        return new UnsupprotedImageViewHolder(itemView);
+        return new UnsupportedImageViewHolder(itemView);
     }
 
     @Override
@@ -58,8 +58,8 @@ public class ImagesItemAdapter extends RecyclerView.Adapter<ImagesItemAdapter.Vi
         holder.itemView.setTag(imageList.get(position));
         if (holder instanceof JpegImageViewHolder) {
             ((JpegImageViewHolder) holder).viewModel.setModel(imageList.get(position));
-        } else if (holder instanceof UnsupprotedImageViewHolder) {
-            ((UnsupprotedImageViewHolder) holder).viewModel.setModel(imageList.get(position));
+        } else if (holder instanceof UnsupportedImageViewHolder) {
+            ((UnsupportedImageViewHolder) holder).viewModel.setModel(imageList.get(position));
         }
     }
 
@@ -113,12 +113,12 @@ public class ImagesItemAdapter extends RecyclerView.Adapter<ImagesItemAdapter.Vi
         }
     }
 
-    private class UnsupprotedImageViewHolder extends ViewHolder {
+    private class UnsupportedImageViewHolder extends ViewHolder {
 
         private UnsupportedImageItemViewBinding binding;
         private ImageItemViewModel viewModel;
 
-        UnsupprotedImageViewHolder(View itemView) {
+        UnsupportedImageViewHolder(View itemView) {
             super(itemView);
 
             viewModel = new ImageItemViewModel();
