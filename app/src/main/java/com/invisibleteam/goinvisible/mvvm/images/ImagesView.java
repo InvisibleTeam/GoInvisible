@@ -5,5 +5,7 @@ import com.invisibleteam.goinvisible.model.ImageDetails;
 interface ImagesView {
     void navigateToEdit(ImageDetails imageDetails);
 
-    void showUnsupportedImageInfo();
+    void prepareSnackBar(int messageId);
+
+    void showSnackBar();
 }

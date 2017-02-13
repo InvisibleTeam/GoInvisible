@@ -98,6 +98,7 @@ class EditItemAdapter extends RecyclerView.Adapter<EditItemAdapter.ViewHolder> {
                 if (tagsList.get(index).getKey().equals(tag.getKey())) {
                     tagsList.set(index, tag);
                     notifyDataSetChanged();
+                    onTagActionListener.onTagsUpdated();
                     break;
                 }
             }
