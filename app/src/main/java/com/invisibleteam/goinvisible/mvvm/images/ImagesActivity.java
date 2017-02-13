@@ -1,5 +1,7 @@
 package com.invisibleteam.goinvisible.mvvm.images;
 
+import android.content.Context;
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.VisibleForTesting;
@@ -7,6 +9,7 @@ import android.support.annotation.VisibleForTesting;
 import com.invisibleteam.goinvisible.R;
 import com.invisibleteam.goinvisible.databinding.ActivityImagesBinding;
 import com.invisibleteam.goinvisible.mvvm.common.CommonActivity;
+import com.invisibleteam.goinvisible.mvvm.edition.EditActivity;
 import com.invisibleteam.goinvisible.mvvm.images.adapter.ImagesCompoundRecyclerView;
 
 public class ImagesActivity extends CommonActivity {
@@ -14,14 +17,11 @@ public class ImagesActivity extends CommonActivity {
     public final static String TAGS_CHANGED_EXTRA = "tagsChangedExtra";
     private ImagesCallback imagesCallback;
 
-    void extractBundle() {
-        Bundle bundle = getIntent().getExtras();
-        if (bundle != null) {
-            if (bundle.containsKey(TAGS_CHANGED_EXTRA)) {
-                imagesCallback.prepareSnackBar(R.string.tags_changed_message);
-                imagesCallback.showSnackBar();
-            }
-        }
+    public static Intent buildIntent(Context context) {
+        Intent intent = new Intent(context, EditActivity.class);
+        intent.putExtra(ImagesActivity.TAGS_CHANGED_EXTRA, true);
+
+        return intent;
     }
 
     @Override
@@ -41,6 +41,16 @@ public class ImagesActivity extends CommonActivity {
         activityImagesBinding.setViewModel(imagesViewModel);
 
         extractBundle();
+    }
+
+    void extractBundle() {
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null) {
+            if (bundle.containsKey(TAGS_CHANGED_EXTRA)) {
+                imagesCallback.prepareSnackBar(R.string.tags_changed_message);
+                imagesCallback.showSnackBar();
+            }
+        }
     }
 
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)

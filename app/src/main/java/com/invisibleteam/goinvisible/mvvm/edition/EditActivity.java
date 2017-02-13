@@ -127,14 +127,10 @@ public class EditActivity extends CommonActivity {
         return false;
     }
 
-    public EditActivity() {
-        System.out.println();
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         if (!editCompoundRecyclerView.getChangedTags().isEmpty()) {
-            menu.add(0, APPROVE_CHANGES, 0, "Save").setIcon(R.drawable.ic_approve)
+            menu.add(0, APPROVE_CHANGES, 0, R.string.save).setIcon(R.drawable.ic_approve)
                     .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
         }
         return true;
@@ -156,8 +152,7 @@ public class EditActivity extends CommonActivity {
     }
 
     private void startImagesActivity() {
-        Intent intent = new Intent(EditActivity.this, ImagesActivity.class);
-        intent.putExtra(ImagesActivity.TAGS_CHANGED_EXTRA, true);
+        Intent intent = ImagesActivity.buildIntent(this);
         startActivity(intent);
         finish();
     }
