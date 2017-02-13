@@ -2,6 +2,7 @@ package com.invisibleteam.goinvisible.util;
 
 
 import android.support.annotation.VisibleForTesting;
+import android.text.TextUtils;
 
 import java.math.BigDecimal;
 import java.util.concurrent.TimeUnit;
@@ -86,9 +87,11 @@ public class TagUtil {
 
         double degrees = parseRationalValueToDouble(rationalParts[0]);
         double minutes = parseRationalValueToDouble(rationalParts[1]);
+        minutes /= TimeUnit.HOURS.toMinutes(1);
         double seconds = parseRationalValueToDouble(rationalParts[2]);
+        seconds /= TimeUnit.HOURS.toSeconds(1);
 
-        double result = degrees + minutes / TimeUnit.HOURS.toMinutes(1) + seconds / TimeUnit.HOURS.toSeconds(1);
+        double result = degrees + minutes + seconds;
 
         return new BigDecimal(result).setScale(SIX_DECIMAL_NUMBER_SCALE, BigDecimal.ROUND_HALF_UP).doubleValue();
     }
@@ -135,7 +138,7 @@ public class TagUtil {
     }
 
     private static boolean isRationalValueCorrect(@Nullable String rational) {
-        return rational == null || rational.length() == 0 || !rational.contains("/");
+        return TextUtils.isEmpty(rational) || !rational.contains("/");
     }
 
 }

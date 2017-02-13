@@ -1,11 +1,14 @@
 package com.invisibleteam.goinvisible.util;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.robolectric.RobolectricTestRunner;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 
+@RunWith(RobolectricTestRunner.class)
 public class TagUtilTest {
 
     @Test
