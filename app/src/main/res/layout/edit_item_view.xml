@@ -27,7 +27,6 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
                 android:layout_centerVertical="true"
-                android:maxLines="1"
                 android:text="@{viewModel.key}"
                 android:textColor="@android:color/black"
                 android:textSize="16sp"/>
@@ -38,7 +37,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_toEndOf="@+id/tag_key"
-                android:layout_marginLeft="8dp"
+                android:layout_marginStart="8dp"
                 android:layout_toStartOf="@+id/clear_button"
                 android:maxLines="2"
                 android:text="@{viewModel.value}"

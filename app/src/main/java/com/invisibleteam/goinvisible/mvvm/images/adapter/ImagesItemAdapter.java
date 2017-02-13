@@ -11,6 +11,7 @@ import com.invisibleteam.goinvisible.R;
 import com.invisibleteam.goinvisible.databinding.ImageItemViewBinding;
 import com.invisibleteam.goinvisible.databinding.UnsupportedImageItemViewBinding;
 import com.invisibleteam.goinvisible.model.ImageDetails;
+import com.invisibleteam.goinvisible.util.TextViewUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -89,12 +90,6 @@ public class ImagesItemAdapter extends RecyclerView.Adapter<ImagesItemAdapter.Vi
         ViewHolder(View itemView) {
             super(itemView);
         }
-
-        void setupTextView(TextView textView) {
-            textView.setLines(1);
-            textView.setHorizontallyScrolling(true);
-            textView.setEllipsize(TextUtils.TruncateAt.END);
-        }
     }
 
     private class JpegImageViewHolder extends ViewHolder {
@@ -108,7 +103,7 @@ public class ImagesItemAdapter extends RecyclerView.Adapter<ImagesItemAdapter.Vi
             viewModel = new ImageItemViewModel();
             binding = ImageItemViewBinding.bind(itemView);
 
-            setupTextView(binding.text);
+            TextViewUtil.setEllipsizedForView(binding.text);
             binding.setViewModel(viewModel);
         }
     }
@@ -124,7 +119,7 @@ public class ImagesItemAdapter extends RecyclerView.Adapter<ImagesItemAdapter.Vi
             viewModel = new ImageItemViewModel();
             binding = UnsupportedImageItemViewBinding.bind(itemView);
 
-            setupTextView(binding.text);
+            TextViewUtil.setEllipsizedForView(binding.text);
             binding.setViewModel(viewModel);
         }
     }
