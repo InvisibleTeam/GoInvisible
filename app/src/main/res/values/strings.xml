@@ -11,5 +11,5 @@
     <string name="google_services_error">Google Play Services is not available.</string>
     <string name="tag_changed_title">Some tags were changed</string>
     <string name="tag_changed_message">Do you want to reject changes?</string>
-    <string name="tags_changed_message">Tags were succesfully updated</string>
+    <string name="tags_changed_message">Tags were successfully updated</string>
 </resources>
