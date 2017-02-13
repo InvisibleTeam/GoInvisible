@@ -70,4 +70,25 @@ public class PermissionTests {
 
 
     }
+
+    /**
+     * Test case:
+     * - Show file view when permission is allowed
+     *
+     * Preconditions:
+     * - GoInvisible app is clean installed
+     * - GoInvisible app is opened first time
+     * - permission dialog should be visible
+     *
+     * Steps to execute:
+     * - ensure correct permission dialog is opened (GoInvisible app requests access to files)
+     * - allow access for GoInvisible app
+     * - ensure GoInvisible file view is visible
+     *
+     * @throws Exception
+     */
+    @Test
+    public void whenAccessToPhotosIsEnabledThenShowMainView() throws Exception {
+
+    }
 }
