@@ -86,7 +86,7 @@ public class EditActivity extends CommonActivity {
         initializeGpsEstablisher();
     }
 
-    private void initializeGpsEstablisher(){
+    private void initializeGpsEstablisher() {
         LocationManager locationManager = (LocationManager) EditActivity.this.getSystemService(LOCATION_SERVICE);
         GoogleLocationApiEstablisher googleLocationApiEstablisher =
                 new GoogleLocationApiEstablisher(
