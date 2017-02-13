@@ -4,6 +4,7 @@ package com.invisibleteam.goinvisible.util;
 import android.support.annotation.VisibleForTesting;
 
 import java.math.BigDecimal;
+import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Nullable;
 
@@ -15,8 +16,6 @@ public class TagUtil {
     private static final String DENOMINATOR_CHAR = "/";
     private static final int GEO_SECONDS_DENOMINATOR_VALUE = 1000000;
     private static final int SIX_DECIMAL_NUMBER_SCALE = 6;
-    private static final int HOUR_IN_MINUTES = 60;
-    private static final int HOUR_IN_SECONDS = 3600;
 
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
     static final char DEGREE_CHAR = (char) 0x00B0;
@@ -56,8 +55,8 @@ public class TagUtil {
     private static int[] convertDoubleGPSValueToGeoGPSValue(double value) {
         final int[] result = new int[3];
         result[0] = (int) value;
-        result[1] = (int) (HOUR_IN_MINUTES * (value - result[0]));
-        result[2] = (int) ((HOUR_IN_SECONDS * (value - result[0])) - (HOUR_IN_MINUTES * result[1]));
+        result[1] = (int) (TimeUnit.HOURS.toMinutes(1) * (value - result[0]));
+        result[2] = (int) ((TimeUnit.HOURS.toSeconds(1) * (value - result[0])) - (TimeUnit.HOURS.toMinutes(1) * result[1]));
 
         return result;
     }
@@ -89,7 +88,7 @@ public class TagUtil {
         double minutes = parseRationalValueToDouble(rationalParts[1]);
         double seconds = parseRationalValueToDouble(rationalParts[2]);
 
-        double result = degrees + minutes / HOUR_IN_MINUTES + seconds / HOUR_IN_SECONDS;
+        double result = degrees + minutes / TimeUnit.HOURS.toMinutes(1) + seconds / TimeUnit.HOURS.toSeconds(1);
 
         return new BigDecimal(result).setScale(SIX_DECIMAL_NUMBER_SCALE, BigDecimal.ROUND_HALF_UP).doubleValue();
     }
@@ -102,8 +101,8 @@ public class TagUtil {
 
     public static String parseDoubleGPSToRationalGPS(double value) {
         long degrees = (long) value;
-        long minutes = (long) (HOUR_IN_MINUTES * (value - degrees));
-        double seconds = Math.abs((HOUR_IN_SECONDS * (value - degrees)) - (HOUR_IN_MINUTES * minutes));
+        long minutes = (long) (TimeUnit.HOURS.toMinutes(1) * (value - degrees));
+        double seconds = Math.abs((TimeUnit.HOURS.toSeconds(1) * (value - degrees)) - (TimeUnit.HOURS.toMinutes(1) * minutes));
 
         long exactSecondsValue = getExactSecondsValue(seconds);
 
