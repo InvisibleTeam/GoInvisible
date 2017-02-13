@@ -1,16 +1,15 @@
 package com.invisibleteam.goinvisible.mvvm.images.adapter;
 
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.invisibleteam.goinvisible.R;
 import com.invisibleteam.goinvisible.databinding.ImageItemViewBinding;
 import com.invisibleteam.goinvisible.databinding.UnsupportedImageItemViewBinding;
 import com.invisibleteam.goinvisible.model.ImageDetails;
+import com.invisibleteam.goinvisible.util.TextViewUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,7 +49,7 @@ public class ImagesItemAdapter extends RecyclerView.Adapter<ImagesItemAdapter.Vi
                 onItemClickListener.onUnsupportedItemClick();
             }
         });
-        return new UnsupprotedImageViewHolder(itemView);
+        return new UnsupportedImageViewHolder(itemView);
     }
 
     @Override
@@ -58,8 +57,8 @@ public class ImagesItemAdapter extends RecyclerView.Adapter<ImagesItemAdapter.Vi
         holder.itemView.setTag(imageList.get(position));
         if (holder instanceof JpegImageViewHolder) {
             ((JpegImageViewHolder) holder).viewModel.setModel(imageList.get(position));
-        } else if (holder instanceof UnsupprotedImageViewHolder) {
-            ((UnsupprotedImageViewHolder) holder).viewModel.setModel(imageList.get(position));
+        } else if (holder instanceof UnsupportedImageViewHolder) {
+            ((UnsupportedImageViewHolder) holder).viewModel.setModel(imageList.get(position));
         }
     }
 
@@ -89,12 +88,6 @@ public class ImagesItemAdapter extends RecyclerView.Adapter<ImagesItemAdapter.Vi
         ViewHolder(View itemView) {
             super(itemView);
         }
-
-        void setupTextView(TextView textView) {
-            textView.setLines(1);
-            textView.setHorizontallyScrolling(true);
-            textView.setEllipsize(TextUtils.TruncateAt.END);
-        }
     }
 
     private class JpegImageViewHolder extends ViewHolder {
@@ -108,23 +101,23 @@ public class ImagesItemAdapter extends RecyclerView.Adapter<ImagesItemAdapter.Vi
             viewModel = new ImageItemViewModel();
             binding = ImageItemViewBinding.bind(itemView);
 
-            setupTextView(binding.text);
+            TextViewUtil.setEllipsizedForView(binding.text);
             binding.setViewModel(viewModel);
         }
     }
 
-    private class UnsupprotedImageViewHolder extends ViewHolder {
+    private class UnsupportedImageViewHolder extends ViewHolder {
 
         private UnsupportedImageItemViewBinding binding;
         private ImageItemViewModel viewModel;
 
-        UnsupprotedImageViewHolder(View itemView) {
+        UnsupportedImageViewHolder(View itemView) {
             super(itemView);
 
             viewModel = new ImageItemViewModel();
             binding = UnsupportedImageItemViewBinding.bind(itemView);
 
-            setupTextView(binding.text);
+            TextViewUtil.setEllipsizedForView(binding.text);
             binding.setViewModel(viewModel);
         }
     }

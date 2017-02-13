@@ -9,6 +9,7 @@ import android.location.LocationManager;
 import android.media.ExifInterface;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 import android.support.annotation.VisibleForTesting;
 import android.support.v7.app.ActionBar;
 import android.util.Log;
@@ -33,12 +34,14 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.invisibleteam.goinvisible.R;
 import com.invisibleteam.goinvisible.databinding.ActivityEditBinding;
+import com.invisibleteam.goinvisible.model.GeolocationTag;
 import com.invisibleteam.goinvisible.model.ImageDetails;
 import com.invisibleteam.goinvisible.model.Tag;
 import com.invisibleteam.goinvisible.mvvm.common.CommonActivity;
 import com.invisibleteam.goinvisible.mvvm.edition.adapter.EditCompoundRecyclerView;
 import com.invisibleteam.goinvisible.mvvm.edition.dialog.EditDialog;
 import com.invisibleteam.goinvisible.util.LatLngUtil;
+import com.invisibleteam.goinvisible.util.TagUtil;
 
 import java.io.IOException;
 import java.util.List;
@@ -173,9 +176,25 @@ public class EditActivity extends CommonActivity {
     }
 
     private void onNewPlace(Place place) {
-        tag.setValue(String.valueOf(place.getLatLng().latitude));
-        tag.setSecondValue(String.valueOf(place.getLatLng().longitude));
-        editViewModel.onEditEnded(tag);
+        GeolocationTag geolocationTag = prepareNewPlacePositionTag(place);
+        editViewModel.onEditEnded(geolocationTag);
+    }
+
+    @NonNull
+    private GeolocationTag prepareNewPlacePositionTag(Place place) {
+        GeolocationTag geolocationTag = (GeolocationTag) tag;
+        double latitude = place.getLatLng().latitude;
+        double longitude = place.getLatLng().longitude;
+
+        String newLatitude = TagUtil.parseDoubleGPSToRationalGPS(latitude);
+        geolocationTag.setValue(newLatitude);
+        geolocationTag.setLatitudeRef(latitude > 0.0 ? "N" : "S");
+
+        String newLongitude = TagUtil.parseDoubleGPSToRationalGPS(longitude);
+        geolocationTag.setSecondValue(newLongitude);
+        geolocationTag.setLongitudeRef(longitude > 0.0 ? "E" : "W");
+
+        return geolocationTag;
     }
 
     private void openEditDialog(Tag tag) {
@@ -259,17 +278,19 @@ public class EditActivity extends CommonActivity {
 
     private void openPlacePicker() {
         try {
-            LatLng center = new LatLng(
-                    Double.valueOf(tag.getValue()),
-                    Double.valueOf(tag.getSecondValue())
-            );
-            LatLngBounds bounds = LatLngUtil.generateBoundsWithZoom(center, initialMapRadius);
-
+            GeolocationTag geolocationTag = (GeolocationTag) tag;
             PlacePicker.IntentBuilder intentBuilder = new PlacePicker.IntentBuilder();
-            intentBuilder.setLatLngBounds(bounds);
+            if (geolocationTag.getValue() != null) {
+                LatLng center = new LatLng(
+                        TagUtil.parseRationalGPSToDoubleGPS(geolocationTag.getValue()),
+                        TagUtil.parseRationalGPSToDoubleGPS(geolocationTag.getSecondValue())
+                );
+                LatLngBounds bounds = LatLngUtil.generateBoundsWithZoom(center, initialMapRadius);
+                intentBuilder.setLatLngBounds(bounds);
+            }
+
             Intent intent = intentBuilder.build(this);
             startActivityForResult(intent, PLACE_REQUEST_ID);
-
         } catch (GooglePlayServicesRepairableException e) {
             GoogleApiAvailability.getInstance().getErrorDialog(this, e.getConnectionStatusCode(), 0);
         } catch (GooglePlayServicesNotAvailableException e) {
