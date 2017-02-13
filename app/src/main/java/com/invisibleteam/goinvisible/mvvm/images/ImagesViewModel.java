@@ -39,7 +39,6 @@ public class ImagesViewModel {
 
             @Override
             public void onUnsupportedItemClick() {
-
                 imagesView.prepareSnackBar(R.string.unsupported_extension);
                 imagesView.showSnackBar();
             }

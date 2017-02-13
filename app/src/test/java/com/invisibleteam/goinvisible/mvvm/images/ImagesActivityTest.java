@@ -81,7 +81,7 @@ public class ImagesActivityTest {
                 .get());
 
         ImagesCallback callback = mock(ImagesCallback.class);
-        when(activity.builCallback()).thenReturn(callback);
+        when(activity.buildImagesCallback()).thenReturn(callback);
 
         activity.onCreate(null);
 

@@ -26,7 +26,7 @@ public class ImagesActivity extends CommonActivity {
 
     @Override
     public void prepareView() {
-        imagesCallback = builCallback();
+        imagesCallback = buildImagesCallback();
 
         ActivityImagesBinding activityImagesBinding = DataBindingUtil.setContentView(this, R.layout.activity_images);
         setSupportActionBar(activityImagesBinding.mainToolbar);
@@ -54,7 +54,7 @@ public class ImagesActivity extends CommonActivity {
     }
 
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
-    ImagesCallback builCallback() {
+    ImagesCallback buildImagesCallback() {
         return new ImagesCallback(this);
     }
 

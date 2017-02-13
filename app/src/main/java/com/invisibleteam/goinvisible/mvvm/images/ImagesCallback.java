@@ -11,7 +11,7 @@ import com.invisibleteam.goinvisible.mvvm.edition.EditActivity;
 public class ImagesCallback implements ImagesView {
 
     private Snackbar snackbar;
-    private Activity activity;
+    private final Activity activity;
 
     public ImagesCallback(Activity activity) {
         this.activity = activity;
@@ -24,14 +24,14 @@ public class ImagesCallback implements ImagesView {
     }
 
     @Override
-    public void prepareSnackBar(int messageId) {
+    public void prepareSnackBar(int messageResId) {
         if (snackbar == null) {
-            snackbar = Snackbar
-                    .make(activity.findViewById(android.R.id.content),
-                            messageId,
-                            Snackbar.LENGTH_LONG);
+            snackbar = Snackbar.make(
+                    activity.findViewById(android.R.id.content),
+                    messageResId,
+                    Snackbar.LENGTH_LONG);
         }
-        snackbar.setText(messageId);
+        snackbar.setText(messageResId);
     }
 
     @Override
