@@ -16,8 +16,27 @@ import static org.junit.Assert.assertEquals;
  */
 @RunWith(AndroidJUnit4.class)
 public class PermissionTests {
+
+    /**
+     * Test case:
+     * - Show missing permissions dialog
+     *
+     * Preconditions:
+     * - GoInvisible app is clean installed
+     * - GoInvisible app is opened first time
+     * - permission dialog should be visible
+     *
+     * Steps to execute:
+     * - ensure correct permission dialog is opened (GoInvisible app requests access to files)
+     * - deny access for GoInvisible app
+     * - ensure "Missing permissions" dialog is visible
+     * - exit from application
+     * - ensure applications was closed
+     *
+     * @throws Exception
+     */
     @Test
-    public void useAppContext() throws Exception {
+    public void whenAccessIsDeniedThenShowMissingPermissionsDialog() throws Exception {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
