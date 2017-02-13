@@ -55,7 +55,9 @@ dependencies {
     testCompile "org.robolectric:robolectric:3.2.2"
     testCompile 'com.googlecode.zohhak:zohhak:1.1.1'
 
+
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
+    androidTestCompile 'com.android.support.test.uiautomator:uiautomator-v18:2.1.2'
 }
