@@ -9,6 +9,7 @@ import com.invisibleteam.goinvisible.model.GeolocationTag;
 import com.invisibleteam.goinvisible.model.InputType;
 import com.invisibleteam.goinvisible.model.Tag;
 import com.invisibleteam.goinvisible.model.TagType;
+import com.invisibleteam.goinvisible.util.TagUtil;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -38,7 +39,8 @@ class TagsManager {
     }
 
     boolean editTag(Tag tag) {
-        exifInterface.setAttribute(tag.getKey(), tag.getValue());
+        setExifAttributes(tag);
+
         try {
             exifInterface.saveAttributes();
             return true;
@@ -48,13 +50,27 @@ class TagsManager {
         }
     }
 
+    private void setExifAttributes(Tag tag) {
+        if (tag.getValue() != null) {
+            exifInterface.setAttribute(tag.getKey(), tag.getValue());
+        }
+        if (isPositionTag(tag)) {
+            GeolocationTag geolocationTag = (GeolocationTag) tag;
+            exifInterface.setAttribute(geolocationTag.getSecondKey(), geolocationTag.getSecondValue());
+            exifInterface.setAttribute(TAG_GPS_LATITUDE_REF, geolocationTag.getLatitudeRef());
+            exifInterface.setAttribute(TAG_GPS_LONGITUDE_REF, geolocationTag.getLongitudeRef());
+        }
+    }
+
     boolean editTags(List<Tag> tags) {
         if (tags.isEmpty()) {
             return false;
         }
+
         for (Tag tag : tags) {
-            exifInterface.setAttribute(tag.getKey(), tag.getValue());
+            setExifAttributes(tag);
         }
+
         try {
             exifInterface.saveAttributes();
             return true;
@@ -62,6 +78,10 @@ class TagsManager {
             Log.d(TAG, String.valueOf(e.getMessage()));
             return false;
         }
+    }
+
+    private boolean isPositionTag(Tag tag) {
+        return tag instanceof GeolocationTag;
     }
 
     boolean clearTag(Tag tag) {
@@ -87,7 +107,7 @@ class TagsManager {
                 tag.setValue("0.0");
                 break;
             case POSITION_DOUBLE:
-                //todo clear this tag when lat long fields will be available
+                clearPositionTag((GeolocationTag) tag);
                 break;
             default:
                 break;
@@ -95,15 +115,30 @@ class TagsManager {
         return editTag(tag);
     }
 
+    private void clearPositionTag(GeolocationTag tag) {
+        final String defaultGPSValue = TagUtil.parseDoubleGPSToRationalGPS(0.000000);
+        tag.setValue(defaultGPSValue);
+        tag.setSecondValue(defaultGPSValue);
+        final Tag latitudeRef = new Tag(TAG_GPS_LATITUDE_REF, "", TagType.build(InputType.POSITION_DOUBLE));
+        editTag(latitudeRef);
+        final Tag longitudeRef = new Tag(TAG_GPS_LONGITUDE_REF, "", TagType.build(InputType.POSITION_DOUBLE));
+        editTag(longitudeRef);
+    }
+
     private GeolocationTag getGeolocationTag() {
         TagType tagType = TagType.build(POSITION_DOUBLE);
-        Double lat = exifInterface.getAttributeDouble(TAG_GPS_LATITUDE, 0);
-        Double lng = exifInterface.getAttributeDouble(TAG_GPS_LONGITUDE, 0);
+        String rationalLat = exifInterface.getAttribute(TAG_GPS_LATITUDE);
+        String rationalLng = exifInterface.getAttribute(TAG_GPS_LONGITUDE);
+        String latRef = exifInterface.getAttribute(TAG_GPS_LATITUDE_REF);
+        String lngRef = exifInterface.getAttribute(TAG_GPS_LONGITUDE_REF);
+
         return new GeolocationTag(
                 TAG_GPS_LATITUDE,
                 TAG_GPS_LONGITUDE,
-                String.valueOf(lat),
-                String.valueOf(lng),
+                rationalLat,
+                rationalLng,
+                latRef,
+                lngRef,
                 tagType);
     }
 
