@@ -42,4 +42,32 @@ public class PermissionTests {
 
         assertEquals("com.invisibleteam.goinvisible", appContext.getPackageName());
     }
+
+    /**
+     * Test case:
+     * - Show missing permissions dialog when "Do not ask" was checked
+     *
+     * Preconditions:
+     * - GoInvisible app is clean installed
+     * - GoInvisible app is opened first time
+     * - permission dialog should be visible
+     *
+     * Steps to execute:
+     * - ensure correct permission dialog is opened (GoInvisible app requests access to files)
+     * - deny access for GoInvisible app
+     * - ensure "Missing permissions" dialog is visible
+     * - go to permission dialog
+     * - select "Don't ask again" option
+     * - deny access for GoInvisible app
+     * - ensure "Missing permissions" dialog is visible
+     * - exit from application
+     * - ensure applications was closed
+     *
+     * @throws Exception
+     */
+    @Test
+    public void whenAccessIsDeniedPermanentlyThenShowMissingPermissionsDialog() throws Exception {
+
+
+    }
 }
