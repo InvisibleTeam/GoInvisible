@@ -27,7 +27,6 @@ import static android.media.ExifInterface.TAG_MODEL;
 import static android.media.ExifInterface.TAG_WHITE_BALANCE;
 import static com.invisibleteam.goinvisible.util.TagsMatcher.containsTag;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -164,7 +163,7 @@ public class TagsManagerTest {
         verify(exifInterface).setAttribute("key2", "value2");
         verify(exifInterface).setAttribute("key3", "value3");
         verify(exifInterface).setAttribute("key4", "value4");
-        verify(exifInterface, times(4)).saveAttributes();
+        verify(exifInterface).saveAttributes();
     }
 
     private Tag createTag(String key, String value) {

@@ -1,6 +1,8 @@
 package com.invisibleteam.goinvisible.model;
 
 
+import android.support.annotation.VisibleForTesting;
+
 import com.invisibleteam.goinvisible.util.TagUtil;
 
 public class GeolocationTag extends Tag {
@@ -36,6 +38,7 @@ public class GeolocationTag extends Tag {
         formattedValue = geoLat + "\n" + geoLng;
     }
 
+    @VisibleForTesting
     public void setSecondKey(String secondKey) {
         this.secondKey = secondKey;
     }

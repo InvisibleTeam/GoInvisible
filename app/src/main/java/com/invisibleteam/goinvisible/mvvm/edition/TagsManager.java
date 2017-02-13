@@ -39,20 +39,25 @@ class TagsManager {
     }
 
     boolean editTag(Tag tag) {
+        setExifAttributes(tag);
+
         try {
-            if (tag.getValue() != null) {
-                saveTagAttributes(tag.getKey(), tag.getValue());
-            }
-            if (isPositionTag(tag)) {
-                GeolocationTag geolocationTag = (GeolocationTag) tag;
-                saveTagAttributes(geolocationTag.getSecondKey(), geolocationTag.getSecondValue());
-                saveTagAttributes(TAG_GPS_LATITUDE_REF, geolocationTag.getLatitudeRef());
-                saveTagAttributes(TAG_GPS_LONGITUDE_REF, geolocationTag.getLongitudeRef());
-            }
+            exifInterface.saveAttributes();
             return true;
         } catch (IOException e) {
             Log.d(TAG, String.valueOf(e.getMessage()));
             return false;
+        }
+    }
+
+    private void setExifAttributes(Tag tag) {
+        if (tag.getValue() != null) {
+            exifInterface.setAttribute(tag.getKey(), tag.getValue());
+        } else if (isPositionTag(tag)) {
+            GeolocationTag geolocationTag = (GeolocationTag) tag;
+            exifInterface.setAttribute(geolocationTag.getSecondKey(), geolocationTag.getSecondValue());
+            exifInterface.setAttribute(TAG_GPS_LATITUDE_REF, geolocationTag.getLatitudeRef());
+            exifInterface.setAttribute(TAG_GPS_LONGITUDE_REF, geolocationTag.getLongitudeRef());
         }
     }
 
@@ -61,21 +66,21 @@ class TagsManager {
             return false;
         }
 
-        boolean result = true;
         for (Tag tag : tags) {
-            result &= editTag(tag);
+            setExifAttributes(tag);
         }
 
-        return result;
+        try {
+            exifInterface.saveAttributes();
+            return true;
+        } catch (IOException e) {
+            Log.d(TAG, String.valueOf(e.getMessage()));
+            return false;
+        }
     }
 
     private boolean isPositionTag(Tag tag) {
         return tag instanceof GeolocationTag;
-    }
-
-    private void saveTagAttributes(String key, String value) throws IOException {
-        exifInterface.setAttribute(key, value);
-        exifInterface.saveAttributes();
     }
 
     boolean clearTag(Tag tag) {
