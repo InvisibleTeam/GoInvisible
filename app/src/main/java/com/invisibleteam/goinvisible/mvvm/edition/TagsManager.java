@@ -53,7 +53,8 @@ class TagsManager {
     private void setExifAttributes(Tag tag) {
         if (tag.getValue() != null) {
             exifInterface.setAttribute(tag.getKey(), tag.getValue());
-        } else if (isPositionTag(tag)) {
+        }
+        if (isPositionTag(tag)) {
             GeolocationTag geolocationTag = (GeolocationTag) tag;
             exifInterface.setAttribute(geolocationTag.getSecondKey(), geolocationTag.getSecondValue());
             exifInterface.setAttribute(TAG_GPS_LATITUDE_REF, geolocationTag.getLatitudeRef());
