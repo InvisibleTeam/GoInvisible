@@ -57,4 +57,9 @@ public class EditViewModel implements OnTagActionListener {
     public void onEditEnded(Tag tag) {
         editCompoundRecyclerView.updateTag(tag);
     }
+
+    @Override
+    public void onTagsUpdated() {
+        listener.onTagsChanged();
+    }
 }

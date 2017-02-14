@@ -10,6 +10,7 @@ import com.invisibleteam.goinvisible.R;
 import com.invisibleteam.goinvisible.databinding.EditItemViewBinding;
 import com.invisibleteam.goinvisible.model.Tag;
 import com.invisibleteam.goinvisible.mvvm.edition.OnTagActionListener;
+import com.invisibleteam.goinvisible.util.TextViewUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -80,11 +81,16 @@ class EditItemAdapter extends RecyclerView.Adapter<EditItemAdapter.ViewHolder> {
     }
 
     private boolean isTagChanged(Tag baseTag, Tag tag) {
+        if (tag.getValue() == null) {
+            return false;
+        }
+
         if (tag.getKey().equals(baseTag.getKey())) {
             if (!tag.getValue().equals(baseTag.getValue())) {
                 return true;
             }
         }
+
         return false;
     }
 
@@ -98,6 +104,7 @@ class EditItemAdapter extends RecyclerView.Adapter<EditItemAdapter.ViewHolder> {
                 if (tagsList.get(index).getKey().equals(tag.getKey())) {
                     tagsList.set(index, tag);
                     notifyDataSetChanged();
+                    onTagActionListener.onTagsUpdated();
                     break;
                 }
             }
@@ -122,6 +129,7 @@ class EditItemAdapter extends RecyclerView.Adapter<EditItemAdapter.ViewHolder> {
             editItemViewModel = new EditItemViewModel();
             editItemViewBinding = EditItemViewBinding.bind(itemView);
             editItemViewBinding.setViewModel(editItemViewModel);
+            TextViewUtil.setEllipsizedForView(editItemViewBinding.tagKey);
         }
     }
 }

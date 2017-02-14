@@ -10,7 +10,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.MockitoAnnotations;
+import org.robolectric.RobolectricTestRunner;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -30,7 +31,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(RobolectricTestRunner.class)
 public class TagsManagerTest {
 
     @Mock
@@ -40,6 +41,7 @@ public class TagsManagerTest {
 
     @Before
     public void setUp() {
+        MockitoAnnotations.initMocks(this);
         tagsManager = new TagsManager(exifInterface);
     }
 
