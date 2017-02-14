@@ -9,7 +9,6 @@ import android.support.annotation.VisibleForTesting;
 import com.invisibleteam.goinvisible.R;
 import com.invisibleteam.goinvisible.databinding.ActivityImagesBinding;
 import com.invisibleteam.goinvisible.mvvm.common.CommonActivity;
-import com.invisibleteam.goinvisible.mvvm.edition.EditActivity;
 import com.invisibleteam.goinvisible.mvvm.images.adapter.ImagesCompoundRecyclerView;
 
 public class ImagesActivity extends CommonActivity {
@@ -18,7 +17,7 @@ public class ImagesActivity extends CommonActivity {
     private ImagesCallback imagesCallback;
 
     public static Intent buildIntent(Context context) {
-        Intent intent = new Intent(context, EditActivity.class);
+        Intent intent = new Intent(context, ImagesActivity.class);
         intent.putExtra(ImagesActivity.TAGS_CHANGED_EXTRA, true);
 
         return intent;
