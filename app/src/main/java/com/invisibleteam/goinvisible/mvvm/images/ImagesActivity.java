@@ -9,7 +9,6 @@ import android.support.annotation.VisibleForTesting;
 import com.invisibleteam.goinvisible.R;
 import com.invisibleteam.goinvisible.databinding.ActivityImagesBinding;
 import com.invisibleteam.goinvisible.mvvm.common.CommonActivity;
-import com.invisibleteam.goinvisible.mvvm.edition.EditActivity;
 import com.invisibleteam.goinvisible.mvvm.images.adapter.ImagesCompoundRecyclerView;
 
 public class ImagesActivity extends CommonActivity {
