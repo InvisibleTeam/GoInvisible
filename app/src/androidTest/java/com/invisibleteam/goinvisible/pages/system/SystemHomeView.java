@@ -19,4 +19,8 @@ public class SystemHomeView extends UiDialog {
         assertThat(launcherPackage, notNullValue());
         return mDevice.wait(Until.hasObject(By.pkg(launcherPackage).depth(0)), TIMEOUT);
     }
+
+    public static void open() {
+        mDevice.pressHome();
+    }
 }

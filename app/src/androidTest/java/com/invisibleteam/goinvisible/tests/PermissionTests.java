@@ -1,15 +1,7 @@
 package com.invisibleteam.goinvisible.tests;
 
-import android.content.Context;
-import android.content.Intent;
-import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
-import android.support.test.uiautomator.By;
-import android.support.test.uiautomator.UiDevice;
-import android.support.test.uiautomator.Until;
 
-import com.invisibleteam.goinvisible.Config;
-import com.invisibleteam.goinvisible.UiDeviceProvider;
 import com.invisibleteam.goinvisible.pages.FileView;
 import com.invisibleteam.goinvisible.pages.GoInvisiblePackage;
 import com.invisibleteam.goinvisible.pages.MissingPermissionsDialog;
@@ -22,9 +14,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -39,20 +28,14 @@ import static org.junit.Assert.assertTrue;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class PermissionTests {
 
-    private UiDevice mDevice;
-
     @Before
     public void startMainActivityFromHomeScreen() throws Exception {
-        // Initialize UiDevice instance
-        mDevice = UiDeviceProvider.getInstance();
-
         // Start from the home screen
-        mDevice.pressHome();
+        SystemHomeView.open();
 
         // Wait for launcher
         assertTrue(SystemHomeView.isOpened());
 
-        // TODO: 14.02.2017 move stuff under to GoInvisible as launch() method
         // Launch the GoInvisible app
         GoInvisiblePackage.launch();
     }
