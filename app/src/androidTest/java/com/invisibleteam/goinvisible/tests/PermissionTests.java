@@ -41,10 +41,6 @@ public class PermissionTests {
 
     @Before
     public void startMainActivityFromHomeScreen() throws Exception {
-        // Context of the app under test.
-        Context appContext = InstrumentationRegistry.getTargetContext();
-        assertEquals(Config.GOINVISIBLE_PACKAGE, appContext.getPackageName());
-
         // Initialize UiDevice instance
         mDevice = UiDeviceProvider.getInstance();
 
