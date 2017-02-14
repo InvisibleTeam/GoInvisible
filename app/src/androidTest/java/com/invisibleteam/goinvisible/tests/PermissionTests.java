@@ -1,4 +1,4 @@
-package com.invisibleteam.goinvisible;
+package com.invisibleteam.goinvisible.tests;
 
 import android.content.Context;
 import android.content.Intent;
