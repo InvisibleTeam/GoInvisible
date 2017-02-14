@@ -12,7 +12,9 @@ import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.VisibleForTesting;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
@@ -40,11 +42,13 @@ import com.invisibleteam.goinvisible.model.Tag;
 import com.invisibleteam.goinvisible.mvvm.common.CommonActivity;
 import com.invisibleteam.goinvisible.mvvm.edition.adapter.EditCompoundRecyclerView;
 import com.invisibleteam.goinvisible.mvvm.edition.dialog.EditDialog;
+import com.invisibleteam.goinvisible.mvvm.images.ImagesActivity;
 import com.invisibleteam.goinvisible.util.LatLngUtil;
 import com.invisibleteam.goinvisible.util.TagUtil;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Locale;
 
 import javax.annotation.Nullable;
 
@@ -58,6 +62,7 @@ public class EditActivity extends CommonActivity {
     private static final long LOCATION_REQUEST_INTERVAL = 100;
     private static final long LOCATION_REQUEST_FASTEST_INTERVAL = 100;
     private static final int initialMapRadius = 20000;
+    private static final int APPROVE_CHANGES = 1;
     private GoogleApiClient mGoogleApiClient;
     private EditCompoundRecyclerView editCompoundRecyclerView;
     private TagsManager tagsManager;
@@ -75,12 +80,21 @@ public class EditActivity extends CommonActivity {
     private EditViewModel editViewModel;
     private Tag tag;
 
-    private final EditTagListener editTagListener = (tag) -> {
-        if (tag.getKey().equals(ExifInterface.TAG_GPS_LATITUDE)) {
-            this.tag = tag;
-            startPlaceIntent();
-        } else {
-            openEditDialog(tag);
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    final EditTagListener editTagListener = new EditTagListener() {
+        @Override
+        public void openEditDialog(Tag tag) {
+            if (tag.getKey().equals(ExifInterface.TAG_GPS_LATITUDE)) {
+                EditActivity.this.tag = tag;
+                startPlaceIntent();
+            } else {
+                EditActivity.this.openEditDialog(tag);
+            }
+        }
+
+        @Override
+        public void onTagsChanged() {
+            invalidateOptionsMenu();
         }
     };
 
@@ -117,19 +131,33 @@ public class EditActivity extends CommonActivity {
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        if (!editCompoundRecyclerView.getChangedTags().isEmpty()) {
+            menu.add(0, APPROVE_CHANGES, 0, R.string.save).setIcon(R.drawable.ic_approve)
+                    .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+        }
+        return true;
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
                 onBackPressed();
+                return true;
+            case APPROVE_CHANGES:
+                saveTags();
+                startImagesActivity();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
 
-    private void updateTags() {
-        List<Tag> changedTags = editCompoundRecyclerView.getChangedTags();
-        tagsManager.editTags(changedTags);
+    private void startImagesActivity() {
+        Intent intent = ImagesActivity.buildIntent(this);
+        startActivity(intent);
+        finish();
     }
 
     @VisibleForTesting
@@ -304,14 +332,40 @@ public class EditActivity extends CommonActivity {
         this.editCompoundRecyclerView = editCompoundRecyclerView;
     }
 
-    @VisibleForTesting
-    void setTagsManager(TagsManager tagsManager) {
-        this.tagsManager = tagsManager;
-    }
-
     @Override
     public void onBackPressed() {
+        if (areTagsChanged()) {
+            showApproveChangeTagsDialog();
+            return;
+        }
         super.onBackPressed();
-        updateTags();
+    }
+
+    private void saveTags() {
+        List<Tag> changedTags = editCompoundRecyclerView.getChangedTags();
+        tagsManager.editTags(changedTags);
+    }
+
+    private boolean areTagsChanged() {
+        List<Tag> changedTags = editCompoundRecyclerView.getChangedTags();
+        return !changedTags.isEmpty();
+    }
+
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    void showApproveChangeTagsDialog() {
+        new AlertDialog
+                .Builder(this, R.style.AlertDialogStyle)
+                .setTitle(R.string.tag_changed_title)
+                .setMessage(R.string.tag_changed_message)
+                .setPositiveButton(
+                        getString(android.R.string.yes).toUpperCase(Locale.getDefault()),
+                        (dialog, which) -> {
+                            finish();
+                        })
+                .setNegativeButton(
+                        getString(android.R.string.no).toUpperCase(Locale.getDefault()),
+                        null)
+                .setCancelable(true)
+                .show();
     }
 }
