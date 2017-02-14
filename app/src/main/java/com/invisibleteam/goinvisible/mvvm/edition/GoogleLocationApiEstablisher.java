@@ -23,15 +23,12 @@ class GoogleLocationApiEstablisher {
 
     void requestConnection() {
         if (googleApiClient == null) {
-            if (buildGoogleApiClient()) {
-                googleApiClient.connect();
-            }
-        } else {
-            googleApiClient.connect();
+            buildGoogleApiClient();
         }
+        googleApiClient.connect();
     }
 
-    private boolean buildGoogleApiClient() {
+    private void buildGoogleApiClient() {
         googleApiClient = googleApiClientBuilder
                 .addApi(LocationServices.API)
                 .addOnConnectionFailedListener(connectionResult -> {
@@ -53,8 +50,6 @@ class GoogleLocationApiEstablisher {
                     }
                 })
                 .build();
-
-        return true;
     }
 
     void setListener(Listener listener) {
