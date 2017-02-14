@@ -13,4 +13,116 @@
     <string name="tag_changed_message">Do you want to reject changes?</string>
     <string name="tags_changed_message">Tags were successfully updated</string>
     <string name="save">Save</string>
+
+
+    //Tags descriptions
+    <string name="tag_exposure_time_1">No absolute unit of measurement. Used for images that may have a non-square aspect ratio, but no                     meaningful absolute dimensions</string>
+    <string name="tag_exposure_time_2">Inch</string>
+    <string name="tag_exposure_time_3">Centimeter</string>
+    <string name="tag_contrast_1">Normal</string>
+    <string name="tag_contrast_2">Soft</string>
+    <string name="tag_contrast_3">Hard</string>
+    //==========================================
+    <string name="tag_exposure_mode_0">Auto exposure</string>
+    <string name="tag_exposure_mode_1">Manual exposure</string>
+    <string name="tag_exposure_mode_2">Auto bracket</string>
+    //==========================================
+    <string name="tag_exposure_program_0">Not defined</string>
+    <string name="tag_exposure_program_1">Manual</string>
+    <string name="tag_exposure_program_2">Normal program</string>
+    <string name="tag_exposure_program_3">Aperture priority</string>
+    <string name="tag_exposure_program_4">Shutter priority</string>
+    <string name="tag_exposure_program_5">Creative program (biased toward depth of field)</string>
+    <string name="tag_exposure_program_6">Action program (biased toward fast shutter speed)</string>
+    <string name="tag_exposure_program_7">Portrait mode (for closeup photos with the background out of focus)</string>
+    <string name="tag_exposure_program_8">Landscape mode (for landscape photos with the background in focus)</string>
+    //==========================================
+    <string name="tag_gain_control_0">None</string>
+    <string name="tag_gain_control_1">Low gain up</string>
+    <string name="tag_gain_control_2">High gain up</string>
+    <string name="tag_gain_control_3">Low gain down</string>
+    <string name="tag_gain_control_4">High gain down</string>
+    //==========================================
+    <string name="tag_metering_mode_0">Unknown</string>
+    <string name="tag_metering_mode_1">Average</string>
+    <string name="tag_metering_mode_2">CenterWeightedAverage</string>
+    <string name="tag_metering_mode_3">Spot</string>
+    <string name="tag_metering_mode_4">MultiSpot</string>
+    <string name="tag_metering_mode_5">Pattern</string>
+    <string name="tag_metering_mode_6">Partial</string>
+    <string name="tag_metering_mode_255">other</string>
+    //==========================================
+    <string name="tag_saturation_0">Normal</string>
+    <string name="tag_saturation_1">Low saturation</string>
+    <string name="tag_saturation_2">High saturation</string>
+    //==========================================
+    <string name="tag_scene_capture_type_0">Standard</string>
+    <string name="tag_scene_capture_type_1">Landscape</string>
+    <string name="tag_scene_capture_type_2">Portrait</string>
+    <string name="tag_scene_capture_type_3">Night scene</string>
+    //==========================================
+    <string name="tag_sharpness_1">Normal</string>
+    <string name="tag_sharpness_2">Soft</string>
+    <string name="tag_sharpness_3">Hard</string>
+    //==========================================
+    <string name="tag_white_balance_0">Auto white balance</string>
+    <string name="tag_white_balance_1">Manual white balance</string>
+    //==========================================
+    <string name="tag_flash_0000">Flash did not fire</string>
+    <string name="tag_flash_0001">Flash fired</string>
+    <string name="tag_flash_0005">Strobe return light not detected</string>
+    <string name="tag_flash_0007">Strobe return light detected</string>
+    <string name="tag_flash_0009">Flash fired, compulsory flash mode</string>
+    <string name="tag_flash_000D">Flash fired, compulsory flash mode, return light not detected</string>
+    <string name="tag_flash_000F">Flash fired, compulsory flash mode, return light detected</string>
+    <string name="tag_flash_0010">Flash did not fire, compulsory flash mode</string>
+    <string name="tag_flash_0018">Flash did not fire, auto mode</string>
+    <string name="tag_flash_0019">Flash fired, auto mode</string>
+    <string name="tag_flash_001D">Flash fired, auto mode, return light not detected</string>
+    <string name="tag_flash_001F">Flash fired, auto mode, return light detected</string>
+    <string name="tag_flash_0020">No flash function</string>
+    <string name="tag_flash_0041">Flash fired, red-eye reduction mode</string>
+    <string name="tag_flash_0045">Flash fired, red-eye reduction mode, return light not detected</string>
+    <string name="tag_flash_0047">Flash fired, red-eye reduction mode, return light detected</string>
+    <string name="tag_flash_0049">Flash fired, compulsory flash mode, red-eye reduction mode</string>
+    <string name="tag_flash_004D">Flash fired, compulsory flash mode, red-eye reduction mode, return light not detected</string>
+    <string name="tag_flash_004F">Flash fired, compulsory flash mode, red-eye reduction mode, return light detected</string>
+    <string name="tag_flash_0059">Flash fired, auto mode, red-eye reduction mode</string>
+    <string name="tag_flash_005D">Flash fired, auto mode, return light not detected, red-eye reduction mode</string>
+    <string name="tag_flash_005F">Flash fired, auto mode, return light detected, red-eye reduction mode</string>
+
+    //Tags values
+    <string name="tag_value_0">0</string>
+    <string name="tag_value_1">1</string>
+    <string name="tag_value_2">2</string>
+    <string name="tag_value_3">3</string>
+    <string name="tag_value_4">4</string>
+    <string name="tag_value_5">5</string>
+    <string name="tag_value_6">6</string>
+    <string name="tag_value_7">7</string>
+    <string name="tag_value_8">8</string>
+    <string name="tag_value_255">255</string>
+    <string name="tag_value_0000">0000</string>
+    <string name="tag_value_0001">0001</string>
+    <string name="tag_value_0005">0005</string>
+    <string name="tag_value_0007">0007</string>
+    <string name="tag_value_0009">0009</string>
+    <string name="tag_value_000D">000D</string>
+    <string name="tag_value_000F">000F</string>
+    <string name="tag_value_0010">0010</string>
+    <string name="tag_value_0018">0018</string>
+    <string name="tag_value_0019">0019</string>
+    <string name="tag_value_001D">001D</string>
+    <string name="tag_value_001F">001F</string>
+    <string name="tag_value_0020">0020</string>
+    <string name="tag_value_0041">0041</string>
+    <string name="tag_value_0045">0045</string>
+    <string name="tag_value_0047">0047</string>
+    <string name="tag_value_0049">0049</string>
+    <string name="tag_value_004D">004D</string>
+    <string name="tag_value_004F">004F</string>
+    <string name="tag_value_0059">0059</string>
+    <string name="tag_value_005D">005D</string>
+    <string name="tag_value_005F">005F</string>
+
 </resources>
