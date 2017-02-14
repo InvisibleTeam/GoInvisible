@@ -50,7 +50,7 @@ class GpsEstablisher {
 
     void requestGpsConnection() {
         if (!googleLocationApiEstablisher.isApiConnected()) {
-            googleLocationApiEstablisher.setListener(new GoogleLocationApiEstablisher.Listener() {
+            googleLocationApiEstablisher.setGoogleApiConnectionListener(new GoogleLocationApiEstablisher.GoogleApiConnectionListener() {
                 @Override
                 public void onSuccess() {
                     requestGps();

@@ -8,7 +8,7 @@ import com.google.android.gms.location.LocationServices;
 import javax.annotation.Nullable;
 
 class GoogleLocationApiEstablisher {
-    private Listener listener;
+    private GoogleApiConnectionListener googleApiConnectionListener;
     private GoogleApiClient.Builder googleApiClientBuilder;
     @Nullable
     private GoogleApiClient googleApiClient;
@@ -32,15 +32,15 @@ class GoogleLocationApiEstablisher {
         googleApiClient = googleApiClientBuilder
                 .addApi(LocationServices.API)
                 .addOnConnectionFailedListener(connectionResult -> {
-                    if (listener != null) {
-                        listener.onFailure();
+                    if (googleApiConnectionListener != null) {
+                        googleApiConnectionListener.onFailure();
                     }
                 })
                 .addConnectionCallbacks(new GoogleApiClient.ConnectionCallbacks() {
                     @Override
                     public void onConnected(@Nullable Bundle bundle) {
-                        if (listener != null) {
-                            listener.onSuccess();
+                        if (googleApiConnectionListener != null) {
+                            googleApiConnectionListener.onSuccess();
                         }
                     }
 
@@ -52,8 +52,8 @@ class GoogleLocationApiEstablisher {
                 .build();
     }
 
-    void setListener(Listener listener) {
-        this.listener = listener;
+    void setGoogleApiConnectionListener(GoogleApiConnectionListener listener) {
+        this.googleApiConnectionListener = listener;
     }
 
     @Nullable
@@ -61,7 +61,7 @@ class GoogleLocationApiEstablisher {
         return googleApiClient;
     }
 
-    interface Listener {
+    interface GoogleApiConnectionListener {
         void onSuccess();
 
         void onFailure();
