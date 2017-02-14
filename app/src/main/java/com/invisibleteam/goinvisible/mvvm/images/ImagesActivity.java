@@ -18,7 +18,7 @@ public class ImagesActivity extends CommonActivity {
     private ImagesCallback imagesCallback;
 
     public static Intent buildIntent(Context context) {
-        Intent intent = new Intent(context, EditActivity.class);
+        Intent intent = new Intent(context, ImagesActivity.class);
         intent.putExtra(ImagesActivity.TAGS_CHANGED_EXTRA, true);
 
         return intent;
