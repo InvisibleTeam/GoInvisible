@@ -3,7 +3,6 @@ package com.invisibleteam.goinvisible.mvvm.edition;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentSender;
 import android.databinding.DataBindingUtil;
 import android.location.LocationManager;
 import android.media.ExifInterface;
@@ -11,6 +10,7 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.VisibleForTesting;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.util.Log;
 import android.view.MenuItem;
@@ -20,14 +20,6 @@ import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.PendingResult;
-import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.common.api.Status;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.location.LocationSettingsRequest;
-import com.google.android.gms.location.LocationSettingsResult;
-import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.maps.model.LatLng;
@@ -54,13 +46,10 @@ public class EditActivity extends CommonActivity {
     private static final String TAG_MODEL = "tag";
     private static final String TAG = EditActivity.class.getSimpleName();
     private static final int PLACE_REQUEST_ID = 1;
-    private static final int GPS_REQUEST_ID = 2;
-    private static final long LOCATION_REQUEST_INTERVAL = 100;
-    private static final long LOCATION_REQUEST_FASTEST_INTERVAL = 100;
     private static final int initialMapRadius = 20000;
-    private GoogleApiClient mGoogleApiClient;
     private EditCompoundRecyclerView editCompoundRecyclerView;
     private TagsManager tagsManager;
+    private GpsEstablisher gpsEstablisher;
 
     public static Intent buildIntent(Context context, ImageDetails imageDetails) {
         Bundle bundle = new Bundle();
@@ -74,6 +63,7 @@ public class EditActivity extends CommonActivity {
     private ImageDetails imageDetails;
     private EditViewModel editViewModel;
     private Tag tag;
+    private Snackbar googleApiFailureSnackBar;
 
     private final EditTagListener editTagListener = (tag) -> {
         if (tag.getKey().equals(ExifInterface.TAG_GPS_LATITUDE)) {
@@ -95,6 +85,34 @@ public class EditActivity extends CommonActivity {
         if (savedInstanceState != null) {
             tag = savedInstanceState.getParcelable(TAG_MODEL);
         }
+        initializeSnackBar();
+        initializeGpsEstablisher();
+    }
+
+    private void initializeSnackBar() {
+        googleApiFailureSnackBar = Snackbar.make(
+                findViewById(android.R.id.content),
+                R.string.google_api_connection_error,
+                Snackbar.LENGTH_LONG);
+    }
+
+    private void initializeGpsEstablisher() {
+        LocationManager locationManager = (LocationManager) EditActivity.this.getSystemService(LOCATION_SERVICE);
+        GoogleLocationApiEstablisher googleLocationApiEstablisher =
+                new GoogleLocationApiEstablisher(
+                        new GoogleApiClient.Builder(this));
+        gpsEstablisher = new GpsEstablisher(locationManager, googleLocationApiEstablisher, this);
+        gpsEstablisher.setStatusListener(new GpsEstablisher.StatusListener() {
+            @Override
+            public void onGpsEstablished() {
+                openPlacePicker();
+            }
+
+            @Override
+            public void onGoogleLocationApiConnectionFailure() {
+                googleApiFailureSnackBar.show();
+            }
+        });
     }
 
     @Override
@@ -170,7 +188,9 @@ public class EditActivity extends CommonActivity {
         if (requestCode == PLACE_REQUEST_ID && resultCode == Activity.RESULT_OK) {
             Place place = PlacePicker.getPlace(this, data);
             onNewPlace(place);
-        } else if (requestCode == GPS_REQUEST_ID && resultCode == Activity.RESULT_OK) {
+        } else if (
+                requestCode == gpsEstablisher.getGpsRequestCode()
+                        && resultCode == Activity.RESULT_OK) {
             startPlaceIntent();
         }
     }
@@ -204,76 +224,11 @@ public class EditActivity extends CommonActivity {
     }
 
     private void startPlaceIntent() {
-        if (checkGpsEnabled(this)) {
+        if (gpsEstablisher.isGpsEstablished()) {
             openPlacePicker();
         } else {
-            createLocationRequest(locationSettingsResult -> {
-                final Status status = locationSettingsResult.getStatus();
-                switch (status.getStatusCode()) {
-                    case LocationSettingsStatusCodes.SUCCESS:
-                        openPlacePicker();
-                        break;
-                    case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
-                        try {
-                            status.startResolutionForResult(
-                                    EditActivity.this,
-                                    GPS_REQUEST_ID);
-                        } catch (IntentSender.SendIntentException e) {
-                            //TODO log crashlytics error
-                            Log.e(TAG, e.getMessage(), e);
-                        }
-                        break;
-                    default:
-                        break;
-                }
-            });
+            gpsEstablisher.requestGpsConnection();
         }
-    }
-
-    public boolean checkGpsEnabled(Context context) {
-        LocationManager locationManager = (LocationManager) context
-                .getSystemService(Context.LOCATION_SERVICE);
-        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-    }
-
-    private void createLocationRequest(ResultCallback<LocationSettingsResult> callback) {
-        if (mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
-            openPlacePicker();
-        } else {
-            if (mGoogleApiClient == null) {
-                mGoogleApiClient = new GoogleApiClient.Builder(this)
-                        .addApi(LocationServices.API)
-                        .addConnectionCallbacks(new GoogleApiClient.ConnectionCallbacks() {
-                            @Override
-                            public void onConnected(@Nullable Bundle bundle) {
-                                LocationRequest locationRequest = buildLocationRequest();
-                                LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
-                                        .addLocationRequest(locationRequest);
-                                builder.setAlwaysShow(true);
-
-                                PendingResult<LocationSettingsResult> result =
-                                        LocationServices.SettingsApi.checkLocationSettings(mGoogleApiClient,
-                                                builder.build());
-                                result.setResultCallback(callback);
-                            }
-
-                            @Override
-                            public void onConnectionSuspended(int i) {
-
-                            }
-                        })
-                        .build();
-            }
-            mGoogleApiClient.connect();
-        }
-    }
-
-    private LocationRequest buildLocationRequest() {
-        LocationRequest locationRequest = new LocationRequest();
-        locationRequest.setInterval(LOCATION_REQUEST_INTERVAL);
-        locationRequest.setFastestInterval(LOCATION_REQUEST_FASTEST_INTERVAL);
-        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        return locationRequest;
     }
 
     private void openPlacePicker() {
