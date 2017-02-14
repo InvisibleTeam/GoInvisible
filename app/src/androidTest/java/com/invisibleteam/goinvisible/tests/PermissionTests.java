@@ -9,16 +9,25 @@ import android.support.test.uiautomator.BySelector;
 import android.support.test.uiautomator.UiDevice;
 import android.support.test.uiautomator.Until;
 
+import com.invisibleteam.goinvisible.Config;
+import com.invisibleteam.goinvisible.UiDeviceProvider;
+import com.invisibleteam.goinvisible.pages.FileView;
+import com.invisibleteam.goinvisible.pages.MissingPermissionsDialog;
+import com.invisibleteam.goinvisible.pages.system.SystemPermissionDialog;
+
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import java.io.File;
 
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 //TODO clean permissions for GoInvisible app between tests in setup or teardown
+
 /**
  * Instrumentation test, which will execute on an Android device.
  *
@@ -27,33 +36,16 @@ import static org.junit.Assert.assertThat;
 @RunWith(AndroidJUnit4.class)
 public class PermissionTests {
 
-    @SuppressWarnings("SpellCheckingInspection")
-    private static final String GOINVISIBLE_PACKAGE = "com.invisibleteam.goinvisible";
-
-    private static final int LAUNCH_TIMEOUT = 5000;
-
     private UiDevice mDevice;
-
-    // Permission Dialog selectors
-    private final BySelector permissionMessageSelector = By.text("Allow GoInvisible to access photos, media, and files on your device?");
-    private final BySelector dontAskAgainSelector = By.text("Don't ask again");
-    private final BySelector denyButtonTextSelector = By.text("DENY");
-    private final BySelector allowButtonTextSelector = By.text("ALLOW");
-
-    // Missing permissions dialog selectors
-    private final BySelector missingPermissionsMessageSelector = By.text("Storage permission is necessary to use this application.");
-    private final BySelector missingPermissionsTitleSelector = By.text("Missing permissions");
-    private final BySelector exitButtonSelector = By.text("EXIT APPLICATION");
-    private final BySelector okButtonSelector = By.text("OK");
 
     @Before
     public void startMainActivityFromHomeScreen() throws Exception {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
-        assertEquals(GOINVISIBLE_PACKAGE, appContext.getPackageName());
+        assertEquals(Config.GOINVISIBLE_PACKAGE, appContext.getPackageName());
 
         // Initialize UiDevice instance
-        mDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
+        mDevice = UiDeviceProvider.getInstance();
 
         // Start from the home screen
         mDevice.pressHome();
@@ -61,154 +53,137 @@ public class PermissionTests {
         // Wait for launcher
         final String launcherPackage = mDevice.getLauncherPackageName();
         assertThat(launcherPackage, notNullValue());
-        mDevice.wait(Until.hasObject(By.pkg(launcherPackage).depth(0)), LAUNCH_TIMEOUT);
+        mDevice.wait(Until.hasObject(By.pkg(launcherPackage).depth(0)), Config.LAUNCH_TIMEOUT);
 
+        // TODO: 14.02.2017 move stuff under to GoInvisible as launch() method
         // Launch the GoInvisible app
         Context context = InstrumentationRegistry.getContext();
         final Intent intent = context.getPackageManager()
-                .getLaunchIntentForPackage(GOINVISIBLE_PACKAGE);
+                .getLaunchIntentForPackage(Config.GOINVISIBLE_PACKAGE);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);    // Clear out any previous instances
         context.startActivity(intent);
 
         // Wait for the app to appear
-        mDevice.wait(Until.hasObject(By.pkg(GOINVISIBLE_PACKAGE).depth(0)), LAUNCH_TIMEOUT);
+        mDevice.wait(Until.hasObject(By.pkg(Config.GOINVISIBLE_PACKAGE).depth(0)), Config.LAUNCH_TIMEOUT);
     }
 
     /**
      * Test case:
      * - Show missing permissions dialog
-     *
+     * <p>
      * Preconditions:
      * - GoInvisible app is clean installed
      * - GoInvisible app is opened first time
-     * - permission dialog should be visible
-     *
+     * - permission dialog should be opened
+     * <p>
      * Steps to execute:
      * - ensure correct permission dialog is opened (GoInvisible app requests access to files)
      * - deny access for GoInvisible app
-     * - ensure "Missing permissions" dialog is visible
+     * - ensure "Missing permissions" dialog is opened
      * - exit from application
      * - ensure applications was closed
      *
      * @throws Exception
      */
-    @Ignore("on System.exit(0) in application test will crash. Waiting for problem resolution by dev.")
     @Test
     public void whenAccessIsDeniedThenShowMissingPermissionsDialog() throws Exception {
         // Ensure correct permission dialog is opened
-        mDevice.wait(Until.hasObject(permissionMessageSelector), LAUNCH_TIMEOUT);
+        SystemPermissionDialog.isOpened();
 
         // Deny access for GoInvisible app
-        mDevice.wait(Until.hasObject(denyButtonTextSelector), LAUNCH_TIMEOUT);
-        mDevice.findObject(denyButtonTextSelector).click();
+        SystemPermissionDialog.denyAccess();
 
-        // Ensure "Missing permissions" dialog is visible
-        mDevice.wait(Until.hasObject(missingPermissionsTitleSelector), LAUNCH_TIMEOUT);
-        mDevice.wait(Until.hasObject(missingPermissionsMessageSelector), LAUNCH_TIMEOUT);
-        mDevice.wait(Until.hasObject(exitButtonSelector), LAUNCH_TIMEOUT);
-        mDevice.wait(Until.hasObject(okButtonSelector), LAUNCH_TIMEOUT);
+        // Ensure "Missing permissions" dialog is opened
+        MissingPermissionsDialog.isOpened();
 
         // Exit from application
-        mDevice.findObject(exitButtonSelector).click();
+        MissingPermissionsDialog.exitApplication();
 
         // Ensure applications was closed
-        mDevice.wait(Until.hasObject(By.pkg(mDevice.getLauncherPackageName()).depth(0)), LAUNCH_TIMEOUT);
-        String pidOfGoInvisible = mDevice.executeShellCommand("pidof " + GOINVISIBLE_PACKAGE);
+        mDevice.wait(Until.hasObject(By.pkg(mDevice.getLauncherPackageName()).depth(0)), Config.LAUNCH_TIMEOUT);
+        String pidOfGoInvisible = mDevice.executeShellCommand("pidof " + Config.GOINVISIBLE_PACKAGE);
         assertEquals("\n", pidOfGoInvisible);
     }
 
     /**
      * Test case:
      * - Show missing permissions dialog when "Do not ask" was checked
-     *
+     * <p>
      * Preconditions:
      * - GoInvisible app is clean installed
      * - GoInvisible app is opened first time
-     * - permission dialog should be visible
-     *
+     * - permission dialog should be opened
+     * <p>
      * Steps to execute:
      * - ensure correct permission dialog is opened (GoInvisible app requests access to files)
      * - deny access for GoInvisible app
-     * - ensure "Missing permissions" dialog is visible
+     * - ensure "Missing permissions" dialog is opened
      * - go to permission dialog again
      * - select "Don't ask again" option
      * - deny access for GoInvisible app
-     * - ensure "Missing permissions" dialog is visible
+     * - ensure "Missing permissions" dialog is opened
      * - exit from application
      * - ensure applications was closed
      *
      * @throws Exception
      */
-    @Ignore("on System.exit(0) in application test will crash. Waiting for problem resolution by dev.")
     @Test
     public void whenAccessIsDeniedPermanentlyThenShowMissingPermissionsDialog() throws Exception {
         // Ensure correct permission dialog is opened
-        mDevice.wait(Until.hasObject(permissionMessageSelector), LAUNCH_TIMEOUT);
+        SystemPermissionDialog.isOpened();
 
         // Deny access for GoInvisible app
-        mDevice.wait(Until.hasObject(denyButtonTextSelector), LAUNCH_TIMEOUT);
-        mDevice.findObject(denyButtonTextSelector).click();
+        SystemPermissionDialog.denyAccess();
 
-        // Ensure "Missing permissions" dialog is visible
-        mDevice.wait(Until.hasObject(missingPermissionsTitleSelector), LAUNCH_TIMEOUT);
-        mDevice.wait(Until.hasObject(missingPermissionsMessageSelector), LAUNCH_TIMEOUT);
-        mDevice.wait(Until.hasObject(exitButtonSelector), LAUNCH_TIMEOUT);
-        mDevice.wait(Until.hasObject(okButtonSelector), LAUNCH_TIMEOUT);
+        // Ensure "Missing permissions" dialog is opened
+        MissingPermissionsDialog.isOpened();
 
         // Go to permission dialog again
-        mDevice.findObject(okButtonSelector).click();
+        MissingPermissionsDialog.ok();
 
         // Select "Don't ask again" option
-        mDevice.wait(Until.hasObject(dontAskAgainSelector), LAUNCH_TIMEOUT);
-        mDevice.findObject(dontAskAgainSelector).click();
+        SystemPermissionDialog.doNotAskAgain(true);
 
         // Deny access for GoInvisible app
-        mDevice.wait(Until.hasObject(denyButtonTextSelector), LAUNCH_TIMEOUT);
-        mDevice.findObject(denyButtonTextSelector).click();
+        SystemPermissionDialog.denyAccess();
 
-        // Ensure "Missing permissions" dialog is visible
-        mDevice.wait(Until.hasObject(missingPermissionsTitleSelector), LAUNCH_TIMEOUT);
-        mDevice.wait(Until.hasObject(missingPermissionsMessageSelector), LAUNCH_TIMEOUT);
-        mDevice.wait(Until.hasObject(exitButtonSelector), LAUNCH_TIMEOUT);
-        mDevice.wait(Until.hasObject(okButtonSelector), LAUNCH_TIMEOUT);
+        // Ensure "Missing permissions" dialog is opened
+        MissingPermissionsDialog.isOpened();
 
         // Exit from application
-        mDevice.findObject(exitButtonSelector).click();
+        MissingPermissionsDialog.exitApplication();
 
         // Ensure applications was closed
-        mDevice.wait(Until.hasObject(By.pkg(mDevice.getLauncherPackageName()).depth(0)), LAUNCH_TIMEOUT);
-        String pidOfGoInvisible = mDevice.executeShellCommand("pidof " + GOINVISIBLE_PACKAGE);
+        mDevice.wait(Until.hasObject(By.pkg(mDevice.getLauncherPackageName()).depth(0)), Config.LAUNCH_TIMEOUT);
+        String pidOfGoInvisible = mDevice.executeShellCommand("pidof " + Config.GOINVISIBLE_PACKAGE);
         assertEquals("\n", pidOfGoInvisible);
     }
 
     /**
      * Test case:
      * - Show file view when permission is allowed
-     *
+     * <p>
      * Preconditions:
      * - GoInvisible app is clean installed
      * - GoInvisible app is opened first time
-     * - permission dialog should be visible
-     *
+     * - permission dialog should be opened
+     * <p>
      * Steps to execute:
      * - ensure correct permission dialog is opened (GoInvisible app requests access to files)
      * - allow access for GoInvisible app
-     * - ensure GoInvisible file view is visible
+     * - ensure GoInvisible file view is opened
      *
      * @throws Exception
      */
     @Test
     public void whenAccessToPhotosIsEnabledThenShowMainView() throws Exception {
         // Ensure correct permission dialog is opened
-        mDevice.wait(Until.hasObject(permissionMessageSelector), LAUNCH_TIMEOUT);
+        SystemPermissionDialog.isOpened();
 
         // Allow access for GoInvisible app
-        mDevice.wait(Until.hasObject(allowButtonTextSelector), LAUNCH_TIMEOUT);
-        mDevice.findObject(allowButtonTextSelector).click();
+        SystemPermissionDialog.allowAccess();
 
-        // Ensure GoInvisible file view is visible
-        // TODO add check that GoInvisible screen is visible
-        String pidOfGoInvisible = mDevice.executeShellCommand("pidof " + GOINVISIBLE_PACKAGE);
-        assertNotEquals("\n", pidOfGoInvisible);
+        // Ensure GoInvisible file view is opened
+        FileView.isOpened();
     }
 }
