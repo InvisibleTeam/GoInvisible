@@ -55,9 +55,6 @@ public class PermissionTests {
         // TODO: 14.02.2017 move stuff under to GoInvisible as launch() method
         // Launch the GoInvisible app
         GoInvisiblePackage.launch();
-
-        // Wait for the app to appear
-        assertTrue(GoInvisiblePackage.isOpened());
     }
 
     /**
