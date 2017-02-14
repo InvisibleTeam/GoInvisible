@@ -16,7 +16,7 @@
 
 
     //Tags descriptions
-    <string name="tag_exposure_time_1">No absolute unit of measurement. Used for images that may have a non-square aspect ratio, but no                     meaningful absolute dimensions</string>
+    <string name="tag_exposure_time_1">No absolute unit of measurement</string>
     <string name="tag_exposure_time_2">Inch</string>
     <string name="tag_exposure_time_3">Centimeter</string>
     <string name="tag_contrast_1">Normal</string>
@@ -50,7 +50,7 @@
     <string name="tag_metering_mode_4">MultiSpot</string>
     <string name="tag_metering_mode_5">Pattern</string>
     <string name="tag_metering_mode_6">Partial</string>
-    <string name="tag_metering_mode_255">other</string>
+    <string name="tag_metering_mode_255">Other</string>
     //==========================================
     <string name="tag_saturation_0">Normal</string>
     <string name="tag_saturation_1">Low saturation</string>
