@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 import android.support.test.uiautomator.By;
-import android.support.test.uiautomator.BySelector;
 import android.support.test.uiautomator.UiDevice;
 import android.support.test.uiautomator.Until;
 
@@ -16,24 +15,26 @@ import com.invisibleteam.goinvisible.pages.MissingPermissionsDialog;
 import com.invisibleteam.goinvisible.pages.system.SystemPermissionDialog;
 
 import org.junit.Before;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import java.io.File;
+import org.junit.runners.MethodSorters;
 
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-//TODO clean permissions for GoInvisible app between tests in setup or teardown
 
 /**
- * Instrumentation test, which will execute on an Android device.
- *
- * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
+ * Permission tests must be executed in order:
+ * - deny permission test
+ * - allow permission test
+ * <p>
+ * The reason is that after revoking permission application is killed.
+ * Such behaviour leads to failed test as test runner does not expect it.
  */
 @RunWith(AndroidJUnit4.class)
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class PermissionTests {
 
     private UiDevice mDevice;
@@ -80,86 +81,19 @@ public class PermissionTests {
      * - ensure correct permission dialog is opened (GoInvisible app requests access to files)
      * - deny access for GoInvisible app
      * - ensure "Missing permissions" dialog is opened
-     * - exit from application
-     * - ensure applications was closed
-     *
-     * @throws Exception
-     */
-    @Test
-    public void whenAccessIsDeniedThenShowMissingPermissionsDialog() throws Exception {
-        SystemPermissionDialog.isOpened();
-        SystemPermissionDialog.denyAccess();
-
-        MissingPermissionsDialog.isOpened();
-        MissingPermissionsDialog.exitApplication();
-
-        // Ensure applications was closed
-        mDevice.wait(Until.hasObject(By.pkg(mDevice.getLauncherPackageName()).depth(0)), Config.LAUNCH_TIMEOUT);
-        String pidOfGoInvisible = mDevice.executeShellCommand("pidof " + Config.GOINVISIBLE_PACKAGE);
-        assertEquals("\n", pidOfGoInvisible);
-    }
-
-    /**
-     * Test case:
-     * - Show missing permissions dialog when "Do not ask" was checked
-     * <p>
-     * Preconditions:
-     * - GoInvisible app is clean installed
-     * - GoInvisible app is opened first time
-     * - permission dialog should be opened
-     * <p>
-     * Steps to execute:
-     * - ensure correct permission dialog is opened (GoInvisible app requests access to files)
-     * - deny access for GoInvisible app
-     * - ensure "Missing permissions" dialog is opened
      * - go to permission dialog again
-     * - select "Don't ask again" option
-     * - deny access for GoInvisible app
-     * - ensure "Missing permissions" dialog is opened
-     * - exit from application
-     * - ensure applications was closed
-     *
-     * @throws Exception
-     */
-    @Test
-    public void whenAccessIsDeniedPermanentlyThenShowMissingPermissionsDialog() throws Exception {
-        SystemPermissionDialog.isOpened();
-        SystemPermissionDialog.denyAccess();
-
-        MissingPermissionsDialog.isOpened();
-        MissingPermissionsDialog.ok();
-
-        SystemPermissionDialog.doNotAskAgain(true);
-        SystemPermissionDialog.denyAccess();
-
-        MissingPermissionsDialog.isOpened();
-        MissingPermissionsDialog.exitApplication();
-
-        // Ensure applications was closed
-        mDevice.wait(Until.hasObject(By.pkg(mDevice.getLauncherPackageName()).depth(0)), Config.LAUNCH_TIMEOUT);
-        String pidOfGoInvisible = mDevice.executeShellCommand("pidof " + Config.GOINVISIBLE_PACKAGE);
-        assertEquals("\n", pidOfGoInvisible);
-    }
-
-    /**
-     * Test case:
-     * - Show file view when permission is allowed
-     * <p>
-     * Preconditions:
-     * - GoInvisible app is clean installed
-     * - GoInvisible app is opened first time
-     * - permission dialog should be opened
-     * <p>
-     * Steps to execute:
-     * - ensure correct permission dialog is opened (GoInvisible app requests access to files)
      * - allow access for GoInvisible app
      * - ensure GoInvisible file view is opened
      *
      * @throws Exception
      */
     @Test
-    public void whenAccessToPhotosIsEnabledThenShowMainView() throws Exception {
-        SystemPermissionDialog.isOpened();
+    public void checkPermissionFlow() throws Exception {
+        assertTrue(SystemPermissionDialog.isOpened());
+        SystemPermissionDialog.denyAccess();
+
+        assertTrue(MissingPermissionsDialog.isOpened());
+        MissingPermissionsDialog.ok();
 
         SystemPermissionDialog.allowAccess();
 
