@@ -1,8 +1,8 @@
 package com.invisibleteam.goinvisible.mvvm.edition;
 
 import android.annotation.TargetApi;
-import android.media.ExifInterface;
 import android.support.annotation.VisibleForTesting;
+import android.support.media.ExifInterface;
 import android.util.Log;
 
 import com.invisibleteam.goinvisible.model.GeolocationTag;
@@ -18,7 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static android.media.ExifInterface.*;
+import static android.support.media.ExifInterface.*;
 import static com.invisibleteam.goinvisible.model.InputType.DATETIME_STRING;
 import static com.invisibleteam.goinvisible.model.InputType.DATE_STRING;
 import static com.invisibleteam.goinvisible.model.InputType.POSITION_DOUBLE;
