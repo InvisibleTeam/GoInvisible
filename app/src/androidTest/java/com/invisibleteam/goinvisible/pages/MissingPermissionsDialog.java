@@ -14,9 +14,9 @@ public class MissingPermissionsDialog extends UiDialog {
 
     // Missing permissions dialog selectors
     private static final BySelector missingPermissionsTitleSelector = By.res(GOINVISIBLE_PACKAGE, "alertTitle");
-    private static final BySelector missingPermissionsMessageSelector = By.res(GOINVISIBLE_PACKAGE, "message");
-    private static final BySelector exitButtonSelector = By.res(GOINVISIBLE_PACKAGE, "button2");
-    private static final BySelector okButtonSelector = By.res(GOINVISIBLE_PACKAGE, "button1");
+    private static final BySelector missingPermissionsMessageSelector = By.res("android", "message");
+    private static final BySelector exitButtonSelector = By.res("android", "button2");
+    private static final BySelector okButtonSelector = By.res("android", "button1");
 
     public static Boolean isOpened() {
         return mDevice.wait(Until.hasObject(missingPermissionsTitleSelector), Config.LAUNCH_TIMEOUT) &&
