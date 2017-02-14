@@ -3,4 +3,6 @@
     <dimen name="images_grid_margin">4dp</dimen>
     <dimen name="text_view_margin">16dp</dimen>
     <dimen name="information_text_size">20sp</dimen>
+    <dimen name="tag_value_size">16sp</dimen>
+    <dimen name="divider_margin">32dp</dimen>
 </resources>

@@ -141,6 +141,8 @@ public class DialogRangedValuesUtil {
 
             case TAG_ORIENTATION:
             case TAG_GPS_ALTITUDE_REF:
+            case TAG_GPS_LATITUDE_REF:
+            case TAG_GPS_LONGITUDE_REF:
             case TAG_ISO_SPEED_RATINGS:
                 return getDefaultMap();
 
