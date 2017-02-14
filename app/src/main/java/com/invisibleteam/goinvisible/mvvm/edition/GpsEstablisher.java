@@ -14,6 +14,8 @@ import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
 
+import java.lang.ref.WeakReference;
+
 import javax.annotation.Nullable;
 
 class GpsEstablisher {
@@ -23,11 +25,11 @@ class GpsEstablisher {
     private static final long LOCATION_REQUEST_INTERVAL = 100;
     private static final long LOCATION_REQUEST_FASTEST_INTERVAL = 100;
 
-    private GoogleLocationApiEstablisher googleLocationApiEstablisher;
-    private LocationManager locationManager;
-    private Activity activity;
+    private final GoogleLocationApiEstablisher googleLocationApiEstablisher;
+    private final LocationManager locationManager;
+    private final WeakReference<Activity> weakActivityReference;
     @Nullable
-    private Listener listener;
+    private StatusListener statusListener;
 
     GpsEstablisher(
             LocationManager locationManager,
@@ -35,7 +37,7 @@ class GpsEstablisher {
             Activity activity) {
         this.googleLocationApiEstablisher = googleLocationApiEstablisher;
         this.locationManager = locationManager;
-        this.activity = activity;
+        this.weakActivityReference = new WeakReference<>(activity);
     }
 
     int getGpsRequestCode() {
@@ -56,8 +58,8 @@ class GpsEstablisher {
 
                 @Override
                 public void onFailure() {
-                    if (listener != null) {
-                        listener.onGoogleLocationApiConnectionFailure();
+                    if (statusListener != null) {
+                        statusListener.onGoogleLocationApiConnectionFailure();
                     }
                 }
             });
@@ -82,24 +84,13 @@ class GpsEstablisher {
             final Status status = locationSettingsResult.getStatus();
             switch (status.getStatusCode()) {
                 case LocationSettingsStatusCodes.SUCCESS:
-                    if (listener != null) {
-                        listener.onGpsEstablished();
-                    }
+                    onLocationSuccess();
                     break;
                 case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
-                    try {
-                        status.startResolutionForResult(
-                                activity,
-                                GPS_REQUEST_CODE_DEFAULT);
-                    } catch (IntentSender.SendIntentException e) {
-                        //TODO log crashlytics error
-                        Log.e(TAG, e.getMessage(), e);
-                    }
+                    onLocationResolutionRequired(status);
                     break;
                 default:
-                    if (listener != null) {
-                        listener.onGoogleLocationApiConnectionFailure();
-                    }
+                    onGoogleApiConnectionFailure();
                     break;
             }
         });
@@ -113,11 +104,39 @@ class GpsEstablisher {
         return locationRequest;
     }
 
-    public void setListener(@Nullable Listener listener) {
-        this.listener = listener;
+    private void onLocationSuccess() {
+        if (statusListener != null) {
+            statusListener.onGpsEstablished();
+        }
     }
 
-    interface Listener {
+    private void onLocationResolutionRequired(Status status) {
+        try {
+            if (weakActivityReference.get() != null) {
+                status.startResolutionForResult(
+                        weakActivityReference.get(),
+                        GPS_REQUEST_CODE_DEFAULT);
+            } else {
+                //TODO log crashlytics info
+                Log.d(TAG, "No activity when trying to request GPS.");
+            }
+        } catch (IntentSender.SendIntentException e) {
+            //TODO log crashlytics error
+            Log.e(TAG, e.getMessage(), e);
+        }
+    }
+
+    private void onGoogleApiConnectionFailure() {
+        if (statusListener != null) {
+            statusListener.onGoogleLocationApiConnectionFailure();
+        }
+    }
+
+    void setStatusListener(@Nullable StatusListener listener) {
+        this.statusListener = listener;
+    }
+
+    interface StatusListener {
         void onGpsEstablished();
 
         void onGoogleLocationApiConnectionFailure();

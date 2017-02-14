@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.VisibleForTesting;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.util.Log;
 import android.view.MenuItem;
@@ -62,6 +63,7 @@ public class EditActivity extends CommonActivity {
     private ImageDetails imageDetails;
     private EditViewModel editViewModel;
     private Tag tag;
+    private Snackbar googleApiFailureSnackBar;
 
     private final EditTagListener editTagListener = (tag) -> {
         if (tag.getKey().equals(ExifInterface.TAG_GPS_LATITUDE)) {
@@ -83,17 +85,24 @@ public class EditActivity extends CommonActivity {
         if (savedInstanceState != null) {
             tag = savedInstanceState.getParcelable(TAG_MODEL);
         }
+        initializeSnackBar();
         initializeGpsEstablisher();
+    }
+
+    private void initializeSnackBar() {
+        googleApiFailureSnackBar = Snackbar.make(
+                findViewById(android.R.id.content),
+                R.string.google_api_connection_error,
+                Snackbar.LENGTH_LONG);
     }
 
     private void initializeGpsEstablisher() {
         LocationManager locationManager = (LocationManager) EditActivity.this.getSystemService(LOCATION_SERVICE);
         GoogleLocationApiEstablisher googleLocationApiEstablisher =
                 new GoogleLocationApiEstablisher(
-                        new GoogleApiClient.Builder(this),
-                        this);
+                        new GoogleApiClient.Builder(this));
         gpsEstablisher = new GpsEstablisher(locationManager, googleLocationApiEstablisher, this);
-        gpsEstablisher.setListener(new GpsEstablisher.Listener() {
+        gpsEstablisher.setStatusListener(new GpsEstablisher.StatusListener() {
             @Override
             public void onGpsEstablished() {
                 openPlacePicker();
@@ -101,7 +110,7 @@ public class EditActivity extends CommonActivity {
 
             @Override
             public void onGoogleLocationApiConnectionFailure() {
-                Toast.makeText(EditActivity.this, R.string.google_api_connection_error, Toast.LENGTH_SHORT).show();
+                googleApiFailureSnackBar.show();
             }
         });
     }
