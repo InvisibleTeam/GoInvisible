@@ -11,7 +11,9 @@ import android.support.test.uiautomator.Until;
 import com.invisibleteam.goinvisible.Config;
 import com.invisibleteam.goinvisible.UiDeviceProvider;
 import com.invisibleteam.goinvisible.pages.FileView;
+import com.invisibleteam.goinvisible.pages.GoInvisiblePackage;
 import com.invisibleteam.goinvisible.pages.MissingPermissionsDialog;
+import com.invisibleteam.goinvisible.pages.system.SystemHomeView;
 import com.invisibleteam.goinvisible.pages.system.SystemPermissionDialog;
 
 import org.junit.Before;
@@ -48,20 +50,14 @@ public class PermissionTests {
         mDevice.pressHome();
 
         // Wait for launcher
-        final String launcherPackage = mDevice.getLauncherPackageName();
-        assertThat(launcherPackage, notNullValue());
-        mDevice.wait(Until.hasObject(By.pkg(launcherPackage).depth(0)), Config.LAUNCH_TIMEOUT);
+        assertTrue(SystemHomeView.isOpened());
 
         // TODO: 14.02.2017 move stuff under to GoInvisible as launch() method
         // Launch the GoInvisible app
-        Context context = InstrumentationRegistry.getContext();
-        final Intent intent = context.getPackageManager()
-                .getLaunchIntentForPackage(Config.GOINVISIBLE_PACKAGE);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);    // Clear out any previous instances
-        context.startActivity(intent);
+        GoInvisiblePackage.launch();
 
         // Wait for the app to appear
-        mDevice.wait(Until.hasObject(By.pkg(Config.GOINVISIBLE_PACKAGE).depth(0)), Config.LAUNCH_TIMEOUT);
+        assertTrue(GoInvisiblePackage.isOpened());
     }
 
     /**
