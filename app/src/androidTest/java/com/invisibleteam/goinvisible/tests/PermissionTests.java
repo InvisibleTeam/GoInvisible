@@ -87,16 +87,10 @@ public class PermissionTests {
      */
     @Test
     public void whenAccessIsDeniedThenShowMissingPermissionsDialog() throws Exception {
-        // Ensure correct permission dialog is opened
         SystemPermissionDialog.isOpened();
-
-        // Deny access for GoInvisible app
         SystemPermissionDialog.denyAccess();
 
-        // Ensure "Missing permissions" dialog is opened
         MissingPermissionsDialog.isOpened();
-
-        // Exit from application
         MissingPermissionsDialog.exitApplication();
 
         // Ensure applications was closed
@@ -129,28 +123,16 @@ public class PermissionTests {
      */
     @Test
     public void whenAccessIsDeniedPermanentlyThenShowMissingPermissionsDialog() throws Exception {
-        // Ensure correct permission dialog is opened
         SystemPermissionDialog.isOpened();
-
-        // Deny access for GoInvisible app
         SystemPermissionDialog.denyAccess();
 
-        // Ensure "Missing permissions" dialog is opened
         MissingPermissionsDialog.isOpened();
-
-        // Go to permission dialog again
         MissingPermissionsDialog.ok();
 
-        // Select "Don't ask again" option
         SystemPermissionDialog.doNotAskAgain(true);
-
-        // Deny access for GoInvisible app
         SystemPermissionDialog.denyAccess();
 
-        // Ensure "Missing permissions" dialog is opened
         MissingPermissionsDialog.isOpened();
-
-        // Exit from application
         MissingPermissionsDialog.exitApplication();
 
         // Ensure applications was closed
@@ -177,13 +159,10 @@ public class PermissionTests {
      */
     @Test
     public void whenAccessToPhotosIsEnabledThenShowMainView() throws Exception {
-        // Ensure correct permission dialog is opened
         SystemPermissionDialog.isOpened();
 
-        // Allow access for GoInvisible app
         SystemPermissionDialog.allowAccess();
 
-        // Ensure GoInvisible file view is opened
-        FileView.isOpened();
+        assertTrue(FileView.isOpened());
     }
 }
