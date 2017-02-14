@@ -20,6 +20,7 @@ public class ImagesActivity extends CommonActivity {
     public static Intent buildIntent(Context context) {
         Intent intent = new Intent(context, ImagesActivity.class);
         intent.putExtra(ImagesActivity.TAGS_CHANGED_EXTRA, true);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
         return intent;
     }
