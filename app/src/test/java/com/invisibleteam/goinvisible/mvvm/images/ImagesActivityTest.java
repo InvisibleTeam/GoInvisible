@@ -2,9 +2,9 @@ package com.invisibleteam.goinvisible.mvvm.images;
 
 import android.content.ComponentName;
 import android.content.Intent;
-import android.support.design.widget.Snackbar;
 
 import com.invisibleteam.goinvisible.BuildConfig;
+import com.invisibleteam.goinvisible.R;
 import com.invisibleteam.goinvisible.model.ImageDetails;
 import com.invisibleteam.goinvisible.mvvm.edition.EditActivity;
 
@@ -19,11 +19,13 @@ import org.robolectric.shadows.ShadowIntent;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
+import static com.invisibleteam.goinvisible.mvvm.images.ImagesActivity.TAGS_CHANGED_EXTRA;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.robolectric.Shadows.shadowOf;
 
 @RunWith(RobolectricTestRunner.class)
@@ -35,7 +37,7 @@ public class ImagesActivityTest {
 
     @Before
     public void setUp() {
-        activity = spy(Robolectric.buildActivity(ImagesActivity.class).create().get());
+        activity = Robolectric.buildActivity(ImagesActivity.class).create().get();
     }
 
     @Test
@@ -45,7 +47,7 @@ public class ImagesActivityTest {
         ShadowActivity shadowActivity = shadowOf(activity);
 
         //when
-        activity.navigateToEdit(imageDetails);
+        activity.getImagesCallback().navigateToEdit(imageDetails);
 
         //then
         Intent editActivityIntent = shadowActivity.peekNextStartedActivity();
@@ -59,7 +61,7 @@ public class ImagesActivityTest {
     @Test
     public void whenSupportedImageIsClicked_EditActivityIsStarted() {
         //When
-        activity.navigateToEdit(new ImageDetails("path", "name"));
+        activity.getImagesCallback().navigateToEdit(new ImageDetails("path", "name"));
 
         //Then
         Intent startedIntent = shadowOf(activity).getNextStartedActivity();
@@ -68,15 +70,23 @@ public class ImagesActivityTest {
     }
 
     @Test
-    public void whenUnSupportedImageIsClicked_SnackbarWithInformationIsAppeared() {
+    public void whenActivityIsStarted_IntentExtractionAndSnackbarAreCalled() {
         //Given
-        Snackbar snackbar = mock(Snackbar.class);
-        activity.setSnackbar(snackbar);
+        Intent intent = new Intent();
+        intent.putExtra(TAGS_CHANGED_EXTRA, "");
 
         //When
-        activity.showUnsupportedImageInfo();
+        activity = spy(Robolectric.buildActivity(ImagesActivity.class)
+                .withIntent(intent)
+                .get());
 
-        //Then
-        verify(snackbar).show();
+        ImagesCallback callback = mock(ImagesCallback.class);
+        when(activity.buildImagesCallback()).thenReturn(callback);
+
+        activity.onCreate(null);
+
+        verify(activity).extractBundle();
+        verify(callback).prepareSnackBar(R.string.tags_changed_message);
+        verify(callback).showSnackBar();
     }
 }

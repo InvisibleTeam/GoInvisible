@@ -11,12 +11,14 @@ import com.invisibleteam.goinvisible.databinding.TextDialogBinding;
 import com.invisibleteam.goinvisible.model.InputType;
 import com.invisibleteam.goinvisible.model.Tag;
 import com.invisibleteam.goinvisible.model.TagType;
+import com.invisibleteam.goinvisible.mvvm.edition.EditActivity;
 import com.invisibleteam.goinvisible.mvvm.edition.EditViewModel;
 import com.invisibleteam.goinvisible.mvvm.edition.OnTagActionListener;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
@@ -35,6 +37,7 @@ import static com.invisibleteam.goinvisible.model.InputType.VALUE_DOUBLE;
 import static com.invisibleteam.goinvisible.model.InputType.VALUE_INTEGER;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
@@ -186,7 +189,9 @@ public class DialogFactoryTest {
     public void whenTagWithIndefiniteInputTypeIsPassed_CreateErrorDialogIsCalled() {
         //Given
         Tag tag = createTag(INDEFINITE);
+        when(dialog.getActivity()).thenReturn(Mockito.mock(EditActivity.class));
         dialogFactory = spy(new DialogFactory(dialog, tag, mock(EditViewModel.class)));
+        doReturn(null).when(dialogFactory).createErrorDialog();
 
         //When
         dialogFactory.createDialog();

@@ -16,11 +16,13 @@ import com.invisibleteam.goinvisible.mvvm.edition.adapter.EditCompoundRecyclerVi
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -46,6 +48,7 @@ public class EditActivityTest {
         activity = Robolectric
                 .buildActivity(EditActivity.class)
                 .withIntent(editActivityIntent)
+                .create()
                 .get();
         activity = spy(activity);
     }
@@ -60,19 +63,36 @@ public class EditActivityTest {
     }
 
     @Test
-    public void whenOptionItemSelectedAndTagsAreChanged_TagsAreSavedAndBackToImageActivityIsCalled() {
+    public void whenOptionItemIsSelectedAndTagsAreChanged_TagsAreSavedAndBackToImageActivityIsCalled() {
         //Given
-        activity.onCreate(null);
-
         List<Tag> tagsList = Arrays.asList(
                 createTag("key1", "value1"),
-                createTag("key1", "value1"));
+                createTag("key2", "value2"));
 
-        TagsManager tagsManager = mock(TagsManager.class);
         EditCompoundRecyclerView recyclerView = mock(EditCompoundRecyclerView.class);
         when(recyclerView.getChangedTags()).thenReturn(tagsList);
 
-        activity.setTagsManager(tagsManager);
+        MenuItem menuItem = mock(MenuItem.class);
+        when(menuItem.getItemId()).thenReturn(android.R.id.home);
+
+        activity.setEditCompoundRecyclerView(recyclerView);
+        Mockito.doNothing().when(activity).showApproveChangeTagsDialog();
+
+        //when
+        activity.onOptionsItemSelected(menuItem);
+
+        //then
+        verify(recyclerView).getChangedTags();
+        verify(activity).showApproveChangeTagsDialog();
+        verify(activity).onBackPressed();
+    }
+
+    @Test
+    public void whenOptionItemIsSelectedAndTagsAreNotChanged_OnlyBackToImageActivityIsCalled() {
+        //Given
+        EditCompoundRecyclerView recyclerView = mock(EditCompoundRecyclerView.class);
+        when(recyclerView.getChangedTags()).thenReturn(new ArrayList<>());
+
         activity.setEditCompoundRecyclerView(recyclerView);
 
         MenuItem menuItem = mock(MenuItem.class);
@@ -83,15 +103,13 @@ public class EditActivityTest {
 
         //then
         verify(recyclerView).getChangedTags();
-        verify(tagsManager).editTags(tagsList);
+        verify(activity, times(0)).showApproveChangeTagsDialog();
         verify(activity).onBackPressed();
     }
 
     @Test
     public void whenUnknownOptionItemSelected_defaultMethodIsCalled() {
         //given
-        activity.onCreate(null);
-
         MenuItem menuItem = mock(MenuItem.class);
         when(menuItem.getItemId()).thenReturn(-1);
 

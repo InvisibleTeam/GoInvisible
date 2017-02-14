@@ -39,7 +39,9 @@ class DialogFactory {
         if (tag == null) {
             return createErrorDialog();
         }
-        dateDialog = new DateDialog(context, tag, viewModel);
+        if (dateDialog == null) {
+            dateDialog = new DateDialog(context, tag, viewModel);
+        }
         InputType inputType = tag.getTagType().getInputType();
 
         switch (inputType) {
