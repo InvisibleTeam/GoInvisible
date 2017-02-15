@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.media.ExifInterface;
 import android.view.MenuItem;
 
 import com.invisibleteam.goinvisible.BuildConfig;
@@ -22,11 +23,13 @@ import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
@@ -156,17 +159,20 @@ public class EditActivityTest {
     }
 
     @Test
-    public void whenProperIntentIsPassed_ViewModelIsInitiated() {
-        //Given
-        Intent intent = EditActivity.buildIntent(context, new ImageDetails("path", "name"));
+    public void whenProperIntentIsPassed_ViewModelIsInitiated() throws IOException {
+        Intent intent = EditActivity.buildIntent(context, new ImageDetails("Path", "Name"));
         EditActivity activity = Robolectric
                 .buildActivity(EditActivity.class)
                 .withIntent(intent)
                 .get();
 
+        EditActivity mockEditActivity = spy(activity);
+        ExifInterface exifInterface = mock(ExifInterface.class);
+        doReturn(exifInterface).when(mockEditActivity).getExifInterface();
+
         //When
-        activity.onCreate(null);
-        boolean isViewModelInitiated = activity.getEditViewModel() != null;
+        mockEditActivity.onCreate(null);
+        boolean isViewModelInitiated = mockEditActivity.getEditViewModel() != null;
 
         //Then
         assertTrue(isViewModelInitiated);

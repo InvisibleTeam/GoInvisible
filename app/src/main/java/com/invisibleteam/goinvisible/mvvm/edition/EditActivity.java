@@ -175,8 +175,7 @@ public class EditActivity extends CommonActivity {
                     (EditCompoundRecyclerView) findViewById(R.id.edit_compound_recycler_view);
 
             try {
-                ExifInterface exifInterface = new ExifInterface(imageDetails.getPath());
-                tagsManager = new TagsManager(exifInterface);
+                tagsManager = new TagsManager(getExifInterface());
                 editViewModel = new EditViewModel(
                         imageDetails.getName(),
                         imageDetails.getPath(),
@@ -189,6 +188,11 @@ public class EditActivity extends CommonActivity {
                 //TODO log exception to crashlitycs on else.
             }
         } //TODO log exception to crashlitycs on else.
+    }
+
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    ExifInterface getExifInterface() throws IOException {
+        return new ExifInterface(imageDetails.getPath());
     }
 
     @Override
