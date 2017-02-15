@@ -1,6 +1,7 @@
 package com.invisibleteam.goinvisible.mvvm.images;
 
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 
 import com.invisibleteam.goinvisible.BuildConfig;
@@ -13,6 +14,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
+import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowActivity;
 import org.robolectric.shadows.ShadowIntent;
@@ -20,6 +22,8 @@ import org.robolectric.shadows.ShadowIntent;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import static com.invisibleteam.goinvisible.mvvm.images.ImagesActivity.TAGS_CHANGED_EXTRA;
+import static com.invisibleteam.goinvisible.util.IntentMatcher.containsSameData;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.mock;
@@ -67,6 +71,21 @@ public class ImagesActivityTest {
         Intent startedIntent = shadowOf(activity).getNextStartedActivity();
         ShadowIntent shadowIntent = shadowOf(startedIntent);
         assertEquals(EditActivity.class, shadowIntent.getIntentClass());
+    }
+
+    @Test
+    public void whenImagesctivityBuildIsInitiated_ImagesActivityIntentIsCreated() {
+        //Given
+        Context context = RuntimeEnvironment.application;
+        Intent compareIntent = new Intent(context, ImagesActivity.class);
+        compareIntent.putExtra(ImagesActivity.TAGS_CHANGED_EXTRA, true);
+        compareIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+        //When
+        Intent intent = ImagesActivity.buildIntent(context);
+
+        //Then
+        assertThat(intent, containsSameData(compareIntent));
     }
 
     @Test
