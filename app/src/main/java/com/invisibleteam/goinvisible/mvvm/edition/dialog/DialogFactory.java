@@ -97,8 +97,8 @@ class DialogFactory {
             valuesIndex++;
         }
 
-        alertDialog.setAdapter(new RangedTypesAdapter(context, tagNames), (dialog1, index) -> {
-            dialog1.dismiss();
+        alertDialog.setAdapter(new RangedTypesAdapter(context, tagNames), (dialog, index) -> {
+            dialog.dismiss();
             tag.setValue(tagValues.get(index));
             viewModel.onEditEnded(tag);
         });
