@@ -12,7 +12,7 @@ public class IntentMatcher {
 
     /**
      * This matcher checks if two intents contains the same Component
-     * and the same extra keys with same values under Extras.
+     * and the same extra keys with same values under Extras Bundle.
      *
      * @param resultIntent
      * @return
