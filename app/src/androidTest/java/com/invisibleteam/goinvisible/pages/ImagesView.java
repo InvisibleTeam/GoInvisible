@@ -9,11 +9,11 @@ import com.invisibleteam.goinvisible.Config;
 public class ImagesView extends UiDialog {
 
     // Main activity selectors
-    private static final BySelector mainActivitySelector = By.res(Config.GOINVISIBLE_PACKAGE, "activity_main");
-    private static final BySelector noImagesInformationSelector = By.res(Config.GOINVISIBLE_PACKAGE, "no_images_information");
+    private static final BySelector MAIN_ACTIVITY_SELECTOR = By.res(Config.GOINVISIBLE_PACKAGE, "activity_main");
+    private static final BySelector NO_IMAGES_INFORMATION_SELECTOR = By.res(Config.GOINVISIBLE_PACKAGE, "no_images_information");
 
     public static Boolean isOpened() {
-        return mDevice.wait(Until.hasObject(mainActivitySelector), Config.LAUNCH_TIMEOUT) &&
-                mDevice.wait(Until.hasObject(noImagesInformationSelector), Config.LAUNCH_TIMEOUT);
+        return UI_DEVICE.wait(Until.hasObject(MAIN_ACTIVITY_SELECTOR), Config.LAUNCH_TIMEOUT) &&
+                UI_DEVICE.wait(Until.hasObject(NO_IMAGES_INFORMATION_SELECTOR), Config.LAUNCH_TIMEOUT);
     }
 }

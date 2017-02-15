@@ -11,12 +11,12 @@ import static org.junit.Assert.assertThat;
 public class SystemHomeView extends UiDialog {
 
     public static Boolean isOpened() {
-        final String launcherPackage = mDevice.getLauncherPackageName();
+        final String launcherPackage = UI_DEVICE.getLauncherPackageName();
         assertThat(launcherPackage, notNullValue());
-        return mDevice.wait(Until.hasObject(By.pkg(launcherPackage).depth(0)), TIMEOUT);
+        return UI_DEVICE.wait(Until.hasObject(By.pkg(launcherPackage).depth(0)), TIMEOUT);
     }
 
     public static void open() {
-        mDevice.pressHome();
+        UI_DEVICE.pressHome();
     }
 }
