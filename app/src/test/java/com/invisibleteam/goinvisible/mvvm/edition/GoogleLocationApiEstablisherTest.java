@@ -8,12 +8,12 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
@@ -42,7 +42,7 @@ public class GoogleLocationApiEstablisherTest {
     @Test
     public void whereConnectionIsRequestedAndApiClientIsBuild_GoogleApiConnectIsCalled() {
         //given
-        GoogleApiClient googleApiClient = Mockito.mock(GoogleApiClient.class);
+        GoogleApiClient googleApiClient = mock(GoogleApiClient.class);
         establisher.googleApiClient = googleApiClient;
 
         //when
@@ -55,7 +55,7 @@ public class GoogleLocationApiEstablisherTest {
     @Test
     public void whenGoogleApiIsNotConnected_ApiIsNotConnected() {
         //given
-        GoogleApiClient googleApiClient = Mockito.mock(GoogleApiClient.class);
+        GoogleApiClient googleApiClient = mock(GoogleApiClient.class);
         establisher.googleApiClient = googleApiClient;
         when(googleApiClient.isConnected()).thenReturn(false);
 
@@ -69,7 +69,7 @@ public class GoogleLocationApiEstablisherTest {
     @Test
     public void whenGoogleApiBuildAndConnected_ApiIsConnected() {
         //given
-        GoogleApiClient googleApiClient = Mockito.mock(GoogleApiClient.class);
+        GoogleApiClient googleApiClient = mock(GoogleApiClient.class);
         establisher.googleApiClient = googleApiClient;
         when(googleApiClient.isConnected()).thenReturn(true);
 
@@ -94,7 +94,7 @@ public class GoogleLocationApiEstablisherTest {
     public void whenOnConnectedInvoked_ListenerOnSuccessCalled() {
         //given
         GoogleLocationApiEstablisher.GoogleApiConnectionListener listener =
-                Mockito.mock(GoogleLocationApiEstablisher.GoogleApiConnectionListener.class);
+                mock(GoogleLocationApiEstablisher.GoogleApiConnectionListener.class);
         establisher.setGoogleApiConnectionListener(listener);
 
         GoogleApiClient.ConnectionCallbacks connectionCallbacks =
@@ -121,7 +121,7 @@ public class GoogleLocationApiEstablisherTest {
     public void whenOnConnectionSuspendedInvoked_ListenerNotTouched() {
         //given
         GoogleLocationApiEstablisher.GoogleApiConnectionListener listener =
-                Mockito.mock(GoogleLocationApiEstablisher.GoogleApiConnectionListener.class);
+                mock(GoogleLocationApiEstablisher.GoogleApiConnectionListener.class);
         establisher.setGoogleApiConnectionListener(listener);
 
         GoogleApiClient.ConnectionCallbacks connectionCallbacks =
@@ -138,7 +138,7 @@ public class GoogleLocationApiEstablisherTest {
     public void whenOnConnectionFailedInvoked_ListenerOnFailureCalled() {
         //given
         GoogleLocationApiEstablisher.GoogleApiConnectionListener listener =
-                Mockito.mock(GoogleLocationApiEstablisher.GoogleApiConnectionListener.class);
+                mock(GoogleLocationApiEstablisher.GoogleApiConnectionListener.class);
         establisher.setGoogleApiConnectionListener(listener);
 
         GoogleApiClient.OnConnectionFailedListener onConnectionFailedListener =
@@ -165,7 +165,7 @@ public class GoogleLocationApiEstablisherTest {
     public void whenConnectionRequested_NonNullGoogleApiInstanceReturned() {
         //given
         GoogleLocationApiEstablisher.GoogleApiConnectionListener listener =
-                Mockito.mock(GoogleLocationApiEstablisher.GoogleApiConnectionListener.class);
+                mock(GoogleLocationApiEstablisher.GoogleApiConnectionListener.class);
         establisher.setGoogleApiConnectionListener(listener);
 
         //when
