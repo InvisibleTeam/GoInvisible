@@ -5,11 +5,11 @@ import android.support.test.uiautomator.BySelector;
 import android.support.test.uiautomator.UiObject2;
 import android.support.test.uiautomator.Until;
 
-import com.invisibleteam.goinvisible.pages.UiDialog;
+import com.invisibleteam.goinvisible.pages.UiView;
 
 import static com.invisibleteam.goinvisible.Config.LAUNCH_TIMEOUT;
 
-public class SystemPermissionDialog extends UiDialog {
+public class SystemPermissionDialog extends UiView {
     @SuppressWarnings("SpellCheckingInspection")
     private static final String PACKAGE_INSTALLER_PACKAGE = "com.android.packageinstaller";
 

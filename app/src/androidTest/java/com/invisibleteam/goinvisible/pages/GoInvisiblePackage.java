@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.test.InstrumentationRegistry;
 
-public class GoInvisiblePackage extends UiDialog {
+public class GoInvisiblePackage extends UiView {
 
     public static void launch() {
         Context context = InstrumentationRegistry.getContext();

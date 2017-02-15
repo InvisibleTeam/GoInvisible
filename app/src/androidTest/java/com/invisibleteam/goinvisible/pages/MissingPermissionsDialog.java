@@ -6,7 +6,7 @@ import android.support.test.uiautomator.Until;
 
 import com.invisibleteam.goinvisible.Config;
 
-public class MissingPermissionsDialog extends UiDialog {
+public class MissingPermissionsDialog extends UiView {
 
     // Missing permissions dialog selectors
     private static final BySelector MISSING_PERMISSIONS_TITLE_SELECTOR = By.res(GOINVISIBLE_PACKAGE, "alertTitle");

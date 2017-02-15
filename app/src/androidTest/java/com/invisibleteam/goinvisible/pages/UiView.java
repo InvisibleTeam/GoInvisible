@@ -5,7 +5,7 @@ import android.support.test.uiautomator.UiDevice;
 import com.invisibleteam.goinvisible.Config;
 import com.invisibleteam.goinvisible.UiDeviceProvider;
 
-public class UiDialog {
+public class UiView {
     @SuppressWarnings("SpellCheckingInspection")
     protected static final String GOINVISIBLE_PACKAGE = Config.GOINVISIBLE_PACKAGE;
 

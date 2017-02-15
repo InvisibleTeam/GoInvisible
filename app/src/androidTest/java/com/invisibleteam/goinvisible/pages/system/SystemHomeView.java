@@ -3,12 +3,12 @@ package com.invisibleteam.goinvisible.pages.system;
 import android.support.test.uiautomator.By;
 import android.support.test.uiautomator.Until;
 
-import com.invisibleteam.goinvisible.pages.UiDialog;
+import com.invisibleteam.goinvisible.pages.UiView;
 
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
-public class SystemHomeView extends UiDialog {
+public class SystemHomeView extends UiView {
 
     public static Boolean isOpened() {
         final String launcherPackage = UI_DEVICE.getLauncherPackageName();

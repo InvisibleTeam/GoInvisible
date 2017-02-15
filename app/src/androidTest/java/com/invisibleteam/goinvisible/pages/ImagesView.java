@@ -6,7 +6,7 @@ import android.support.test.uiautomator.Until;
 
 import com.invisibleteam.goinvisible.Config;
 
-public class ImagesView extends UiDialog {
+public class ImagesView extends UiView {
 
     // Main activity selectors
     private static final BySelector MAIN_ACTIVITY_SELECTOR = By.res(Config.GOINVISIBLE_PACKAGE, "activity_main");
