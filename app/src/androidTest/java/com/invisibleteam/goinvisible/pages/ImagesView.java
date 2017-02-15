@@ -4,7 +4,7 @@ import android.support.test.uiautomator.By;
 import android.support.test.uiautomator.BySelector;
 import android.support.test.uiautomator.Until;
 
-import com.invisibleteam.goinvisible.Config;
+import com.invisibleteam.goinvisible.utilities.Config;
 
 public class ImagesView extends UiView {
 

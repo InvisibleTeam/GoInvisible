@@ -1,4 +1,4 @@
-package com.invisibleteam.goinvisible;
+package com.invisibleteam.goinvisible.utilities;
 
 import android.support.test.InstrumentationRegistry;
 import android.support.test.uiautomator.UiDevice;

@@ -1,4 +1,4 @@
-package com.invisibleteam.goinvisible;
+package com.invisibleteam.goinvisible.utilities;
 
 public class Config {
     @SuppressWarnings("SpellCheckingInspection")

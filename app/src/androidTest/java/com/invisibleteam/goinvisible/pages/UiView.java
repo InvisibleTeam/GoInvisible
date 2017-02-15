@@ -2,8 +2,8 @@ package com.invisibleteam.goinvisible.pages;
 
 import android.support.test.uiautomator.UiDevice;
 
-import com.invisibleteam.goinvisible.Config;
-import com.invisibleteam.goinvisible.UiDeviceProvider;
+import com.invisibleteam.goinvisible.utilities.Config;
+import com.invisibleteam.goinvisible.utilities.UiDeviceProvider;
 
 public class UiView {
     @SuppressWarnings("SpellCheckingInspection")

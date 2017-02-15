@@ -7,7 +7,7 @@ import android.support.test.uiautomator.Until;
 
 import com.invisibleteam.goinvisible.pages.UiView;
 
-import static com.invisibleteam.goinvisible.Config.LAUNCH_TIMEOUT;
+import static com.invisibleteam.goinvisible.utilities.Config.LAUNCH_TIMEOUT;
 
 public class SystemPermissionDialog extends UiView {
     @SuppressWarnings("SpellCheckingInspection")
