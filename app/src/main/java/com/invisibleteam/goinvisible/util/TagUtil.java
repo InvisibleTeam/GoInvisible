@@ -104,6 +104,10 @@ public class TagUtil {
 
         String[] rationals = rational.split("/");
 
+        if (rationals.length != 2) {
+            return DEFAULT_DOUBLE_VALUE;
+        }
+
         return Double.parseDouble(rationals[0]) / Double.parseDouble(rationals[1]);
     }
 
