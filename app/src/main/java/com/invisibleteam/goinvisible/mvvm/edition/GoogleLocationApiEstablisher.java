@@ -7,13 +7,13 @@ import com.google.android.gms.location.LocationServices;
 
 import javax.annotation.Nullable;
 
-class GoogleLocationApiEstablisher {
+public class GoogleLocationApiEstablisher {
     private GoogleApiConnectionListener googleApiConnectionListener;
     private GoogleApiClient.Builder googleApiClientBuilder;
     @Nullable
     private GoogleApiClient googleApiClient;
 
-    GoogleLocationApiEstablisher(GoogleApiClient.Builder googleApiClientBuilder) {
+    public GoogleLocationApiEstablisher(GoogleApiClient.Builder googleApiClientBuilder) {
         this.googleApiClientBuilder = googleApiClientBuilder;
     }
 
