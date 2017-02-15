@@ -25,7 +25,6 @@ import static org.junit.Assert.assertTrue;
  * Such behaviour leads to failed test as test runner does not expect it.
  */
 @RunWith(AndroidJUnit4.class)
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class PermissionTests {
 
     @Before
