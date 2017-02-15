@@ -12,10 +12,10 @@ import java.util.List;
 
 public class ImagesViewModel {
 
-    private ImagesCompoundRecyclerView imagesCompoundRecyclerView;
-    private ImagesProvider imagesProvider;
-    private ImagesView imagesView;
-    public ObservableBoolean isInformationTextVisible = new ObservableBoolean(false);
+    public final ObservableBoolean isInformationTextVisible = new ObservableBoolean(false);
+    private final ImagesCompoundRecyclerView imagesCompoundRecyclerView;
+    private final ImagesProvider imagesProvider;
+    private final ImagesView imagesView;
 
     ImagesViewModel(ImagesCompoundRecyclerView imagesCompoundRecyclerView,
                     ImagesProvider imagesProvider,
@@ -43,5 +43,11 @@ public class ImagesViewModel {
                 imagesView.showSnackBar();
             }
         });
+    }
+
+    void updateImages() {
+        List<ImageDetails> imagesDetailsList = imagesProvider.getImagesList();
+        imagesCompoundRecyclerView.updateResults(imagesDetailsList);
+        imagesView.onStopRefreshingImages();
     }
 }

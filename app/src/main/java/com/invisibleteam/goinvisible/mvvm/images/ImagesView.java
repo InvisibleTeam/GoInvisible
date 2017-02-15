@@ -10,4 +10,6 @@ interface ImagesView {
     void prepareSnackBar(@StringRes int messageResId);
 
     void showSnackBar();
+
+    void onStopRefreshingImages();
 }

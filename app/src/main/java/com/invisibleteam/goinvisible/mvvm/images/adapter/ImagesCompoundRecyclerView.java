@@ -1,6 +1,5 @@
 package com.invisibleteam.goinvisible.mvvm.images.adapter;
 
-
 import android.content.Context;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -24,7 +23,6 @@ public class ImagesCompoundRecyclerView extends CompoundRecyclerView<ImageDetail
 
         itemAdapter = new ImagesItemAdapter();
         init(itemAdapter, new GridLayoutManager(getContext(), GRID_COLUMN_COUNT));
-
     }
 
     @Override
