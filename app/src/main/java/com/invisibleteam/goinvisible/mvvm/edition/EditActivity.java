@@ -4,11 +4,9 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
-import android.location.LocationManager;
 import android.media.ExifInterface;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.support.annotation.NonNull;
 import android.support.annotation.VisibleForTesting;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
@@ -16,18 +14,12 @@ import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 
-import com.google.android.gms.common.GoogleApiAvailability;
-import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
-import com.google.android.gms.common.GooglePlayServicesRepairableException;
-import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
 import com.invisibleteam.goinvisible.R;
 import com.invisibleteam.goinvisible.databinding.ActivityEditBinding;
+import com.invisibleteam.goinvisible.helper.EditActivityHelper;
 import com.invisibleteam.goinvisible.model.GeolocationTag;
 import com.invisibleteam.goinvisible.model.ImageDetails;
 import com.invisibleteam.goinvisible.model.Tag;
@@ -35,8 +27,6 @@ import com.invisibleteam.goinvisible.mvvm.common.CommonActivity;
 import com.invisibleteam.goinvisible.mvvm.edition.adapter.EditCompoundRecyclerView;
 import com.invisibleteam.goinvisible.mvvm.edition.dialog.EditDialog;
 import com.invisibleteam.goinvisible.mvvm.images.ImagesActivity;
-import com.invisibleteam.goinvisible.util.LatLngUtil;
-import com.invisibleteam.goinvisible.util.TagUtil;
 
 import java.io.IOException;
 import java.util.List;
@@ -49,8 +39,7 @@ public class EditActivity extends CommonActivity {
     private static final String TAG_IMAGE_DETAILS = "extra_image_details";
     private static final String TAG_MODEL = "tag";
     private static final String TAG = EditActivity.class.getSimpleName();
-    private static final int PLACE_REQUEST_ID = 1;
-    private static final int initialMapRadius = 20000;
+    public static final int PLACE_REQUEST_ID = 1;
     private static final int APPROVE_CHANGES = 1;
     private EditCompoundRecyclerView editCompoundRecyclerView;
     private TagsManager tagsManager;
@@ -68,7 +57,6 @@ public class EditActivity extends CommonActivity {
     private ImageDetails imageDetails;
     private EditViewModel editViewModel;
     private Tag tag;
-    private Snackbar googleApiFailureSnackBar;
 
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
     final EditTagListener editTagListener = new EditTagListener() {
@@ -99,34 +87,23 @@ public class EditActivity extends CommonActivity {
         if (savedInstanceState != null) {
             tag = savedInstanceState.getParcelable(TAG_MODEL);
         }
-        initializeSnackBar();
-        initializeGpsEstablisher();
+        prepareLocationHandling();
     }
 
-    private void initializeSnackBar() {
-        googleApiFailureSnackBar = Snackbar.make(
-                findViewById(android.R.id.content),
-                R.string.google_api_connection_error,
-                Snackbar.LENGTH_LONG);
-    }
-
-    private void initializeGpsEstablisher() {
-        LocationManager locationManager = (LocationManager) EditActivity.this.getSystemService(LOCATION_SERVICE);
-        GoogleLocationApiEstablisher googleLocationApiEstablisher =
-                new GoogleLocationApiEstablisher(
-                        new GoogleApiClient.Builder(this));
-        gpsEstablisher = new GpsEstablisher(locationManager, googleLocationApiEstablisher, this);
-        gpsEstablisher.setStatusListener(new GpsEstablisher.StatusListener() {
+    private void prepareLocationHandling() {
+        Snackbar googleApiFailureSnackbar = EditActivityHelper.createGpsSnackBar(this);
+        GpsEstablisher.StatusListener gpsStatusListener = new GpsEstablisher.StatusListener() {
             @Override
             public void onGpsEstablished() {
-                openPlacePicker();
+                EditActivityHelper.openPlacePicker(tag, EditActivity.this);
             }
 
             @Override
             public void onGoogleLocationApiConnectionFailure() {
-                googleApiFailureSnackBar.show();
+                googleApiFailureSnackbar.show();
             }
-        });
+        };
+        gpsEstablisher = EditActivityHelper.createGpsEstablisher(this, gpsStatusListener);
     }
 
     @Override
@@ -150,7 +127,8 @@ public class EditActivity extends CommonActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if (!editCompoundRecyclerView.getChangedTags().isEmpty()) {
+        if (editCompoundRecyclerView != null
+                && !editCompoundRecyclerView.getChangedTags().isEmpty()) {
             menu.add(0, APPROVE_CHANGES, 0, R.string.save).setIcon(R.drawable.ic_approve)
                     .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
         }
@@ -224,25 +202,8 @@ public class EditActivity extends CommonActivity {
     }
 
     private void onNewPlace(Place place) {
-        GeolocationTag geolocationTag = prepareNewPlacePositionTag(place);
+        GeolocationTag geolocationTag = EditActivityHelper.prepareNewPlacePositionTag(place, tag);
         editViewModel.onEditEnded(geolocationTag);
-    }
-
-    @NonNull
-    private GeolocationTag prepareNewPlacePositionTag(Place place) {
-        GeolocationTag geolocationTag = (GeolocationTag) tag;
-        double latitude = place.getLatLng().latitude;
-        double longitude = place.getLatLng().longitude;
-
-        String newLatitude = TagUtil.parseDoubleGPSToRationalGPS(latitude);
-        geolocationTag.setValue(newLatitude);
-        geolocationTag.setLatitudeRef(latitude > 0.0 ? "N" : "S");
-
-        String newLongitude = TagUtil.parseDoubleGPSToRationalGPS(longitude);
-        geolocationTag.setSecondValue(newLongitude);
-        geolocationTag.setLongitudeRef(longitude > 0.0 ? "E" : "W");
-
-        return geolocationTag;
     }
 
     private void openEditDialog(Tag tag) {
@@ -253,32 +214,9 @@ public class EditActivity extends CommonActivity {
 
     private void startPlaceIntent() {
         if (gpsEstablisher.isGpsEstablished()) {
-            openPlacePicker();
+            EditActivityHelper.openPlacePicker(tag, this);
         } else {
             gpsEstablisher.requestGpsConnection();
-        }
-    }
-
-    private void openPlacePicker() {
-        try {
-            GeolocationTag geolocationTag = (GeolocationTag) tag;
-            PlacePicker.IntentBuilder intentBuilder = new PlacePicker.IntentBuilder();
-            if (geolocationTag.getValue() != null) {
-                LatLng center = new LatLng(
-                        TagUtil.parseRationalGPSToDoubleGPS(geolocationTag.getValue()),
-                        TagUtil.parseRationalGPSToDoubleGPS(geolocationTag.getSecondValue())
-                );
-                LatLngBounds bounds = LatLngUtil.generateBoundsWithZoom(center, initialMapRadius);
-                intentBuilder.setLatLngBounds(bounds);
-            }
-
-            Intent intent = intentBuilder.build(this);
-            startActivityForResult(intent, PLACE_REQUEST_ID);
-        } catch (GooglePlayServicesRepairableException e) {
-            GoogleApiAvailability.getInstance().getErrorDialog(this, e.getConnectionStatusCode(), 0);
-        } catch (GooglePlayServicesNotAvailableException e) {
-            Toast.makeText(this, R.string.google_services_error,
-                    Toast.LENGTH_LONG).show();
         }
     }
 

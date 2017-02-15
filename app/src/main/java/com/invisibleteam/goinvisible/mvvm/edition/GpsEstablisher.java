@@ -18,7 +18,7 @@ import java.lang.ref.WeakReference;
 
 import javax.annotation.Nullable;
 
-class GpsEstablisher {
+public class GpsEstablisher {
     private static final String TAG = GpsEstablisher.class.getSimpleName();
 
     private static final int GPS_REQUEST_CODE_DEFAULT = 1234;
@@ -31,7 +31,7 @@ class GpsEstablisher {
     @Nullable
     private StatusListener statusListener;
 
-    GpsEstablisher(
+    public GpsEstablisher(
             LocationManager locationManager,
             GoogleLocationApiEstablisher googleLocationApiEstablisher,
             Activity activity) {
@@ -132,11 +132,11 @@ class GpsEstablisher {
         }
     }
 
-    void setStatusListener(@Nullable StatusListener listener) {
+    public void setStatusListener(@Nullable StatusListener listener) {
         this.statusListener = listener;
     }
 
-    interface StatusListener {
+    public interface StatusListener {
         void onGpsEstablished();
 
         void onGoogleLocationApiConnectionFailure();
