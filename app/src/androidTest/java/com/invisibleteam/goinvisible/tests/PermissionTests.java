@@ -2,17 +2,15 @@ package com.invisibleteam.goinvisible.tests;
 
 import android.support.test.runner.AndroidJUnit4;
 
-import com.invisibleteam.goinvisible.pages.ImagesView;
 import com.invisibleteam.goinvisible.pages.GoInvisiblePackage;
+import com.invisibleteam.goinvisible.pages.ImagesView;
 import com.invisibleteam.goinvisible.pages.MissingPermissionsDialog;
 import com.invisibleteam.goinvisible.pages.system.SystemHomeView;
 import com.invisibleteam.goinvisible.pages.system.SystemPermissionDialog;
 
 import org.junit.Before;
-import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.junit.runners.MethodSorters;
 
 import static org.junit.Assert.assertTrue;
 
