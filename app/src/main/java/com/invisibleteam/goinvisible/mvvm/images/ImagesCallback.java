@@ -1,5 +1,6 @@
 package com.invisibleteam.goinvisible.mvvm.images;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.support.annotation.VisibleForTesting;
 import android.support.design.widget.Snackbar;
@@ -11,10 +12,10 @@ import com.invisibleteam.goinvisible.mvvm.edition.EditActivity;
 class ImagesCallback implements ImagesView {
 
     private Snackbar snackbar;
-    private final ImagesActivity activity;
+    private final Activity activity;
     private final SwipeRefreshLayout refreshLayout;
 
-    public ImagesCallback(ImagesActivity activity, SwipeRefreshLayout refreshLayout) {
+    public ImagesCallback(Activity activity, SwipeRefreshLayout refreshLayout) {
         this.activity = activity;
         this.refreshLayout = refreshLayout;
     }

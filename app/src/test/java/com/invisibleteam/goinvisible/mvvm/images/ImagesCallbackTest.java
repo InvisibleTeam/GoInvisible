@@ -1,5 +1,6 @@
 package com.invisibleteam.goinvisible.mvvm.images;
 
+import android.app.Activity;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 
@@ -22,7 +23,7 @@ public class ImagesCallbackTest {
     @Test
     public void whenSnackBarIsCreated_ItsnotcreatedAgain() {
         //Given
-        ImagesActivity activity = Robolectric.buildActivity(ImagesActivity.class).create().get();
+        Activity activity = Robolectric.buildActivity(ImagesActivity.class).create().get();
         ImagesCallback imagesCallback = new ImagesCallback(activity, mock(SwipeRefreshLayout.class));
         imagesCallback.prepareSnackBar(R.string.error);
 
