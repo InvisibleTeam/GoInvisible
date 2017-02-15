@@ -2,7 +2,7 @@ package com.invisibleteam.goinvisible.tests;
 
 import android.support.test.runner.AndroidJUnit4;
 
-import com.invisibleteam.goinvisible.pages.FileView;
+import com.invisibleteam.goinvisible.pages.ImagesView;
 import com.invisibleteam.goinvisible.pages.GoInvisiblePackage;
 import com.invisibleteam.goinvisible.pages.MissingPermissionsDialog;
 import com.invisibleteam.goinvisible.pages.system.SystemHomeView;
@@ -69,6 +69,6 @@ public class PermissionTests {
 
         SystemPermissionDialog.allowAccess();
 
-        assertTrue(FileView.isOpened());
+        assertTrue(ImagesView.isOpened());
     }
 }
