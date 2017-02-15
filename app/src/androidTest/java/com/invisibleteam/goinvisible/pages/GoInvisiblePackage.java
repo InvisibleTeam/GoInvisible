@@ -4,10 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.test.InstrumentationRegistry;
 
-/**
- * Created by nlesniewski on 14.02.2017.
- */
-
 public class GoInvisiblePackage extends UiDialog {
 
     public static void launch() {

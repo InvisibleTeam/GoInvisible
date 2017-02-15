@@ -6,10 +6,6 @@ import android.support.test.uiautomator.Until;
 
 import com.invisibleteam.goinvisible.Config;
 
-/**
- * Created by nlesniewski on 14.02.2017.
- */
-
 public class FileView extends UiDialog {
 
     // Main activity selectors

@@ -8,10 +8,6 @@ import com.invisibleteam.goinvisible.pages.UiDialog;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
-/**
- * Created by nlesniewski on 14.02.2017.
- */
-
 public class SystemHomeView extends UiDialog {
 
     public static Boolean isOpened() {

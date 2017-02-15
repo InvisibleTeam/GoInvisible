@@ -9,10 +9,6 @@ import com.invisibleteam.goinvisible.pages.UiDialog;
 
 import static com.invisibleteam.goinvisible.Config.LAUNCH_TIMEOUT;
 
-/**
- * Created by nlesniewski on 14.02.2017.
- */
-
 public class SystemPermissionDialog extends UiDialog {
     @SuppressWarnings("SpellCheckingInspection")
     private static final String PACKAGE_INSTALLER_PACKAGE = "com.android.packageinstaller";
