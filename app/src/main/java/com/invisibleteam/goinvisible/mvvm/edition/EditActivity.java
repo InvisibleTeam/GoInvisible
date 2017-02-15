@@ -63,6 +63,7 @@ public class EditActivity extends CommonActivity {
     private static final long LOCATION_REQUEST_FASTEST_INTERVAL = 100;
     private static final int initialMapRadius = 20000;
     private static final int APPROVE_CHANGES = 1;
+    private static final int CLEAR_ALL_TAGS = 2;
     private GoogleApiClient mGoogleApiClient;
     private EditCompoundRecyclerView editCompoundRecyclerView;
     private TagsManager tagsManager;
@@ -136,6 +137,8 @@ public class EditActivity extends CommonActivity {
             menu.add(0, APPROVE_CHANGES, 0, R.string.save).setIcon(R.drawable.ic_approve)
                     .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
         }
+        menu.add(0, CLEAR_ALL_TAGS, 1, R.string.clear_all_tags).setIcon(R.drawable.ic_remove_all)
+                .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
         return true;
     }
 
@@ -148,6 +151,9 @@ public class EditActivity extends CommonActivity {
             case APPROVE_CHANGES:
                 saveTags();
                 startImagesActivity();
+                return true;
+            case CLEAR_ALL_TAGS:
+                clearAllTags();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -344,6 +350,12 @@ public class EditActivity extends CommonActivity {
     private void saveTags() {
         List<Tag> changedTags = editCompoundRecyclerView.getChangedTags();
         tagsManager.editTags(changedTags);
+    }
+
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    void clearAllTags() {
+        List<Tag> changedTags = editCompoundRecyclerView.getAllTags();
+        editViewModel.onClear(changedTags);
     }
 
     private boolean areTagsChanged() {

@@ -64,6 +64,8 @@ class EditItemAdapter extends RecyclerView.Adapter<EditItemAdapter.ViewHolder> {
             for (Tag tag : imageList) {
                 baseTagsList.add(new Tag(tag));
             }
+        } else {
+            onTagActionListener.onTagsUpdated();
         }
     }
 
@@ -78,6 +80,10 @@ class EditItemAdapter extends RecyclerView.Adapter<EditItemAdapter.ViewHolder> {
             }
         }
         return changedTags;
+    }
+
+    List<Tag> getAllTags() {
+        return tagsList;
     }
 
     private boolean isTagChanged(Tag baseTag, Tag tag) {
