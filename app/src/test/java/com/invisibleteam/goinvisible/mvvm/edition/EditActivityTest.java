@@ -28,6 +28,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static com.invisibleteam.goinvisible.util.IntentMatcher.containsSameData;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -42,11 +44,12 @@ public class EditActivityTest {
 
     private Context context;
     private EditActivity activity;
+    private ImageDetails imageDetails;
 
     @Before
     public void init() {
         context = RuntimeEnvironment.application;
-        ImageDetails imageDetails = new ImageDetails("Path", "Name");
+        imageDetails = new ImageDetails("Path", "Name");
         Intent editActivityIntent = EditActivity.buildIntent(context, imageDetails);
         activity = Robolectric
                 .buildActivity(EditActivity.class)
@@ -54,6 +57,21 @@ public class EditActivityTest {
                 .create()
                 .get();
         activity = spy(activity);
+    }
+
+    @Test
+    public void whenEditActivityBuildIsInitiated_EditActivityIntentIsCreated() {
+        //Given
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("extra_image_details", imageDetails);
+        Intent expectedIntent = new Intent(context, EditActivity.class);
+        expectedIntent.putExtras(bundle);
+
+        //When
+        Intent intent = EditActivity.buildIntent(context, imageDetails);
+
+        //Then
+        assertThat(intent, containsSameData(expectedIntent));
     }
 
     @Test
