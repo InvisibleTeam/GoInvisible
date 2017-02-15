@@ -83,7 +83,7 @@ class DialogFactory {
 
         final Map<Integer, Integer> tagsMap = DialogRangedValuesUtil.getTagsMapValues(tag.getKey());
 
-        if (tagsMap == null || tagsMap.size() == 0) {
+        if (tagsMap == null || tagsMap.isEmpty()) {
             return createErrorDialog();
         }
 
