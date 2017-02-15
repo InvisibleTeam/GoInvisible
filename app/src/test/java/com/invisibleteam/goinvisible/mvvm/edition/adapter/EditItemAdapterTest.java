@@ -7,6 +7,7 @@ import com.invisibleteam.goinvisible.BuildConfig;
 import com.invisibleteam.goinvisible.model.InputType;
 import com.invisibleteam.goinvisible.model.Tag;
 import com.invisibleteam.goinvisible.model.TagType;
+import com.invisibleteam.goinvisible.mvvm.edition.OnTagActionListener;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -26,6 +27,7 @@ import static com.invisibleteam.goinvisible.util.TagsMatcher.notContainsTag;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(RobolectricTestRunner.class)
@@ -84,12 +86,15 @@ public class EditItemAdapterTest {
         //Given
         EditItemAdapter adapter = new EditItemAdapter();
         adapter.updateImageList(tagList);
+        OnTagActionListener listener = mock(OnTagActionListener.class);
+        adapter.setOnTagActionListener(listener);
 
         //When
         Tag editedTag = new Tag("key1", "editedValue", TagType.build(InputType.TEXT_STRING));
         adapter.updateTag(editedTag);
 
         //Then
+        verify(listener).onTagsUpdated();
         assertThat(adapter.getTagsList(), containsTag(editedTag));
     }
 
@@ -97,6 +102,8 @@ public class EditItemAdapterTest {
     public void whenTagsAreChanged_OnlyChangedTagsAreReturned() {
         //Given
         EditItemAdapter adapter = new EditItemAdapter();
+        OnTagActionListener listener = mock(OnTagActionListener.class);
+        adapter.setOnTagActionListener(listener);
         adapter.updateImageList(tagList);
 
         //When

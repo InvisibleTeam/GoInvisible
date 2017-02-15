@@ -3,6 +3,7 @@ package com.invisibleteam.goinvisible.mvvm.images;
 
 import android.databinding.ObservableBoolean;
 
+import com.invisibleteam.goinvisible.R;
 import com.invisibleteam.goinvisible.model.ImageDetails;
 import com.invisibleteam.goinvisible.mvvm.images.adapter.ImagesCompoundRecyclerView;
 import com.invisibleteam.goinvisible.mvvm.images.adapter.ImagesItemAdapter;
@@ -38,7 +39,8 @@ public class ImagesViewModel {
 
             @Override
             public void onUnsupportedItemClick() {
-                imagesView.showUnsupportedImageInfo();
+                imagesView.prepareSnackBar(R.string.unsupported_extension);
+                imagesView.showSnackBar();
             }
         });
     }
