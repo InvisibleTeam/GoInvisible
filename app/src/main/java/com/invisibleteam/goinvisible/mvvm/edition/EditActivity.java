@@ -36,10 +36,10 @@ import javax.annotation.Nullable;
 
 public class EditActivity extends CommonActivity {
 
+    public static final int PLACE_REQUEST_ID = 1;
     private static final String TAG_IMAGE_DETAILS = "extra_image_details";
     private static final String TAG_MODEL = "tag";
     private static final String TAG = EditActivity.class.getSimpleName();
-    public static final int PLACE_REQUEST_ID = 1;
     private static final int APPROVE_CHANGES = 1;
     private EditCompoundRecyclerView editCompoundRecyclerView;
     private TagsManager tagsManager;

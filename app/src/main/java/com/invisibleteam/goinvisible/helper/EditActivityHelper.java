@@ -28,7 +28,7 @@ import static com.invisibleteam.goinvisible.mvvm.edition.EditActivity.PLACE_REQU
 
 public class EditActivityHelper {
 
-    private static final int initialMapRadius = 20000;
+    private static final int INITIAL_MAP_RADIUS = 20000;
 
     @NonNull
     public static GeolocationTag prepareNewPlacePositionTag(Place place, Tag tag) {
@@ -56,7 +56,7 @@ public class EditActivityHelper {
                         TagUtil.parseRationalGPSToDoubleGPS(geolocationTag.getValue()),
                         TagUtil.parseRationalGPSToDoubleGPS(geolocationTag.getSecondValue())
                 );
-                LatLngBounds bounds = LatLngUtil.generateBoundsWithZoom(center, initialMapRadius);
+                LatLngBounds bounds = LatLngUtil.generateBoundsWithZoom(center, INITIAL_MAP_RADIUS);
                 intentBuilder.setLatLngBounds(bounds);
             }
 
