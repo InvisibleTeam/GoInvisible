@@ -58,9 +58,9 @@ class TagsManager {
         }
 
         if (RATIONAL.equals(tag.getTagType().getInputType())) {
-            double oldTagValue = Double.parseDouble(tag.getValue());
-            String newTagValue = TagUtil.parseDoubleValueToRational(oldTagValue);
-            exifInterface.setAttribute(tag.getKey(), newTagValue);
+            double tagValue = Double.parseDouble(tag.getValue());
+            String rationalTagValue = TagUtil.parseDoubleValueToRational(tagValue);
+            exifInterface.setAttribute(tag.getKey(), rationalTagValue);
         } else if (isPositionTag(tag)) {
             GeolocationTag geolocationTag = (GeolocationTag) tag;
             exifInterface.setAttribute(geolocationTag.getKey(), geolocationTag.getValue());
