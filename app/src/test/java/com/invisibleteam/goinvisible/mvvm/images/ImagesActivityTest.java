@@ -74,18 +74,18 @@ public class ImagesActivityTest {
     }
 
     @Test
-    public void whenImagesctivityBuildIsInitiated_ImagesActivityIntentIsCreated() {
+    public void whenImagesActivityBuildIsInitiated_ImagesActivityIntentIsCreated() {
         //Given
         Context context = RuntimeEnvironment.application;
-        Intent compareIntent = new Intent(context, ImagesActivity.class);
-        compareIntent.putExtra(ImagesActivity.TAGS_CHANGED_EXTRA, true);
-        compareIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        Intent expectedIntent = new Intent(context, ImagesActivity.class);
+        expectedIntent.putExtra(ImagesActivity.TAGS_CHANGED_EXTRA, true);
+        expectedIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
         //When
         Intent intent = ImagesActivity.buildIntent(context);
 
         //Then
-        assertThat(intent, containsSameData(compareIntent));
+        assertThat(intent, containsSameData(expectedIntent));
     }
 
     @Test

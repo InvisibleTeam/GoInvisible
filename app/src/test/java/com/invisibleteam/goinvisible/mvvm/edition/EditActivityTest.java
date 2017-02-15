@@ -61,14 +61,14 @@ public class EditActivityTest {
         //Given
         Bundle bundle = new Bundle();
         bundle.putParcelable("extra_image_details", imageDetails);
-        Intent compareIntent = new Intent(context, EditActivity.class);
-        compareIntent.putExtras(bundle);
+        Intent expectedIntent = new Intent(context, EditActivity.class);
+        expectedIntent.putExtras(bundle);
 
         //When
         Intent intent = EditActivity.buildIntent(context, imageDetails);
 
         //Then
-        assertThat(intent, containsSameData(compareIntent));
+        assertThat(intent, containsSameData(expectedIntent));
     }
 
     @Test

@@ -10,6 +10,13 @@ import java.util.Set;
 
 public class IntentMatcher {
 
+    /**
+     * This matcher checks if two intents contains the same Component
+     * and the same extra keys with same values under Extras.
+     *
+     * @param resultIntent
+     * @return
+     */
     public static Matcher<Intent> containsSameData(final Intent resultIntent) {
         return new TypeSafeMatcher<Intent>() {
 
