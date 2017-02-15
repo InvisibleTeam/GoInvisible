@@ -34,6 +34,10 @@ public enum InputType {
      */
     VALUE_DOUBLE,
     /**
+     * Simple rational type.
+     */
+    RATIONAL,
+    /**
      * Latitude, longitude double.
      */
     POSITION_DOUBLE,

@@ -2,7 +2,7 @@ package com.invisibleteam.goinvisible.util;
 
 import javax.annotation.Nullable;
 
-import static android.media.ExifInterface.*;
+import static android.support.media.ExifInterface.*;
 
 public class DialogRangedValuesUtil {
 

@@ -67,6 +67,10 @@ class DialogFactory {
             case DATE_STRING:
                 return createDateDialog();
 
+            case RATIONAL:
+                return createDialog(android.text.InputType.TYPE_CLASS_NUMBER
+                        | android.text.InputType.TYPE_NUMBER_FLAG_DECIMAL);
+
             default:
                 return createErrorDialog();
         }
