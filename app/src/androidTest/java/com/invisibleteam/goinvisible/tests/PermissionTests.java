@@ -26,15 +26,8 @@ import static org.junit.Assert.assertTrue;
 public class PermissionTests {
 
     @Before
-    public void startMainActivityFromHomeScreen() throws Exception {
-        // Start from the home screen
-        SystemHomeView.open();
-
-        // Wait for launcher
-        assertTrue(SystemHomeView.isOpened());
-
-        // Launch the GoInvisible app
-        GoInvisiblePackage.launch();
+    public void setUp() throws Exception {
+        GoInvisiblePackage.launchFromHomeScreen();
     }
 
     /**
