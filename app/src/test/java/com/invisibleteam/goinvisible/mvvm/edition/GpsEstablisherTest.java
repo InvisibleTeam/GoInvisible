@@ -40,28 +40,28 @@ public class GpsEstablisherTest {
 
     @Test
     public void whenGpsRequestCodeReturned_RequestCodeIsCorrect() {
-        //when
+        //When
         int requestCode = gpsEstablisher.getGpsRequestCode();
 
-        //then
+        //Then
         assertEquals(GpsEstablisher.GPS_REQUEST_CODE_DEFAULT, requestCode);
     }
 
     @Test
     public void whenGpsProviderEnabled_GpsEstablished() {
-        //given
+        //Given
         when(locationManager.isProviderEnabled(any())).thenReturn(true);
 
-        //when
+        //When
         boolean gpsEstablished = gpsEstablisher.isGpsEstablished();
 
-        //then
+        //Then
         assertTrue(gpsEstablished);
     }
 
     @Test
     public void whenLocationStatusSuccess_GpsEstablishedCalled() {
-        //given
+        //Given
         GpsEstablisher.StatusListener statusListener = mock(GpsEstablisher.StatusListener.class);
         gpsEstablisher.setStatusListener(statusListener);
 
@@ -76,12 +76,12 @@ public class GpsEstablisherTest {
         Status successStatus = new Status(LocationSettingsStatusCodes.SUCCESS);
         LocationSettingsResult result = new LocationSettingsResult(successStatus);
 
-        //when
+        //When
         gpsEstablisher.requestGpsConnection();
         verify(locationSettingsResultPendingResult).setResultCallback(callbackCaptor.capture());
         callbackCaptor.getValue().onResult(result);
 
-        //then
+        //Then
         verify(statusListener).onGpsEstablished();
     }
 
@@ -103,18 +103,18 @@ public class GpsEstablisherTest {
         Status resultionRequiredStatus = new Status(LocationSettingsStatusCodes.RESOLUTION_REQUIRED);
         LocationSettingsResult result = new LocationSettingsResult(resultionRequiredStatus);
 
-        //when
+        //When
         gpsEstablisher.requestGpsConnection();
         verify(locationSettingsResultPendingResult).setResultCallback(callbackCaptor.capture());
         callbackCaptor.getValue().onResult(result);
 
-        //then
+        //Then
         verify(gpsEstablisher).startResolutionForResult(resultionRequiredStatus);
     }
 
     @Test
     public void whenLocationStatusOther_GoogleApiConnectionFailureCalled() throws IntentSender.SendIntentException {
-        //given
+        //Given
         GpsEstablisher.StatusListener statusListener = mock(GpsEstablisher.StatusListener.class);
         gpsEstablisher.setStatusListener(statusListener);
 
@@ -129,30 +129,30 @@ public class GpsEstablisherTest {
         Status canceledStatus = new Status(LocationSettingsStatusCodes.CANCELED);
         LocationSettingsResult result = new LocationSettingsResult(canceledStatus);
 
-        //when
+        //When
         gpsEstablisher.requestGpsConnection();
         verify(locationSettingsResultPendingResult).setResultCallback(callbackCaptor.capture());
         callbackCaptor.getValue().onResult(result);
 
-        //then
+        //Then
         verify(statusListener).onGoogleLocationApiConnectionFailure();
     }
 
     @Test
     public void whenApisNotConnected_GoogleApiConnectionIsRequested() {
-        //given
+        //Given
         when(googleLocationApiEstablisher.isApiConnected()).thenReturn(false);
 
-        //when
+        //When
         gpsEstablisher.requestGpsConnection();
 
-        //then
+        //Then
         verify(googleLocationApiEstablisher).requestConnection();
     }
 
     @Test
     public void whenRequestedForApiConnectionResultsWithSuccess_GoogleApiConnectionIsRequested() {
-        //given
+        //Given
         when(googleLocationApiEstablisher.isApiConnected()).thenReturn(false);
         PendingResult result = mock(PendingResult.class);
         doReturn(result).when(gpsEstablisher).buildLocationSettingsResult();
@@ -162,17 +162,17 @@ public class GpsEstablisherTest {
         gpsEstablisher.requestGpsConnection();
         verify(googleLocationApiEstablisher).setGoogleApiConnectionListener(listenerArgumentCaptor.capture());
 
-        //when
+        //When
         listenerArgumentCaptor.getValue().onSuccess();
 
-        //then
+        //Then
         verify(gpsEstablisher).buildLocationSettingsResult();
         verify(result).setResultCallback(any());
     }
 
     @Test
     public void whenRequestedForApiConnectionResultsWithFailure_GoogleApiFailureCalled() {
-        //given
+        //Given
         GpsEstablisher.StatusListener statusListener = mock(GpsEstablisher.StatusListener.class);
         gpsEstablisher.setStatusListener(statusListener);
         when(googleLocationApiEstablisher.isApiConnected()).thenReturn(false);
@@ -184,10 +184,10 @@ public class GpsEstablisherTest {
         gpsEstablisher.requestGpsConnection();
         verify(googleLocationApiEstablisher).setGoogleApiConnectionListener(listenerArgumentCaptor.capture());
 
-        //when
+        //When
         listenerArgumentCaptor.getValue().onFailure();
 
-        //then
+        //Then
         verify(statusListener).onGoogleLocationApiConnectionFailure();
     }
 

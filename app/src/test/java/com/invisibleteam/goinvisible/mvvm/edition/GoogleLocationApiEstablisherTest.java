@@ -32,67 +32,66 @@ public class GoogleLocationApiEstablisherTest {
 
     @Test
     public void whenGoogleApiIsNotBuild_ApiIsNotConnected() {
-        //when
+        //When
         boolean apiConnected = establisher.isApiConnected();
 
-        //then
+        //Then
         assertEquals(false, apiConnected);
     }
 
     @Test
-    public void whereConnectionIsRequestedAndApiClientIsBuild_GoogleApiConnectIsCalled() {
-        //given
+    public void whenConnectionIsRequestedAndApiClientIsBuild_GoogleApiConnectIsCalled() {
+        //Given
         GoogleApiClient googleApiClient = mock(GoogleApiClient.class);
         establisher.googleApiClient = googleApiClient;
 
-        //when
+        //When
         establisher.requestConnection();
 
-        //then
+        //Then
         verify(googleApiClient).connect();
     }
 
     @Test
     public void whenGoogleApiIsNotConnected_ApiIsNotConnected() {
-        //given
+        //Given
         GoogleApiClient googleApiClient = mock(GoogleApiClient.class);
         establisher.googleApiClient = googleApiClient;
         when(googleApiClient.isConnected()).thenReturn(false);
 
-        //when
+        //When
         boolean apiConnected = establisher.isApiConnected();
 
-        //then
+        //Then
         assertEquals(false, apiConnected);
     }
 
     @Test
     public void whenGoogleApiBuildAndConnected_ApiIsConnected() {
-        //given
+        //Given
         GoogleApiClient googleApiClient = mock(GoogleApiClient.class);
         establisher.googleApiClient = googleApiClient;
         when(googleApiClient.isConnected()).thenReturn(true);
 
-        //when
+        //When
         boolean apiConnected = establisher.isApiConnected();
 
-        //then
+        //Then
         assertEquals(true, apiConnected);
     }
 
     @Test
     public void whenConnectionRequested_ApiClientBuild() {
-        //given
-        //when
+        //When
         establisher.requestConnection();
 
-        //then
+        //Then
         assertNotNull(establisher.googleApiClient);
     }
 
     @Test
     public void whenOnConnectedInvoked_ListenerOnSuccessCalled() {
-        //given
+        //Given
         GoogleLocationApiEstablisher.GoogleApiConnectionListener listener =
                 mock(GoogleLocationApiEstablisher.GoogleApiConnectionListener.class);
         establisher.setGoogleApiConnectionListener(listener);
@@ -100,26 +99,26 @@ public class GoogleLocationApiEstablisherTest {
         GoogleApiClient.ConnectionCallbacks connectionCallbacks =
                 establisher.buildConnectionCallbacks();
 
-        //when
+        //When
         connectionCallbacks.onConnected(null);
 
-        //then
+        //Then
         verify(listener).onSuccess();
     }
 
     @Test
     public void whenOnConnectedInvokedAndThereIsNoListener_ErrorNotThrown() {
-        //given
+        //Given
         GoogleApiClient.ConnectionCallbacks connectionCallbacks =
                 establisher.buildConnectionCallbacks();
 
-        //when (//then - if exception is thrown test will fail)
+        //When (//Then - if exception is thrown test will fail)
         connectionCallbacks.onConnected(null);
     }
 
     @Test
     public void whenOnConnectionSuspendedInvoked_ListenerNotTouched() {
-        //given
+        //Given
         GoogleLocationApiEstablisher.GoogleApiConnectionListener listener =
                 mock(GoogleLocationApiEstablisher.GoogleApiConnectionListener.class);
         establisher.setGoogleApiConnectionListener(listener);
@@ -127,16 +126,16 @@ public class GoogleLocationApiEstablisherTest {
         GoogleApiClient.ConnectionCallbacks connectionCallbacks =
                 establisher.buildConnectionCallbacks();
 
-        //when
+        //When
         connectionCallbacks.onConnectionSuspended(0);
 
-        //then
+        //Then
         verifyZeroInteractions(listener);
     }
 
     @Test
     public void whenOnConnectionFailedInvoked_ListenerOnFailureCalled() {
-        //given
+        //Given
         GoogleLocationApiEstablisher.GoogleApiConnectionListener listener =
                 mock(GoogleLocationApiEstablisher.GoogleApiConnectionListener.class);
         establisher.setGoogleApiConnectionListener(listener);
@@ -144,34 +143,34 @@ public class GoogleLocationApiEstablisherTest {
         GoogleApiClient.OnConnectionFailedListener onConnectionFailedListener =
                 establisher.buildConnectionFailedListener();
 
-        //when
+        //When
         onConnectionFailedListener.onConnectionFailed(new ConnectionResult(0));
 
-        //then
+        //Then
         verify(listener).onFailure();
     }
 
     @Test
     public void whenOnConnectionFailedInvokedAndThereIsNoListener_ErrorNotThrown() {
-        //given
+        //Given
         GoogleApiClient.OnConnectionFailedListener onConnectionFailedListener =
                 establisher.buildConnectionFailedListener();
 
-        //when (//then - if exception is thrown test will fail)
+        //When (//Then - if exception is thrown test will fail)
         onConnectionFailedListener.onConnectionFailed(new ConnectionResult(0));
     }
 
     @Test
     public void whenConnectionRequested_NonNullGoogleApiInstanceReturned() {
-        //given
+        //Given
         GoogleLocationApiEstablisher.GoogleApiConnectionListener listener =
                 mock(GoogleLocationApiEstablisher.GoogleApiConnectionListener.class);
         establisher.setGoogleApiConnectionListener(listener);
 
-        //when
+        //When
         establisher.requestConnection();
 
-        //then
+        //Then
         assertNotNull(establisher.getGoogleApiClient());
     }
 }
