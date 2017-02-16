@@ -13,7 +13,7 @@
     <string name="tag_changed_message">Do you want to reject changes?</string>
     <string name="tags_changed_message">Tags were successfully updated</string>
     <string name="save">Save</string>
-
+    <string name="clear_all_tags">Clear all</string>
 
     //Tags descriptions
     <string name="tag_exposure_time_1">No absolute unit of measurement</string>

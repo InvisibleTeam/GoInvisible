@@ -5,6 +5,8 @@ import com.invisibleteam.goinvisible.model.Tag;
 import com.invisibleteam.goinvisible.mvvm.edition.adapter.EditCompoundRecyclerView;
 import com.invisibleteam.goinvisible.util.ObservableString;
 
+import java.util.List;
+
 public class EditViewModel implements OnTagActionListener {
 
     private final ObservableString title = new ObservableString("");
@@ -49,6 +51,13 @@ public class EditViewModel implements OnTagActionListener {
     }
 
     @Override
+    public void onClear(List<Tag> tagsList) {
+        if (manager.clearTags(tagsList)) {
+            onEditEnded(tagsList);
+        }
+    }
+
+    @Override
     public void onEditStarted(Tag tag) {
         listener.openEditDialog(tag);
     }
@@ -56,6 +65,11 @@ public class EditViewModel implements OnTagActionListener {
     @Override
     public void onEditEnded(Tag tag) {
         editCompoundRecyclerView.updateTag(tag);
+    }
+
+    @Override
+    public void onEditEnded(List<Tag> tagsList) {
+        editCompoundRecyclerView.updateResults(tagsList);
     }
 
     @Override

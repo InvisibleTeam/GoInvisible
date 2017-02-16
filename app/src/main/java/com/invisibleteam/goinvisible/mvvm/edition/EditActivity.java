@@ -54,6 +54,8 @@ import javax.annotation.Nullable;
 
 public class EditActivity extends CommonActivity {
 
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    static final int CLEAR_ALL_TAGS = 2;
     private static final String TAG_IMAGE_DETAILS = "extra_image_details";
     private static final String TAG_MODEL = "tag";
     private static final String TAG = EditActivity.class.getSimpleName();
@@ -132,10 +134,13 @@ public class EditActivity extends CommonActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if (!editCompoundRecyclerView.getChangedTags().isEmpty()) {
+        if (editCompoundRecyclerView != null
+                && !editCompoundRecyclerView.getChangedTags().isEmpty()) {
             menu.add(0, APPROVE_CHANGES, 0, R.string.save).setIcon(R.drawable.ic_approve)
                     .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
         }
+        menu.add(0, CLEAR_ALL_TAGS, 1, R.string.clear_all_tags).setIcon(R.drawable.ic_remove_all)
+                .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
         return true;
     }
 
@@ -148,6 +153,9 @@ public class EditActivity extends CommonActivity {
             case APPROVE_CHANGES:
                 saveTags();
                 startImagesActivity();
+                return true;
+            case CLEAR_ALL_TAGS:
+                clearAllTags();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -348,6 +356,12 @@ public class EditActivity extends CommonActivity {
     private void saveTags() {
         List<Tag> changedTags = editCompoundRecyclerView.getChangedTags();
         tagsManager.editTags(changedTags);
+    }
+
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    void clearAllTags() {
+        List<Tag> changedTags = editCompoundRecyclerView.getAllTags();
+        editViewModel.onClear(changedTags);
     }
 
     private boolean areTagsChanged() {
