@@ -42,10 +42,6 @@ public class GpsEstablisher {
         this.weakActivityReference = new WeakReference<>(activity);
     }
 
-    int getGpsRequestCode() {
-        return GPS_REQUEST_CODE_DEFAULT;
-    }
-
     boolean isGpsEstablished() {
         return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
     }

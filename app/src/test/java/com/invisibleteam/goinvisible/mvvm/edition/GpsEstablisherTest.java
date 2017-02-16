@@ -15,7 +15,6 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
-import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
@@ -39,16 +38,7 @@ public class GpsEstablisherTest {
     }
 
     @Test
-    public void whenGpsRequestCodeReturned_RequestCodeIsCorrect() {
-        //When
-        int requestCode = gpsEstablisher.getGpsRequestCode();
-
-        //Then
-        assertEquals(GpsEstablisher.GPS_REQUEST_CODE_DEFAULT, requestCode);
-    }
-
-    @Test
-    public void whenGpsProviderEnabled_GpsEstablished() {
+    public void whenGpsProviderIsEnabled_GpsIsEstablished() {
         //Given
         when(locationManager.isProviderEnabled(any())).thenReturn(true);
 
@@ -60,7 +50,7 @@ public class GpsEstablisherTest {
     }
 
     @Test
-    public void whenLocationStatusSuccess_GpsEstablishedCalled() {
+    public void whenLocationStatusIsSuccess_GpsEstablishedIsCalled() {
         //Given
         GpsEstablisher.StatusListener statusListener = mock(GpsEstablisher.StatusListener.class);
         gpsEstablisher.setStatusListener(statusListener);
@@ -86,7 +76,7 @@ public class GpsEstablisherTest {
     }
 
     @Test
-    public void whenLocationStatusResolutionRequiredAndThereIsActivity_startResolutionForResultCalled()
+    public void whenLocationStatusResolutionRequiredAndThereIsActivity_StartResolutionForResultIsCalled()
             throws IntentSender.SendIntentException {
         //given
         GpsEstablisher.StatusListener statusListener = mock(GpsEstablisher.StatusListener.class);
@@ -113,7 +103,7 @@ public class GpsEstablisherTest {
     }
 
     @Test
-    public void whenLocationStatusOther_GoogleApiConnectionFailureCalled() throws IntentSender.SendIntentException {
+    public void whenLocationStatusIsOther_GoogleApiConnectionFailureIsCalled() throws IntentSender.SendIntentException {
         //Given
         GpsEstablisher.StatusListener statusListener = mock(GpsEstablisher.StatusListener.class);
         gpsEstablisher.setStatusListener(statusListener);
@@ -139,7 +129,7 @@ public class GpsEstablisherTest {
     }
 
     @Test
-    public void whenApisNotConnected_GoogleApiConnectionIsRequested() {
+    public void whenApIsNotConnected_GoogleApiConnectionIsRequested() {
         //Given
         when(googleLocationApiEstablisher.isApiConnected()).thenReturn(false);
 
@@ -171,7 +161,7 @@ public class GpsEstablisherTest {
     }
 
     @Test
-    public void whenRequestedForApiConnectionResultsWithFailure_GoogleApiFailureCalled() {
+    public void whenRequestedForApiConnectionResultsWithFailure_GoogleApiFailureIsCalled() {
         //Given
         GpsEstablisher.StatusListener statusListener = mock(GpsEstablisher.StatusListener.class);
         gpsEstablisher.setStatusListener(statusListener);

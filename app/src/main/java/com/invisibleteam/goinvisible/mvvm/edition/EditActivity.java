@@ -206,7 +206,7 @@ public class EditActivity extends CommonActivity {
             Place place = PlacePicker.getPlace(this, data);
             onNewPlace(place);
         } else if (
-                requestCode == gpsEstablisher.getGpsRequestCode()
+                requestCode == GpsEstablisher.GPS_REQUEST_CODE_DEFAULT
                         && resultCode == Activity.RESULT_OK) {
             startPlaceIntent();
         }
