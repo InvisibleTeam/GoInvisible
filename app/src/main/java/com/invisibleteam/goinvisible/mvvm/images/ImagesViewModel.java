@@ -12,7 +12,7 @@ import java.util.List;
 
 public class ImagesViewModel {
 
-    public final ObservableBoolean isInformationTextVisible = new ObservableBoolean(false);
+    private final ObservableBoolean isInformationTextVisible = new ObservableBoolean(false);
     private final ImagesCompoundRecyclerView imagesCompoundRecyclerView;
     private final ImagesProvider imagesProvider;
     private final ImagesView imagesView;
@@ -49,5 +49,9 @@ public class ImagesViewModel {
         List<ImageDetails> imagesDetailsList = imagesProvider.getImagesList();
         imagesCompoundRecyclerView.updateResults(imagesDetailsList);
         imagesView.onStopRefreshingImages();
+    }
+
+    public ObservableBoolean getIsInformationTextVisible() {
+        return isInformationTextVisible;
     }
 }
