@@ -14,8 +14,7 @@ public class GoogleLocationApiEstablisher {
     @Nullable
     private GoogleApiConnectionListener googleApiConnectionListener;
     @Nullable
-    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
-    protected GoogleApiClient googleApiClient;
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE) GoogleApiClient googleApiClient;
 
     public GoogleLocationApiEstablisher(GoogleApiClient.Builder googleApiClientBuilder) {
         this.googleApiClientBuilder = googleApiClientBuilder;
@@ -41,7 +40,7 @@ public class GoogleLocationApiEstablisher {
     }
 
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
-    protected GoogleApiClient.OnConnectionFailedListener buildConnectionFailedListener() {
+    GoogleApiClient.OnConnectionFailedListener buildConnectionFailedListener() {
         return connectionResult -> {
             if (googleApiConnectionListener != null) {
                 googleApiConnectionListener.onFailure();
@@ -50,7 +49,7 @@ public class GoogleLocationApiEstablisher {
     }
 
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
-    protected GoogleApiClient.ConnectionCallbacks buildConnectionCallbacks() {
+    GoogleApiClient.ConnectionCallbacks buildConnectionCallbacks() {
         return new GoogleApiClient.ConnectionCallbacks() {
             @Override
             public void onConnected(@Nullable Bundle bundle) {

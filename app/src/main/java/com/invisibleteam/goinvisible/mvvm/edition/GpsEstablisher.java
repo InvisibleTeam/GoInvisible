@@ -23,7 +23,7 @@ public class GpsEstablisher {
     private static final String TAG = GpsEstablisher.class.getSimpleName();
 
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
-    protected static final int GPS_REQUEST_CODE_DEFAULT = 1234;
+    static final int GPS_REQUEST_CODE_DEFAULT = 1234;
     private static final long LOCATION_REQUEST_INTERVAL = 100;
     private static final long LOCATION_REQUEST_FASTEST_INTERVAL = 100;
 
@@ -92,7 +92,7 @@ public class GpsEstablisher {
     }
 
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
-    protected PendingResult<LocationSettingsResult> buildLocationSettingsResult() {
+    PendingResult<LocationSettingsResult> buildLocationSettingsResult() {
         LocationRequest locationRequest = buildLocationRequest();
         LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
                 .addLocationRequest(locationRequest)
@@ -133,7 +133,7 @@ public class GpsEstablisher {
     }
 
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
-    protected void startResolutionForResult(Status status) throws IntentSender.SendIntentException {
+    void startResolutionForResult(Status status) throws IntentSender.SendIntentException {
         status.startResolutionForResult(
                 weakActivityReference.get(),
                 GPS_REQUEST_CODE_DEFAULT);
