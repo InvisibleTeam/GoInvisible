@@ -23,10 +23,10 @@ import static com.invisibleteam.goinvisible.model.InputType.DATETIME_STRING;
 import static com.invisibleteam.goinvisible.model.InputType.DATE_STRING;
 import static com.invisibleteam.goinvisible.model.InputType.POSITION_DOUBLE;
 import static com.invisibleteam.goinvisible.model.InputType.RANGED_INTEGER;
-import static com.invisibleteam.goinvisible.model.InputType.RANGED_STRING;
 import static com.invisibleteam.goinvisible.model.InputType.RATIONAL;
 import static com.invisibleteam.goinvisible.model.InputType.TEXT_STRING;
 import static com.invisibleteam.goinvisible.model.InputType.TIMESTAMP_STRING;
+import static com.invisibleteam.goinvisible.model.InputType.UNMODIFIABLE;
 import static com.invisibleteam.goinvisible.model.InputType.VALUE_DOUBLE;
 import static com.invisibleteam.goinvisible.model.InputType.VALUE_INTEGER;
 
@@ -195,6 +195,7 @@ class TagsManager {
                     break;
                 case RANGED_INTEGER:
                 case RANGED_STRING:
+                case UNMODIFIABLE:
                 case VALUE_INTEGER:
                     tagValue = exifInterface.getAttributeInt(key, 0);
                     break;
@@ -228,17 +229,15 @@ class TagsManager {
         Map<String, InputType> map = new HashMap<>();
         map.put(TAG_GPS_DATESTAMP, DATE_STRING);
         map.put(TAG_GPS_TIMESTAMP, TIMESTAMP_STRING);
-        map.put(TAG_GPS_LATITUDE_REF, RANGED_STRING);
-        map.put(TAG_GPS_LONGITUDE_REF, RANGED_STRING);
         map.put(TAG_GPS_PROCESSING_METHOD, TEXT_STRING);
         map.put(TAG_DATETIME, DATETIME_STRING);
         map.put(TAG_MAKE, TEXT_STRING);
         map.put(TAG_MODEL, TEXT_STRING);
-        map.put(TAG_IMAGE_LENGTH, VALUE_INTEGER);
+        map.put(TAG_IMAGE_LENGTH, UNMODIFIABLE);
         map.put(TAG_WHITE_BALANCE, RANGED_INTEGER);
         map.put(TAG_GPS_ALTITUDE_REF, RANGED_INTEGER);
         map.put(TAG_FLASH, RANGED_INTEGER);
-        map.put(TAG_IMAGE_WIDTH, VALUE_INTEGER);
+        map.put(TAG_IMAGE_WIDTH, UNMODIFIABLE);
         map.put(TAG_ORIENTATION, RANGED_INTEGER);
         map.put(TAG_EXPOSURE_TIME, VALUE_DOUBLE);
 
@@ -316,8 +315,8 @@ class TagsManager {
         map.put(TAG_BITS_PER_SAMPLE, VALUE_INTEGER);
         map.put(TAG_COMPRESSED_BITS_PER_PIXEL, RATIONAL);
         map.put(TAG_COMPRESSION, VALUE_INTEGER);
-        map.put(TAG_JPEG_INTERCHANGE_FORMAT, VALUE_INTEGER);
-        map.put(TAG_JPEG_INTERCHANGE_FORMAT_LENGTH, VALUE_INTEGER);
+        map.put(TAG_JPEG_INTERCHANGE_FORMAT, UNMODIFIABLE);
+        map.put(TAG_JPEG_INTERCHANGE_FORMAT_LENGTH, UNMODIFIABLE);
         map.put(TAG_PLANAR_CONFIGURATION, VALUE_INTEGER);
         map.put(TAG_ROWS_PER_STRIP, VALUE_INTEGER);
         map.put(TAG_SAMPLES_PER_PIXEL, VALUE_INTEGER);
@@ -345,12 +344,13 @@ class TagsManager {
         map.put(TAG_THUMBNAIL_IMAGE_LENGTH, VALUE_INTEGER);
         map.put(TAG_THUMBNAIL_IMAGE_WIDTH, VALUE_INTEGER);
         map.put(TAG_DIGITAL_ZOOM_RATIO, VALUE_DOUBLE);
-        map.put(TAG_EXPOSURE_BIAS_VALUE, VALUE_DOUBLE);
+        map.put(TAG_EXPOSURE_BIAS_VALUE, UNMODIFIABLE);
         map.put(TAG_PRIMARY_CHROMATICITIES, RATIONAL);
         map.put(TAG_REFERENCE_BLACK_WHITE, RATIONAL);
         map.put(TAG_SHUTTER_SPEED_VALUE, RATIONAL);
         map.put(TAG_WHITE_POINT, RATIONAL);
         map.put(TAG_X_RESOLUTION, RATIONAL);
+        map.put(TAG_Y_RESOLUTION, RATIONAL);
 
         return Collections.unmodifiableMap(map);
     }
