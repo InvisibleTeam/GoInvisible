@@ -226,21 +226,28 @@ class TagsManager {
 
     static private Map<String, InputType> getTags() {
         Map<String, InputType> map = new HashMap<>();
+        //location
         map.put(TAG_GPS_DATESTAMP, DATE_STRING);
         map.put(TAG_GPS_TIMESTAMP, TIMESTAMP_STRING);
         map.put(TAG_GPS_LATITUDE_REF, RANGED_STRING);
         map.put(TAG_GPS_LONGITUDE_REF, RANGED_STRING);
         map.put(TAG_GPS_PROCESSING_METHOD, TEXT_STRING);
-        map.put(TAG_DATETIME, DATETIME_STRING);
-        map.put(TAG_MAKE, TEXT_STRING);
-        map.put(TAG_MODEL, TEXT_STRING);
-        map.put(TAG_IMAGE_LENGTH, VALUE_INTEGER);
-        map.put(TAG_WHITE_BALANCE, RANGED_INTEGER);
         map.put(TAG_GPS_ALTITUDE_REF, RANGED_INTEGER);
-        map.put(TAG_FLASH, RANGED_INTEGER);
+        
+        //image
+        map.put(TAG_DATETIME, DATETIME_STRING);
+        map.put(TAG_IMAGE_LENGTH, VALUE_INTEGER);
         map.put(TAG_IMAGE_WIDTH, VALUE_INTEGER);
         map.put(TAG_ORIENTATION, RANGED_INTEGER);
         map.put(TAG_EXPOSURE_TIME, VALUE_DOUBLE);
+
+        //device
+        map.put(TAG_MODEL, TEXT_STRING);
+        map.put(TAG_WHITE_BALANCE, RANGED_INTEGER);
+        map.put(TAG_FLASH, RANGED_INTEGER);
+
+        //advance
+        map.put(TAG_MAKE, TEXT_STRING);
 
         return Collections.unmodifiableMap(map);
     }
@@ -252,47 +259,7 @@ class TagsManager {
     @TargetApi(24)
     static private Map<String, InputType> getNougatTags() {
         Map<String, InputType> map = new HashMap<>();
-        map.put(TAG_COPYRIGHT, TEXT_STRING);
-        map.put(TAG_IMAGE_DESCRIPTION, TEXT_STRING);
-        map.put(TAG_ARTIST, TEXT_STRING);
-        map.put(TAG_DATETIME_DIGITIZED, DATETIME_STRING);
-        map.put(TAG_DATETIME_ORIGINAL, DATETIME_STRING);
-        map.put(TAG_USER_COMMENT, TEXT_STRING);
-        map.put(TAG_APERTURE_VALUE, RATIONAL);
-        map.put(TAG_MAX_APERTURE_VALUE, RATIONAL);
-        map.put(TAG_BRIGHTNESS_VALUE, RATIONAL);
-        map.put(TAG_DIGITAL_ZOOM_RATIO, VALUE_DOUBLE);
-        map.put(TAG_RESOLUTION_UNIT, RANGED_INTEGER);
-        map.put(TAG_CONTRAST, RANGED_INTEGER);
-        map.put(TAG_EXPOSURE_MODE, RANGED_INTEGER);
-        map.put(TAG_EXPOSURE_PROGRAM, RANGED_INTEGER);
-        map.put(TAG_EXPOSURE_INDEX, RATIONAL);
-        map.put(TAG_GAIN_CONTROL, RANGED_INTEGER);
-        map.put(TAG_ISO_SPEED_RATINGS, VALUE_INTEGER);
-        map.put(TAG_METERING_MODE, RANGED_INTEGER);
-        map.put(TAG_SATURATION, RANGED_INTEGER);
-        map.put(TAG_SCENE_CAPTURE_TYPE, RANGED_INTEGER);
-        map.put(TAG_FLASH_ENERGY, RATIONAL);
-        map.put(TAG_SHARPNESS, RANGED_INTEGER);
-        map.put(TAG_F_NUMBER, VALUE_DOUBLE); // Aperture
-
-        map.put(TAG_SOFTWARE, TEXT_STRING);
-        map.put(TAG_CFA_PATTERN, TEXT_STRING);
-        map.put(TAG_COMPONENTS_CONFIGURATION, TEXT_STRING); // null
-        map.put(TAG_DEVICE_SETTING_DESCRIPTION, TEXT_STRING);
-        map.put(TAG_EXIF_VERSION, TEXT_STRING);
-        map.put(TAG_FILE_SOURCE, TEXT_STRING);
-        map.put(TAG_FLASHPIX_VERSION, TEXT_STRING);
-        map.put(TAG_SPATIAL_FREQUENCY_RESPONSE, TEXT_STRING);
-        map.put(TAG_SPECTRAL_SENSITIVITY, TEXT_STRING);
-        map.put(TAG_SUBSEC_TIME, TEXT_STRING); // null
-        map.put(TAG_SCENE_TYPE, TEXT_STRING);
-        map.put(TAG_RELATED_SOUND_FILE, TEXT_STRING);
-        map.put(TAG_IMAGE_UNIQUE_ID, TEXT_STRING);
-        map.put(TAG_MAKER_NOTE, TEXT_STRING);
-        map.put(TAG_OECF, TEXT_STRING);
-        map.put(TAG_SUBSEC_TIME_DIGITIZED, TEXT_STRING);
-        map.put(TAG_SUBSEC_TIME_ORIGINAL, TEXT_STRING);
+        //location
         map.put(TAG_GPS_AREA_INFORMATION, TEXT_STRING); // null
         map.put(TAG_GPS_DEST_DISTANCE_REF, TEXT_STRING);
         map.put(TAG_GPS_DEST_BEARING, RATIONAL);
@@ -310,7 +277,60 @@ class TagsManager {
         map.put(TAG_GPS_TRACK_REF, TEXT_STRING);
         map.put(TAG_GPS_TRACK, RATIONAL);
         map.put(TAG_GPS_VERSION_ID, TEXT_STRING);
+        map.put(TAG_GPS_DIFFERENTIAL, VALUE_INTEGER);
+        map.put(TAG_GPS_DOP, RATIONAL);
         map.put(TAG_GPS_IMG_DIRECTION, RATIONAL);
+
+        //image
+        map.put(TAG_USER_COMMENT, TEXT_STRING);
+        map.put(TAG_ARTIST, TEXT_STRING);
+        map.put(TAG_IMAGE_DESCRIPTION, TEXT_STRING);
+        map.put(TAG_COPYRIGHT, TEXT_STRING);
+        map.put(TAG_BRIGHTNESS_VALUE, RATIONAL);
+        map.put(TAG_RESOLUTION_UNIT, RANGED_INTEGER);
+        map.put(TAG_CONTRAST, RANGED_INTEGER);
+        map.put(TAG_SATURATION, RANGED_INTEGER);
+        map.put(TAG_FLASH_ENERGY, RATIONAL);
+        map.put(TAG_EXIF_VERSION, TEXT_STRING);
+        map.put(TAG_ISO_SPEED_RATINGS, VALUE_INTEGER);
+        map.put(TAG_SOFTWARE, TEXT_STRING);
+        map.put(TAG_EXPOSURE_MODE, RANGED_INTEGER);
+        map.put(TAG_EXPOSURE_INDEX, RATIONAL);
+        map.put(TAG_EXPOSURE_PROGRAM, RANGED_INTEGER);
+
+        //device
+        map.put(TAG_FOCAL_LENGTH_IN_35MM_FILM, VALUE_INTEGER);
+        map.put(TAG_FOCAL_LENGTH, RATIONAL);
+        map.put(TAG_FOCAL_PLANE_X_RESOLUTION, RATIONAL);
+        map.put(TAG_FOCAL_PLANE_Y_RESOLUTION, RATIONAL);
+        map.put(TAG_FOCAL_PLANE_RESOLUTION_UNIT, VALUE_INTEGER); // 0
+        map.put(TAG_F_NUMBER, VALUE_DOUBLE); // Aperture
+        map.put(TAG_DIGITAL_ZOOM_RATIO, VALUE_DOUBLE);
+        map.put(TAG_MAX_APERTURE_VALUE, RATIONAL);
+        map.put(TAG_APERTURE_VALUE, RATIONAL);
+
+        //advanced
+        map.put(TAG_DATETIME_DIGITIZED, DATETIME_STRING);
+        map.put(TAG_DATETIME_ORIGINAL, DATETIME_STRING);
+        map.put(TAG_GAIN_CONTROL, RANGED_INTEGER);
+        map.put(TAG_METERING_MODE, RANGED_INTEGER);
+        map.put(TAG_SCENE_CAPTURE_TYPE, RANGED_INTEGER);
+        map.put(TAG_SHARPNESS, RANGED_INTEGER);
+        map.put(TAG_CFA_PATTERN, TEXT_STRING);
+        map.put(TAG_COMPONENTS_CONFIGURATION, TEXT_STRING); // null
+        map.put(TAG_DEVICE_SETTING_DESCRIPTION, TEXT_STRING);
+        map.put(TAG_FILE_SOURCE, TEXT_STRING);
+        map.put(TAG_FLASHPIX_VERSION, TEXT_STRING);
+        map.put(TAG_SPATIAL_FREQUENCY_RESPONSE, TEXT_STRING);
+        map.put(TAG_SPECTRAL_SENSITIVITY, TEXT_STRING);
+        map.put(TAG_SUBSEC_TIME, TEXT_STRING); // null
+        map.put(TAG_SCENE_TYPE, TEXT_STRING);
+        map.put(TAG_RELATED_SOUND_FILE, TEXT_STRING);
+        map.put(TAG_IMAGE_UNIQUE_ID, TEXT_STRING);
+        map.put(TAG_MAKER_NOTE, TEXT_STRING);
+        map.put(TAG_OECF, TEXT_STRING);
+        map.put(TAG_SUBSEC_TIME_DIGITIZED, TEXT_STRING);
+        map.put(TAG_SUBSEC_TIME_ORIGINAL, TEXT_STRING);
         map.put(TAG_INTEROPERABILITY_INDEX, TEXT_STRING);
         map.put(TAG_PHOTOMETRIC_INTERPRETATION, VALUE_INTEGER);
         map.put(TAG_BITS_PER_SAMPLE, VALUE_INTEGER);
@@ -328,11 +348,6 @@ class TagsManager {
         map.put(TAG_Y_CB_CR_SUB_SAMPLING, VALUE_INTEGER);
         map.put(TAG_COLOR_SPACE, VALUE_INTEGER);
         map.put(TAG_CUSTOM_RENDERED, VALUE_INTEGER);
-        map.put(TAG_FOCAL_LENGTH_IN_35MM_FILM, VALUE_INTEGER);
-        map.put(TAG_FOCAL_LENGTH, RATIONAL);
-        map.put(TAG_FOCAL_PLANE_X_RESOLUTION, RATIONAL);
-        map.put(TAG_FOCAL_PLANE_Y_RESOLUTION, RATIONAL);
-        map.put(TAG_FOCAL_PLANE_RESOLUTION_UNIT, VALUE_INTEGER); // 0
         map.put(TAG_LIGHT_SOURCE, VALUE_INTEGER);
         map.put(TAG_PIXEL_X_DIMENSION, VALUE_INTEGER); // 0
         map.put(TAG_PIXEL_Y_DIMENSION, VALUE_INTEGER);
@@ -340,8 +355,6 @@ class TagsManager {
         map.put(TAG_SUBJECT_AREA, VALUE_INTEGER);
         map.put(TAG_SUBJECT_DISTANCE_RANGE, VALUE_INTEGER);
         map.put(TAG_SUBJECT_LOCATION, VALUE_INTEGER);
-        map.put(TAG_GPS_DIFFERENTIAL, VALUE_INTEGER);
-        map.put(TAG_GPS_DOP, RATIONAL);
         map.put(TAG_THUMBNAIL_IMAGE_LENGTH, VALUE_INTEGER);
         map.put(TAG_THUMBNAIL_IMAGE_WIDTH, VALUE_INTEGER);
         map.put(TAG_DIGITAL_ZOOM_RATIO, VALUE_DOUBLE);
