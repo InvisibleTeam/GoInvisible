@@ -7,6 +7,7 @@
         <variable
             name="viewModel"
             type="com.invisibleteam.goinvisible.mvvm.edition.adapter.EditItemViewModel"/>
+        <import type="android.view.View" />
 
     </data>
 
@@ -50,6 +51,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
+                android:visibility="@{viewModel.isModifiable ? View.VISIBLE : View.INVISIBLE}"
                 android:padding="16dp"
                 android:src="@drawable/ic_remove"/>
 

@@ -42,6 +42,10 @@ public enum InputType {
      */
     POSITION_DOUBLE,
     /**
+     * Unmodifiable type.
+     */
+    UNMODIFIABLE,
+    /**
      * For unknown type.
      */
     INDEFINITE
