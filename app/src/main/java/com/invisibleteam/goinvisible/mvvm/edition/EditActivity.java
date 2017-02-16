@@ -6,11 +6,11 @@ import android.content.Intent;
 import android.content.IntentSender;
 import android.databinding.DataBindingUtil;
 import android.location.LocationManager;
-import android.media.ExifInterface;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.VisibleForTesting;
+import android.support.media.ExifInterface;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
@@ -133,7 +133,8 @@ public class EditActivity extends CommonActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if (!editCompoundRecyclerView.getChangedTags().isEmpty()) {
+        if (editCompoundRecyclerView != null
+                && !editCompoundRecyclerView.getChangedTags().isEmpty()) {
             menu.add(0, APPROVE_CHANGES, 0, R.string.save).setIcon(R.drawable.ic_approve)
                     .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
         }
@@ -181,8 +182,7 @@ public class EditActivity extends CommonActivity {
                     (EditCompoundRecyclerView) findViewById(R.id.edit_compound_recycler_view);
 
             try {
-                ExifInterface exifInterface = new ExifInterface(imageDetails.getPath());
-                tagsManager = new TagsManager(exifInterface);
+                tagsManager = new TagsManager(getExifInterface());
                 editViewModel = new EditViewModel(
                         imageDetails.getName(),
                         imageDetails.getPath(),
@@ -195,6 +195,11 @@ public class EditActivity extends CommonActivity {
                 //TODO log exception to crashlitycs on else.
             }
         } //TODO log exception to crashlitycs on else.
+    }
+
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    ExifInterface getExifInterface() throws IOException {
+        return new ExifInterface(imageDetails.getPath());
     }
 
     @Override

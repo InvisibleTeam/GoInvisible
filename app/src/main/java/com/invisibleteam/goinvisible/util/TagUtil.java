@@ -15,13 +15,14 @@ public class TagUtil {
     private static final String GEO_SECONDS_CHAR = "\'\'";
     private static final String DEFAULT_DENOMINATOR = "/1,";
     private static final String DENOMINATOR_CHAR = "/";
-    private static final int GEO_SECONDS_DENOMINATOR_VALUE = 1000000;
+    private static final int MAX_DENOMINATOR_VALUE = 1000000;
     private static final int SIX_DECIMAL_NUMBER_SCALE = 6;
+    private static final double DEFAULT_DOUBLE_VALUE = 0.0;
 
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
     static final char DEGREE_CHAR = (char) 0x00B0;
 
-    public static String parseDoubleGPSToGeoGPS(double value) {
+    static String parseDoubleGPSToGeoGPS(double value) {
         final StringBuilder geoGPSBuilder = buildGeoGPSValueFromDoubleValue(value);
         return geoGPSBuilder.toString();
     }
@@ -96,8 +97,16 @@ public class TagUtil {
         return new BigDecimal(result).setScale(SIX_DECIMAL_NUMBER_SCALE, BigDecimal.ROUND_HALF_UP).doubleValue();
     }
 
-    public static double parseRationalValueToDouble(String rational) {
+    public static double parseRationalValueToDouble(@Nullable String rational) {
+        if (rational == null) {
+            return DEFAULT_DOUBLE_VALUE;
+        }
+
         String[] rationals = rational.split("/");
+
+        if (rationals.length != 2) {
+            return DEFAULT_DOUBLE_VALUE;
+        }
 
         return Double.parseDouble(rationals[0]) / Double.parseDouble(rationals[1]);
     }
@@ -107,7 +116,7 @@ public class TagUtil {
         long minutes = (long) (TimeUnit.HOURS.toMinutes(1) * (value - degrees));
         double seconds = Math.abs((TimeUnit.HOURS.toSeconds(1) * (value - degrees)) - (TimeUnit.HOURS.toMinutes(1) * minutes));
 
-        long exactSecondsValue = getExactSecondsValue(seconds);
+        long exactSecondsValue = parseDoubleToLong(seconds);
 
         return new StringBuilder()
                 .append(degrees)
@@ -116,18 +125,18 @@ public class TagUtil {
                 .append(DEFAULT_DENOMINATOR)
                 .append(exactSecondsValue)
                 .append(DENOMINATOR_CHAR)
-                .append(GEO_SECONDS_DENOMINATOR_VALUE)
+                .append(MAX_DENOMINATOR_VALUE)
                 .toString();
     }
 
-    private static long getExactSecondsValue(double seconds) {
-        BigDecimal big = new BigDecimal(seconds).setScale(SIX_DECIMAL_NUMBER_SCALE, BigDecimal.ROUND_HALF_DOWN);
+    private static long parseDoubleToLong(double value) {
+        BigDecimal big = new BigDecimal(value).setScale(SIX_DECIMAL_NUMBER_SCALE, BigDecimal.ROUND_HALF_DOWN);
         String bigString = big.toString().replace(".", "");
         return Long.parseLong(bigString);
     }
 
     @Nullable
-    public static String parseRationalToString(@Nullable String rational) {
+    static String parseRationalToString(@Nullable String rational) {
         if (isRationalValueCorrect(rational)) {
             return null;
         }
@@ -135,6 +144,16 @@ public class TagUtil {
         double result = parseRationalValueToDouble(rational);
 
         return String.valueOf(result);
+    }
+
+    public static String parseDoubleValueToRational(double value) {
+        long numerator = parseDoubleToLong(value);
+
+        return new StringBuilder()
+                .append(numerator)
+                .append(DENOMINATOR_CHAR)
+                .append(MAX_DENOMINATOR_VALUE)
+                .toString();
     }
 
     private static boolean isRationalValueCorrect(@Nullable String rational) {

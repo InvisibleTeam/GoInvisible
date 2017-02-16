@@ -23,7 +23,7 @@ import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
-import static android.media.ExifInterface.TAG_ORIENTATION;
+import static android.support.media.ExifInterface.TAG_ORIENTATION;
 import static android.text.InputType.TYPE_CLASS_NUMBER;
 import static android.text.InputType.TYPE_NUMBER_FLAG_DECIMAL;
 import static android.text.InputType.TYPE_TEXT_VARIATION_FILTER;

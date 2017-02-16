@@ -49,13 +49,16 @@ dependencies {
     compile 'com.google.android.gms:play-services-location:10.0.1'
     compile 'com.google.maps.android:android-maps-utils:0.5'
     compile 'com.squareup.leakcanary:leakcanary-android:1.5'
+    compile "com.android.support:exifinterface:25.1.1"
 
     testCompile 'junit:junit:4.12'
     testCompile 'org.mockito:mockito-core:2.6.5'
     testCompile "org.robolectric:robolectric:3.2.2"
     testCompile 'com.googlecode.zohhak:zohhak:1.1.1'
 
+
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
+    androidTestCompile 'com.android.support.test.uiautomator:uiautomator-v18:2.1.2'
 }
