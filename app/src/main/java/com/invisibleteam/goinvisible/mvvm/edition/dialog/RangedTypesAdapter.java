@@ -20,12 +20,26 @@ class RangedTypesAdapter extends ArrayAdapter<String> {
 
     @Override
     public View getView(int position, @Nullable View convertView, ViewGroup parent) {
+        ViewHolder viewHolder;
+
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.tag_value_view, parent, false);
+            viewHolder = new ViewHolder(convertView);
+            convertView.setTag(viewHolder);
+        } else {
+            viewHolder = (ViewHolder) convertView.getTag();
         }
-        TextView tagValue = (TextView) convertView.findViewById(R.id.tag_value);
-        tagValue.setText(getItem(position));
+
+        viewHolder.valueTextView.setText(getItem(position));
 
         return convertView;
+    }
+
+    private class ViewHolder {
+        private TextView valueTextView;
+
+        ViewHolder(View groupView) {
+            valueTextView = (TextView) groupView.findViewById(R.id.tag_value);
+        }
     }
 }
