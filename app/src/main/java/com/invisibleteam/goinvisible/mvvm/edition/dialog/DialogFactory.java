@@ -16,6 +16,7 @@ import com.invisibleteam.goinvisible.mvvm.edition.EditViewModel;
 import com.invisibleteam.goinvisible.util.DialogRangedValuesUtil;
 
 import java.util.Locale;
+import java.util.Map;
 
 import javax.annotation.Nullable;
 
@@ -67,6 +68,10 @@ class DialogFactory {
             case DATE_STRING:
                 return createDateDialog();
 
+            case RATIONAL:
+                return createDialog(android.text.InputType.TYPE_CLASS_NUMBER
+                        | android.text.InputType.TYPE_NUMBER_FLAG_DECIMAL);
+
             default:
                 return createErrorDialog();
         }
@@ -76,13 +81,25 @@ class DialogFactory {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
         alertDialog.setTitle(tag.getKey());
 
-        String[] values = DialogRangedValuesUtil.getValues(tag.getKey());
-        if (values == null || values.length == 0) {
+        final Map<Integer, Integer> tagsMap = DialogRangedValuesUtil.getTagsMapValues(tag.getKey());
+
+        if (tagsMap == null || tagsMap.isEmpty()) {
             return createErrorDialog();
         }
-        alertDialog.setItems(values, (dialog, index) -> {
+
+        final String[] tagNames = new String[tagsMap.size()];
+        final String[] tagValues = new String[tagsMap.size()];
+        int valuesIndex = 0;
+
+        for (Map.Entry<Integer, Integer> entry : tagsMap.entrySet()) {
+            tagNames[valuesIndex] = context.getString(entry.getKey());
+            tagValues[valuesIndex] = context.getString(entry.getValue());
+            valuesIndex++;
+        }
+
+        alertDialog.setItems(tagNames, (dialog, index) -> {
             dialog.dismiss();
-            tag.setValue(values[index]);
+            tag.setValue(tagValues[index]);
             viewModel.onEditEnded(tag);
         });
 
