@@ -2,6 +2,7 @@ package com.invisibleteam.goinvisible.mvvm.edition.dialog;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
+import android.support.annotation.VisibleForTesting;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,16 +31,24 @@ class RangedTypesAdapter extends ArrayAdapter<String> {
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
-        viewHolder.valueTextView.setText(getItem(position));
+        String value = getItem(position);
+        if (value != null) {
+            viewHolder.setValueText(value);
+        }
 
         return convertView;
     }
 
-    private class ViewHolder {
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    class ViewHolder {
         private TextView valueTextView;
 
         ViewHolder(View groupView) {
             valueTextView = (TextView) groupView.findViewById(R.id.tag_value);
+        }
+
+        void setValueText(String value) {
+            valueTextView.setText(value);
         }
     }
 }
