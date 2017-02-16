@@ -63,8 +63,7 @@ public class GpsEstablisherTest {
 
         ArgumentCaptor<ResultCallback> callbackCaptor = ArgumentCaptor.forClass(ResultCallback.class);
 
-        Status successStatus = new Status(LocationSettingsStatusCodes.SUCCESS);
-        LocationSettingsResult result = new LocationSettingsResult(successStatus);
+        LocationSettingsResult result = buildLocationSettingsResult(LocationSettingsStatusCodes.SUCCESS);
 
         //When
         gpsEstablisher.requestGpsConnection();
@@ -78,7 +77,7 @@ public class GpsEstablisherTest {
     @Test
     public void whenLocationStatusResolutionRequiredAndThereIsActivity_StartResolutionForResultIsCalled()
             throws IntentSender.SendIntentException {
-        //given
+        //Given
         GpsEstablisher.StatusListener statusListener = mock(GpsEstablisher.StatusListener.class);
         gpsEstablisher.setStatusListener(statusListener);
 
@@ -90,8 +89,8 @@ public class GpsEstablisherTest {
 
         ArgumentCaptor<ResultCallback> callbackCaptor = ArgumentCaptor.forClass(ResultCallback.class);
 
-        Status resultionRequiredStatus = new Status(LocationSettingsStatusCodes.RESOLUTION_REQUIRED);
-        LocationSettingsResult result = new LocationSettingsResult(resultionRequiredStatus);
+        Status resolutionRequiredStatus = new Status(LocationSettingsStatusCodes.RESOLUTION_REQUIRED);
+        LocationSettingsResult result = new LocationSettingsResult(resolutionRequiredStatus);
 
         //When
         gpsEstablisher.requestGpsConnection();
@@ -99,7 +98,7 @@ public class GpsEstablisherTest {
         callbackCaptor.getValue().onResult(result);
 
         //Then
-        verify(gpsEstablisher).startResolutionForResult(resultionRequiredStatus);
+        verify(gpsEstablisher).startResolutionForResult(resolutionRequiredStatus);
     }
 
     @Test
@@ -116,8 +115,7 @@ public class GpsEstablisherTest {
 
         ArgumentCaptor<ResultCallback> callbackCaptor = ArgumentCaptor.forClass(ResultCallback.class);
 
-        Status canceledStatus = new Status(LocationSettingsStatusCodes.CANCELED);
-        LocationSettingsResult result = new LocationSettingsResult(canceledStatus);
+        LocationSettingsResult result = buildLocationSettingsResult(LocationSettingsStatusCodes.CANCELED);
 
         //When
         gpsEstablisher.requestGpsConnection();
@@ -179,6 +177,11 @@ public class GpsEstablisherTest {
 
         //Then
         verify(statusListener).onGoogleLocationApiConnectionFailure();
+    }
+
+    private LocationSettingsResult buildLocationSettingsResult(int type) {
+        Status status = new Status(type);
+        return new LocationSettingsResult(status);
     }
 
 }

@@ -107,7 +107,7 @@ public class GoogleLocationApiEstablisherTest {
     }
 
     @Test
-    public void whenOnConnectedIsInvokedAndThereIsNoListener_ErrorisNotThrown() {
+    public void whenOnConnectedIsInvokedAndThereIsNoListener_ErrorIsNotThrown() {
         //Given
         GoogleApiClient.ConnectionCallbacks connectionCallbacks =
                 establisher.buildConnectionCallbacks();
