@@ -54,6 +54,8 @@ import javax.annotation.Nullable;
 
 public class EditActivity extends CommonActivity {
 
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    static final int CLEAR_ALL_TAGS = 2;
     private static final String TAG_IMAGE_DETAILS = "extra_image_details";
     private static final String TAG_MODEL = "tag";
     private static final String TAG = EditActivity.class.getSimpleName();
@@ -63,7 +65,6 @@ public class EditActivity extends CommonActivity {
     private static final long LOCATION_REQUEST_FASTEST_INTERVAL = 100;
     private static final int initialMapRadius = 20000;
     private static final int APPROVE_CHANGES = 1;
-    private static final int CLEAR_ALL_TAGS = 2;
     private GoogleApiClient mGoogleApiClient;
     private EditCompoundRecyclerView editCompoundRecyclerView;
     private TagsManager tagsManager;
