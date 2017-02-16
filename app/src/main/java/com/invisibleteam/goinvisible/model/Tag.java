@@ -59,6 +59,7 @@ public class Tag implements Parcelable {
 
     public void setValue(String value) {
         this.value = value;
+        this.formattedValue = value;
     }
 
     public String getFormattedValue() {

@@ -44,6 +44,8 @@ public class TagType implements Parcelable {
             case TIMESTAMP_STRING:
             case DATETIME_STRING:
                 return new TagType(inputType, REGEXP_EMPTY);
+            case RATIONAL:
+                return new TagType(inputType, REGEXP_VALUE_DOUBLE);
             default:
                 return new TagType(InputType.INDEFINITE, REGEXP_EMPTY);
         }

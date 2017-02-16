@@ -1,8 +1,8 @@
 package com.invisibleteam.goinvisible.mvvm.edition;
 
 import android.annotation.TargetApi;
-import android.media.ExifInterface;
 import android.support.annotation.VisibleForTesting;
+import android.support.media.ExifInterface;
 import android.util.Log;
 
 import com.invisibleteam.goinvisible.model.GeolocationTag;
@@ -18,12 +18,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static android.media.ExifInterface.*;
+import static android.support.media.ExifInterface.*;
 import static com.invisibleteam.goinvisible.model.InputType.DATETIME_STRING;
 import static com.invisibleteam.goinvisible.model.InputType.DATE_STRING;
 import static com.invisibleteam.goinvisible.model.InputType.POSITION_DOUBLE;
 import static com.invisibleteam.goinvisible.model.InputType.RANGED_INTEGER;
 import static com.invisibleteam.goinvisible.model.InputType.RANGED_STRING;
+import static com.invisibleteam.goinvisible.model.InputType.RATIONAL;
 import static com.invisibleteam.goinvisible.model.InputType.TEXT_STRING;
 import static com.invisibleteam.goinvisible.model.InputType.TIMESTAMP_STRING;
 import static com.invisibleteam.goinvisible.model.InputType.VALUE_DOUBLE;
@@ -51,14 +52,23 @@ class TagsManager {
     }
 
     private void setExifAttributes(Tag tag) {
-        if (tag.getValue() != null) {
-            exifInterface.setAttribute(tag.getKey(), tag.getValue());
+        if (tag.getValue() == null) {
+            Log.w(TAG, "Tag value is null");
+            return;
         }
-        if (isPositionTag(tag)) {
+
+        if (RATIONAL.equals(tag.getTagType().getInputType())) {
+            double tagValue = Double.parseDouble(tag.getValue());
+            String rationalTagValue = TagUtil.parseDoubleValueToRational(tagValue);
+            exifInterface.setAttribute(tag.getKey(), rationalTagValue);
+        } else if (isPositionTag(tag)) {
             GeolocationTag geolocationTag = (GeolocationTag) tag;
+            exifInterface.setAttribute(geolocationTag.getKey(), geolocationTag.getValue());
             exifInterface.setAttribute(geolocationTag.getSecondKey(), geolocationTag.getSecondValue());
             exifInterface.setAttribute(TAG_GPS_LATITUDE_REF, geolocationTag.getLatitudeRef());
             exifInterface.setAttribute(TAG_GPS_LONGITUDE_REF, geolocationTag.getLongitudeRef());
+        } else {
+            exifInterface.setAttribute(tag.getKey(), tag.getValue());
         }
     }
 
@@ -109,9 +119,13 @@ class TagsManager {
             case POSITION_DOUBLE:
                 clearPositionTag((GeolocationTag) tag);
                 break;
+            case RATIONAL:
+                tag.setValue("0.0");
+                break;
             default:
                 break;
         }
+
         return editTag(tag);
     }
 
@@ -120,9 +134,9 @@ class TagsManager {
         tag.setValue(defaultGPSValue);
         tag.setSecondValue(defaultGPSValue);
         final Tag latitudeRef = new Tag(TAG_GPS_LATITUDE_REF, "", TagType.build(InputType.POSITION_DOUBLE));
-        editTag(latitudeRef);
+        setExifAttributes(latitudeRef);
         final Tag longitudeRef = new Tag(TAG_GPS_LONGITUDE_REF, "", TagType.build(InputType.POSITION_DOUBLE));
-        editTag(longitudeRef);
+        setExifAttributes(longitudeRef);
     }
 
     private GeolocationTag getGeolocationTag() {
@@ -173,6 +187,9 @@ class TagsManager {
                 case VALUE_DOUBLE:
                 case POSITION_DOUBLE:
                     tagValue = exifInterface.getAttributeDouble(key, 0);
+                    break;
+                case RATIONAL:
+                    tagValue = TagUtil.parseRationalValueToDouble(exifInterface.getAttribute(key));
                     break;
                 default:
                     continue;
@@ -227,18 +244,21 @@ class TagsManager {
         map.put(TAG_DATETIME_DIGITIZED, DATETIME_STRING);
         map.put(TAG_DATETIME_ORIGINAL, DATETIME_STRING);
         map.put(TAG_USER_COMMENT, TEXT_STRING);
-        map.put(TAG_MAX_APERTURE_VALUE, VALUE_DOUBLE);
-        map.put(TAG_BRIGHTNESS_VALUE, VALUE_DOUBLE);
+        map.put(TAG_APERTURE_VALUE, RATIONAL);
+        map.put(TAG_MAX_APERTURE_VALUE, RATIONAL);
+        map.put(TAG_BRIGHTNESS_VALUE, RATIONAL);
         map.put(TAG_DIGITAL_ZOOM_RATIO, VALUE_DOUBLE);
         map.put(TAG_RESOLUTION_UNIT, RANGED_INTEGER);
         map.put(TAG_CONTRAST, RANGED_INTEGER);
         map.put(TAG_EXPOSURE_MODE, RANGED_INTEGER);
         map.put(TAG_EXPOSURE_PROGRAM, RANGED_INTEGER);
+        map.put(TAG_EXPOSURE_INDEX, RATIONAL);
         map.put(TAG_GAIN_CONTROL, RANGED_INTEGER);
         map.put(TAG_ISO_SPEED_RATINGS, VALUE_INTEGER);
         map.put(TAG_METERING_MODE, RANGED_INTEGER);
         map.put(TAG_SATURATION, RANGED_INTEGER);
         map.put(TAG_SCENE_CAPTURE_TYPE, RANGED_INTEGER);
+        map.put(TAG_FLASH_ENERGY, RATIONAL);
         map.put(TAG_SHARPNESS, RANGED_INTEGER);
         map.put(TAG_F_NUMBER, VALUE_DOUBLE); // Aperture
 
@@ -261,19 +281,26 @@ class TagsManager {
         map.put(TAG_SUBSEC_TIME_ORIGINAL, TEXT_STRING);
         map.put(TAG_GPS_AREA_INFORMATION, TEXT_STRING); // null
         map.put(TAG_GPS_DEST_DISTANCE_REF, TEXT_STRING);
+        map.put(TAG_GPS_DEST_BEARING, RATIONAL);
+        map.put(TAG_GPS_DEST_DISTANCE, RATIONAL);
         map.put(TAG_GPS_DEST_LATITUDE_REF, TEXT_STRING);
+        map.put(TAG_GPS_DEST_LATITUDE, RATIONAL);
         map.put(TAG_GPS_DEST_LONGITUDE_REF, TEXT_STRING);
+        map.put(TAG_GPS_DEST_LONGITUDE, RATIONAL);
         map.put(TAG_GPS_MAP_DATUM, TEXT_STRING);
         map.put(TAG_GPS_MEASURE_MODE, TEXT_STRING);
         map.put(TAG_GPS_SATELLITES, TEXT_STRING);
         map.put(TAG_GPS_SPEED_REF, TEXT_STRING);
+        map.put(TAG_GPS_SPEED, RATIONAL);
         map.put(TAG_GPS_STATUS, TEXT_STRING);
         map.put(TAG_GPS_TRACK_REF, TEXT_STRING);
+        map.put(TAG_GPS_TRACK, RATIONAL);
         map.put(TAG_GPS_VERSION_ID, TEXT_STRING);
+        map.put(TAG_GPS_IMG_DIRECTION, RATIONAL);
         map.put(TAG_INTEROPERABILITY_INDEX, TEXT_STRING);
         map.put(TAG_PHOTOMETRIC_INTERPRETATION, VALUE_INTEGER);
         map.put(TAG_BITS_PER_SAMPLE, VALUE_INTEGER);
-        map.put(TAG_COMPRESSED_BITS_PER_PIXEL, VALUE_INTEGER);
+        map.put(TAG_COMPRESSED_BITS_PER_PIXEL, RATIONAL);
         map.put(TAG_COMPRESSION, VALUE_INTEGER);
         map.put(TAG_JPEG_INTERCHANGE_FORMAT, VALUE_INTEGER);
         map.put(TAG_JPEG_INTERCHANGE_FORMAT_LENGTH, VALUE_INTEGER);
@@ -288,6 +315,9 @@ class TagsManager {
         map.put(TAG_COLOR_SPACE, VALUE_INTEGER);
         map.put(TAG_CUSTOM_RENDERED, VALUE_INTEGER);
         map.put(TAG_FOCAL_LENGTH_IN_35MM_FILM, VALUE_INTEGER);
+        map.put(TAG_FOCAL_LENGTH, RATIONAL);
+        map.put(TAG_FOCAL_PLANE_X_RESOLUTION, RATIONAL);
+        map.put(TAG_FOCAL_PLANE_Y_RESOLUTION, RATIONAL);
         map.put(TAG_FOCAL_PLANE_RESOLUTION_UNIT, VALUE_INTEGER); // 0
         map.put(TAG_LIGHT_SOURCE, VALUE_INTEGER);
         map.put(TAG_PIXEL_X_DIMENSION, VALUE_INTEGER); // 0
@@ -297,11 +327,16 @@ class TagsManager {
         map.put(TAG_SUBJECT_DISTANCE_RANGE, VALUE_INTEGER);
         map.put(TAG_SUBJECT_LOCATION, VALUE_INTEGER);
         map.put(TAG_GPS_DIFFERENTIAL, VALUE_INTEGER);
+        map.put(TAG_GPS_DOP, RATIONAL);
         map.put(TAG_THUMBNAIL_IMAGE_LENGTH, VALUE_INTEGER);
         map.put(TAG_THUMBNAIL_IMAGE_WIDTH, VALUE_INTEGER);
         map.put(TAG_DIGITAL_ZOOM_RATIO, VALUE_DOUBLE);
         map.put(TAG_EXPOSURE_BIAS_VALUE, VALUE_DOUBLE);
-        map.put(TAG_SUBJECT_DISTANCE, VALUE_DOUBLE);
+        map.put(TAG_PRIMARY_CHROMATICITIES, RATIONAL);
+        map.put(TAG_REFERENCE_BLACK_WHITE, RATIONAL);
+        map.put(TAG_SHUTTER_SPEED_VALUE, RATIONAL);
+        map.put(TAG_WHITE_POINT, RATIONAL);
+        map.put(TAG_X_RESOLUTION, RATIONAL);
 
         return Collections.unmodifiableMap(map);
     }
