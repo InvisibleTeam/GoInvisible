@@ -6,6 +6,7 @@ import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.support.annotation.VisibleForTesting;
 import android.support.v7.app.AlertDialog;
+import android.util.SparseArray;
 import android.view.LayoutInflater;
 
 import com.invisibleteam.goinvisible.R;
@@ -15,6 +16,8 @@ import com.invisibleteam.goinvisible.model.Tag;
 import com.invisibleteam.goinvisible.mvvm.edition.EditViewModel;
 import com.invisibleteam.goinvisible.util.DialogRangedValuesUtil;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -57,6 +60,7 @@ class DialogFactory {
                         | android.text.InputType.TYPE_NUMBER_FLAG_DECIMAL);
 
             case RANGED_INTEGER:
+            case RANGED_STRING:
                 return createRangedDialog(context, tag, viewModel);
 
             case TIMESTAMP_STRING:
@@ -87,19 +91,19 @@ class DialogFactory {
             return createErrorDialog();
         }
 
-        final String[] tagNames = new String[tagsMap.size()];
-        final String[] tagValues = new String[tagsMap.size()];
+        final List<String> tagNames = new ArrayList<>(tagsMap.size());
+        final SparseArray<String> tagValues = new SparseArray<>();
         int valuesIndex = 0;
 
         for (Map.Entry<Integer, Integer> entry : tagsMap.entrySet()) {
-            tagNames[valuesIndex] = context.getString(entry.getKey());
-            tagValues[valuesIndex] = context.getString(entry.getValue());
+            tagNames.add(context.getString(entry.getKey()));
+            tagValues.append(valuesIndex, context.getString(entry.getValue()));
             valuesIndex++;
         }
 
-        alertDialog.setItems(tagNames, (dialog, index) -> {
+        alertDialog.setAdapter(new RangedTypesAdapter(context, tagNames), (dialog, index) -> {
             dialog.dismiss();
-            tag.setValue(tagValues[index]);
+            tag.setValue(tagValues.get(index));
             viewModel.onEditEnded(tag);
         });
 
