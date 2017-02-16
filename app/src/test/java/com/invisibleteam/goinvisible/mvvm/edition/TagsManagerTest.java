@@ -1,6 +1,6 @@
 package com.invisibleteam.goinvisible.mvvm.edition;
 
-import android.media.ExifInterface;
+import android.support.media.ExifInterface;
 
 import com.invisibleteam.goinvisible.model.InputType;
 import com.invisibleteam.goinvisible.model.Tag;
@@ -17,15 +17,15 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
-import static android.media.ExifInterface.TAG_DATETIME;
-import static android.media.ExifInterface.TAG_EXPOSURE_TIME;
-import static android.media.ExifInterface.TAG_FLASH;
-import static android.media.ExifInterface.TAG_GPS_DATESTAMP;
-import static android.media.ExifInterface.TAG_GPS_LATITUDE_REF;
-import static android.media.ExifInterface.TAG_GPS_TIMESTAMP;
-import static android.media.ExifInterface.TAG_MAKE;
-import static android.media.ExifInterface.TAG_MODEL;
-import static android.media.ExifInterface.TAG_WHITE_BALANCE;
+import static android.support.media.ExifInterface.TAG_DATETIME;
+import static android.support.media.ExifInterface.TAG_EXPOSURE_TIME;
+import static android.support.media.ExifInterface.TAG_FLASH;
+import static android.support.media.ExifInterface.TAG_GPS_DATESTAMP;
+import static android.support.media.ExifInterface.TAG_GPS_LATITUDE_REF;
+import static android.support.media.ExifInterface.TAG_GPS_TIMESTAMP;
+import static android.support.media.ExifInterface.TAG_MAKE;
+import static android.support.media.ExifInterface.TAG_MODEL;
+import static android.support.media.ExifInterface.TAG_WHITE_BALANCE;
 import static com.invisibleteam.goinvisible.util.TagsMatcher.containsTag;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.verify;
