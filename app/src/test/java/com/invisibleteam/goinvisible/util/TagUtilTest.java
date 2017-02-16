@@ -164,4 +164,28 @@ public class TagUtilTest {
         assertThat(result, is(3.6));
     }
 
+    @Test
+    public void whenNullRationalValueIsGiven_DoubleZeroValueIsReturned() {
+        //Given
+        String rational = null;
+
+        //When
+        double result = TagUtil.parseRationalValueToDouble(rational);
+
+        //Then
+        assertThat(result, is(0.0));
+    }
+
+    @Test
+    public void whenDoubleValueIsGiven_RationalValueIsReturned() {
+        //Given
+        double value = 1.6;
+
+        //When
+        String result = TagUtil.parseDoubleValueToRational(value);
+
+        //Then
+        assertThat(result, is("1600000/1000000"));
+    }
+
 }
