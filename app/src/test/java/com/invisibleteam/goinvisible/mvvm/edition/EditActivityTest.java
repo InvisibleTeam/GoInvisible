@@ -129,6 +129,20 @@ public class EditActivityTest {
     }
 
     @Test
+    public void whenClearAllTagsIsCalled_OnlyBackToImageActivityIsCalled() {
+        //Given
+        MenuItem menuItem = mock(MenuItem.class);
+        when(menuItem.getItemId()).thenReturn(EditActivity.CLEAR_ALL_TAGS);
+        Mockito.doNothing().when(activity).clearAllTags();
+
+        //When
+        activity.onOptionsItemSelected(menuItem);
+
+        //Then
+        verify(activity).clearAllTags();
+    }
+
+    @Test
     public void whenUnknownOptionItemSelected_defaultMethodIsCalled() {
         //given
         MenuItem menuItem = mock(MenuItem.class);

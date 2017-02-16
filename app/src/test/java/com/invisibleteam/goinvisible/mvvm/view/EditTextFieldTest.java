@@ -22,12 +22,11 @@ import static org.mockito.Mockito.when;
 @Config(constants = BuildConfig.class, sdk = 21)
 public class EditTextFieldTest {
 
-    private Context context;
     private EditTextField spyEditTextField;
 
     @Before
     public void setUp() {
-        context = RuntimeEnvironment.application;
+        Context context = RuntimeEnvironment.application;
         EditTextField editTextField = new EditTextField(context);
         spyEditTextField = spy(editTextField);
     }

@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.VisibleForTesting;
+import android.support.v4.widget.SwipeRefreshLayout;
 
 import com.invisibleteam.goinvisible.R;
 import com.invisibleteam.goinvisible.databinding.ActivityImagesBinding;
@@ -26,10 +27,11 @@ public class ImagesActivity extends CommonActivity {
 
     @Override
     public void prepareView() {
-        imagesCallback = buildImagesCallback();
 
         ActivityImagesBinding activityImagesBinding = DataBindingUtil.setContentView(this, R.layout.activity_images);
         setSupportActionBar(activityImagesBinding.mainToolbar);
+
+        imagesCallback = buildImagesCallback(activityImagesBinding.swipeRefreshLayout);
 
         ImagesCompoundRecyclerView imagesCompoundRecyclerView =
                 (ImagesCompoundRecyclerView) findViewById(R.id.images_compound_recycler_view);
@@ -39,6 +41,7 @@ public class ImagesActivity extends CommonActivity {
                 new ImagesProvider(getContentResolver()),
                 imagesCallback);
         activityImagesBinding.setViewModel(imagesViewModel);
+        activityImagesBinding.swipeRefreshLayout.setOnRefreshListener(imagesViewModel::updateImages);
 
         extractBundle();
     }
@@ -54,8 +57,8 @@ public class ImagesActivity extends CommonActivity {
     }
 
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
-    ImagesCallback buildImagesCallback() {
-        return new ImagesCallback(this);
+    ImagesCallback buildImagesCallback(SwipeRefreshLayout layout) {
+        return new ImagesCallback(this, layout);
     }
 
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)

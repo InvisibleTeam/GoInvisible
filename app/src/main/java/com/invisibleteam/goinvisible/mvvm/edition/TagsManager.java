@@ -42,6 +42,10 @@ class TagsManager {
     boolean editTag(Tag tag) {
         setExifAttributes(tag);
 
+        return saveExifAttributes();
+    }
+
+    private boolean saveExifAttributes() {
         try {
             exifInterface.saveAttributes();
             return true;
@@ -95,6 +99,19 @@ class TagsManager {
     }
 
     boolean clearTag(Tag tag) {
+        resetTag(tag);
+        return editTag(tag);
+    }
+
+    boolean clearTags(List<Tag> tagsList) {
+        for (Tag tag : tagsList) {
+            resetTag(tag);
+            setExifAttributes(tag);
+        }
+        return saveExifAttributes();
+    }
+
+    private void resetTag(Tag tag) {
         switch (tag.getTagType().getInputType()) {
             case TEXT_STRING:
                 tag.setValue("");
@@ -123,10 +140,7 @@ class TagsManager {
                 tag.setValue("0.0");
                 break;
             default:
-                break;
         }
-
-        return editTag(tag);
     }
 
     private void clearPositionTag(GeolocationTag tag) {

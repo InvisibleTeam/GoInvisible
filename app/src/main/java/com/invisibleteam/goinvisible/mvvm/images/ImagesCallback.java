@@ -4,17 +4,20 @@ import android.app.Activity;
 import android.content.Intent;
 import android.support.annotation.VisibleForTesting;
 import android.support.design.widget.Snackbar;
+import android.support.v4.widget.SwipeRefreshLayout;
 
 import com.invisibleteam.goinvisible.model.ImageDetails;
 import com.invisibleteam.goinvisible.mvvm.edition.EditActivity;
 
-public class ImagesCallback implements ImagesView {
+class ImagesCallback implements ImagesView {
 
     private Snackbar snackbar;
     private final Activity activity;
+    private final SwipeRefreshLayout refreshLayout;
 
-    public ImagesCallback(Activity activity) {
+    public ImagesCallback(Activity activity, SwipeRefreshLayout refreshLayout) {
         this.activity = activity;
+        this.refreshLayout = refreshLayout;
     }
 
     @Override
@@ -37,6 +40,11 @@ public class ImagesCallback implements ImagesView {
     @Override
     public void showSnackBar() {
         snackbar.show();
+    }
+
+    @Override
+    public void onStopRefreshingImages() {
+        refreshLayout.setRefreshing(false);
     }
 
     @VisibleForTesting

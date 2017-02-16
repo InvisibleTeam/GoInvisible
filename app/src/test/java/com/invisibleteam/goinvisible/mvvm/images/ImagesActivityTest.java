@@ -26,6 +26,7 @@ import static com.invisibleteam.goinvisible.util.IntentMatcher.containsSameData;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
@@ -100,7 +101,7 @@ public class ImagesActivityTest {
                 .get());
 
         ImagesCallback callback = mock(ImagesCallback.class);
-        when(activity.buildImagesCallback()).thenReturn(callback);
+        when(activity.buildImagesCallback(any())).thenReturn(callback);
 
         activity.onCreate(null);
 
