@@ -4,6 +4,7 @@ package com.invisibleteam.goinvisible.mvvm.edition;
 import android.app.Activity;
 import android.content.IntentSender;
 import android.location.LocationManager;
+import android.support.annotation.VisibleForTesting;
 import android.util.Log;
 
 import com.google.android.gms.common.api.PendingResult;
@@ -21,7 +22,8 @@ import javax.annotation.Nullable;
 public class GpsEstablisher {
     private static final String TAG = GpsEstablisher.class.getSimpleName();
 
-    private static final int GPS_REQUEST_CODE_DEFAULT = 1234;
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    static final int GPS_REQUEST_CODE_DEFAULT = 1234;
     private static final long LOCATION_REQUEST_INTERVAL = 100;
     private static final long LOCATION_REQUEST_FASTEST_INTERVAL = 100;
 
@@ -70,16 +72,9 @@ public class GpsEstablisher {
     }
 
     private void requestGps() {
-        LocationRequest locationRequest = buildLocationRequest();
-        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
-                .addLocationRequest(locationRequest);
-        builder.setAlwaysShow(true);
-
         PendingResult<LocationSettingsResult> result =
-                LocationServices.SettingsApi.checkLocationSettings(
-                        googleLocationApiEstablisher.getGoogleApiClient(),
-                        builder.build()
-                );
+                buildLocationSettingsResult();
+
         result.setResultCallback(locationSettingsResult -> {
             final Status status = locationSettingsResult.getStatus();
             switch (status.getStatusCode()) {
@@ -94,6 +89,19 @@ public class GpsEstablisher {
                     break;
             }
         });
+    }
+
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    PendingResult<LocationSettingsResult> buildLocationSettingsResult() {
+        LocationRequest locationRequest = buildLocationRequest();
+        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
+                .addLocationRequest(locationRequest)
+                .setAlwaysShow(true);
+
+        return LocationServices.SettingsApi.checkLocationSettings(
+                googleLocationApiEstablisher.getGoogleApiClient(),
+                builder.build()
+        );
     }
 
     private LocationRequest buildLocationRequest() {
@@ -113,9 +121,7 @@ public class GpsEstablisher {
     private void onLocationResolutionRequired(Status status) {
         try {
             if (weakActivityReference.get() != null) {
-                status.startResolutionForResult(
-                        weakActivityReference.get(),
-                        GPS_REQUEST_CODE_DEFAULT);
+                startResolutionForResult(status);
             } else {
                 //TODO log crashlytics info
                 Log.d(TAG, "No activity when trying to request GPS.");
@@ -124,6 +130,13 @@ public class GpsEstablisher {
             //TODO log crashlytics error
             Log.e(TAG, e.getMessage(), e);
         }
+    }
+
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    void startResolutionForResult(Status status) throws IntentSender.SendIntentException {
+        status.startResolutionForResult(
+                weakActivityReference.get(),
+                GPS_REQUEST_CODE_DEFAULT);
     }
 
     private void onGoogleApiConnectionFailure() {

@@ -1,6 +1,7 @@
 package com.invisibleteam.goinvisible.mvvm.edition;
 
 import android.os.Bundle;
+import android.support.annotation.VisibleForTesting;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
@@ -8,10 +9,12 @@ import com.google.android.gms.location.LocationServices;
 import javax.annotation.Nullable;
 
 public class GoogleLocationApiEstablisher {
-    private GoogleApiConnectionListener googleApiConnectionListener;
+
     private GoogleApiClient.Builder googleApiClientBuilder;
     @Nullable
-    private GoogleApiClient googleApiClient;
+    private GoogleApiConnectionListener googleApiConnectionListener;
+    @Nullable
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE) GoogleApiClient googleApiClient;
 
     public GoogleLocationApiEstablisher(GoogleApiClient.Builder googleApiClientBuilder) {
         this.googleApiClientBuilder = googleApiClientBuilder;
@@ -31,25 +34,35 @@ public class GoogleLocationApiEstablisher {
     private void buildGoogleApiClient() {
         googleApiClient = googleApiClientBuilder
                 .addApi(LocationServices.API)
-                .addOnConnectionFailedListener(connectionResult -> {
-                    if (googleApiConnectionListener != null) {
-                        googleApiConnectionListener.onFailure();
-                    }
-                })
-                .addConnectionCallbacks(new GoogleApiClient.ConnectionCallbacks() {
-                    @Override
-                    public void onConnected(@Nullable Bundle bundle) {
-                        if (googleApiConnectionListener != null) {
-                            googleApiConnectionListener.onSuccess();
-                        }
-                    }
-
-                    @Override
-                    public void onConnectionSuspended(int i) {
-
-                    }
-                })
+                .addOnConnectionFailedListener(buildConnectionFailedListener())
+                .addConnectionCallbacks(buildConnectionCallbacks())
                 .build();
+    }
+
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    GoogleApiClient.OnConnectionFailedListener buildConnectionFailedListener() {
+        return connectionResult -> {
+            if (googleApiConnectionListener != null) {
+                googleApiConnectionListener.onFailure();
+            }
+        };
+    }
+
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    GoogleApiClient.ConnectionCallbacks buildConnectionCallbacks() {
+        return new GoogleApiClient.ConnectionCallbacks() {
+            @Override
+            public void onConnected(@Nullable Bundle bundle) {
+                if (googleApiConnectionListener != null) {
+                    googleApiConnectionListener.onSuccess();
+                }
+            }
+
+            @Override
+            public void onConnectionSuspended(int i) {
+
+            }
+        };
     }
 
     void setGoogleApiConnectionListener(GoogleApiConnectionListener listener) {
