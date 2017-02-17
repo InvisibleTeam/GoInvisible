@@ -74,8 +74,12 @@ public abstract class CommonActivity extends AppCompatActivity {
                 .setPositiveButton(getString(android.R.string.ok)
                         .toUpperCase(Locale.getDefault()), (dialog, which) -> requestForPermissions())
                 .setNegativeButton(getString(R.string.exit_app)
-                        .toUpperCase(Locale.getDefault()), (dialog, which) -> System.exit(0))
+                        .toUpperCase(Locale.getDefault()), (dialog, which) -> exitFromApp())
                 .setCancelable(false)
                 .show();
+    }
+
+    private void exitFromApp() {
+        this.finishAffinity();
     }
 }
