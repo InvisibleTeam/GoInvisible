@@ -88,12 +88,12 @@ public class EditActivity extends CommonActivity {
     final EditTagListener editTagListener = new EditTagListener() {
         @Override
         public void openTagEditionView(Tag tag) {
-            if (tag.getKey().equals(ExifInterface.TAG_GPS_LATITUDE)) {
+            if (ExifInterface.TAG_GPS_LATITUDE.equals(tag.getKey())) {
                 EditActivity.this.tag = tag;
                 startPlaceIntent();
-            } else if (tag.getTagType().getInputType().equals(InputType.UNMODIFIABLE)) {
+            } else if (InputType.UNMODIFIABLE.equals(tag.getTagType().getInputType())) {
                 showSnackBar(R.string.unmodifiable_tag_message);
-            } else if (tag.getTagType().getInputType().equals(InputType.INDEFINITE)) {
+            } else if (InputType.INDEFINITE.equals(tag.getTagType().getInputType())) {
                 showSnackBar(R.string.error_message);
             } else {
                 EditActivity.this.openEditDialog(tag);

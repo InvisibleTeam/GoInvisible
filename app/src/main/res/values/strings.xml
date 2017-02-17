@@ -14,6 +14,7 @@
     <string name="save">Save</string>
     <string name="clear_all_tags">Clear all</string>
     <string name="unmodifiable_tag_message">Tag is unmodifiable.</string>
+    <string name="error_text">Error</string>
 
     //Tags descriptions
     <string name="tag_exposure_time_1">No absolute unit of measurement</string>
