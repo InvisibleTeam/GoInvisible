@@ -15,6 +15,12 @@
     <string name="save">Save</string>
     <string name="clear_all_tags">Clear all</string>
 
+    <string name="settings">Settings</string>
+    <string name="periodic_clearing">Periodic clearing</string>
+    <string name="enable_periodic_clearing">Periodic clearing service</string>
+    <string name="clearing_service_interval">Clearing service interval</string>
+
+
     //Tags descriptions
     <string name="tag_exposure_time_1">No absolute unit of measurement</string>
     <string name="tag_exposure_time_2">Inch</string>

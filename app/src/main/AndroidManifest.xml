@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest package="com.invisibleteam.goinvisible"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          package="com.invisibleteam.goinvisible">
 
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 
     <application
         android:name=".GoInvisibleApplication"
@@ -16,16 +16,17 @@
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyDxwNfPyGz3ohSF0upMmfP9HbNOEGtzR2o" />
+            android:value="AIzaSyDxwNfPyGz3ohSF0upMmfP9HbNOEGtzR2o"/>
 
         <activity android:name=".mvvm.images.ImagesActivity">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.MAIN"/>
 
-                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".mvvm.edition.EditActivity" />
+        <activity android:name=".mvvm.edition.EditActivity"/>
+        <activity android:name=".mvvm.settings.SettingsActivity"/>
     </application>
 
 </manifest>
