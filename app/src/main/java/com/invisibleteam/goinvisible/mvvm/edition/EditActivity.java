@@ -44,6 +44,7 @@ public class EditActivity extends CommonActivity {
     private static final String TAG = EditActivity.class.getSimpleName();
     private static final int APPROVE_CHANGES = 1;
     private EditCompoundRecyclerView editCompoundRecyclerView;
+    private EditActivityHelper editActivityHelper;
     private TagsManager tagsManager;
     private GpsEstablisher gpsEstablisher;
 
@@ -89,15 +90,22 @@ public class EditActivity extends CommonActivity {
         if (savedInstanceState != null) {
             tag = savedInstanceState.getParcelable(TAG_MODEL);
         }
+        editActivityHelper = new EditActivityHelper(this);
         prepareLocationHandling();
     }
 
+    @Override
+    protected void onDestroy() {
+        editActivityHelper.onDestroy();
+        super.onDestroy();
+    }
+
     private void prepareLocationHandling() {
-        Snackbar googleApiFailureSnackbar = EditActivityHelper.createGpsSnackBar(this);
+        Snackbar googleApiFailureSnackbar = editActivityHelper.createGpsSnackBar();
         GpsEstablisher.StatusListener gpsStatusListener = new GpsEstablisher.StatusListener() {
             @Override
             public void onGpsEstablished() {
-                EditActivityHelper.openPlacePicker(tag, EditActivity.this);
+                editActivityHelper.openPlacePicker(tag);
             }
 
             @Override
@@ -105,7 +113,7 @@ public class EditActivity extends CommonActivity {
                 googleApiFailureSnackbar.show();
             }
         };
-        gpsEstablisher = EditActivityHelper.createGpsEstablisher(this, gpsStatusListener);
+        gpsEstablisher = editActivityHelper.createGpsEstablisher(gpsStatusListener);
     }
 
     @Override
@@ -213,7 +221,7 @@ public class EditActivity extends CommonActivity {
     }
 
     private void onNewPlace(Place place) {
-        GeolocationTag geolocationTag = EditActivityHelper.prepareNewPlacePositionTag(place, tag);
+        GeolocationTag geolocationTag = editActivityHelper.prepareNewPlacePositionTag(place, tag);
         editViewModel.onEditEnded(geolocationTag);
     }
 
@@ -224,8 +232,9 @@ public class EditActivity extends CommonActivity {
     }
 
     private void startPlaceIntent() {
+
         if (gpsEstablisher.isGpsEstablished()) {
-            EditActivityHelper.openPlacePicker(tag, this);
+            editActivityHelper.openPlacePicker(tag);
         } else {
             gpsEstablisher.requestGpsConnection();
         }

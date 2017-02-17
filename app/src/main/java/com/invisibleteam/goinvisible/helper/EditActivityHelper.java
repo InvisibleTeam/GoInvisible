@@ -1,6 +1,5 @@
 package com.invisibleteam.goinvisible.helper;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.location.LocationManager;
 import android.support.annotation.NonNull;
@@ -18,6 +17,7 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.invisibleteam.goinvisible.R;
 import com.invisibleteam.goinvisible.model.GeolocationTag;
 import com.invisibleteam.goinvisible.model.Tag;
+import com.invisibleteam.goinvisible.mvvm.edition.EditActivity;
 import com.invisibleteam.goinvisible.mvvm.edition.GoogleLocationApiEstablisher;
 import com.invisibleteam.goinvisible.mvvm.edition.GpsEstablisher;
 import com.invisibleteam.goinvisible.util.LatLngUtil;
@@ -30,8 +30,14 @@ public class EditActivityHelper {
 
     private static final int INITIAL_MAP_RADIUS = 20000;
 
+    private EditActivity editActivity;
+
+    public EditActivityHelper(EditActivity editActivity) {
+        this.editActivity = editActivity;
+    }
+
     @NonNull
-    public static GeolocationTag prepareNewPlacePositionTag(Place place, Tag tag) {
+    public GeolocationTag prepareNewPlacePositionTag(Place place, Tag tag) {
         GeolocationTag geolocationTag = (GeolocationTag) tag;
         double latitude = place.getLatLng().latitude;
         double longitude = place.getLatLng().longitude;
@@ -47,7 +53,7 @@ public class EditActivityHelper {
         return geolocationTag;
     }
 
-    public static void openPlacePicker(Tag tag, Activity activity) {
+    public void openPlacePicker(Tag tag) {
         try {
             GeolocationTag geolocationTag = (GeolocationTag) tag;
             PlacePicker.IntentBuilder intentBuilder = new PlacePicker.IntentBuilder();
@@ -60,30 +66,38 @@ public class EditActivityHelper {
                 intentBuilder.setLatLngBounds(bounds);
             }
 
-            Intent intent = intentBuilder.build(activity);
-            activity.startActivityForResult(intent, PLACE_REQUEST_ID);
+            Intent intent = intentBuilder.build(editActivity);
+            editActivity.startActivityForResult(intent, PLACE_REQUEST_ID);
         } catch (GooglePlayServicesRepairableException e) {
-            GoogleApiAvailability.getInstance().getErrorDialog(activity, e.getConnectionStatusCode(), 0);
+            GoogleApiAvailability.getInstance().getErrorDialog(editActivity, e.getConnectionStatusCode(), 0);
         } catch (GooglePlayServicesNotAvailableException e) {
-            Toast.makeText(activity, R.string.google_services_error,
+            Toast.makeText(editActivity, R.string.google_services_error,
                     Toast.LENGTH_LONG).show();
         }
     }
 
-    public static Snackbar createGpsSnackBar(Activity activity) {
+    public Snackbar createGpsSnackBar() {
         return Snackbar.make(
-                activity.findViewById(android.R.id.content),
+                editActivity.findViewById(android.R.id.content),
                 R.string.google_api_connection_error,
                 Snackbar.LENGTH_LONG);
     }
 
-    public static GpsEstablisher createGpsEstablisher(Activity activity, GpsEstablisher.StatusListener listener) {
-        LocationManager locationManager = (LocationManager) activity.getSystemService(LOCATION_SERVICE);
+    public GpsEstablisher createGpsEstablisher(GpsEstablisher.StatusListener listener) {
+        LocationManager locationManager = (LocationManager) editActivity.getSystemService(LOCATION_SERVICE);
         GoogleLocationApiEstablisher googleLocationApiEstablisher =
                 new GoogleLocationApiEstablisher(
-                        new GoogleApiClient.Builder(activity));
-        GpsEstablisher gpsEstablisher = new GpsEstablisher(locationManager, googleLocationApiEstablisher, activity);
+                        new GoogleApiClient.Builder(editActivity));
+        GpsEstablisher gpsEstablisher = new GpsEstablisher(locationManager, googleLocationApiEstablisher, editActivity);
         gpsEstablisher.setStatusListener(listener);
         return gpsEstablisher;
+    }
+
+    /**
+     * Clears activity reference.
+     * Cannot use this class after calling this method.
+     */
+    public void onDestroy() {
+        editActivity = null;
     }
 }
