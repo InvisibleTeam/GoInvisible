@@ -14,6 +14,14 @@ public class ImagesView extends UiView {
 
     public static Boolean isOpened() {
         return UI_DEVICE.wait(Until.hasObject(MAIN_ACTIVITY_SELECTOR), Config.LAUNCH_TIMEOUT) &&
-                UI_DEVICE.wait(Until.hasObject(NO_IMAGES_INFORMATION_SELECTOR), Config.LAUNCH_TIMEOUT);
+                (isNoImagesInfoVisible() || isAnyImageLoaded());
+    }
+
+    public static Boolean isNoImagesInfoVisible() {
+        return UI_DEVICE.hasObject(NO_IMAGES_INFORMATION_SELECTOR);
+    }
+
+    public static Boolean isAnyImageLoaded() {
+        return UI_DEVICE.findObjects(By.res(GOINVISIBLE_PACKAGE, "image")).size() > 0;
     }
 }
