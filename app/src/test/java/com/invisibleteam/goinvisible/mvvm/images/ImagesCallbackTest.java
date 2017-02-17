@@ -25,12 +25,12 @@ public class ImagesCallbackTest {
         //Given
         Activity activity = Robolectric.buildActivity(ImagesActivity.class).create().get();
         ImagesCallback imagesCallback = new ImagesCallback(activity, mock(SwipeRefreshLayout.class));
-        imagesCallback.prepareSnackBar(R.string.error);
+        imagesCallback.prepareSnackBar(R.string.tag_changed_message);
 
         Snackbar baseSnackbar = imagesCallback.getSnackbar();
 
         //When
-        imagesCallback.prepareSnackBar(R.string.error);
+        imagesCallback.prepareSnackBar(R.string.tag_changed_message);
 
         //Then
         Snackbar finalSnackbar = imagesCallback.getSnackbar();

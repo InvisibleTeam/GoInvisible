@@ -18,7 +18,6 @@ import com.invisibleteam.goinvisible.util.DialogRangedValuesUtil;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import javax.annotation.Nullable;
@@ -29,20 +28,17 @@ class DialogFactory {
     private final Context context;
     private final EditViewModel viewModel;
     private DateDialog dateDialog;
-    @Nullable
     private Tag tag;
 
-    DialogFactory(DialogFragment dialog, @Nullable Tag tag, EditViewModel viewModel) {
+    DialogFactory(DialogFragment dialog, Tag tag, EditViewModel viewModel) {
         this.dialog = dialog;
         this.tag = tag;
         this.viewModel = viewModel;
         context = dialog.getActivity();
     }
 
+    @Nullable
     Dialog createDialog() {
-        if (tag == null) {
-            return createErrorDialog();
-        }
         if (dateDialog == null) {
             dateDialog = new DateDialog(context, tag, viewModel);
         }
@@ -77,10 +73,11 @@ class DialogFactory {
                         | android.text.InputType.TYPE_NUMBER_FLAG_DECIMAL);
 
             default:
-                return createErrorDialog();
+                return null;
         }
     }
 
+    @Nullable
     Dialog createRangedDialog(Context context, Tag tag, EditViewModel viewModel) {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
         alertDialog.setTitle(tag.getKey());
@@ -88,7 +85,7 @@ class DialogFactory {
         final Map<Integer, Integer> tagsMap = DialogRangedValuesUtil.getTagsMapValues(tag.getKey());
 
         if (tagsMap == null || tagsMap.isEmpty()) {
-            return createErrorDialog();
+            return null;
         }
 
         final List<String> tagNames = new ArrayList<>(tagsMap.size());
@@ -162,16 +159,5 @@ class DialogFactory {
         }
         viewModel.setIsError(true);
         binding.valueTextLayout.setError("Error");
-    }
-
-    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
-    Dialog createErrorDialog() {
-        return new AlertDialog
-                .Builder(context, R.style.AlertDialogStyle)
-                .setTitle(R.string.error)
-                .setMessage(R.string.error_message)
-                .setPositiveButton(context.getString(android.R.string.ok).toUpperCase(Locale.getDefault()), null)
-                .setCancelable(false)
-                .show();
     }
 }

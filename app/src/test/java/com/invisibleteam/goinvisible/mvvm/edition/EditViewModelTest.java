@@ -69,7 +69,7 @@ public class EditViewModelTest {
         editViewModel.onEditStarted(tag);
 
         //Then
-        verify(listener).openEditDialog(eq(tag));
+        verify(listener).openTagEditionView(eq(tag));
     }
 
     @Test
