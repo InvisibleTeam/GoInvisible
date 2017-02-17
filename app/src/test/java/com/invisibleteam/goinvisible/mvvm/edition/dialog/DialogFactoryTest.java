@@ -55,7 +55,6 @@ public class DialogFactoryTest {
     @Before
     public void setUp() {
         activity = Robolectric.buildActivity(Activity.class).create().get();
-
         dialog = EditDialog.newInstance(activity, createTag(TEXT_STRING));
         dialog.show(activity.getFragmentManager(), EditDialog.FRAGMENT_TAG);
         dialog = spy(dialog);
