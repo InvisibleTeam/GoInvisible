@@ -49,20 +49,24 @@ public abstract class CommonActivity extends AppCompatActivity {
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        switch (requestCode) {
-            case REQUEST_FOR_PERMISSIONS_REQUEST_CODE: {
-                for (int grantResult : grantResults) {
-                    if (grantResult == PackageManager.PERMISSION_DENIED) {
-                        showMissingPermissionsDialog();
-                        return;
+        if (grantResults.length > 0) {
+            switch (requestCode) {
+                case REQUEST_FOR_PERMISSIONS_REQUEST_CODE: {
+                    for (int grantResult : grantResults) {
+                        if (grantResult == PackageManager.PERMISSION_DENIED) {
+                            showMissingPermissionsDialog();
+                            return;
+                        }
                     }
+                    prepareView();
+                    break;
                 }
-                prepareView();
-                break;
+                default: {
+                    showMissingPermissionsDialog();
+                }
             }
-            default: {
-                showMissingPermissionsDialog();
-            }
+        } else {
+            requestForPermissions();
         }
     }
 
