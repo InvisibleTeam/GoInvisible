@@ -58,7 +58,8 @@ public class TagUtil {
         final int[] result = new int[3];
         result[0] = (int) value;
         result[1] = (int) (TimeUnit.HOURS.toMinutes(1) * (value - result[0]));
-        result[2] = (int) ((TimeUnit.HOURS.toSeconds(1) * (value - result[0])) - (TimeUnit.HOURS.toMinutes(1) * result[1]));
+        result[2] = (int) ((TimeUnit.HOURS.toSeconds(1) * (value - result[0]))
+                - (TimeUnit.HOURS.toMinutes(1) * result[1]));
 
         return result;
     }
@@ -114,7 +115,8 @@ public class TagUtil {
     public static String parseDoubleGPSToRationalGPS(double value) {
         long degrees = (long) value;
         long minutes = (long) (TimeUnit.HOURS.toMinutes(1) * (value - degrees));
-        double seconds = Math.abs((TimeUnit.HOURS.toSeconds(1) * (value - degrees)) - (TimeUnit.HOURS.toMinutes(1) * minutes));
+        double seconds = Math.abs((TimeUnit.HOURS.toSeconds(1) * (value - degrees))
+                - (TimeUnit.HOURS.toMinutes(1) * minutes));
 
         long exactSecondsValue = parseDoubleToLong(seconds);
 
