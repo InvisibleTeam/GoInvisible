@@ -69,11 +69,11 @@ public class ImagesActivityTest {
     public void whenSettingsOptionIsClicked_SettingsActivityIsStarted() {
         //Given
         MenuItem menuItem = mock(MenuItem.class);
-        when(menuItem.getItemId()).thenReturn(R.id.settings);
         ShadowActivity shadowActivity = shadowOf(activity);
+        when(menuItem.getItemId()).thenReturn(R.id.settings);
 
         //When
-        activity.getImagesCallback().navigateToEdit(new ImageDetails("path", "name"));
+        activity.onOptionsItemSelected(menuItem);
 
         //Then
         Intent settingActivity = shadowActivity.peekNextStartedActivity();
