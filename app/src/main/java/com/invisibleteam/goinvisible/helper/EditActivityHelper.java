@@ -97,7 +97,7 @@ public class EditActivityHelper {
      * Clears activity reference.
      * Cannot use this class after calling this method.
      */
-    public void onDestroy() {
+    public void onStop() {
         editActivity = null;
     }
 }

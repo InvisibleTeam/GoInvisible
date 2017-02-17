@@ -95,9 +95,9 @@ public class EditActivity extends CommonActivity {
     }
 
     @Override
-    protected void onDestroy() {
-        editActivityHelper.onDestroy();
-        super.onDestroy();
+    protected void onStop() {
+        editActivityHelper.onStop();
+        super.onStop();
     }
 
     private void prepareLocationHandling() {
