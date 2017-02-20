@@ -3,7 +3,6 @@ package com.invisibleteam.goinvisible.mvvm.images;
 import android.content.Context;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
-import android.os.Bundle;
 import android.support.annotation.VisibleForTesting;
 import android.support.v4.widget.SwipeRefreshLayout;
 
@@ -14,15 +13,10 @@ import com.invisibleteam.goinvisible.mvvm.images.adapter.ImagesCompoundRecyclerV
 
 public class ImagesActivity extends CommonActivity {
 
-    public final static String TAGS_CHANGED_EXTRA = "tagsChangedExtra";
     private ImagesCallback imagesCallback;
 
     public static Intent buildIntent(Context context) {
-        Intent intent = new Intent(context, ImagesActivity.class);
-        intent.putExtra(ImagesActivity.TAGS_CHANGED_EXTRA, true);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-
-        return intent;
+        return new Intent(context, ImagesActivity.class);
     }
 
     @Override
@@ -42,18 +36,6 @@ public class ImagesActivity extends CommonActivity {
                 imagesCallback);
         activityImagesBinding.setViewModel(imagesViewModel);
         activityImagesBinding.swipeRefreshLayout.setOnRefreshListener(imagesViewModel::updateImages);
-
-        extractBundle();
-    }
-
-    void extractBundle() {
-        Bundle bundle = getIntent().getExtras();
-        if (bundle != null) {
-            if (bundle.containsKey(TAGS_CHANGED_EXTRA)) {
-                imagesCallback.prepareSnackBar(R.string.tags_changed_message);
-                imagesCallback.showSnackBar();
-            }
-        }
     }
 
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
