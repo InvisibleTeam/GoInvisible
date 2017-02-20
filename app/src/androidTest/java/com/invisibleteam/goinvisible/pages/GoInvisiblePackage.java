@@ -66,16 +66,20 @@ public class GoInvisiblePackage extends UiView {
                     Files.touch(outFile);
                     Files.write(data, outFile);
 
-                    MediaScannerConnection.scanFile(
-                            InstrumentationRegistry.getTargetContext(),
-                            new String[]{outFile.getAbsolutePath()},
-                            null,
-                            (path, uri) -> Log.i("copyAssetsToStorage", String.format("Scanned %s: uri=%s", path, uri)));
+                    updateDeviceMediaList(outFile.getAbsolutePath());
                 }
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
+    }
+
+    private static void updateDeviceMediaList(String filePath) {
+        MediaScannerConnection.scanFile(
+                InstrumentationRegistry.getTargetContext(),
+                new String[]{filePath},
+                null,
+                (path, uri) -> Log.i("copyAssetsToStorage", String.format("Scanned %s: uri=%s", path, uri)));
     }
 
     public static void grantStoragePermissions() {
