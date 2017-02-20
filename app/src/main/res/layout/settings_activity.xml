@@ -8,6 +8,8 @@
         <variable
             name="viewModel"
             type="com.invisibleteam.goinvisible.mvvm.settings.SettingsViewModel"/>
+
+        <import type="android.view.View"/>
     </data>
 
     <LinearLayout
@@ -27,7 +29,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/text_view_margin"
-            android:text="@string/periodic_clearing"
+            android:text="@string/clearing"
+            android:textColor="@color/colorAccent"
             android:textSize="@dimen/section_title_text_size"/>
 
         <LinearLayout
@@ -35,23 +38,40 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:weightSum="4">
+            android:layout_marginStart="@dimen/text_view_margin"
+            android:layout_marginEnd="@dimen/text_view_margin"
+            android:layout_marginBottom="@dimen/text_view_margin"
+            android:weightSum="10">
 
-            <TextView
+            <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/text_view_margin"
-                android:layout_weight="3"
-                android:text="@string/enable_periodic_clearing"
-                android:textSize="@dimen/section_description_text_size"/>
+                android:layout_weight="8"
+                android:orientation="vertical">
+
+                <TextView
+                    android:textStyle="bold"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/periodic_clearing"
+                    android:textSize="@dimen/section_description_text_size"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/enable_periodic_clearing"
+                    android:textSize="@dimen/section_title_text_size"/>
+
+            </LinearLayout>
+
 
             <Switch
                 android:id="@+id/periodic_clearing_switch"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:checked="@{viewModel.getIsEnabled().get()}"
-                android:gravity="center"/>
+                android:layout_gravity="center_vertical"
+                android:gravity="center_vertical"
+                android:onCheckedChanged="@{(buttonView, isChecked) -> viewModel.onCheckedChanged(isChecked)}"/>
 
         </LinearLayout>
 
@@ -67,24 +87,24 @@
             android:weightSum="4">
 
             <TextView
+                android:id="@+id/textView"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/text_view_margin"
                 android:layout_weight="3"
-                android:enabled="@{viewModel.getIsEnabled().get()}"
+                android:enabled="@{viewModel.isClearServiceEnabled}"
                 android:text="@string/clearing_service_interval"
-                android:textSize="@dimen/section_description_text_size"
-                android:id="@+id/textView"/>
+                android:textSize="@dimen/section_title_text_size"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/text_view_margin"
                 android:layout_gravity="center_vertical"
+                android:layout_margin="@dimen/text_view_margin"
                 android:layout_weight="1"
-                android:enabled="@{viewModel.getIsEnabled().get()}"
+                android:enabled="@{viewModel.isClearServiceEnabled}"
                 android:text="@string/mock_interval_value"
-                android:textSize="@dimen/section_description_text_size"/>
+                android:textSize="@dimen/section_title_text_size"/>
 
         </LinearLayout>
 

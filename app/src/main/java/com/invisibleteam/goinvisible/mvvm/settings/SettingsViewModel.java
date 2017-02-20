@@ -5,13 +5,17 @@ import android.databinding.ObservableBoolean;
 
 public class SettingsViewModel {
 
-    private final ObservableBoolean isEnabled = new ObservableBoolean(false);
+    private final ObservableBoolean isClearServiceEnabled = new ObservableBoolean(false);
 
-    public ObservableBoolean getIsEnabled() {
-        return isEnabled;
+    public void onCheckedChanged(boolean isChecked) {
+        isClearServiceEnabled.set(isChecked);
     }
 
-    void setIsEnabled(boolean isEnabled) {
-        this.isEnabled.set(isEnabled);
+    public ObservableBoolean getIsClearServiceEnabled() {
+        return isClearServiceEnabled;
+    }
+
+    void setIsClearServiceEnabled(boolean isClearServiceEnabled) {
+        this.isClearServiceEnabled.set(isClearServiceEnabled);
     }
 }

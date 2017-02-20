@@ -1,5 +1,7 @@
 package com.invisibleteam.goinvisible.mvvm.settings;
 
+import android.content.Context;
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -12,6 +14,11 @@ import com.invisibleteam.goinvisible.R;
 import com.invisibleteam.goinvisible.databinding.SettingsActivityBinding;
 
 public class SettingsActivity extends AppCompatActivity {
+
+
+    public static Intent buildIntent(Context context) {
+        return new Intent(context, SettingsActivity.class);
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -31,11 +38,9 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     private void prepareViews() {
-        SettingsActivityBinding binding =  DataBindingUtil.setContentView(this, R.layout.settings_activity);
+        SettingsActivityBinding binding = DataBindingUtil.setContentView(this, R.layout.settings_activity);
         SettingsViewModel viewModel = new SettingsViewModel();
         binding.setViewModel(viewModel);
-        binding.periodicClearingSwitch.setOnCheckedChangeListener(
-                (buttonView, isChecked) -> viewModel.setIsEnabled(isChecked));
     }
 
     @Override

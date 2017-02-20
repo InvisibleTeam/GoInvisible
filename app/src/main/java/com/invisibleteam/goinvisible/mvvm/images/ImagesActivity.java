@@ -54,7 +54,7 @@ public class ImagesActivity extends CommonActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.settings:
-                Intent intent = new Intent(this, SettingsActivity.class);
+                Intent intent = SettingsActivity.buildIntent(this);
                 startActivity(intent);
                 return true;
             default:
