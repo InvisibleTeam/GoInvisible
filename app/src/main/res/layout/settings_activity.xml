@@ -50,7 +50,6 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:textStyle="bold"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/periodic_clearing"
@@ -60,6 +59,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/enable_periodic_clearing"
+                    android:textColor="@android:color/darker_gray"
                     android:textSize="@dimen/section_title_text_size"/>
 
             </LinearLayout>
