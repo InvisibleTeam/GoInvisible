@@ -12,6 +12,8 @@ import android.view.MenuItem;
 
 import com.invisibleteam.goinvisible.R;
 import com.invisibleteam.goinvisible.databinding.SettingsActivityBinding;
+import com.invisibleteam.goinvisible.model.ClearingInterval;
+import com.invisibleteam.goinvisible.util.SharedPreferencesUtil;
 
 public class SettingsActivity extends AppCompatActivity {
 
@@ -41,6 +43,11 @@ public class SettingsActivity extends AppCompatActivity {
         SettingsActivityBinding binding = DataBindingUtil.setContentView(this, R.layout.settings_activity);
         SettingsViewModel viewModel = new SettingsViewModel();
         binding.setViewModel(viewModel);
+        ClearingInterval interval = SharedPreferencesUtil.getInterval(this);
+        if (interval != null) {
+            viewModel.setIsClearServiceEnabled(true);
+            viewModel.setIntervalName(interval.getIntervalFormattedName(this));
+        }
     }
 
     @Override
