@@ -74,6 +74,14 @@ public class GoInvisiblePackage extends UiView {
         }
     }
 
+    public static void deleteAssetsFromLocalStorage() {
+        File picturesFolder = new File("/sdcard/Pictures");
+        for (File file : picturesFolder.listFiles()) {
+            file.delete();
+            updateDeviceMediaList(file.getAbsolutePath());
+        }
+    }
+
     private static void updateDeviceMediaList(String filePath) {
         MediaScannerConnection.scanFile(
                 InstrumentationRegistry.getTargetContext(),

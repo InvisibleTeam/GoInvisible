@@ -26,6 +26,8 @@ public class ListViewTests {
 
     @After
     public void tearDown() throws Exception {
+        GoInvisiblePackage.deleteAssetsFromLocalStorage();
+
         UiDeviceProvider.getInstance().pressHome();
     }
 
