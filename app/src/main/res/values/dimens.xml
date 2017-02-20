@@ -5,4 +5,5 @@
     <dimen name="information_text_size">20sp</dimen>
     <dimen name="tag_value_size">16sp</dimen>
     <dimen name="divider_margin">32dp</dimen>
+    <dimen name="edit_image_size">244dp</dimen>
 </resources>
