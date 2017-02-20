@@ -42,7 +42,7 @@ public class ListViewTests {
      * <p>
      * Steps to execute:
      * - ensure GoInvisible ListView is opened
-     * - ensure
+     * - ensure that on ListView images are displayed
      *
      * @throws Exception
      */
