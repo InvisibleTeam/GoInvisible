@@ -29,6 +29,21 @@ public class ListViewTests {
         UiDeviceProvider.getInstance().pressHome();
     }
 
+    /**
+     * Test case:
+     * - Show on ListView files that are in device storage
+     * <p>
+     * Preconditions:
+     * - GoInvisible app is opened
+     * - permissions are granted
+     * - there are files in device storage
+     * <p>
+     * Steps to execute:
+     * - ensure GoInvisible ListView is opened
+     * - ensure
+     *
+     * @throws Exception
+     */
     @Test
     public void checkImagesAreListed() throws Exception {
         assertTrue(ImagesView.isOpened());
