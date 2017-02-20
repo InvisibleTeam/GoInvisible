@@ -111,10 +111,10 @@ public class EditActivity extends CommonActivity {
         }
     };
 
-    private void showSnackBar(int unmodifiable_tag_message) {
+    private void showSnackBar(int message) {
         Snackbar.make(
                 this.findViewById(android.R.id.content),
-                unmodifiable_tag_message,
+                message,
                 Snackbar.LENGTH_LONG).show();
     }
 
