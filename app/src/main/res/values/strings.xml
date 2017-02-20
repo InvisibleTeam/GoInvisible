@@ -5,7 +5,6 @@
     <string name="permissions_dialog_message">Storage permission is necessary to use this application.</string>
     <string name="exit_app">exit application</string>
     <string name="no_images_info">There are no images to edit</string>
-    <string name="error">Error</string>
     <string name="error_message">There are some problems with editing this tag</string>
     <string name="enter_value_hint">Enter value</string>
     <string name="google_services_error">Google Play Services is not available.</string>
@@ -15,6 +14,8 @@
     <string name="tags_changed_message">Tags were successfully updated</string>
     <string name="save">Save</string>
     <string name="clear_all_tags">Clear all</string>
+    <string name="unmodifiable_tag_message">Tag is unmodifiable.</string>
+    <string name="error_text">Error</string>
 
     //Tags descriptions
     <string name="tag_exposure_time_1">No absolute unit of measurement</string>

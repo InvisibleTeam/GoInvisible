@@ -22,6 +22,7 @@ import com.invisibleteam.goinvisible.databinding.ActivityEditBinding;
 import com.invisibleteam.goinvisible.helper.EditActivityHelper;
 import com.invisibleteam.goinvisible.model.GeolocationTag;
 import com.invisibleteam.goinvisible.model.ImageDetails;
+import com.invisibleteam.goinvisible.model.InputType;
 import com.invisibleteam.goinvisible.model.Tag;
 import com.invisibleteam.goinvisible.mvvm.common.CommonActivity;
 import com.invisibleteam.goinvisible.mvvm.edition.adapter.EditCompoundRecyclerView;
@@ -64,10 +65,14 @@ public class EditActivity extends CommonActivity {
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
     final EditTagListener editTagListener = new EditTagListener() {
         @Override
-        public void openEditDialog(Tag tag) {
-            if (tag.getKey().equals(ExifInterface.TAG_GPS_LATITUDE)) {
+        public void openTagEditionView(Tag tag) {
+            if (ExifInterface.TAG_GPS_LATITUDE.equals(tag.getKey())) {
                 EditActivity.this.tag = tag;
                 startPlaceIntent();
+            } else if (InputType.UNMODIFIABLE.equals(tag.getTagType().getInputType())) {
+                showSnackBar(R.string.unmodifiable_tag_message);
+            } else if (InputType.INDEFINITE.equals(tag.getTagType().getInputType())) {
+                showSnackBar(R.string.error_message);
             } else {
                 EditActivity.this.openEditDialog(tag);
             }
@@ -77,7 +82,19 @@ public class EditActivity extends CommonActivity {
         public void onTagsChanged() {
             invalidateOptionsMenu();
         }
+
+        @Override
+        public void onEditError() {
+            showSnackBar(R.string.error_message);
+        }
     };
+
+    private void showSnackBar(int message) {
+        Snackbar.make(
+                this.findViewById(android.R.id.content),
+                message,
+                Snackbar.LENGTH_LONG).show();
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {

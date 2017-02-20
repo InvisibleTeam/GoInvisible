@@ -59,7 +59,7 @@ public class EditViewModel implements OnTagActionListener {
 
     @Override
     public void onEditStarted(Tag tag) {
-        listener.openEditDialog(tag);
+        listener.openTagEditionView(tag);
     }
 
     @Override
@@ -75,5 +75,10 @@ public class EditViewModel implements OnTagActionListener {
     @Override
     public void onTagsUpdated() {
         listener.onTagsChanged();
+    }
+
+    @Override
+    public void onEditError() {
+        listener.onEditError();
     }
 }
