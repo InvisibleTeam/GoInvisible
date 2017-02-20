@@ -45,7 +45,7 @@ public class PermissionTests {
      * - ensure "Missing permissions" dialog is opened
      * - go to permission dialog again
      * - allow access for GoInvisible app
-     * - ensure GoInvisible file view is opened
+     * - ensure GoInvisible ListView is opened
      *
      * @throws Exception
      */
