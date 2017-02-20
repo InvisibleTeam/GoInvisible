@@ -17,7 +17,6 @@ import com.invisibleteam.goinvisible.util.SharedPreferencesUtil;
 
 public class SettingsActivity extends AppCompatActivity {
 
-
     public static Intent buildIntent(Context context) {
         return new Intent(context, SettingsActivity.class);
     }
@@ -47,6 +46,9 @@ public class SettingsActivity extends AppCompatActivity {
         if (interval != null) {
             viewModel.setIsClearServiceEnabled(true);
             viewModel.setIntervalName(interval.getIntervalFormattedName(this));
+        } else {
+            //Set default interval value
+            viewModel.setIntervalName(ClearingInterval.DAY.getIntervalFormattedName(this));
         }
     }
 

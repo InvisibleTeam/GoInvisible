@@ -105,7 +105,7 @@
                 android:layout_margin="@dimen/text_view_margin"
                 android:layout_weight="1"
                 android:enabled="@{viewModel.isClearServiceEnabled}"
-                android:text="@{(TextUtils.isEmpty(viewModel.intervalName.get())) ? @string/interval_value_day : viewModel.intervalName}"
+                android:text="@{viewModel.intervalName}"
                 android:textSize="@dimen/section_title_text_size"/>
 
         </LinearLayout>
