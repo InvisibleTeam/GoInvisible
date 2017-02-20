@@ -103,7 +103,7 @@
                 android:layout_margin="@dimen/text_view_margin"
                 android:layout_weight="1"
                 android:enabled="@{viewModel.isClearServiceEnabled}"
-                android:text="@string/mock_interval_value"
+                android:text="@string/interval_value_1_day"
                 android:textSize="@dimen/section_title_text_size"/>
 
         </LinearLayout>

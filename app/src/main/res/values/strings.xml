@@ -21,7 +21,7 @@
     <string name="periodic_clearing">Periodic clearing</string>
     <string name="enable_periodic_clearing">Periodic clearing service</string>
     <string name="clearing_service_interval">Clearing service interval</string>
-    <string name="mock_interval_value">1 day</string>
+    <string name="interval_value_1_day">1 day</string>
 
     //Tags descriptions
     <string name="tag_exposure_time_1">No absolute unit of measurement</string>
