@@ -60,7 +60,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@{(TextUtils.isEmpty(viewModel.intervalName.get())) ? @string/interval_value_day: viewModel.intervalName.get()}"
+                    android:text="@string/enable_periodic_clearing"
                     android:textColor="@android:color/darker_gray"
                     android:textSize="@dimen/section_title_text_size"/>
 
@@ -105,7 +105,7 @@
                 android:layout_margin="@dimen/text_view_margin"
                 android:layout_weight="1"
                 android:enabled="@{viewModel.isClearServiceEnabled}"
-                android:text="@string/interval_value_day"
+                android:text="@{(TextUtils.isEmpty(viewModel.intervalName.get())) ? @string/interval_value_day : viewModel.intervalName}"
                 android:textSize="@dimen/section_title_text_size"/>
 
         </LinearLayout>

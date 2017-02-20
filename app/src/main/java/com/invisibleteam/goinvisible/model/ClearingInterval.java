@@ -12,16 +12,16 @@ public enum ClearingInterval {
     WEEK(R.string.interval_value_week, TimeUnit.DAYS.toMillis(7)),
     MONTH(R.string.interval_value_month, TimeUnit.DAYS.toMillis(28));
 
-    private final int intevalValueResId;
+    private final int intervalValueResId;
     private final long interval;
 
-    ClearingInterval(int intevalValueResId, long interval) {
-        this.intevalValueResId = intevalValueResId;
+    ClearingInterval(int intervalValueResId, long interval) {
+        this.intervalValueResId = intervalValueResId;
         this.interval = interval;
     }
 
     public String getIntervalFormattedName(Context context) {
-        return context.getString(intevalValueResId);
+        return context.getString(intervalValueResId);
     }
 
     public long getInterval() {
