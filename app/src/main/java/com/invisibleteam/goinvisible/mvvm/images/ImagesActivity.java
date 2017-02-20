@@ -5,11 +5,15 @@ import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.support.annotation.VisibleForTesting;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 
 import com.invisibleteam.goinvisible.R;
 import com.invisibleteam.goinvisible.databinding.ActivityImagesBinding;
 import com.invisibleteam.goinvisible.mvvm.common.CommonActivity;
 import com.invisibleteam.goinvisible.mvvm.images.adapter.ImagesCompoundRecyclerView;
+import com.invisibleteam.goinvisible.mvvm.settings.SettingsActivity;
 
 public class ImagesActivity extends CommonActivity {
 
@@ -36,6 +40,29 @@ public class ImagesActivity extends CommonActivity {
                 imagesCallback);
         activityImagesBinding.setViewModel(imagesViewModel);
         activityImagesBinding.swipeRefreshLayout.setOnRefreshListener(imagesViewModel::updateImages);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.settings:
+                openSettingActivity();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void openSettingActivity() {
+        Intent intent = SettingsActivity.buildIntent(this);
+        startActivity(intent);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.images_menu, menu);
+        return true;
     }
 
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)

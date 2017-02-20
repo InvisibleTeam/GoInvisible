@@ -3,10 +3,12 @@ package com.invisibleteam.goinvisible.mvvm.images;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.view.MenuItem;
 
 import com.invisibleteam.goinvisible.BuildConfig;
 import com.invisibleteam.goinvisible.model.ImageDetails;
 import com.invisibleteam.goinvisible.mvvm.edition.EditActivity;
+import com.invisibleteam.goinvisible.mvvm.settings.SettingsActivity;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -51,6 +53,21 @@ public class ImagesActivityTest {
         assertEquals("ImagePath", editActivityImageDetails.getPath());
         assertEquals("ImageName", editActivityImageDetails.getName());
         assertEquals(new ComponentName(activity, EditActivity.class), editActivityIntent.getComponent());
+    }
+
+    @Test
+    public void whenSettingsOptionIsClicked_SettingsActivityIsStarted() {
+        //Given
+        MenuItem menuItem = mock(MenuItem.class);
+        ShadowActivity shadowActivity = shadowOf(activity);
+        when(menuItem.getItemId()).thenReturn(R.id.settings);
+
+        //When
+        activity.onOptionsItemSelected(menuItem);
+
+        //Then
+        Intent settingActivity = shadowActivity.peekNextStartedActivity();
+        assertEquals(new ComponentName(activity, SettingsActivity.class), settingActivity.getComponent());
     }
 
     @Test
