@@ -5,7 +5,6 @@ import android.support.test.runner.AndroidJUnit4;
 import com.invisibleteam.goinvisible.pages.GoInvisiblePackage;
 import com.invisibleteam.goinvisible.pages.ImagesView;
 import com.invisibleteam.goinvisible.pages.MissingPermissionsDialog;
-import com.invisibleteam.goinvisible.pages.system.SystemHomeView;
 import com.invisibleteam.goinvisible.pages.system.SystemPermissionDialog;
 
 import org.junit.Before;
