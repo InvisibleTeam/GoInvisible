@@ -1,4 +1,4 @@
-package com.invisibleteam.goinvisible.mvvm.edition.dialog;
+package com.invisibleteam.goinvisible.mvvm.common;
 
 import android.content.Context;
 import android.view.View;
@@ -24,9 +24,9 @@ import static org.mockito.Mockito.when;
 
 @RunWith(RobolectricTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 21)
-public class RangedTypesAdapterTest {
+public class StringTypesAdapterTest {
 
-    private RangedTypesAdapter adapter;
+    private StringTypesAdapter adapter;
 
     @Before
     public void setup() {
@@ -34,7 +34,7 @@ public class RangedTypesAdapterTest {
 
         List<String> values = new ArrayList<>();
         values.add("test");
-        adapter = new RangedTypesAdapter(context, values);
+        adapter = new StringTypesAdapter(context, values);
     }
 
     @edu.umd.cs.findbugs.annotations.SuppressFBWarnings
@@ -51,7 +51,7 @@ public class RangedTypesAdapterTest {
     public void whenNotNullConvertViewPassed_ViewIsCreated() {
         //Given
         View convertView = mock(View.class);
-        RangedTypesAdapter.ViewHolder holder = Mockito.mock(RangedTypesAdapter.ViewHolder.class);
+        StringTypesAdapter.ViewHolder holder = Mockito.mock(StringTypesAdapter.ViewHolder.class);
         doNothing().when(holder).setValueText(anyString());
         when(convertView.getTag()).thenReturn(holder);
 
