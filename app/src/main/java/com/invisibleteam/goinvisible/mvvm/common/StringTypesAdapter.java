@@ -1,4 +1,4 @@
-package com.invisibleteam.goinvisible.mvvm.edition.dialog;
+package com.invisibleteam.goinvisible.mvvm.common;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
@@ -13,9 +13,9 @@ import com.invisibleteam.goinvisible.R;
 
 import java.util.List;
 
-class RangedTypesAdapter extends ArrayAdapter<String> {
+public class StringTypesAdapter extends ArrayAdapter<String> {
 
-    RangedTypesAdapter(Context context, List<String> values) {
+    public StringTypesAdapter(Context context, List<String> values) {
         super(context, 0, values);
     }
 

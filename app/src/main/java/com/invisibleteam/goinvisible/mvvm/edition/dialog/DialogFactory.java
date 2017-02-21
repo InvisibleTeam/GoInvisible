@@ -13,6 +13,7 @@ import com.invisibleteam.goinvisible.R;
 import com.invisibleteam.goinvisible.databinding.TextDialogBinding;
 import com.invisibleteam.goinvisible.model.InputType;
 import com.invisibleteam.goinvisible.model.Tag;
+import com.invisibleteam.goinvisible.mvvm.common.StringTypesAdapter;
 import com.invisibleteam.goinvisible.mvvm.edition.EditViewModel;
 import com.invisibleteam.goinvisible.util.DialogRangedValuesUtil;
 
@@ -101,7 +102,7 @@ class DialogFactory {
             valuesIndex++;
         }
 
-        alertDialog.setAdapter(new RangedTypesAdapter(context, tagNames), (dialog, index) -> {
+        alertDialog.setAdapter(new StringTypesAdapter(context, tagNames), (dialog, index) -> {
             dialog.dismiss();
             tag.setValue(tagValues.get(index));
             viewModel.onEditEnded(tag);
