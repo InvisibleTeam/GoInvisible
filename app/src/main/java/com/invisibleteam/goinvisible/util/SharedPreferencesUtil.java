@@ -12,6 +12,7 @@ public class SharedPreferencesUtil {
 
     private static final String TAG = SharedPreferencesUtil.class.getSimpleName();
     private static final String PREFERENCES_CLEARING_SERVICE_INTERVAL = "clearing_service_interval";
+    private static final String PREFERENCES_CLEARING_SERVICE_ENABLED = "clearing_service_on";
 
     public static void saveInterval(Context context, ClearingInterval interval) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
@@ -21,12 +22,23 @@ public class SharedPreferencesUtil {
         editor.apply();
     }
 
-    public static void clearCache(Context context) {
+    public static void setClearingServiceActivation(Context context, boolean isEnabled) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
 
         final SharedPreferences.Editor editor = prefs.edit();
-        editor.clear();
+        editor.putBoolean(PREFERENCES_CLEARING_SERVICE_ENABLED, isEnabled);
         editor.apply();
+    }
+
+    public static boolean isClearingServiceActivated(Context context) {
+        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context);
+
+        try {
+            return sharedPrefs.getBoolean(PREFERENCES_CLEARING_SERVICE_ENABLED, false);
+        } catch (Exception e) {
+            Log.e(TAG, "Error while get interval from preferences:", e);
+            return false;
+        }
     }
 
     @Nullable

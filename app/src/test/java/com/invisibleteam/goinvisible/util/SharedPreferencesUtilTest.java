@@ -12,6 +12,8 @@ import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 
+import static junit.framework.Assert.assertFalse;
+import static junit.framework.Assert.assertTrue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.core.Is.is;
@@ -49,15 +51,36 @@ public class SharedPreferencesUtilTest {
     }
 
     @Test
-    public void whenCacheIsCleared_NullIntervalIsRestored() {
+    public void whenClearingServiceIsActivated_EnabledClearingServicePreferencyIsReturned() {
         //Given
-        SharedPreferencesUtil.saveInterval(context, ClearingInterval.DAY);
-        SharedPreferencesUtil.clearCache(context);
+        SharedPreferencesUtil.setClearingServiceActivation(context, true);
 
         //When
-        ClearingInterval interval = SharedPreferencesUtil.getInterval(context);
+        boolean isActivated = SharedPreferencesUtil.isClearingServiceActivated(context);
 
         //Then
-        assertThat(interval, is(nullValue()));
+        assertTrue(isActivated);
+    }
+
+    @Test
+    public void whenClearingServiceWasNeverActivated_DisactivatedClearingServicePreferencyIsReturned() {
+        //When
+        boolean isActivated = SharedPreferencesUtil.isClearingServiceActivated(context);
+
+        //Then
+        assertFalse(isActivated);
+    }
+
+    @Test
+    public void whenClearingServiceIsDeactivated_DisactivatedClearingServicePreferencyIsReturned() {
+        //Given
+        SharedPreferencesUtil.setClearingServiceActivation(context, true);
+        SharedPreferencesUtil.setClearingServiceActivation(context, false);
+
+        //When
+        boolean isActivated = SharedPreferencesUtil.isClearingServiceActivated(context);
+
+        //Then
+        assertFalse(isActivated);
     }
 }

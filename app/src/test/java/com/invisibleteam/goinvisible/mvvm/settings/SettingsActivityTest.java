@@ -18,7 +18,6 @@ import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 
 import static com.invisibleteam.goinvisible.util.IntentMatcher.containsSameData;
-import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
@@ -98,22 +97,6 @@ public class SettingsActivityTest {
     }
 
     @Test
-    public void whenOnClearIsCalled_wholeCacheisClearedAndIntervalIsResetToOneDay() {
-        //Given
-        SharedPreferencesUtil.saveInterval(context, ClearingInterval.WEEK);
-        activity.onCreate(null);
-        SettingsViewModel.SettingsViewModelCallback callback = activity.getViewModelCallback();
-        SettingsViewModel viewModel = activity.getViewModel();
-
-        //When
-        callback.onClearCache();
-
-        //Then
-        assertThat(SharedPreferencesUtil.getInterval(context), is(nullValue()));
-        assertThat(viewModel.getIntervalName().get(), is(ClearingInterval.DAY.getIntervalFormattedName(context)));
-    }
-
-    @Test
     public void whenOn3eClearIsCalled_wholeCacheisClearedAndIntervalIsResetToOneDay() {
         //Given
         activity.onCreate(null);
@@ -136,7 +119,7 @@ public class SettingsActivityTest {
         SettingsViewModel viewModel = activity.getViewModel();
 
         //When
-        callback.onEnableCrearingService();
+        callback.onEnableClearingService();
 
         //Then
         assertThat(SharedPreferencesUtil.getInterval(context), is(ClearingInterval.DAY));

@@ -39,14 +39,14 @@ public class SettingsActivity extends AppCompatActivity {
         }
 
         @Override
-        public void onClearCache() {
-            viewModel.setIntervalName(ClearingInterval.DAY.getIntervalFormattedName(SettingsActivity.this));
-            SharedPreferencesUtil.clearCache(SettingsActivity.this);
+        public void onEnableClearingService() {
+            updateClearingServiceInterval(ClearingInterval.DAY);
+            SharedPreferencesUtil.setClearingServiceActivation(SettingsActivity.this, true);
         }
 
         @Override
-        public void onEnableCrearingService() {
-            updateClearingServiceInterval(ClearingInterval.DAY);
+        public void onDisableClearingService() {
+            SharedPreferencesUtil.setClearingServiceActivation(SettingsActivity.this, false);
         }
     };
 

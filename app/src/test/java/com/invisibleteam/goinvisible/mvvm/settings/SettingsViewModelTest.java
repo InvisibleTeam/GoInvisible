@@ -1,5 +1,7 @@
 package com.invisibleteam.goinvisible.mvvm.settings;
 
+import android.content.Context;
+
 import com.invisibleteam.goinvisible.BuildConfig;
 
 import org.junit.Before;
@@ -20,6 +22,7 @@ public class SettingsViewModelTest {
 
     private SettingsViewModel.SettingsViewModelCallback callback;
     private SettingsViewModel viewModel;
+    private Context context;
 
     @Before
     public void setUp() {
@@ -33,7 +36,7 @@ public class SettingsViewModelTest {
         viewModel.onCheckedChanged(true);
 
         //Then
-        verify(callback).onEnableCrearingService();
+        verify(callback).onEnableClearingService();
         assertTrue(viewModel.getIsClearServiceEnabled().get());
     }
 
@@ -43,7 +46,7 @@ public class SettingsViewModelTest {
         viewModel.onCheckedChanged(false);
 
         //Then
-        verify(callback).onClearCache();
+        verify(callback).onDisableClearingService();
         assertFalse(viewModel.getIsClearServiceEnabled().get());
     }
 
