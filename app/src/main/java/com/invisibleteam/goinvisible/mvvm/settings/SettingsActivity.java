@@ -40,7 +40,6 @@ public class SettingsActivity extends AppCompatActivity {
 
         @Override
         public void onEnableClearingService() {
-            updateClearingServiceInterval(ClearingInterval.DAY);
             SharedPreferencesUtil.setClearingServiceActivation(SettingsActivity.this, true);
         }
 
@@ -73,13 +72,14 @@ public class SettingsActivity extends AppCompatActivity {
     private void prepareViews() {
         SettingsActivityBinding binding = DataBindingUtil.setContentView(this, R.layout.settings_activity);
         binding.setViewModel(viewModel);
+
         ClearingInterval interval = SharedPreferencesUtil.getInterval(this);
-        if (interval != null) {
+        viewModel.setIntervalName(interval.getIntervalFormattedName(this));
+
+        boolean isClearingServiceEnabled = SharedPreferencesUtil.isClearingServiceActivated(this);
+
+        if (isClearingServiceEnabled) {
             viewModel.setIsClearServiceEnabled(true);
-            viewModel.setIntervalName(interval.getIntervalFormattedName(this));
-        } else {
-            //Set default interval value
-            viewModel.setIntervalName(ClearingInterval.DAY.getIntervalFormattedName(this));
         }
         alertDialog = createIntervalsDialog();
     }

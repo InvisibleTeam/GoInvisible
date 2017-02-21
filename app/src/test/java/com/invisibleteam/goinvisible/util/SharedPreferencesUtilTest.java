@@ -15,7 +15,6 @@ import org.robolectric.annotation.Config;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.core.Is.is;
 
 @RunWith(RobolectricTestRunner.class)
@@ -30,24 +29,24 @@ public class SharedPreferencesUtilTest {
     }
 
     @Test
-    public void whenIntervalIsNotStored_NullIntervalIsRestored() {
-        //When
-        ClearingInterval interval = SharedPreferencesUtil.getInterval(context);
-
-        //Then
-        assertThat(interval, is(nullValue()));
-    }
-
-    @Test
-    public void whenIntervalIsStored_ProperIntervalIsRestored() {
-        //Given
-        SharedPreferencesUtil.saveInterval(context, ClearingInterval.DAY);
-
+    public void whenIntervalIsNotStored_OneDayIntervalIsRestored() {
         //When
         ClearingInterval interval = SharedPreferencesUtil.getInterval(context);
 
         //Then
         assertThat(interval, is(ClearingInterval.DAY));
+    }
+
+    @Test
+    public void whenIntervalIsStored_ProperIntervalIsRestored() {
+        //Given
+        SharedPreferencesUtil.saveInterval(context, ClearingInterval.WEEK);
+
+        //When
+        ClearingInterval interval = SharedPreferencesUtil.getInterval(context);
+
+        //Then
+        assertThat(interval, is(ClearingInterval.WEEK));
     }
 
     @Test

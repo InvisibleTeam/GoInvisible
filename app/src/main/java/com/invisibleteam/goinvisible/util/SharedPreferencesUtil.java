@@ -3,7 +3,6 @@ package com.invisibleteam.goinvisible.util;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.invisibleteam.goinvisible.model.ClearingInterval;
@@ -41,7 +40,6 @@ public class SharedPreferencesUtil {
         }
     }
 
-    @Nullable
     public static ClearingInterval getInterval(Context context) {
         SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context);
 
@@ -50,7 +48,7 @@ public class SharedPreferencesUtil {
             return ClearingInterval.valueOf(interval);
         } catch (Exception e) {
             Log.e(TAG, "Error while get interval from preferences:", e);
-            return null;
+            return ClearingInterval.DAY;
         }
     }
 }
