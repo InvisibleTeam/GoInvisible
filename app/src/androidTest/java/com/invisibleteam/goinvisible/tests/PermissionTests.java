@@ -2,7 +2,7 @@ package com.invisibleteam.goinvisible.tests;
 
 import android.support.test.runner.AndroidJUnit4;
 
-import com.invisibleteam.goinvisible.pages.GoInvisiblePackage;
+import com.invisibleteam.goinvisible.pages.GoInvisibleApplication;
 import com.invisibleteam.goinvisible.pages.ImagesView;
 import com.invisibleteam.goinvisible.pages.MissingPermissionsDialog;
 import com.invisibleteam.goinvisible.pages.system.SystemPermissionDialog;
@@ -26,7 +26,7 @@ public class PermissionTests {
 
     @Before
     public void setUp() throws Exception {
-        GoInvisiblePackage.launchFromHomeScreen();
+        GoInvisibleApplication.launchFromHomeScreen();
     }
 
     /**

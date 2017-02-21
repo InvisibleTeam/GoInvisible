@@ -2,7 +2,7 @@ package com.invisibleteam.goinvisible.tests;
 
 import android.support.test.runner.AndroidJUnit4;
 
-import com.invisibleteam.goinvisible.pages.GoInvisiblePackage;
+import com.invisibleteam.goinvisible.pages.GoInvisibleApplication;
 import com.invisibleteam.goinvisible.pages.ImagesView;
 import com.invisibleteam.goinvisible.utilities.UiDeviceProvider;
 
@@ -17,16 +17,16 @@ import static org.junit.Assert.assertTrue;
 public class ListViewTests {
     @Before
     public void setUp() throws Exception {
-        GoInvisiblePackage.grantStoragePermissions();
+        GoInvisibleApplication.grantStoragePermissions();
 
-        GoInvisiblePackage.copyAssetsToLocalStorage();
+        GoInvisibleApplication.copyAssetsToLocalStorage();
 
-        GoInvisiblePackage.launchFromHomeScreen();
+        GoInvisibleApplication.launchFromHomeScreen();
     }
 
     @After
     public void tearDown() throws Exception {
-        GoInvisiblePackage.deleteAssetsFromLocalStorage();
+        GoInvisibleApplication.deleteAssetsFromLocalStorage();
 
         UiDeviceProvider.getInstance().pressHome();
     }

@@ -17,9 +17,10 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
+import static com.invisibleteam.goinvisible.utilities.Config.GOINVISIBLE_PACKAGE;
 import static org.junit.Assert.assertTrue;
 
-public class GoInvisiblePackage extends UiView {
+public class GoInvisibleApplication {
 
     @SuppressWarnings("SpellCheckingInspection")
     private static final String GOINVISIBLE_PACKAGE_TEST = "com.invisibleteam.goinvisible.test";
@@ -41,7 +42,7 @@ public class GoInvisiblePackage extends UiView {
         assertTrue(SystemHomeView.isOpened());
 
         // Launch the GoInvisible app
-        GoInvisiblePackage.launch();
+        GoInvisibleApplication.launch();
     }
 
     public static void copyAssetsToLocalStorage() {
