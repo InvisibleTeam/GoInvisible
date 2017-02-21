@@ -3,23 +3,12 @@ package com.invisibleteam.goinvisible.pages;
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.AssetManager;
-import android.os.Environment;
 import android.support.test.InstrumentationRegistry;
-import android.support.test.espresso.core.deps.guava.io.Files;
-import android.util.Log;
 
 import com.invisibleteam.goinvisible.pages.system.SystemHomeView;
 import com.invisibleteam.goinvisible.utilities.ShellCmdHelper;
-import com.invisibleteam.goinvisible.utilities.StorageManagementHelper;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
 
 import static com.invisibleteam.goinvisible.utilities.Config.GOINVISIBLE_PACKAGE;
-import static com.invisibleteam.goinvisible.utilities.StorageManagementHelper.updateDeviceMediaList;
-
 import static org.junit.Assert.assertTrue;
 
 public class GoInvisibleApplication {
