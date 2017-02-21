@@ -4,6 +4,7 @@ import android.support.test.runner.AndroidJUnit4;
 
 import com.invisibleteam.goinvisible.pages.GoInvisibleApplication;
 import com.invisibleteam.goinvisible.pages.ImagesView;
+import com.invisibleteam.goinvisible.utilities.StorageManagementHelper;
 import com.invisibleteam.goinvisible.utilities.UiDeviceProvider;
 
 import org.junit.After;
@@ -19,14 +20,16 @@ public class ListViewTests {
     public void setUp() throws Exception {
         GoInvisibleApplication.grantStoragePermissions();
 
-        GoInvisibleApplication.copyAssetsToLocalStorage();
+        StorageManagementHelper.copyAssetsToLocalStorage();
 
         GoInvisibleApplication.launchFromHomeScreen();
     }
 
     @After
     public void tearDown() throws Exception {
-        GoInvisibleApplication.deleteAssetsFromLocalStorage();
+        StorageManagementHelper.deleteAssetsFromLocalStorage();
+
+        StorageManagementHelper.deleteImagesFromPhotoDirectory();
 
         UiDeviceProvider.getInstance().pressHome();
     }
