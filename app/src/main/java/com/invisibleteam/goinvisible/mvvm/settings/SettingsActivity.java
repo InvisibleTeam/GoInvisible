@@ -40,19 +40,14 @@ public class SettingsActivity extends AppCompatActivity {
         }
 
         @Override
-        public void onClearCache() {
-            viewModel.setIntervalName(ClearingInterval.DAY.getIntervalFormattedName(SettingsActivity.this));
-            SharedPreferencesUtil.clearCache(SettingsActivity.this);
-        }
-
-        @Override
-        public void onEnableCrearingService() {
-            updateClearingServiceInterval(ClearingInterval.DAY);
+        public void onEnableClearingService() {
+            SharedPreferencesUtil.setClearingServiceActivation(SettingsActivity.this, true);
             GoInvisibleApplication.startClearingServiceAlarm(getApplicationContext());
         }
 
         @Override
         public void onDisableClearingService() {
+            SharedPreferencesUtil.setClearingServiceActivation(SettingsActivity.this, false);
             GoInvisibleApplication.stopClearingServiceAlarm(getApplicationContext());
         }
     };
@@ -80,13 +75,14 @@ public class SettingsActivity extends AppCompatActivity {
     private void prepareViews() {
         SettingsActivityBinding binding = DataBindingUtil.setContentView(this, R.layout.settings_activity);
         binding.setViewModel(viewModel);
+
         ClearingInterval interval = SharedPreferencesUtil.getInterval(this);
-        if (interval != null) {
+        viewModel.setIntervalName(interval.getIntervalFormattedName(this));
+
+        boolean isClearingServiceEnabled = SharedPreferencesUtil.isClearingServiceActivated(this);
+
+        if (isClearingServiceEnabled) {
             viewModel.setIsClearServiceEnabled(true);
-            viewModel.setIntervalName(interval.getIntervalFormattedName(this));
-        } else {
-            //Set default interval value
-            viewModel.setIntervalName(ClearingInterval.DAY.getIntervalFormattedName(this));
         }
         alertDialog = createIntervalsDialog();
     }

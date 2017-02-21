@@ -18,8 +18,8 @@ import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 
 import static com.invisibleteam.goinvisible.util.IntentMatcher.containsSameData;
-import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
@@ -71,6 +71,7 @@ public class SettingsActivityTest {
     public void whenSettingsActivityIsCreatedWithSavedInterval_ProperValueIsSet() {
         //Given
         SharedPreferencesUtil.saveInterval(context, ClearingInterval.WEEK);
+        SharedPreferencesUtil.setClearingServiceActivation(context, true);
         SettingsViewModel settingsViewModel = activity.getViewModel();
 
         //When
@@ -98,22 +99,6 @@ public class SettingsActivityTest {
     }
 
     @Test
-    public void whenOnClearIsCalled_wholeCacheisClearedAndIntervalIsResetToOneDay() {
-        //Given
-        SharedPreferencesUtil.saveInterval(context, ClearingInterval.WEEK);
-        activity.onCreate(null);
-        SettingsViewModel.SettingsViewModelCallback callback = activity.getViewModelCallback();
-        SettingsViewModel viewModel = activity.getViewModel();
-
-        //When
-        callback.onClearCache();
-
-        //Then
-        assertThat(SharedPreferencesUtil.getInterval(context), is(nullValue()));
-        assertThat(viewModel.getIntervalName().get(), is(ClearingInterval.DAY.getIntervalFormattedName(context)));
-    }
-
-    @Test
     public void whenOn3eClearIsCalled_wholeCacheisClearedAndIntervalIsResetToOneDay() {
         //Given
         activity.onCreate(null);
@@ -129,17 +114,28 @@ public class SettingsActivityTest {
     }
 
     @Test
-    public void whenEnableClearingServiceIsCalled_defaultClearingIntervalIsSet() {
+    public void whenEnableClearingServiceIsCalled_ServiceIsActivated() {
         //Given
         activity.onCreate(null);
         SettingsViewModel.SettingsViewModelCallback callback = activity.getViewModelCallback();
-        SettingsViewModel viewModel = activity.getViewModel();
 
         //When
-        callback.onEnableCrearingService();
+        callback.onEnableClearingService();
 
         //Then
-        assertThat(SharedPreferencesUtil.getInterval(context), is(ClearingInterval.DAY));
-        assertThat(viewModel.getIntervalName().get(), is(ClearingInterval.DAY.getIntervalFormattedName(context)));
+        assertTrue(SharedPreferencesUtil.isClearingServiceActivated(context));
+    }
+
+    @Test
+    public void whenDisableClearingServiceIsCalled_ServiceIsDeactivated() {
+        //Given
+        activity.onCreate(null);
+        SettingsViewModel.SettingsViewModelCallback callback = activity.getViewModelCallback();
+
+        //When
+        callback.onDisableClearingService();
+
+        //Then
+        assertFalse(SharedPreferencesUtil.isClearingServiceActivated(context));
     }
 }

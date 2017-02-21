@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.IBinder;
 
 import com.invisibleteam.goinvisible.BuildConfig;
-import com.invisibleteam.goinvisible.model.ClearingInterval;
 import com.invisibleteam.goinvisible.model.ImageDetails;
 import com.invisibleteam.goinvisible.util.SharedPreferencesUtil;
 
@@ -46,19 +45,20 @@ public class ClearingTagsServiceTest {
     }
 
     @Test
-    public void WhenIntervalIsNotSet_ServiceIsStopped() {
+    public void WhenClearingServiceIsNotActivated_ServiceIsStopped() {
         //When
         int returningCode = service.onStartCommand(new Intent(), 0, 0);
 
         //Then
         assertThat(returningCode, is(START_NOT_STICKY));
         verify(service).stopSelf();
+        verify(service, times(0)).performTagsClearing(any());
     }
 
     @Test
-    public void WhenIntervalIsSetProperly_ClearingTagsIsPerformed() {
+    public void WhenClearingServiceIsActivated_ServiceIsStarted() {
         //Given
-        SharedPreferencesUtil.saveInterval(context, ClearingInterval.DAY);
+        SharedPreferencesUtil.setClearingServiceActivation(context, true);
         when(service.getImages()).thenReturn(Collections.singletonList(new ImageDetails("path", "name")));
 
         //When
@@ -68,6 +68,22 @@ public class ClearingTagsServiceTest {
         assertThat(returningCode, is(START_STICKY));
         verify(service, times(0)).stopSelf();
         verify(service).performTagsClearing(any());
+    }
+
+    @Test
+    public void WhenClearingServiceIsDisabledAfterActivation_ServiceIsStopped() {
+        //Given
+        SharedPreferencesUtil.setClearingServiceActivation(context, true);
+        SharedPreferencesUtil.setClearingServiceActivation(context, false);
+        when(service.getImages()).thenReturn(Collections.singletonList(new ImageDetails("path", "name")));
+
+        //When
+        int returningCode = service.onStartCommand(new Intent(), 0, 0);
+
+        //Then
+        assertThat(returningCode, is(START_NOT_STICKY));
+        verify(service).stopSelf();
+        verify(service, times(0)).performTagsClearing(any());
     }
 
     @Test

@@ -16,11 +16,10 @@ public class SettingsViewModel {
 
     public void onCheckedChanged(boolean isChecked) {
         isClearServiceEnabled.set(isChecked);
-        if (!isChecked) {
-            callback.onClearCache();
-            callback.onDisableClearingService();
+        if (isChecked) {
+            callback.onEnableClearingService();
         } else {
-            callback.onEnableCrearingService();
+            callback.onDisableClearingService();
         }
     }
 
@@ -47,9 +46,7 @@ public class SettingsViewModel {
     interface SettingsViewModelCallback {
         void onOpenIntervalsDialog();
 
-        void onClearCache();
-
-        void onEnableCrearingService();
+        void onEnableClearingService();
 
         void onDisableClearingService();
     }

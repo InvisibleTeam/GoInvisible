@@ -33,7 +33,7 @@ public class SettingsViewModelTest {
         viewModel.onCheckedChanged(true);
 
         //Then
-        verify(callback).onEnableCrearingService();
+        verify(callback).onEnableClearingService();
         assertTrue(viewModel.getIsClearServiceEnabled().get());
     }
 
@@ -43,7 +43,6 @@ public class SettingsViewModelTest {
         viewModel.onCheckedChanged(false);
 
         //Then
-        verify(callback).onClearCache();
         verify(callback).onDisableClearingService();
         assertFalse(viewModel.getIsClearServiceEnabled().get());
     }

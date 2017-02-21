@@ -10,7 +10,6 @@ import android.support.media.ExifInterface;
 import android.util.Log;
 
 import com.invisibleteam.goinvisible.GoInvisibleApplication;
-import com.invisibleteam.goinvisible.model.ClearingInterval;
 import com.invisibleteam.goinvisible.model.ImageDetails;
 import com.invisibleteam.goinvisible.mvvm.edition.TagsManager;
 import com.invisibleteam.goinvisible.mvvm.images.ImagesProvider;
@@ -30,8 +29,8 @@ public class ClearingTagsService extends Service {
     }
 
     public int onStartCommand(Intent intent, int flags, int startId) {
-        ClearingInterval interval = SharedPreferencesUtil.getInterval(this);
-        if (interval == null) {
+        boolean isServiceEnabled = SharedPreferencesUtil.isClearingServiceActivated(this);
+        if (!isServiceEnabled) {
             stopCyclicTagsClearing();
             return START_NOT_STICKY;
         }
