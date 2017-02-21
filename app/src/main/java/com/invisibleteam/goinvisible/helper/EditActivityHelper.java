@@ -1,5 +1,6 @@
 package com.invisibleteam.goinvisible.helper;
 
+import android.content.ContentResolver;
 import android.content.Intent;
 import android.location.LocationManager;
 import android.net.Uri;
@@ -101,8 +102,9 @@ public class EditActivityHelper {
         return gpsEstablisher;
     }
 
-    public Intent buildShareImageIntent(ImageDetails imageDetails) throws FileNotFoundException {
-        final Uri imageUri = Uri.parse(prepareImageUriToShare(imageDetails));
+    public Intent buildShareImageIntent(ImageDetails imageDetails, ContentResolver contentResolver) throws FileNotFoundException {
+        final String imagePath = prepareImagePathToShare(imageDetails, contentResolver);
+        final Uri imageUri = Uri.parse(imagePath);
         final Intent intent = new Intent(Intent.ACTION_SEND);
         intent.putExtra(Intent.EXTRA_STREAM, imageUri);
         intent.setType(SHARE_IMAGE_JPG_TYPE);
@@ -111,9 +113,9 @@ public class EditActivityHelper {
     }
 
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
-    public String prepareImageUriToShare(ImageDetails imageDetails) throws FileNotFoundException {
+    public String prepareImagePathToShare(ImageDetails imageDetails, ContentResolver contentResolver) throws FileNotFoundException {
         return insertImage(
-                editActivity.getContentResolver(),
+                contentResolver,
                 imageDetails.getPath(),
                 imageDetails.getName(),
                 IMAGE_EMPTY_DESCRIPTION);

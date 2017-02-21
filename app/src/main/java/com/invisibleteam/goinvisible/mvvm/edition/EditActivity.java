@@ -169,10 +169,11 @@ public class EditActivity extends CommonActivity {
 
     private void shareImage() {
         try {
-            Intent intent = editActivityHelper.buildShareImageIntent(imageDetails);
+            Intent intent = editActivityHelper.buildShareImageIntent(imageDetails, getContentResolver());
             startActivity(Intent.createChooser(intent, getString(R.string.share_intent_chooser_title)));
         } catch (FileNotFoundException e) {
             Log.e(TAG, String.valueOf(e.getMessage()));
+            //TODO log error in crashlytics
         }
     }
 

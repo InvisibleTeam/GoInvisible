@@ -21,7 +21,7 @@ import static org.mockito.Mockito.mock;
 public class ImagesCallbackTest {
 
     @Test
-    public void whenSnackBarIsCreated_IsCreatedOnce() {
+    public void whenSnackBarIsCreated_ItsCreatedOnce() {
         //Given
         Activity activity = Robolectric.buildActivity(ImagesActivity.class).create().get();
         ImagesCallback imagesCallback = new ImagesCallback(activity, mock(SwipeRefreshLayout.class));
