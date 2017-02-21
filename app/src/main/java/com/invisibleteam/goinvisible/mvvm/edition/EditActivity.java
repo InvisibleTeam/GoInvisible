@@ -64,12 +64,22 @@ public class EditActivity extends CommonActivity {
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
     final EditTagListener editTagListener = new EditTagListener() {
         @Override
-        public void openEditDialog(Tag tag) {
-            if (tag.getKey().equals(ExifInterface.TAG_GPS_LATITUDE)) {
+        public void openTagEditionView(Tag tag) {
+            if (ExifInterface.TAG_GPS_LATITUDE.equals(tag.getKey())) {
                 EditActivity.this.tag = tag;
                 startPlaceIntent();
-            } else {
-                EditActivity.this.openEditDialog(tag);
+                return;
+            }
+
+            switch (tag.getTagType().getInputType()) {
+                case UNMODIFIABLE:
+                    showSnackBar(R.string.unmodifiable_tag_message);
+                    break;
+                case INDEFINITE:
+                    showSnackBar(R.string.error_message);
+                    break;
+                default:
+                    EditActivity.this.openEditDialog(tag);
             }
         }
 
@@ -77,7 +87,19 @@ public class EditActivity extends CommonActivity {
         public void onTagsChanged() {
             invalidateOptionsMenu();
         }
+
+        @Override
+        public void onEditError() {
+            showSnackBar(R.string.error_message);
+        }
     };
+
+    private void showSnackBar(int message) {
+        Snackbar.make(
+                this.findViewById(android.R.id.content),
+                message,
+                Snackbar.LENGTH_LONG).show();
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {

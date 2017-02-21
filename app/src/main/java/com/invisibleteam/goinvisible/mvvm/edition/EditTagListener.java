@@ -4,7 +4,9 @@ import com.invisibleteam.goinvisible.model.Tag;
 
 interface EditTagListener {
 
-    void openEditDialog(Tag tag);
+    void openTagEditionView(Tag tag);
 
     void onTagsChanged();
+
+    void onEditError();
 }
