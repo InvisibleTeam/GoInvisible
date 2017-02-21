@@ -36,6 +36,7 @@ public class SharedPreferencesUtil {
             return sharedPrefs.getBoolean(PREFERENCES_CLEARING_SERVICE_ENABLED, false);
         } catch (Exception e) {
             Log.e(TAG, "Error while get interval from preferences:", e);
+            //TODO Crashlitycs log
             return false;
         }
     }
@@ -48,6 +49,7 @@ public class SharedPreferencesUtil {
             return ClearingInterval.valueOf(interval);
         } catch (Exception e) {
             Log.e(TAG, "Error while get interval from preferences:", e);
+            //TODO Crashlitycs log
             return ClearingInterval.DAY;
         }
     }
