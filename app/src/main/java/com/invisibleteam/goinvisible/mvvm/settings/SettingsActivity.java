@@ -1,6 +1,8 @@
 package com.invisibleteam.goinvisible.mvvm.settings;
 
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
@@ -15,10 +17,9 @@ import com.invisibleteam.goinvisible.R;
 import com.invisibleteam.goinvisible.databinding.SettingsActivityBinding;
 import com.invisibleteam.goinvisible.helper.ClearingTagsReceiverHelper;
 import com.invisibleteam.goinvisible.model.ClearingInterval;
-import com.invisibleteam.goinvisible.mvvm.common.StringTypesAdapter;
+import com.invisibleteam.goinvisible.mvvm.common.RadioDialog;
 import com.invisibleteam.goinvisible.util.SharedPreferencesUtil;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -51,7 +52,7 @@ public class SettingsActivity extends AppCompatActivity {
     };
 
     private final SettingsViewModel viewModel = new SettingsViewModel(viewModelCallback);
-    private AlertDialog alertDialog;
+    private Dialog alertDialog;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -95,23 +96,43 @@ public class SettingsActivity extends AppCompatActivity {
         alertDialog.show();
     }
 
-    private AlertDialog createIntervalsDialog() {
-        AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
-        alertDialog.setTitle(getString(R.string.intervals_dialog_title));
-
+    private Dialog createIntervalsDialog() {
         List<ClearingInterval> intervals = Arrays.asList(ClearingInterval.values());
-        List<String> intervalNames = new ArrayList<>(intervals.size());
+        String[] intervalNames = new String[intervals.size()];
 
-        for (ClearingInterval clearingInterval : intervals) {
-            intervalNames.add(clearingInterval.getIntervalFormattedName(this));
+        ClearingInterval currentInterval = SharedPreferencesUtil.getInterval(this);
+        int selectedIntervalIndex = 0;
+
+        for (int index = 0; index < intervals.size(); index++) {
+            ClearingInterval interval = intervals.get(index);
+            intervalNames[index] = interval.getIntervalFormattedName(this);
+            if (currentInterval.getInterval() == interval.getInterval()) {
+                selectedIntervalIndex = index;
+            }
         }
 
-        alertDialog.setAdapter(new StringTypesAdapter(this, intervalNames), (dialog, index) -> {
-            dialog.dismiss();
-            updateClearingServiceInterval(intervals.get(index));
-        });
+        RadioDialog.RadioDialogCallback callback = new RadioDialog.RadioDialogCallback() {
+            @Override
+            public void onClick(int index) {
+            }
 
-        return alertDialog.create();
+            @Override
+            public void onApprove(DialogInterface dialog, int index) {
+                dialog.dismiss();
+                updateClearingServiceInterval(intervals.get(index));
+            }
+
+            @Override
+            public void onCancel(DialogInterface dialog) {
+                dialog.dismiss();
+            }
+        };
+
+        return new RadioDialog(SettingsActivity.this, intervalNames, selectedIntervalIndex, callback)
+                .setTitle(getString(R.string.intervals_dialog_title))
+                .setPositiveButton(getText(android.R.string.ok))
+                .setNegativeButton(getText(android.R.string.cancel))
+                .build();
     }
 
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)

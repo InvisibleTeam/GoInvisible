@@ -3,6 +3,7 @@ package com.invisibleteam.goinvisible.mvvm.edition.dialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.databinding.DataBindingUtil;
 import android.support.annotation.VisibleForTesting;
 import android.support.v7.app.AlertDialog;
@@ -13,12 +14,10 @@ import com.invisibleteam.goinvisible.R;
 import com.invisibleteam.goinvisible.databinding.TextDialogBinding;
 import com.invisibleteam.goinvisible.model.InputType;
 import com.invisibleteam.goinvisible.model.Tag;
-import com.invisibleteam.goinvisible.mvvm.common.StringTypesAdapter;
+import com.invisibleteam.goinvisible.mvvm.common.RadioDialog;
 import com.invisibleteam.goinvisible.mvvm.edition.EditViewModel;
 import com.invisibleteam.goinvisible.util.DialogRangedValuesUtil;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -82,9 +81,8 @@ class DialogFactory {
         }
     }
 
-    Dialog createRangedDialog(Context context, Tag tag, EditViewModel viewModel) {
-        AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
-        alertDialog.setTitle(tag.getKey());
+    Dialog createRangedDialog(Context context, Tag baseTag, EditViewModel viewModel) {
+        Tag tag = new Tag(baseTag);
 
         final Map<Integer, Integer> tagsMap = DialogRangedValuesUtil.getTagsMapValues(tag.getKey());
 
@@ -92,23 +90,48 @@ class DialogFactory {
             return createErrorDialog();
         }
 
-        final List<String> tagNames = new ArrayList<>(tagsMap.size());
+        final String[] tagNames = new String[tagsMap.size()];
         final SparseArray<String> tagValues = new SparseArray<>();
         int valuesIndex = 0;
+        int selectedValueIndex = 0;
 
         for (Map.Entry<Integer, Integer> entry : tagsMap.entrySet()) {
-            tagNames.add(context.getString(entry.getKey()));
-            tagValues.append(valuesIndex, context.getString(entry.getValue()));
+
+            tagNames[valuesIndex] = context.getString(entry.getKey());
+
+            String tagValue = context.getString(entry.getValue());
+            tagValues.append(valuesIndex, tagValue);
+
+            if (tagValue.equals(tag.getValue())) {
+                selectedValueIndex = valuesIndex;
+            }
+
             valuesIndex++;
         }
 
-        alertDialog.setAdapter(new StringTypesAdapter(context, tagNames), (dialog, index) -> {
-            dialog.dismiss();
-            tag.setValue(tagValues.get(index));
-            viewModel.onEditEnded(tag);
-        });
+        RadioDialog.RadioDialogCallback callback = new RadioDialog.RadioDialogCallback() {
+            @Override
+            public void onClick(int index) {
+                tag.setValue(tagValues.get(index));
+            }
 
-        return alertDialog.show();
+            @Override
+            public void onApprove(DialogInterface dialog, int index) {
+                viewModel.onEditEnded(tag);
+                dialog.dismiss();
+            }
+
+            @Override
+            public void onCancel(DialogInterface dialog) {
+                dialog.dismiss();
+            }
+        };
+
+        return new RadioDialog(context, tagNames, selectedValueIndex, callback)
+                .setTitle(tag.getKey())
+                .setPositiveButton(context.getText(android.R.string.ok))
+                .setNegativeButton(context.getText(android.R.string.cancel))
+                .build();
     }
 
     Dialog createDateDialog() {
