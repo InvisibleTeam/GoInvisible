@@ -6,4 +6,6 @@
     <dimen name="tag_value_size">16sp</dimen>
     <dimen name="divider_margin">32dp</dimen>
     <dimen name="edit_image_size">244dp</dimen>
+    <dimen name="section_title_text_size">16sp</dimen>
+    <dimen name="section_description_text_size">18sp</dimen>
 </resources>
