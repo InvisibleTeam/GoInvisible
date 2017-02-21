@@ -38,7 +38,7 @@ public class ImagesView {
     }
 
     public static Boolean isAnyImageLoaded() {
-        return UI_DEVICE.findObjects(IMAGE_SELECTOR).size() > 0;
+        return getVisibleImages().size() > 0;
     }
 
     public static List<UiObject2> getVisibleImages() {
