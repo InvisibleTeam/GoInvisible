@@ -1,5 +1,7 @@
 package com.invisibleteam.goinvisible.utilities;
 
+import android.util.Log;
+
 import java.io.IOException;
 
 import static com.invisibleteam.goinvisible.utilities.Config.UI_DEVICE;
@@ -29,7 +31,7 @@ public class ShellCmdHelper {
         try {
             result = UI_DEVICE.executeShellCommand(shellCommand);
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.e("ShellCmdHelper", "Failed to executeShellCommand", e);
         }
 
         return result;

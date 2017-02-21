@@ -34,7 +34,7 @@ public class StorageManagementHelper {
         try {
             filesList = assetManager.list(inputPath);
         } catch (IOException e) {
-            Log.e("tag", "Failed to get asset file list.", e);
+            Log.e("StorageManagementHelper", "Failed to get asset file list.", e);
         }
 
         for (String fileName : filesList) {
@@ -52,7 +52,7 @@ public class StorageManagementHelper {
                     updateDeviceMediaList(outFile.getAbsolutePath());
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+                Log.e("StorageManagementHelper", "Failed to copy asset file: " + fileName, e);
             }
         }
     }
