@@ -2,12 +2,14 @@ package com.invisibleteam.goinvisible.mvvm.edition;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.media.ExifInterface;
 import android.view.MenuItem;
 
 import com.invisibleteam.goinvisible.BuildConfig;
+import com.invisibleteam.goinvisible.R;
 import com.invisibleteam.goinvisible.model.ImageDetails;
 import com.invisibleteam.goinvisible.model.InputType;
 import com.invisibleteam.goinvisible.model.Tag;
@@ -15,13 +17,17 @@ import com.invisibleteam.goinvisible.model.TagType;
 import com.invisibleteam.goinvisible.mvvm.edition.adapter.EditCompoundRecyclerView;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
+import org.robolectric.Shadows;
 import org.robolectric.annotation.Config;
+import org.robolectric.shadows.ShadowActivity;
+import org.robolectric.shadows.ShadowContentResolver;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -30,6 +36,10 @@ import java.util.List;
 
 import static com.invisibleteam.goinvisible.util.IntentMatcher.containsSameData;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -132,7 +142,7 @@ public class EditActivityTest {
     public void whenClearAllTagsIsCalled_OnlyBackToImageActivityIsCalled() {
         //Given
         MenuItem menuItem = mock(MenuItem.class);
-        when(menuItem.getItemId()).thenReturn(EditActivity.CLEAR_ALL_TAGS);
+        when(menuItem.getItemId()).thenReturn(R.id.menu_item_clear_all);
         Mockito.doNothing().when(activity).clearAllTags();
 
         //When
@@ -140,6 +150,27 @@ public class EditActivityTest {
 
         //Then
         verify(activity).clearAllTags();
+    }
+
+    @Ignore("Lack of PowerMock")
+    @Test
+    public void whenShareImageIsCalled_IntentChooserWithSharingImageIsCalled() {
+        //Given
+        ShadowActivity shadowActivity = Shadows.shadowOf(activity);
+        MenuItem menuItem = mock(MenuItem.class);
+        when(menuItem.getItemId()).thenReturn(R.id.menu_item_share);
+        ShadowContentResolver shadowContentResolver = Shadows.shadowOf(activity.getContentResolver());
+
+        //When
+        activity.onOptionsItemSelected(menuItem);
+        Intent sharingIntent = shadowActivity.peekNextStartedActivity();
+        Bundle sharingIntentExtras = sharingIntent.getExtras();
+        Uri sharingImageUri = (Uri) sharingIntentExtras.get(Intent.EXTRA_STREAM);
+
+        //Then
+        assertThat(sharingImageUri, is(notNullValue()));
+        assertThat(sharingImageUri.getPath(), containsString("content://media/external/images/media/"));
+        assertThat(sharingIntent.getType(), equalTo("image/jpg"));
     }
 
     @Test

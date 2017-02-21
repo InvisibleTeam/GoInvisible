@@ -26,8 +26,8 @@ import com.invisibleteam.goinvisible.model.Tag;
 import com.invisibleteam.goinvisible.mvvm.common.CommonActivity;
 import com.invisibleteam.goinvisible.mvvm.edition.adapter.EditCompoundRecyclerView;
 import com.invisibleteam.goinvisible.mvvm.edition.dialog.EditDialog;
-import com.invisibleteam.goinvisible.mvvm.images.ImagesActivity;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
@@ -37,12 +37,9 @@ import javax.annotation.Nullable;
 public class EditActivity extends CommonActivity {
 
     public static final int PLACE_REQUEST_ID = 1;
-    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
-    static final int CLEAR_ALL_TAGS = 2;
     private static final String TAG_IMAGE_DETAILS = "extra_image_details";
     private static final String TAG_MODEL = "tag";
     private static final String TAG = EditActivity.class.getSimpleName();
-    private static final int APPROVE_CHANGES = 1;
     private EditCompoundRecyclerView editCompoundRecyclerView;
     private EditActivityHelper editActivityHelper;
     private TagsManager tagsManager;
@@ -137,14 +134,16 @@ public class EditActivity extends CommonActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if (editCompoundRecyclerView != null
-                && !editCompoundRecyclerView.getChangedTags().isEmpty()) {
-            menu.add(0, APPROVE_CHANGES, 0, R.string.save).setIcon(R.drawable.ic_approve)
-                    .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+        getMenuInflater().inflate(R.menu.menu_edit_activity, menu);
+        if (editCompoundRecyclerView != null && !editCompoundRecyclerView.getChangedTags().isEmpty()) {
+            showSaveChangesMenuItem(menu);
         }
-        menu.add(0, CLEAR_ALL_TAGS, 1, R.string.clear_all_tags).setIcon(R.drawable.ic_remove_all)
-                .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+
         return true;
+    }
+
+    private void showSaveChangesMenuItem(Menu menu) {
+        menu.findItem(R.id.menu_item_save_changes).setVisible(true);
     }
 
     @Override
@@ -153,22 +152,29 @@ public class EditActivity extends CommonActivity {
             case android.R.id.home:
                 onBackPressed();
                 return true;
-            case APPROVE_CHANGES:
+            case R.id.menu_item_save_changes:
                 saveTags();
-                startImagesActivity();
+                item.setVisible(false);
                 return true;
-            case CLEAR_ALL_TAGS:
+            case R.id.menu_item_clear_all:
                 clearAllTags();
+                return true;
+            case R.id.menu_item_share:
+                shareImage();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
 
-    private void startImagesActivity() {
-        Intent intent = ImagesActivity.buildIntent(this);
-        startActivity(intent);
-        finish();
+    private void shareImage() {
+        try {
+            Intent intent = editActivityHelper.buildShareImageIntent(imageDetails, getContentResolver());
+            startActivity(Intent.createChooser(intent, getString(R.string.share_intent_chooser_title)));
+        } catch (FileNotFoundException e) {
+            Log.e(TAG, String.valueOf(e.getMessage()));
+            //TODO log error in crashlytics
+        }
     }
 
     @VisibleForTesting
@@ -232,7 +238,6 @@ public class EditActivity extends CommonActivity {
     }
 
     private void startPlaceIntent() {
-
         if (gpsEstablisher.isGpsEstablished()) {
             editActivityHelper.openPlacePicker(tag);
         } else {
@@ -256,7 +261,14 @@ public class EditActivity extends CommonActivity {
 
     private void saveTags() {
         List<Tag> changedTags = editCompoundRecyclerView.getChangedTags();
-        tagsManager.editTags(changedTags);
+        boolean result = tagsManager.editTags(changedTags);
+        showSavingResultMessage(result);
+        editCompoundRecyclerView.updateTagListAfterChanges(tagsManager.getAllTags());
+    }
+
+    private void showSavingResultMessage(boolean result) {
+        final int messageResId = result ? R.string.tags_changed_message_successfully : R.string.tags_changed_message_unsuccessfully;
+        Snackbar.make(findViewById(android.R.id.content), messageResId, Snackbar.LENGTH_LONG).show();
     }
 
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
