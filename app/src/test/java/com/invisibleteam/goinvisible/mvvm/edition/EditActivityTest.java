@@ -2,7 +2,6 @@ package com.invisibleteam.goinvisible.mvvm.edition;
 
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.media.ExifInterface;
@@ -10,6 +9,7 @@ import android.view.MenuItem;
 
 import com.invisibleteam.goinvisible.BuildConfig;
 import com.invisibleteam.goinvisible.R;
+import com.invisibleteam.goinvisible.helper.EditActivityHelper;
 import com.invisibleteam.goinvisible.model.ImageDetails;
 import com.invisibleteam.goinvisible.model.InputType;
 import com.invisibleteam.goinvisible.model.Tag;
@@ -17,7 +17,6 @@ import com.invisibleteam.goinvisible.model.TagType;
 import com.invisibleteam.goinvisible.mvvm.edition.adapter.EditCompoundRecyclerView;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -27,8 +26,8 @@ import org.robolectric.RuntimeEnvironment;
 import org.robolectric.Shadows;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowActivity;
-import org.robolectric.shadows.ShadowContentResolver;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -36,8 +35,6 @@ import java.util.List;
 
 import static com.invisibleteam.goinvisible.util.IntentMatcher.containsSameData;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertTrue;
@@ -66,7 +63,6 @@ public class EditActivityTest {
                 .withIntent(editActivityIntent)
                 .create()
                 .get();
-        activity = spy(activity);
     }
 
     @Test
@@ -96,6 +92,7 @@ public class EditActivityTest {
     @Test
     public void whenOptionItemIsSelectedAndTagsAreChanged_TagsAreSavedAndBackToImageActivityIsCalled() {
         //Given
+        activity = spy(activity);
         List<Tag> tagsList = Arrays.asList(
                 createTag("key1", "value1"),
                 createTag("key2", "value2"));
@@ -121,6 +118,7 @@ public class EditActivityTest {
     @Test
     public void whenOptionItemIsSelectedAndTagsAreNotChanged_OnlyBackToImageActivityIsCalled() {
         //Given
+        activity = spy(activity);
         EditCompoundRecyclerView recyclerView = mock(EditCompoundRecyclerView.class);
         when(recyclerView.getChangedTags()).thenReturn(new ArrayList<>());
 
@@ -141,6 +139,7 @@ public class EditActivityTest {
     @Test
     public void whenClearAllTagsIsCalled_OnlyBackToImageActivityIsCalled() {
         //Given
+        activity = spy(activity);
         MenuItem menuItem = mock(MenuItem.class);
         when(menuItem.getItemId()).thenReturn(R.id.menu_item_clear_all);
         Mockito.doNothing().when(activity).clearAllTags();
@@ -152,30 +151,47 @@ public class EditActivityTest {
         verify(activity).clearAllTags();
     }
 
-    @Ignore("Lack of PowerMock")
     @Test
-    public void whenShareImageIsCalled_IntentChooserWithSharingImageIsCalled() {
+    public void whenShareImageIsCalled_IntentChooserWithSharingImageIsCalled() throws FileNotFoundException {
         //Given
         ShadowActivity shadowActivity = Shadows.shadowOf(activity);
         MenuItem menuItem = mock(MenuItem.class);
         when(menuItem.getItemId()).thenReturn(R.id.menu_item_share);
-        ShadowContentResolver shadowContentResolver = Shadows.shadowOf(activity.getContentResolver());
+        EditActivityHelper helper = spy(new EditActivityHelper(activity));
+        doReturn("media:content").when(helper).prepareImagePathToShare(imageDetails, activity.getContentResolver());
+        activity.setEditActivityHelper(helper);
 
         //When
         activity.onOptionsItemSelected(menuItem);
-        Intent sharingIntent = shadowActivity.peekNextStartedActivity();
-        Bundle sharingIntentExtras = sharingIntent.getExtras();
-        Uri sharingImageUri = (Uri) sharingIntentExtras.get(Intent.EXTRA_STREAM);
+        Intent shareIntent = shadowActivity.getNextStartedActivity();
 
         //Then
-        assertThat(sharingImageUri, is(notNullValue()));
-        assertThat(sharingImageUri.getPath(), containsString("content://media/external/images/media/"));
-        assertThat(sharingIntent.getType(), equalTo("image/jpg"));
+        assertThat(shareIntent, is(notNullValue()));
+    }
+
+    @Test
+    public void whenShareImageIsCalledAndShareIntentDoNotHaveExtras_IntentChooserWithSharingImageIsCalled() throws FileNotFoundException {
+        //Given
+        ShadowActivity shadowActivity = Shadows.shadowOf(activity);
+        MenuItem menuItem = mock(MenuItem.class);
+        when(menuItem.getItemId()).thenReturn(R.id.menu_item_share);
+        EditActivityHelper helper = spy(new EditActivityHelper(activity));
+        doReturn("media:content").when(helper).prepareImagePathToShare(imageDetails, activity.getContentResolver());
+        activity.setEditActivityHelper(helper);
+        when(helper.buildShareImageIntent(imageDetails, activity.getContentResolver())).thenReturn(new Intent(Intent.ACTION_SEND));
+
+        //When
+        activity.onOptionsItemSelected(menuItem);
+        Intent shareIntent = shadowActivity.getNextStartedActivity();
+
+        //Then
+        assertThat(shareIntent, is(notNullValue()));
     }
 
     @Test
     public void whenUnknownOptionItemSelected_defaultMethodIsCalled() {
         //given
+        activity = spy(activity);
         MenuItem menuItem = mock(MenuItem.class);
         when(menuItem.getItemId()).thenReturn(-1);
 
