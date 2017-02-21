@@ -25,6 +25,9 @@ public class IntentMatcher {
                 if (!baseIntent.getComponent().equals(resultIntent.getComponent())) {
                     return false;
                 }
+                if (baseIntent.getExtras() == null && resultIntent.getExtras() == null) {
+                    return true;
+                }
                 if ((baseIntent.getExtras() == null && resultIntent.getExtras() != null)
                         || (baseIntent.getExtras() != null && resultIntent.getExtras() == null)) {
                     return false;
