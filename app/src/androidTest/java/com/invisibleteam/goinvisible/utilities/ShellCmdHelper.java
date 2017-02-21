@@ -5,6 +5,7 @@ import java.io.IOException;
 public class ShellCmdHelper {
 
     private final static String PM_GRANT_CMD = "pm grant %s %s";
+    private static final String AM_START_CAMERA = "am start -W -N com.android.camera";
 
     /**
      * @param packageName package that will get permission
@@ -14,6 +15,10 @@ public class ShellCmdHelper {
     public static String grantPermission(String packageName, String permission) {
         String formattedShellCommand = formatShellCommand(PM_GRANT_CMD, packageName, permission);
         return executeShellCommand(formattedShellCommand);
+    }
+    
+    public static String startCamera() {
+        return executeShellCommand(AM_START_CAMERA);
     }
 
     private static String executeShellCommand(String shellCommand) {
