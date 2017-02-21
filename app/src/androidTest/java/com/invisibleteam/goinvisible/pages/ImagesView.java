@@ -44,4 +44,9 @@ public class ImagesView {
     public static List<UiObject2> getVisibleImages() {
         return UI_DEVICE.findObjects(RECYCLER_ELEMENT_SELECTOR);
     }
+
+    public static void pullToRefresh() {
+        int centerOfWidth = UI_DEVICE.getDisplayWidth() / 2;
+        UI_DEVICE.drag(centerOfWidth, UI_DEVICE.getDisplayHeight() / 3, centerOfWidth, UI_DEVICE.getDisplayHeight() / 2, 6);
+    }
 }

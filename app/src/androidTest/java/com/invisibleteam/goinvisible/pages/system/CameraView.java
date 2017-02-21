@@ -14,7 +14,7 @@ public class CameraView {
     private static final BySelector SHUTTER_BUTTON_SELECTOR = By.res("com.android.camera", "shutter_button");
     private static final BySelector THUMBNAIL_VIEW_SELECTOR = By.res("com.android.camera", "thumbnail");
 
-    public static void takePhoto() {
+    public static void takePhotoAndGoBack() {
         ShellCmdHelper.startCamera();
 
         UI_DEVICE.wait(Until.hasObject(SHUTTER_BUTTON_SELECTOR), LAUNCH_TIMEOUT);
@@ -22,5 +22,7 @@ public class CameraView {
 
         //it is weak condition when there is any photo
         UI_DEVICE.wait(Until.hasObject(THUMBNAIL_VIEW_SELECTOR), LAUNCH_TIMEOUT);
+
+        UI_DEVICE.pressBack();
     }
 }

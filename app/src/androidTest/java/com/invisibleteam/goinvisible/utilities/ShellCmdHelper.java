@@ -2,6 +2,8 @@ package com.invisibleteam.goinvisible.utilities;
 
 import java.io.IOException;
 
+import static com.invisibleteam.goinvisible.utilities.Config.UI_DEVICE;
+
 public class ShellCmdHelper {
 
     private final static String PM_GRANT_CMD = "pm grant %s %s";
@@ -25,7 +27,7 @@ public class ShellCmdHelper {
         String result = null;
 
         try {
-            result = UiDeviceProvider.getInstance().executeShellCommand(shellCommand);
+            result = UI_DEVICE.executeShellCommand(shellCommand);
         } catch (IOException e) {
             e.printStackTrace();
         }
