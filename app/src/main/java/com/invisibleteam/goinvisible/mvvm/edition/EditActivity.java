@@ -22,7 +22,6 @@ import com.invisibleteam.goinvisible.databinding.ActivityEditBinding;
 import com.invisibleteam.goinvisible.helper.EditActivityHelper;
 import com.invisibleteam.goinvisible.model.GeolocationTag;
 import com.invisibleteam.goinvisible.model.ImageDetails;
-import com.invisibleteam.goinvisible.model.InputType;
 import com.invisibleteam.goinvisible.model.Tag;
 import com.invisibleteam.goinvisible.mvvm.common.CommonActivity;
 import com.invisibleteam.goinvisible.mvvm.edition.adapter.EditCompoundRecyclerView;
@@ -69,12 +68,18 @@ public class EditActivity extends CommonActivity {
             if (ExifInterface.TAG_GPS_LATITUDE.equals(tag.getKey())) {
                 EditActivity.this.tag = tag;
                 startPlaceIntent();
-            } else if (InputType.UNMODIFIABLE.equals(tag.getTagType().getInputType())) {
-                showSnackBar(R.string.unmodifiable_tag_message);
-            } else if (InputType.INDEFINITE.equals(tag.getTagType().getInputType())) {
-                showSnackBar(R.string.error_message);
-            } else {
-                EditActivity.this.openEditDialog(tag);
+                return;
+            }
+
+            switch (tag.getTagType().getInputType()) {
+                case UNMODIFIABLE:
+                    showSnackBar(R.string.unmodifiable_tag_message);
+                    break;
+                case INDEFINITE:
+                    showSnackBar(R.string.error_message);
+                    break;
+                default:
+                    EditActivity.this.openEditDialog(tag);
             }
         }
 
