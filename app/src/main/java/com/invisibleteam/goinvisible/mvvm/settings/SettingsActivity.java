@@ -11,9 +11,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
-import com.invisibleteam.goinvisible.GoInvisibleApplication;
 import com.invisibleteam.goinvisible.R;
 import com.invisibleteam.goinvisible.databinding.SettingsActivityBinding;
+import com.invisibleteam.goinvisible.helper.ClearingTagsReceiverHelper;
 import com.invisibleteam.goinvisible.model.ClearingInterval;
 import com.invisibleteam.goinvisible.mvvm.common.StringTypesAdapter;
 import com.invisibleteam.goinvisible.util.SharedPreferencesUtil;
@@ -41,14 +41,12 @@ public class SettingsActivity extends AppCompatActivity {
 
         @Override
         public void onEnableClearingService() {
-            SharedPreferencesUtil.setClearingServiceActivation(SettingsActivity.this, true);
-            GoInvisibleApplication.startClearingServiceAlarm(getApplicationContext());
+            ClearingTagsReceiverHelper.startClearingServiceAlarm(getApplicationContext());
         }
 
         @Override
         public void onDisableClearingService() {
-            SharedPreferencesUtil.setClearingServiceActivation(SettingsActivity.this, false);
-            GoInvisibleApplication.stopClearingServiceAlarm(getApplicationContext());
+            ClearingTagsReceiverHelper.stopClearingServiceAlarm(getApplicationContext());
         }
     };
 

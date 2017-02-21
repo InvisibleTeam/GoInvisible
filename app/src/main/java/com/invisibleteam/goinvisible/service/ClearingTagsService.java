@@ -1,7 +1,7 @@
 package com.invisibleteam.goinvisible.service;
 
 
-import android.app.Service;
+import android.app.IntentService;
 import android.content.Intent;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
@@ -9,7 +9,7 @@ import android.support.annotation.VisibleForTesting;
 import android.support.media.ExifInterface;
 import android.util.Log;
 
-import com.invisibleteam.goinvisible.GoInvisibleApplication;
+import com.invisibleteam.goinvisible.helper.ClearingTagsReceiverHelper;
 import com.invisibleteam.goinvisible.model.ImageDetails;
 import com.invisibleteam.goinvisible.mvvm.edition.TagsManager;
 import com.invisibleteam.goinvisible.mvvm.images.ImagesProvider;
@@ -18,9 +18,23 @@ import com.invisibleteam.goinvisible.util.SharedPreferencesUtil;
 import java.io.IOException;
 import java.util.List;
 
-public class ClearingTagsService extends Service {
+public class ClearingTagsService extends IntentService {
 
     private static final String TAG = ClearingTagsService.class.getSimpleName();
+
+    /**
+     * Creates an IntentService.  Invoked by your subclass's constructor.
+     *
+     * @param name Used to name the worker thread, important only for debugging.
+     */
+    public ClearingTagsService(String name) {
+        super(name);
+    }
+
+    public ClearingTagsService() {
+        super(ClearingTagsService.class.getName());
+    }
+
 
     @Nullable
     @Override
@@ -28,11 +42,12 @@ public class ClearingTagsService extends Service {
         return null;
     }
 
-    public int onStartCommand(Intent intent, int flags, int startId) {
+    @Override
+    protected void onHandleIntent(Intent intent) {
         boolean isServiceEnabled = SharedPreferencesUtil.isClearingServiceActivated(this);
         if (!isServiceEnabled) {
             stopCyclicTagsClearing();
-            return START_NOT_STICKY;
+            return;
         }
 
         List<ImageDetails> imageDetailsList = getImages();
@@ -40,8 +55,6 @@ public class ClearingTagsService extends Service {
         for (ImageDetails imageDetails : imageDetailsList) {
             performTagsClearing(imageDetails);
         }
-
-        return START_STICKY;
     }
 
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
@@ -66,7 +79,7 @@ public class ClearingTagsService extends Service {
     }
 
     private void stopCyclicTagsClearing() {
-        GoInvisibleApplication.stopClearingServiceAlarm(this);
+        ClearingTagsReceiverHelper.stopClearingServiceAlarm(this);
         stopSelf();
     }
 }

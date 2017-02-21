@@ -19,8 +19,6 @@ import org.robolectric.annotation.Config;
 import java.io.IOException;
 import java.util.Collections;
 
-import static android.app.Service.START_NOT_STICKY;
-import static android.app.Service.START_STICKY;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.core.Is.is;
@@ -47,10 +45,9 @@ public class ClearingTagsServiceTest {
     @Test
     public void WhenClearingServiceIsNotActivated_ServiceIsStopped() {
         //When
-        int returningCode = service.onStartCommand(new Intent(), 0, 0);
+        service.onHandleIntent(new Intent());
 
         //Then
-        assertThat(returningCode, is(START_NOT_STICKY));
         verify(service).stopSelf();
         verify(service, times(0)).performTagsClearing(any());
     }
@@ -62,10 +59,9 @@ public class ClearingTagsServiceTest {
         when(service.getImages()).thenReturn(Collections.singletonList(new ImageDetails("path", "name")));
 
         //When
-        int returningCode = service.onStartCommand(new Intent(), 0, 0);
+        service.onHandleIntent(new Intent());
 
         //Then
-        assertThat(returningCode, is(START_STICKY));
         verify(service, times(0)).stopSelf();
         verify(service).performTagsClearing(any());
     }
@@ -78,10 +74,9 @@ public class ClearingTagsServiceTest {
         when(service.getImages()).thenReturn(Collections.singletonList(new ImageDetails("path", "name")));
 
         //When
-        int returningCode = service.onStartCommand(new Intent(), 0, 0);
+        service.onHandleIntent(new Intent());
 
         //Then
-        assertThat(returningCode, is(START_NOT_STICKY));
         verify(service).stopSelf();
         verify(service, times(0)).performTagsClearing(any());
     }
