@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
+import com.invisibleteam.goinvisible.GoInvisibleApplication;
 import com.invisibleteam.goinvisible.R;
 import com.invisibleteam.goinvisible.databinding.SettingsActivityBinding;
 import com.invisibleteam.goinvisible.model.ClearingInterval;
@@ -47,6 +48,12 @@ public class SettingsActivity extends AppCompatActivity {
         @Override
         public void onEnableCrearingService() {
             updateClearingServiceInterval(ClearingInterval.DAY);
+            GoInvisibleApplication.startClearingServiceAlarm(getApplicationContext());
+        }
+
+        @Override
+        public void onDisableClearingService() {
+            GoInvisibleApplication.stopClearingServiceAlarm(getApplicationContext());
         }
     };
 

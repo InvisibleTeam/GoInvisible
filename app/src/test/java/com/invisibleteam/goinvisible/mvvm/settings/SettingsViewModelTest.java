@@ -44,6 +44,7 @@ public class SettingsViewModelTest {
 
         //Then
         verify(callback).onClearCache();
+        verify(callback).onDisableClearingService();
         assertFalse(viewModel.getIsClearServiceEnabled().get());
     }
 

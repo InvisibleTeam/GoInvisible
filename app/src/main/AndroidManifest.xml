@@ -27,6 +27,11 @@
         </activity>
         <activity android:name=".mvvm.edition.EditActivity"/>
         <activity android:name=".mvvm.settings.SettingsActivity"/>
+
+        <service android:name=".service.ClearingTagsService"/>
+
+        <receiver android:name=".service.ClearingTagsReceiver"/>
+
     </application>
 
 </manifest>

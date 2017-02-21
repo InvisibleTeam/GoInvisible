@@ -18,6 +18,7 @@ public class SettingsViewModel {
         isClearServiceEnabled.set(isChecked);
         if (!isChecked) {
             callback.onClearCache();
+            callback.onDisableClearingService();
         } else {
             callback.onEnableCrearingService();
         }
@@ -49,5 +50,7 @@ public class SettingsViewModel {
         void onClearCache();
 
         void onEnableCrearingService();
+
+        void onDisableClearingService();
     }
 }
