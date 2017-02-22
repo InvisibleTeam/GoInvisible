@@ -87,7 +87,7 @@ public class EditActivity extends CommonActivity {
         if (savedInstanceState != null) {
             tag = savedInstanceState.getParcelable(TAG_MODEL);
         }
-        editActivityHelper = new EditActivityHelper(this);
+        setEditActivityHelper(new EditActivityHelper(this));
         prepareLocationHandling();
     }
 
@@ -298,5 +298,10 @@ public class EditActivity extends CommonActivity {
                         null)
                 .setCancelable(true)
                 .show();
+    }
+
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    void setEditActivityHelper(EditActivityHelper editActivityHelper) {
+        this.editActivityHelper = editActivityHelper;
     }
 }
