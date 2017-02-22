@@ -13,8 +13,12 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -54,6 +58,34 @@ public class EditViewModelTest {
     }
 
     @Test
+    public void whenAllTagsAreSuccessfullyCleared_TagsAreUpdated() {
+        //Given
+        List<Tag> tagList = new ArrayList<>();
+        when(tagsManager.clearTags(anyList())).thenReturn(true);
+
+        //When
+        editViewModel.onClear(tagList);
+
+        //Then
+        //editCompoundRecyclerView.updateResults(...) is also called in EditViewModel constructor.
+        verify(editCompoundRecyclerView, times(2)).updateResults(tagList);
+    }
+
+    @Test
+    public void whenAllTagsClearFailed_TagsAreNotUpdated() {
+        //Given
+        List<Tag> tagList = new ArrayList<>();
+        when(tagsManager.clearTags(anyList())).thenReturn(false);
+
+        //When
+        editViewModel.onClear(tagList);
+
+        //Then
+        //editCompoundRecyclerView.updateResults(...) is also called in EditViewModel constructor.
+        verify(editCompoundRecyclerView, times(1)).updateResults(tagList);
+    }
+
+    @Test
     public void whenTagIsUnsuccessfullyCleared_ClearingIsNotPropagate() {
         //Given
         when(tagsManager.clearTag(tag)).thenReturn(false);
@@ -81,6 +113,45 @@ public class EditViewModelTest {
     }
 
     @Test
+    public void whenUnmodifiableTagIsEdited_UnmodifiableTagMessageIsShown() {
+        //Given
+        Tag tag = new Tag(
+                ExifInterface.TAG_IMAGE_WIDTH,
+                "value",
+                TagType.build(InputType.UNMODIFIABLE));
+
+        //When
+        editViewModel.onEditStarted(tag);
+
+        //Then
+        verify(listener).showUnmodifiableTagMessage();
+    }
+
+    @Test
+    public void whenTagIsEdited_TagEditionViewIsShown() {
+        //When
+        editViewModel.onEditStarted(tag);
+
+        //Then
+        verify(listener).showTagEditionView(tag);
+    }
+
+    @Test
+    public void whenIndefiniteTagIsEdited_TagEditionErrorMessageIsShown() {
+        //Given
+        Tag tag = new Tag(
+                ExifInterface.TAG_IMAGE_WIDTH,
+                "value",
+                TagType.build(InputType.INDEFINITE));
+
+        //When
+        editViewModel.onEditStarted(tag);
+
+        //Then
+        verify(listener).showTagEditionErrorMessage();
+    }
+
+    @Test
     public void whenTitleIsPassed_TitleAndImageUrlAreProperlySet() {
         //Then
         String title = editViewModel.getTitle().get();
@@ -88,5 +159,36 @@ public class EditViewModelTest {
 
         assertThat(title, is("title"));
         assertThat(imageUrl, is("image_url"));
+    }
+
+    @Test
+    public void whenTagEditEnded_TagsAreUpdated() {
+        //Given
+        List<Tag> tagList = new ArrayList<>();
+
+        //When
+        editViewModel.onEditEnded(tagList);
+
+        //Then
+        //editCompoundRecyclerView.updateResults(...) is also called in EditViewModel constructor.
+        verify(editCompoundRecyclerView, times(2)).updateResults(tagList);
+    }
+
+    @Test
+    public void whenTagsWereUpdated_ViewIsChangedToEditMode() {
+        //When
+        editViewModel.onTagsUpdated();
+
+        //Then
+        verify(listener).changeViewToEditMode();
+    }
+
+    @Test
+    public void whenEditionErrorOccurred_TagEditionErrorIsShown() {
+        //When
+        editViewModel.onEditError();
+
+        //Then
+        verify(listener).showTagEditionErrorMessage();
     }
 }

@@ -3,7 +3,7 @@ package com.invisibleteam.goinvisible.mvvm.edition;
 import com.invisibleteam.goinvisible.model.Tag;
 
 interface EditTagCallback {
-    void onTagsChanged();
+    void changeViewToEditMode();
 
     void openPlacePickerView(Tag tag);
 

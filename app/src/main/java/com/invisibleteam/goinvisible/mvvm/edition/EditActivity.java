@@ -171,7 +171,7 @@ public class EditActivity extends CommonActivity implements EditTagCallback {
     }
 
     @Override
-    public void onTagsChanged() {
+    public void changeViewToEditMode() {
         invalidateOptionsMenu();
     }
 
