@@ -25,7 +25,7 @@ public class EditCompoundRecyclerView extends CompoundRecyclerView<Tag, EditItem
 
     @Override
     public void updateResults(List<Tag> imageList) {
-        itemAdapter.updateImageList(imageList);
+        itemAdapter.updateTagList(imageList);
         itemAdapter.notifyDataSetChanged();
     }
 
@@ -48,5 +48,9 @@ public class EditCompoundRecyclerView extends CompoundRecyclerView<Tag, EditItem
 
     public List<Tag> getAllTags() {
         return itemAdapter.getAllTags();
+    }
+
+    public void updateTagListAfterChanges(List<Tag> tags) {
+        itemAdapter.updateBaseTagList(tags);
     }
 }

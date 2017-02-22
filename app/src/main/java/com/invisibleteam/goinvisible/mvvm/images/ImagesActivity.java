@@ -3,7 +3,6 @@ package com.invisibleteam.goinvisible.mvvm.images;
 import android.content.Context;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
-import android.os.Bundle;
 import android.support.annotation.VisibleForTesting;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -21,16 +20,11 @@ import com.invisibleteam.goinvisible.mvvm.settings.SettingsActivity;
 
 public class ImagesActivity extends CommonActivity implements ImagesViewCallback {
 
-    public final static String TAGS_CHANGED_EXTRA = "tagsChangedExtra";
     private Snackbar snackbar;
     private SwipeRefreshLayout refreshLayout;
 
     public static Intent buildIntent(Context context) {
-        Intent intent = new Intent(context, ImagesActivity.class);
-        intent.putExtra(ImagesActivity.TAGS_CHANGED_EXTRA, true);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-
-        return intent;
+        return new Intent(context, ImagesActivity.class);
     }
 
     @Override
@@ -76,8 +70,6 @@ public class ImagesActivity extends CommonActivity implements ImagesViewCallback
                 this);
         activityImagesBinding.setViewModel(imagesViewModel);
         activityImagesBinding.swipeRefreshLayout.setOnRefreshListener(imagesViewModel::updateImages);
-
-        extractBundle();
     }
 
     @Override
@@ -101,16 +93,6 @@ public class ImagesActivity extends CommonActivity implements ImagesViewCallback
     private void openSettingActivity() {
         Intent intent = SettingsActivity.buildIntent(this);
         startActivity(intent);
-    }
-
-    void extractBundle() {
-        Bundle bundle = getIntent().getExtras();
-        if (bundle != null) {
-            if (bundle.containsKey(TAGS_CHANGED_EXTRA)) {
-                prepareSnackBar(R.string.tags_changed_message);
-                showSnackBar();
-            }
-        }
     }
 
     @VisibleForTesting

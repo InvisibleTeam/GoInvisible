@@ -25,11 +25,8 @@ import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowActivity;
 import org.robolectric.shadows.ShadowIntent;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-
-import static com.invisibleteam.goinvisible.mvvm.images.ImagesActivity.TAGS_CHANGED_EXTRA;
-import static com.invisibleteam.goinvisible.util.IntentMatcher.containsSameData;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -37,14 +34,12 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.robolectric.Shadows.shadowOf;
 
 @RunWith(RobolectricTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 21)
-@SuppressFBWarnings("NP_NONNULL_PARAM_VIOLATION")
 public class ImagesActivityTest {
 
     private ImagesActivity activity;
@@ -131,50 +126,12 @@ public class ImagesActivityTest {
         //Given
         Context context = RuntimeEnvironment.application;
         Intent expectedIntent = new Intent(context, ImagesActivity.class);
-        expectedIntent.putExtra(ImagesActivity.TAGS_CHANGED_EXTRA, true);
-        expectedIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
         //When
         Intent intent = ImagesActivity.buildIntent(context);
 
         //Then
-        assertThat(intent, containsSameData(expectedIntent));
-    }
-
-    @Test
-    public void whenActivityIsStarted_IntentExtractionAndSnackbarAreCalled() {
-        //Given
-        Intent intent = new Intent();
-        intent.putExtra(TAGS_CHANGED_EXTRA, "");
-
-        //When
-        activity = spy(Robolectric.buildActivity(ImagesActivity.class)
-                .withIntent(intent)
-                .get());
-
-        activity.onCreate(null);
-
-        verify(activity).extractBundle();
-        verify(activity).prepareSnackBar(R.string.tags_changed_message);
-        verify(activity).showSnackBar();
-    }
-
-    @Test
-    public void whenActivityIsStartedWithWrongIntentData_SnackBarIsNotShown() {
-        //Given
-        Intent intent = new Intent();
-        intent.putExtra("test", "");
-
-        //When
-        activity = spy(Robolectric.buildActivity(ImagesActivity.class)
-                .withIntent(intent)
-                .get());
-
-        activity.onCreate(null);
-
-        verify(activity).extractBundle();
-        verify(activity, times(0)).prepareSnackBar(R.string.tags_changed_message);
-        verify(activity, times(0)).showSnackBar();
+        assertThat(intent.getComponent(), is(expectedIntent.getComponent()));
     }
 
     @Test
