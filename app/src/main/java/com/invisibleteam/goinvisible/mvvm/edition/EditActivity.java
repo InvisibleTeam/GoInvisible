@@ -24,17 +24,15 @@ import com.invisibleteam.goinvisible.model.GeolocationTag;
 import com.invisibleteam.goinvisible.model.ImageDetails;
 import com.invisibleteam.goinvisible.model.Tag;
 import com.invisibleteam.goinvisible.mvvm.common.CommonActivity;
-import com.invisibleteam.goinvisible.mvvm.edition.adapter.EditCompoundRecyclerView;
 import com.invisibleteam.goinvisible.mvvm.edition.dialog.EditDialog;
 import com.invisibleteam.goinvisible.mvvm.images.ImagesActivity;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Locale;
 
 import javax.annotation.Nullable;
 
-public class EditActivity extends CommonActivity implements EditTagCallback {
+public class EditActivity extends CommonActivity implements EditTagCallback, EditMenuViewCallback {
 
     public static Intent buildIntent(Context context, ImageDetails imageDetails) {
         Bundle bundle = new Bundle();
@@ -53,12 +51,11 @@ public class EditActivity extends CommonActivity implements EditTagCallback {
     private static final String TAG = EditActivity.class.getSimpleName();
     private static final int APPROVE_CHANGES = 1;
 
-    private EditCompoundRecyclerView editCompoundRecyclerView;
     private EditActivityHelper editActivityHelper;
-    private TagsManager tagsManager;
     private GpsEstablisher gpsEstablisher;
     private ImageDetails imageDetails;
     private EditViewModel editViewModel;
+    private EditMenuViewModel editMenuViewModel;
     private Tag tag;
 
     @Override
@@ -73,7 +70,7 @@ public class EditActivity extends CommonActivity implements EditTagCallback {
             tag = savedInstanceState.getParcelable(TAG_MODEL);
         }
         editActivityHelper = new EditActivityHelper(this);
-        prepareLocationHandling();
+        gpsEstablisher = editActivityHelper.createGpsEstablisher(tag);
     }
 
     @Override
@@ -90,8 +87,7 @@ public class EditActivity extends CommonActivity implements EditTagCallback {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if (editCompoundRecyclerView != null
-                && !editCompoundRecyclerView.getChangedTags().isEmpty()) {
+        if (editMenuViewModel.isInEditState()) {
             menu.add(0, APPROVE_CHANGES, 0, R.string.save).setIcon(R.drawable.ic_approve)
                     .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
         }
@@ -104,14 +100,13 @@ public class EditActivity extends CommonActivity implements EditTagCallback {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                onBackPressed();
+                editMenuViewModel.onBackClick();
                 return true;
             case APPROVE_CHANGES:
-                saveTags();
-                startImagesActivity();
+                editMenuViewModel.onApproveChangesClick();
                 return true;
             case CLEAR_ALL_TAGS:
-                clearAllTags();
+                editMenuViewModel.onClearAllTagsClick();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -123,23 +118,44 @@ public class EditActivity extends CommonActivity implements EditTagCallback {
         ActivityEditBinding activityEditBinding = DataBindingUtil.setContentView(this, R.layout.activity_edit);
         setSupportActionBar(activityEditBinding.mainToolbar);
         if (extractBundle()) {
-            editCompoundRecyclerView =
-                    (EditCompoundRecyclerView) findViewById(R.id.edit_compound_recycler_view);
-
-            try {
-                tagsManager = new TagsManager(getExifInterface());
-                editViewModel = new EditViewModel(
-                        imageDetails.getName(),
-                        imageDetails.getPath(),
-                        editCompoundRecyclerView,
-                        tagsManager,
-                        this);
-                activityEditBinding.setViewModel(editViewModel);
-            } catch (IOException e) {
-                Log.d(TAG, String.valueOf(e.getMessage()));
-                //TODO log exception to crashlitycs on else.
-            }
+            prepareViewModels(activityEditBinding);
         } //TODO log exception to crashlitycs on else.
+    }
+
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    boolean extractBundle() {
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            Parcelable extra = extras.getParcelable(TAG_IMAGE_DETAILS);
+            if (extra instanceof ImageDetails) {
+                imageDetails = extras.getParcelable(TAG_IMAGE_DETAILS);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void prepareViewModels(ActivityEditBinding activityEditBinding) {
+        try {
+            TagsManager tagsManager = new TagsManager(getExifInterface());
+
+            editViewModel = new EditViewModel(
+                    imageDetails.getName(),
+                    imageDetails.getPath(),
+                    activityEditBinding.editCompoundRecyclerView,
+                    tagsManager,
+                    this);
+            activityEditBinding.setViewModel(editViewModel);
+
+            editMenuViewModel = new EditMenuViewModel(
+                    tagsManager,
+                    activityEditBinding.editCompoundRecyclerView,
+                    editViewModel,
+                    this);
+        } catch (IOException e) {
+            Log.d(TAG, String.valueOf(e.getMessage()));
+            //TODO log exception to crashlitycs on else.
+        }
     }
 
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
@@ -161,13 +177,14 @@ public class EditActivity extends CommonActivity implements EditTagCallback {
         }
     }
 
+    private void onNewPlace(Place place) {
+        GeolocationTag geolocationTag = editActivityHelper.prepareNewPlacePositionTag(place, tag);
+        editViewModel.onEditEnded(geolocationTag);
+    }
+
     @Override
     public void onBackPressed() {
-        if (areTagsChanged()) {
-            showApproveChangeTagsDialog();
-            return;
-        }
-        super.onBackPressed();
+        editMenuViewModel.onBackClick();
     }
 
     @Override
@@ -198,45 +215,6 @@ public class EditActivity extends CommonActivity implements EditTagCallback {
         dialog.show(getFragmentManager(), EditDialog.FRAGMENT_TAG);
     }
 
-    private void prepareLocationHandling() {
-        gpsEstablisher = editActivityHelper.createGpsEstablisher(tag);
-    }
-
-    private void saveTags() {
-        List<Tag> changedTags = editCompoundRecyclerView.getChangedTags();
-        tagsManager.editTags(changedTags);
-    }
-
-    private void startImagesActivity() {
-        Intent intent = ImagesActivity.buildIntent(this);
-        startActivity(intent);
-        finish();
-    }
-
-    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
-    void clearAllTags() {
-        List<Tag> changedTags = editCompoundRecyclerView.getAllTags();
-        editViewModel.onClear(changedTags);
-    }
-
-    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
-    boolean extractBundle() {
-        Bundle extras = getIntent().getExtras();
-        if (extras != null) {
-            Parcelable extra = extras.getParcelable(TAG_IMAGE_DETAILS);
-            if (extra instanceof ImageDetails) {
-                imageDetails = extras.getParcelable(TAG_IMAGE_DETAILS);
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private void onNewPlace(Place place) {
-        GeolocationTag geolocationTag = editActivityHelper.prepareNewPlacePositionTag(place, tag);
-        editViewModel.onEditEnded(geolocationTag);
-    }
-
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
     void startPlaceIntent() {
         if (gpsEstablisher.isGpsEstablished()) {
@@ -246,27 +224,34 @@ public class EditActivity extends CommonActivity implements EditTagCallback {
         }
     }
 
-    private boolean areTagsChanged() {
-        List<Tag> changedTags = editCompoundRecyclerView.getChangedTags();
-        return !changedTags.isEmpty();
-    }
-
-    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
-    void showApproveChangeTagsDialog() {
+    @Override
+    public void showApproveChangeTagsDialog() {
+        String positiveMessage = getString(android.R.string.yes).toUpperCase(Locale.getDefault());
+        String negativeMessage = getString(android.R.string.no).toUpperCase(Locale.getDefault());
         new AlertDialog
                 .Builder(this, R.style.AlertDialogStyle)
                 .setTitle(R.string.tag_changed_title)
                 .setMessage(R.string.tag_changed_message)
                 .setPositiveButton(
-                        getString(android.R.string.yes).toUpperCase(Locale.getDefault()),
-                        (dialog, which) -> {
-                            finish();
-                        })
+                        positiveMessage,
+                        (dialog, which) -> editMenuViewModel.onApproveChangeTagsDialogPositive())
                 .setNegativeButton(
-                        getString(android.R.string.no).toUpperCase(Locale.getDefault()),
+                        negativeMessage,
                         null)
                 .setCancelable(true)
                 .show();
+    }
+
+    @Override
+    public void navigateBack() {
+        finish();
+    }
+
+    @Override
+    public void navigateChangedImagesScreen() {
+        Intent intent = ImagesActivity.buildIntent(this);
+        startActivity(intent);
+        finish();
     }
 
     private void showSnackBar(int message) {
@@ -282,8 +267,4 @@ public class EditActivity extends CommonActivity implements EditTagCallback {
         return editViewModel;
     }
 
-    @VisibleForTesting
-    void setEditCompoundRecyclerView(EditCompoundRecyclerView editCompoundRecyclerView) {
-        this.editCompoundRecyclerView = editCompoundRecyclerView;
-    }
 }
