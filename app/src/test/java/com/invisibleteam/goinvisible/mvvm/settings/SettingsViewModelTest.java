@@ -1,7 +1,5 @@
 package com.invisibleteam.goinvisible.mvvm.settings;
 
-import android.content.Context;
-
 import com.invisibleteam.goinvisible.BuildConfig;
 
 import org.junit.Before;
@@ -22,7 +20,6 @@ public class SettingsViewModelTest {
 
     private SettingsViewModel.SettingsViewModelCallback callback;
     private SettingsViewModel viewModel;
-    private Context context;
 
     @Before
     public void setUp() {

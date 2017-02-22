@@ -1,7 +1,6 @@
 package com.invisibleteam.goinvisible.mvvm.edition;
 
 import android.annotation.TargetApi;
-import android.support.annotation.VisibleForTesting;
 import android.support.media.ExifInterface;
 import android.util.Log;
 
@@ -30,12 +29,12 @@ import static com.invisibleteam.goinvisible.model.InputType.UNMODIFIABLE;
 import static com.invisibleteam.goinvisible.model.InputType.VALUE_DOUBLE;
 import static com.invisibleteam.goinvisible.model.InputType.VALUE_INTEGER;
 
-class TagsManager {
+public class TagsManager {
 
     private static final String TAG = TagsManager.class.getSimpleName();
     private final ExifInterface exifInterface;
 
-    TagsManager(ExifInterface exifInterface) {
+    public TagsManager(ExifInterface exifInterface) {
         this.exifInterface = exifInterface;
     }
 
@@ -103,7 +102,7 @@ class TagsManager {
         return editTag(tag);
     }
 
-    boolean clearTags(List<Tag> tagsList) {
+    public boolean clearTags(List<Tag> tagsList) {
         for (Tag tag : tagsList) {
             resetTag(tag);
             setExifAttributes(tag);
@@ -170,8 +169,7 @@ class TagsManager {
                 tagType);
     }
 
-    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
-    List<Tag> getAllTags() {
+    public List<Tag> getAllTags() {
         List<Tag> tagsList = new ArrayList<>();
         tagsList.add(getGeolocationTag());
         tagsList.addAll(getAllTags(TAG_LIST));
