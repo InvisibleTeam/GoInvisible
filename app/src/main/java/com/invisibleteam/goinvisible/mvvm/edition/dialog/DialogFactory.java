@@ -159,6 +159,6 @@ class DialogFactory {
             return;
         }
         viewModel.setIsError(true);
-        binding.valueTextLayout.setError(context.getString(R.string.error_text));
+        binding.valueTextLayout.setError(context.getString(R.string.error_message));
     }
 }
