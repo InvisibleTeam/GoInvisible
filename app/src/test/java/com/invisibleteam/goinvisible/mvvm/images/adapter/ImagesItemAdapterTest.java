@@ -70,6 +70,7 @@ public class ImagesItemAdapterTest {
             imagesItemAdapter.onBindViewHolder(viewHolder, 0);
         } catch (NullPointerException e) {
             Log.d(TAG, "Concious NullpointerException");
+            //This exception is thrown because that we cannot mock itemView in holder
         }
 
         //Then
@@ -90,6 +91,7 @@ public class ImagesItemAdapterTest {
             imagesItemAdapter.onBindViewHolder(viewHolder, 0);
         } catch (NullPointerException e) {
             Log.d(TAG, "Concious NullpointerException");
+            //This exception is thrown because that we cannot mock itemView in holder
         }
 
         //Then
