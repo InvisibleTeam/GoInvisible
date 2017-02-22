@@ -46,7 +46,7 @@ public class EditActivityHelperTest {
     }
 
     @Test
-    public void whenShareImageIntentIsBuildWithCorrectImagePath_intentIsReturned() throws FileNotFoundException {
+    public void whenShareImageIntentIsBuildWithCorrectImagePath_IntentIsReturned() throws FileNotFoundException {
         //Given
         ImageDetails imageDetails = new ImageDetails("Path", "Name");
         doReturn("media:content").when(helper).prepareImagePathToShare(imageDetails, editActivity.getContentResolver());
@@ -64,7 +64,7 @@ public class EditActivityHelperTest {
     }
 
     @Test(expected = FileNotFoundException.class)
-    public void whenShareImageIntentIsBuildWithIncorrectImagePath_exceptionIsThrown() throws FileNotFoundException {
+    public void whenShareImageIntentIsBuildWithIncorrectImagePath_ExceptionIsThrown() throws FileNotFoundException {
         //Given
         ImageDetails imageDetails = new ImageDetails("Path", "Name");
 

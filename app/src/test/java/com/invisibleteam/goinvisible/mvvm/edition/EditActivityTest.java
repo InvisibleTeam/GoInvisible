@@ -189,7 +189,7 @@ public class EditActivityTest {
     }
 
     @Test
-    public void whenUnknownOptionItemSelected_defaultMethodIsCalled() {
+    public void whenUnknownOptionItemSelected_DefaultMethodIsCalled() {
         //given
         activity = spy(activity);
         MenuItem menuItem = mock(MenuItem.class);
@@ -274,7 +274,7 @@ public class EditActivityTest {
     }
 
     @Test
-    public void whenAllNecessaryPermissionsAreGranted_prepareViewIsCalled() {
+    public void whenAllNecessaryPermissionsAreGranted_PrepareViewIsCalled() {
         //Given
         EditActivity activity = Robolectric.buildActivity(EditActivity.class).get();
         EditActivity spyActivity = spy(activity);
