@@ -151,7 +151,7 @@ public class DialogFactoryTest {
         Dialog dialog = dialogFactory.createDialog();
 
         //Then
-        verify(dialogFactory).createRangedDialog(any(), any(), any());
+        verify(dialogFactory).createRangedDialog(any(), any());
         assertNull(dialog);
     }
 
@@ -168,8 +168,7 @@ public class DialogFactoryTest {
         //Then
         verify(dialogFactory).createRangedDialog(
                 eq(activity),
-                eq(tag),
-                any(EditViewModel.class));
+                eq(tag));
         assertNotNull(dialog);
     }
 

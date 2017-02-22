@@ -57,7 +57,7 @@ class DialogFactory {
 
             case RANGED_INTEGER:
             case RANGED_STRING:
-                return createRangedDialog(context, tag, viewModel);
+                return createRangedDialog(context, tag);
 
             case TIMESTAMP_STRING:
                 return createTimeDialog();
@@ -78,7 +78,7 @@ class DialogFactory {
     }
 
     @Nullable
-    Dialog createRangedDialog(Context context, Tag baseTag, EditViewModel viewModel) {
+    Dialog createRangedDialog(Context context, Tag baseTag) {
         Tag tag = new Tag(baseTag);
 
         final Map<Integer, Integer> tagsMap = DialogRangedValuesUtil.getTagsMapValues(tag.getKey());
