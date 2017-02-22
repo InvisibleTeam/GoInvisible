@@ -25,6 +25,7 @@ android {
         disable 'GoogleAppIndexingWarning', 'ContentDescription'
         abortOnError true
         warningsAsErrors true
+        showAll true
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
