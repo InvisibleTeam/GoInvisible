@@ -16,18 +16,18 @@ public class EditViewModel implements OnTagActionListener {
 
     private final EditCompoundRecyclerView editCompoundRecyclerView;
     private final TagsManager manager;
-    private final EditTagCallback listener;
+    private final EditTagCallback callback;
 
     EditViewModel(String title,
                   String imageUrl,
                   EditCompoundRecyclerView editCompoundRecyclerView,
                   TagsManager manager,
-                  EditTagCallback listener) {
+                  EditTagCallback callback) {
         this.title.set(title);
         this.imageUrl.set(imageUrl);
         this.editCompoundRecyclerView = editCompoundRecyclerView;
         this.manager = manager;
-        this.listener = listener;
+        this.callback = callback;
 
         initRecyclerView();
     }
@@ -62,19 +62,19 @@ public class EditViewModel implements OnTagActionListener {
     @Override
     public void onEditStarted(Tag tag) {
         if (ExifInterface.TAG_GPS_LATITUDE.equals(tag.getKey())) {
-            listener.openPlacePickerView(tag);
+            callback.openPlacePickerView(tag);
             return;
         }
 
         switch (tag.getTagType().getInputType()) {
             case UNMODIFIABLE:
-                listener.showUnmodifiableTagMessage();
+                callback.showUnmodifiableTagMessage();
                 break;
             case INDEFINITE:
-                listener.showTagEditionErrorMessage();
+                callback.showTagEditionErrorMessage();
                 break;
             default:
-                listener.showTagEditionView(tag);
+                callback.showTagEditionView(tag);
         }
     }
 
@@ -90,11 +90,11 @@ public class EditViewModel implements OnTagActionListener {
 
     @Override
     public void onTagsUpdated() {
-        listener.changeViewToEditMode();
+        callback.changeViewToEditMode();
     }
 
     @Override
     public void onEditError() {
-        listener.showTagEditionErrorMessage();
+        callback.showTagEditionErrorMessage();
     }
 }
