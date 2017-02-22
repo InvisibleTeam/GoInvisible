@@ -17,7 +17,7 @@ import com.invisibleteam.goinvisible.R;
 import com.invisibleteam.goinvisible.databinding.SettingsActivityBinding;
 import com.invisibleteam.goinvisible.helper.ClearingTagsReceiverHelper;
 import com.invisibleteam.goinvisible.model.ClearingInterval;
-import com.invisibleteam.goinvisible.mvvm.common.RadioDialog;
+import com.invisibleteam.goinvisible.mvvm.common.RadioDialogBuilder;
 import com.invisibleteam.goinvisible.util.SharedPreferencesUtil;
 
 import java.util.Arrays;
@@ -111,7 +111,17 @@ public class SettingsActivity extends AppCompatActivity {
             }
         }
 
-        RadioDialog.RadioDialogCallback callback = new RadioDialog.RadioDialogCallback() {
+        RadioDialogBuilder.RadioDialogCallback callback = createCallback(intervals);
+
+        return new RadioDialogBuilder(SettingsActivity.this, intervalNames, selectedIntervalIndex, callback)
+                .setTitle(getString(R.string.intervals_dialog_title))
+                .setPositiveButton(getText(android.R.string.ok))
+                .setNegativeButton(getText(android.R.string.cancel))
+                .build();
+    }
+
+    private RadioDialogBuilder.RadioDialogCallback createCallback(List<ClearingInterval> intervals) {
+        return new RadioDialogBuilder.RadioDialogCallback() {
             @Override
             public void onClick(int index) {
             }
@@ -127,12 +137,6 @@ public class SettingsActivity extends AppCompatActivity {
                 dialog.dismiss();
             }
         };
-
-        return new RadioDialog(SettingsActivity.this, intervalNames, selectedIntervalIndex, callback)
-                .setTitle(getString(R.string.intervals_dialog_title))
-                .setPositiveButton(getText(android.R.string.ok))
-                .setNegativeButton(getText(android.R.string.cancel))
-                .build();
     }
 
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)

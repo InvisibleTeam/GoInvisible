@@ -14,7 +14,7 @@ import com.invisibleteam.goinvisible.R;
 import com.invisibleteam.goinvisible.databinding.TextDialogBinding;
 import com.invisibleteam.goinvisible.model.InputType;
 import com.invisibleteam.goinvisible.model.Tag;
-import com.invisibleteam.goinvisible.mvvm.common.RadioDialog;
+import com.invisibleteam.goinvisible.mvvm.common.RadioDialogBuilder;
 import com.invisibleteam.goinvisible.mvvm.edition.EditViewModel;
 import com.invisibleteam.goinvisible.util.DialogRangedValuesUtil;
 
@@ -106,7 +106,17 @@ class DialogFactory {
             valuesIndex++;
         }
 
-        RadioDialog.RadioDialogCallback callback = new RadioDialog.RadioDialogCallback() {
+        RadioDialogBuilder.RadioDialogCallback callback = createCallback(tag, tagValues);
+
+        return new RadioDialogBuilder(context, tagNames, selectedValueIndex, callback)
+                .setTitle(tag.getKey())
+                .setPositiveButton(context.getText(android.R.string.ok))
+                .setNegativeButton(context.getText(android.R.string.cancel))
+                .build();
+    }
+
+    private RadioDialogBuilder.RadioDialogCallback createCallback(Tag tag, SparseArray<String> tagValues) {
+        return new RadioDialogBuilder.RadioDialogCallback() {
             @Override
             public void onClick(int index) {
                 tag.setValue(tagValues.get(index));
@@ -123,12 +133,6 @@ class DialogFactory {
                 dialog.dismiss();
             }
         };
-
-        return new RadioDialog(context, tagNames, selectedValueIndex, callback)
-                .setTitle(tag.getKey())
-                .setPositiveButton(context.getText(android.R.string.ok))
-                .setNegativeButton(context.getText(android.R.string.cancel))
-                .build();
     }
 
     Dialog createDateDialog() {

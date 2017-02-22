@@ -17,7 +17,7 @@ import static org.mockito.Mockito.mock;
 
 @RunWith(RobolectricTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 21)
-public class RadioDialogTest {
+public class RadioDialogBuilderTest {
 
     private Context context;
 
@@ -29,14 +29,14 @@ public class RadioDialogTest {
     @Test
     public void WhenBuildIsCalled_DialogIsCreated() {
         //Given
-        RadioDialog.RadioDialogCallback callback = mock(RadioDialog.RadioDialogCallback.class);
+        RadioDialogBuilder.RadioDialogCallback callback = mock(RadioDialogBuilder.RadioDialogCallback.class);
         String[] values = new String[]{"1", "2", "3"};
-        RadioDialog radioDialog = new RadioDialog(context, values, 1, callback);
-        radioDialog.setPositiveButton("positive");
-        radioDialog.setNegativeButton("negative");
+        RadioDialogBuilder radioDialogBuilder = new RadioDialogBuilder(context, values, 1, callback);
+        radioDialogBuilder.setPositiveButton("positive");
+        radioDialogBuilder.setNegativeButton("negative");
 
         //When
-        Dialog dialog = radioDialog.build();
+        Dialog dialog = radioDialogBuilder.build();
 
         //Then
         assertNotNull(dialog);

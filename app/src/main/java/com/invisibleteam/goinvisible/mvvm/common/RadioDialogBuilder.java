@@ -6,33 +6,33 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 
-public class RadioDialog {
+public class RadioDialogBuilder {
 
     final private AlertDialog.Builder alertDialog;
     final private String[] tagNames;
     private int selectedValueIndex;
     private RadioDialogCallback listener;
 
-    public RadioDialog(Context context, String[] tagNames, int index, RadioDialogCallback listener) {
+    public RadioDialogBuilder(Context context, String[] tagNames, int index, RadioDialogCallback listener) {
         alertDialog = new AlertDialog.Builder(context);
         this.tagNames = tagNames;
         selectedValueIndex = index;
         this.listener = listener;
     }
 
-    public RadioDialog setTitle(String title) {
+    public RadioDialogBuilder setTitle(String title) {
         alertDialog.setTitle(title);
         return this;
     }
 
-    public RadioDialog setPositiveButton(CharSequence text) {
+    public RadioDialogBuilder setPositiveButton(CharSequence text) {
         alertDialog.setPositiveButton(text, (dialog, index) -> {
             listener.onApprove(dialog, selectedValueIndex);
         });
         return this;
     }
 
-    public RadioDialog setNegativeButton(CharSequence text) {
+    public RadioDialogBuilder setNegativeButton(CharSequence text) {
         alertDialog.setNegativeButton(text, (dialog, which) -> {
             listener.onCancel(dialog);
         });
