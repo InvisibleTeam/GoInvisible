@@ -3,7 +3,8 @@
     <dimen name="images_grid_margin">4dp</dimen>
     <dimen name="text_view_margin">16dp</dimen>
     <dimen name="information_text_size">20sp</dimen>
-    <dimen name="tag_value_size">16sp</dimen>
+    <dimen name="edit_image_size">244dp</dimen>
     <dimen name="section_title_text_size">16sp</dimen>
     <dimen name="section_description_text_size">18sp</dimen>
+    <dimen name="appbar_elevation">4dp</dimen>
 </resources>
