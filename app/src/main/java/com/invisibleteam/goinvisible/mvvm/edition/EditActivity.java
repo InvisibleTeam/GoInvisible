@@ -164,7 +164,7 @@ public class EditActivity extends CommonActivity {
             menu.add(0, APPROVE_CHANGES, 0, R.string.save).setIcon(R.drawable.ic_approve)
                     .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
         }
-        menu.add(0, CLEAR_ALL_TAGS, 1, R.string.clear_all_tags).setIcon(R.drawable.ic_remove_all)
+        menu.add(0, CLEAR_ALL_TAGS, 1, R.string.clear_all_tags).setIcon(R.drawable.ic_multi_broom)
                 .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
         return true;
     }
