@@ -10,6 +10,8 @@
             type="com.invisibleteam.goinvisible.mvvm.settings.SettingsViewModel"/>
 
         <import type="android.view.View"/>
+
+        <import type="android.text.TextUtils"/>
     </data>
 
     <LinearLayout
@@ -37,10 +39,10 @@
             android:id="@+id/periodic_clearing_section_switch_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginStart="@dimen/text_view_margin"
-            android:layout_marginEnd="@dimen/text_view_margin"
             android:layout_marginBottom="@dimen/text_view_margin"
+            android:layout_marginEnd="@dimen/text_view_margin"
+            android:layout_marginStart="@dimen/text_view_margin"
+            android:orientation="horizontal"
             android:weightSum="10">
 
             <LinearLayout
@@ -70,6 +72,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
+                android:checked="@{viewModel.isClearServiceEnabled}"
                 android:gravity="center_vertical"
                 android:onCheckedChanged="@{(buttonView, isChecked) -> viewModel.onCheckedChanged(isChecked)}"/>
 
@@ -83,6 +86,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:enabled="@{viewModel.isClearServiceEnabled}"
+            android:onClick="@{(v) -> viewModel.onClick()}"
             android:orientation="horizontal"
             android:weightSum="4">
 
@@ -103,7 +108,7 @@
                 android:layout_margin="@dimen/text_view_margin"
                 android:layout_weight="1"
                 android:enabled="@{viewModel.isClearServiceEnabled}"
-                android:text="@string/interval_value_1_day"
+                android:text="@{viewModel.intervalName}"
                 android:textSize="@dimen/section_title_text_size"/>
 
         </LinearLayout>

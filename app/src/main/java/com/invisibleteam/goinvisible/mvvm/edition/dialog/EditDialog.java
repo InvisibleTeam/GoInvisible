@@ -32,7 +32,19 @@ public class EditDialog extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         DialogFactory factory = new DialogFactory(this, extractTag(), editViewModel);
-        return factory.createDialog();
+
+        Dialog dialog = factory.createDialog();
+        if (dialog == null) {
+            onEditError();
+            return super.onCreateDialog(savedInstanceState);
+        }
+        return dialog;
+    }
+
+    private void onEditError() {
+        setShowsDialog(false);
+        dismiss();
+        editViewModel.onEditError();
     }
 
     @Nullable
@@ -42,7 +54,7 @@ public class EditDialog extends DialogFragment {
         if (bundle != null && !bundle.isEmpty()) {
             Parcelable extra = bundle.getParcelable(EXTRA_TAG);
             if (extra instanceof Tag) {
-                return  (Tag) extra;
+                return (Tag) extra;
             }
         }
         Log.e(TAG, "There is some tag extraction error");

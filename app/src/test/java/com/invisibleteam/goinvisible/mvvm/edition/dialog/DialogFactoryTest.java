@@ -1,6 +1,7 @@
 package com.invisibleteam.goinvisible.mvvm.edition.dialog;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.app.DialogFragment;
 import android.databinding.DataBindingUtil;
 import android.view.LayoutInflater;
@@ -35,9 +36,10 @@ import static com.invisibleteam.goinvisible.model.InputType.TEXT_STRING;
 import static com.invisibleteam.goinvisible.model.InputType.TIMESTAMP_STRING;
 import static com.invisibleteam.goinvisible.model.InputType.VALUE_DOUBLE;
 import static com.invisibleteam.goinvisible.model.InputType.VALUE_INTEGER;
+import static junit.framework.Assert.assertNotNull;
+import static junit.framework.Assert.assertNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
@@ -140,63 +142,49 @@ public class DialogFactoryTest {
     }
 
     @Test
-    public void whenTagWithRangedIntegerInputTypeIsPassed_CreateRangedDialogIsCalledWithError() {
+    public void whenTagWithRangedIntegerInputTypeWithWrongKeyIsPassed_CreateRangedDialogReturnsNull() {
         //Given
         Tag tag = createTag(RANGED_INTEGER);
         dialogFactory = spy(new DialogFactory(dialog, tag, mock(EditViewModel.class)));
 
         //When
-        dialogFactory.createDialog();
+        Dialog dialog = dialogFactory.createDialog();
 
         //Then
-        verify(dialogFactory).createRangedDialog(
-                eq(activity),
-                eq(tag),
-                any(EditViewModel.class));
-        verify(dialogFactory).createErrorDialog();
+        verify(dialogFactory).createRangedDialog(any(), any(), any());
+        assertNull(dialog);
     }
 
     @Test
-    public void whenTagWithRangedIntegerInputTypeIsPassed_CreateRangedDialogIsCalled() {
+    public void whenTagWithRangedIntegerInputTypeIsPassed_CreateRangedDialogReturnsDialogInstance() {
         //Given
         TagType tagType = TagType.build(RANGED_INTEGER);
         Tag tag = new Tag(TAG_ORIENTATION, "value", tagType);
         dialogFactory = spy(new DialogFactory(dialog, tag, mock(EditViewModel.class)));
 
         //When
-        dialogFactory.createDialog();
+        Dialog dialog = dialogFactory.createDialog();
 
         //Then
         verify(dialogFactory).createRangedDialog(
                 eq(activity),
                 eq(tag),
                 any(EditViewModel.class));
-        verify(dialogFactory, times(0)).createErrorDialog();
+        assertNotNull(dialog);
     }
 
     @Test
-    public void whenNullTagIsPassed_CreateErrorDialogIsCalled() {
-        //When
-        dialogFactory = spy(new DialogFactory(dialog, null, mock(EditViewModel.class)));
-        dialogFactory.createDialog();
-
-        //Then
-        verify(dialogFactory).createErrorDialog();
-    }
-
-    @Test
-    public void whenTagWithIndefiniteInputTypeIsPassed_CreateErrorDialogIsCalled() {
+    public void whenTagWithIndefiniteInputTypeIsPassed_NullDialogIsReturned() {
         //Given
         Tag tag = createTag(INDEFINITE);
         when(dialog.getActivity()).thenReturn(Mockito.mock(EditActivity.class));
         dialogFactory = spy(new DialogFactory(dialog, tag, mock(EditViewModel.class)));
-        doReturn(null).when(dialogFactory).createErrorDialog();
 
         //When
-        dialogFactory.createDialog();
+        Dialog dialog = dialogFactory.createDialog();
 
         //Then
-        verify(dialogFactory).createErrorDialog();
+        assertNull(dialog);
     }
 
     @Test

@@ -9,6 +9,7 @@ import android.support.annotation.VisibleForTesting;
 import com.squareup.leakcanary.LeakCanary;
 
 public class GoInvisibleApplication extends Application {
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -48,5 +49,4 @@ public class GoInvisibleApplication extends Application {
         }
         LeakCanary.install(this);
     }
-
 }
