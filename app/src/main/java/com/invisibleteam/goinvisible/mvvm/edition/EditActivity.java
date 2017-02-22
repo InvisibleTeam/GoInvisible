@@ -34,19 +34,7 @@ import java.util.Locale;
 
 import javax.annotation.Nullable;
 
-public class EditActivity extends CommonActivity {
-
-    public static final int PLACE_REQUEST_ID = 1;
-    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
-    static final int CLEAR_ALL_TAGS = 2;
-    private static final String TAG_IMAGE_DETAILS = "extra_image_details";
-    private static final String TAG_MODEL = "tag";
-    private static final String TAG = EditActivity.class.getSimpleName();
-    private static final int APPROVE_CHANGES = 1;
-    private EditCompoundRecyclerView editCompoundRecyclerView;
-    private EditActivityHelper editActivityHelper;
-    private TagsManager tagsManager;
-    private GpsEstablisher gpsEstablisher;
+public class EditActivity extends CommonActivity implements EditTagCallback {
 
     public static Intent buildIntent(Context context, ImageDetails imageDetails) {
         Bundle bundle = new Bundle();
@@ -57,49 +45,21 @@ public class EditActivity extends CommonActivity {
         return intent;
     }
 
+    public static final int PLACE_REQUEST_ID = 1;
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    static final int CLEAR_ALL_TAGS = 2;
+    private static final String TAG_IMAGE_DETAILS = "extra_image_details";
+    private static final String TAG_MODEL = "tag";
+    private static final String TAG = EditActivity.class.getSimpleName();
+    private static final int APPROVE_CHANGES = 1;
+
+    private EditCompoundRecyclerView editCompoundRecyclerView;
+    private EditActivityHelper editActivityHelper;
+    private TagsManager tagsManager;
+    private GpsEstablisher gpsEstablisher;
     private ImageDetails imageDetails;
     private EditViewModel editViewModel;
     private Tag tag;
-
-    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
-    final EditTagListener editTagListener = new EditTagListener() {
-        @Override
-        public void openTagEditionView(Tag tag) {
-            if (ExifInterface.TAG_GPS_LATITUDE.equals(tag.getKey())) {
-                EditActivity.this.tag = tag;
-                startPlaceIntent();
-                return;
-            }
-
-            switch (tag.getTagType().getInputType()) {
-                case UNMODIFIABLE:
-                    showSnackBar(R.string.unmodifiable_tag_message);
-                    break;
-                case INDEFINITE:
-                    showSnackBar(R.string.error_message);
-                    break;
-                default:
-                    EditActivity.this.openEditDialog(tag);
-            }
-        }
-
-        @Override
-        public void onTagsChanged() {
-            invalidateOptionsMenu();
-        }
-
-        @Override
-        public void onEditError() {
-            showSnackBar(R.string.error_message);
-        }
-    };
-
-    private void showSnackBar(int message) {
-        Snackbar.make(
-                this.findViewById(android.R.id.content),
-                message,
-                Snackbar.LENGTH_LONG).show();
-    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -122,39 +82,10 @@ public class EditActivity extends CommonActivity {
         super.onStop();
     }
 
-    private void prepareLocationHandling() {
-        Snackbar googleApiFailureSnackbar = editActivityHelper.createGpsSnackBar();
-        GpsEstablisher.StatusListener gpsStatusListener = new GpsEstablisher.StatusListener() {
-            @Override
-            public void onGpsEstablished() {
-                editActivityHelper.openPlacePicker(tag);
-            }
-
-            @Override
-            public void onGoogleLocationApiConnectionFailure() {
-                googleApiFailureSnackbar.show();
-            }
-        };
-        gpsEstablisher = editActivityHelper.createGpsEstablisher(gpsStatusListener);
-    }
-
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         outState.putParcelable(TAG_MODEL, tag);
         super.onSaveInstanceState(outState);
-    }
-
-    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
-    boolean extractBundle() {
-        Bundle extras = getIntent().getExtras();
-        if (extras != null) {
-            Parcelable extra = extras.getParcelable(TAG_IMAGE_DETAILS);
-            if (extra instanceof ImageDetails) {
-                imageDetails = extras.getParcelable(TAG_IMAGE_DETAILS);
-                return true;
-            }
-        }
-        return false;
     }
 
     @Override
@@ -187,18 +118,6 @@ public class EditActivity extends CommonActivity {
         }
     }
 
-    private void startImagesActivity() {
-        Intent intent = ImagesActivity.buildIntent(this);
-        startActivity(intent);
-        finish();
-    }
-
-    @VisibleForTesting
-    @Nullable
-    EditViewModel getEditViewModel() {
-        return editViewModel;
-    }
-
     @Override
     public void prepareView() {
         ActivityEditBinding activityEditBinding = DataBindingUtil.setContentView(this, R.layout.activity_edit);
@@ -214,7 +133,7 @@ public class EditActivity extends CommonActivity {
                         imageDetails.getPath(),
                         editCompoundRecyclerView,
                         tagsManager,
-                        editTagListener);
+                        this);
                 activityEditBinding.setViewModel(editViewModel);
             } catch (IOException e) {
                 Log.d(TAG, String.valueOf(e.getMessage()));
@@ -242,31 +161,6 @@ public class EditActivity extends CommonActivity {
         }
     }
 
-    private void onNewPlace(Place place) {
-        GeolocationTag geolocationTag = editActivityHelper.prepareNewPlacePositionTag(place, tag);
-        editViewModel.onEditEnded(geolocationTag);
-    }
-
-    private void openEditDialog(Tag tag) {
-        EditDialog dialog = EditDialog.newInstance(EditActivity.this, tag);
-        dialog.setViewModel(editViewModel);
-        dialog.show(getFragmentManager(), EditDialog.FRAGMENT_TAG);
-    }
-
-    private void startPlaceIntent() {
-
-        if (gpsEstablisher.isGpsEstablished()) {
-            editActivityHelper.openPlacePicker(tag);
-        } else {
-            gpsEstablisher.requestGpsConnection();
-        }
-    }
-
-    @VisibleForTesting
-    void setEditCompoundRecyclerView(EditCompoundRecyclerView editCompoundRecyclerView) {
-        this.editCompoundRecyclerView = editCompoundRecyclerView;
-    }
-
     @Override
     public void onBackPressed() {
         if (areTagsChanged()) {
@@ -276,15 +170,80 @@ public class EditActivity extends CommonActivity {
         super.onBackPressed();
     }
 
+    @Override
+    public void onTagsChanged() {
+        invalidateOptionsMenu();
+    }
+
+    @Override
+    public void openPlacePickerView(Tag tag) {
+        this.tag = tag;
+        startPlaceIntent();
+    }
+
+    @Override
+    public void showUnmodifiableTagMessage() {
+        showSnackBar(R.string.unmodifiable_tag_message);
+    }
+
+    @Override
+    public void showTagEditionErrorMessage() {
+        showSnackBar(R.string.error_message);
+    }
+
+    @Override
+    public void showTagEditionView(Tag tag) {
+        EditDialog dialog = EditDialog.newInstance(EditActivity.this, tag);
+        dialog.setViewModel(editViewModel);
+        dialog.show(getFragmentManager(), EditDialog.FRAGMENT_TAG);
+    }
+
+    private void prepareLocationHandling() {
+        gpsEstablisher = editActivityHelper.createGpsEstablisher(tag);
+    }
+
     private void saveTags() {
         List<Tag> changedTags = editCompoundRecyclerView.getChangedTags();
         tagsManager.editTags(changedTags);
+    }
+
+    private void startImagesActivity() {
+        Intent intent = ImagesActivity.buildIntent(this);
+        startActivity(intent);
+        finish();
     }
 
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
     void clearAllTags() {
         List<Tag> changedTags = editCompoundRecyclerView.getAllTags();
         editViewModel.onClear(changedTags);
+    }
+
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    boolean extractBundle() {
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            Parcelable extra = extras.getParcelable(TAG_IMAGE_DETAILS);
+            if (extra instanceof ImageDetails) {
+                imageDetails = extras.getParcelable(TAG_IMAGE_DETAILS);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void onNewPlace(Place place) {
+        GeolocationTag geolocationTag = editActivityHelper.prepareNewPlacePositionTag(place, tag);
+        editViewModel.onEditEnded(geolocationTag);
+    }
+
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    void startPlaceIntent() {
+        if (gpsEstablisher.isGpsEstablished()) {
+            editActivityHelper.openPlacePicker(tag);
+        } else {
+            gpsEstablisher.requestGpsConnection();
+        }
     }
 
     private boolean areTagsChanged() {
@@ -308,5 +267,23 @@ public class EditActivity extends CommonActivity {
                         null)
                 .setCancelable(true)
                 .show();
+    }
+
+    private void showSnackBar(int message) {
+        Snackbar.make(
+                this.findViewById(android.R.id.content),
+                message,
+                Snackbar.LENGTH_LONG).show();
+    }
+
+    @VisibleForTesting
+    @Nullable
+    EditViewModel getEditViewModel() {
+        return editViewModel;
+    }
+
+    @VisibleForTesting
+    void setEditCompoundRecyclerView(EditCompoundRecyclerView editCompoundRecyclerView) {
+        this.editCompoundRecyclerView = editCompoundRecyclerView;
     }
 }

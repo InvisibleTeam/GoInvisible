@@ -1,6 +1,8 @@
 package com.invisibleteam.goinvisible.mvvm.edition;
 
 
+import android.support.media.ExifInterface;
+
 import com.invisibleteam.goinvisible.model.Tag;
 import com.invisibleteam.goinvisible.mvvm.edition.adapter.EditCompoundRecyclerView;
 import com.invisibleteam.goinvisible.util.ObservableString;
@@ -14,13 +16,13 @@ public class EditViewModel implements OnTagActionListener {
 
     private final EditCompoundRecyclerView editCompoundRecyclerView;
     private final TagsManager manager;
-    private final EditTagListener listener;
+    private final EditTagCallback listener;
 
     EditViewModel(String title,
                   String imageUrl,
                   EditCompoundRecyclerView editCompoundRecyclerView,
                   TagsManager manager,
-                  EditTagListener listener) {
+                  EditTagCallback listener) {
         this.title.set(title);
         this.imageUrl.set(imageUrl);
         this.editCompoundRecyclerView = editCompoundRecyclerView;
@@ -59,7 +61,21 @@ public class EditViewModel implements OnTagActionListener {
 
     @Override
     public void onEditStarted(Tag tag) {
-        listener.openTagEditionView(tag);
+        if (ExifInterface.TAG_GPS_LATITUDE.equals(tag.getKey())) {
+            listener.openPlacePickerView(tag);
+            return;
+        }
+
+        switch (tag.getTagType().getInputType()) {
+            case UNMODIFIABLE:
+                listener.showUnmodifiableTagMessage();
+                break;
+            case INDEFINITE:
+                listener.showTagEditionErrorMessage();
+                break;
+            default:
+                listener.showTagEditionView(tag);
+        }
     }
 
     @Override
@@ -79,6 +95,6 @@ public class EditViewModel implements OnTagActionListener {
 
     @Override
     public void onEditError() {
-        listener.onEditError();
+        listener.showTagEditionErrorMessage();
     }
 }

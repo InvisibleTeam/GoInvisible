@@ -1,5 +1,7 @@
 package com.invisibleteam.goinvisible.mvvm.edition;
 
+import android.media.ExifInterface;
+
 import com.invisibleteam.goinvisible.model.InputType;
 import com.invisibleteam.goinvisible.model.Tag;
 import com.invisibleteam.goinvisible.model.TagType;
@@ -30,7 +32,7 @@ public class EditViewModelTest {
     private TagsManager tagsManager;
 
     @Mock
-    private EditTagListener listener;
+    private EditTagCallback listener;
 
     private EditViewModel editViewModel;
 
@@ -64,12 +66,18 @@ public class EditViewModelTest {
     }
 
     @Test
-    public void whenTagIsEdited_EditionIsPropagate() {
+    public void whenPositionTagIsEdited_PlacePickerViewIsOpened() {
+        //Given
+        Tag tag = new Tag(
+                ExifInterface.TAG_GPS_LATITUDE,
+                "value",
+                TagType.build(InputType.POSITION_DOUBLE));
+
         //When
         editViewModel.onEditStarted(tag);
 
         //Then
-        verify(listener).openTagEditionView(eq(tag));
+        verify(listener).openPlacePickerView(eq(tag));
     }
 
     @Test

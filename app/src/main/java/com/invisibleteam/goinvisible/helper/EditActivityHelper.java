@@ -83,13 +83,26 @@ public class EditActivityHelper {
                 Snackbar.LENGTH_LONG);
     }
 
-    public GpsEstablisher createGpsEstablisher(GpsEstablisher.StatusListener listener) {
+    public GpsEstablisher createGpsEstablisher(Tag tag) {
+        Snackbar googleApiFailureSnackbar = createGpsSnackBar();
+        GpsEstablisher.StatusListener gpsStatusListener = new GpsEstablisher.StatusListener() {
+            @Override
+            public void onGpsEstablished() {
+                EditActivityHelper.this.openPlacePicker(tag);
+            }
+
+            @Override
+            public void onGoogleLocationApiConnectionFailure() {
+                googleApiFailureSnackbar.show();
+            }
+        };
+
         LocationManager locationManager = (LocationManager) editActivity.getSystemService(LOCATION_SERVICE);
         GoogleLocationApiEstablisher googleLocationApiEstablisher =
                 new GoogleLocationApiEstablisher(
                         new GoogleApiClient.Builder(editActivity));
         GpsEstablisher gpsEstablisher = new GpsEstablisher(locationManager, googleLocationApiEstablisher, editActivity);
-        gpsEstablisher.setStatusListener(listener);
+        gpsEstablisher.setStatusListener(gpsStatusListener);
         return gpsEstablisher;
     }
 
