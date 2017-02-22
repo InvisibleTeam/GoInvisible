@@ -41,17 +41,7 @@ public class TagsManager {
     boolean editTag(Tag tag) {
         setExifAttributes(tag);
 
-        return saveExifAttributes();
-    }
-
-    private boolean saveExifAttributes() {
-        try {
-            exifInterface.saveAttributes();
-            return true;
-        } catch (IOException e) {
-            Log.d(TAG, String.valueOf(e.getMessage()));
-            return false;
-        }
+        return true;
     }
 
     private void setExifAttributes(Tag tag) {
@@ -105,9 +95,8 @@ public class TagsManager {
     public boolean clearTags(List<Tag> tagsList) {
         for (Tag tag : tagsList) {
             resetTag(tag);
-            setExifAttributes(tag);
         }
-        return saveExifAttributes();
+        return true;
     }
 
     private void resetTag(Tag tag) {
