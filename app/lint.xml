@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lint>
+    <!-- All below are issues that have been brought to informational (so they are visible, but don't break the build) -->
+    <issue id="GradleDependency" severity="informational" />
+    <issue id="OldTargetApi" severity="informational" />
+</lint>
