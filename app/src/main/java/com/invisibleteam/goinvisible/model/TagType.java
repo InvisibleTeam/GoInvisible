@@ -46,6 +46,8 @@ public class TagType implements Parcelable {
                 return new TagType(inputType, REGEXP_EMPTY);
             case RATIONAL:
                 return new TagType(inputType, REGEXP_VALUE_DOUBLE);
+            case UNMODIFIABLE:
+                return new TagType(inputType, REGEXP_EMPTY);
             default:
                 return new TagType(InputType.INDEFINITE, REGEXP_EMPTY);
         }

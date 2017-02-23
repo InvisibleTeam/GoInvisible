@@ -1,7 +1,6 @@
 package com.invisibleteam.goinvisible.mvvm.edition;
 
 import android.annotation.TargetApi;
-import android.support.annotation.VisibleForTesting;
 import android.support.media.ExifInterface;
 import android.util.Log;
 
@@ -23,19 +22,19 @@ import static com.invisibleteam.goinvisible.model.InputType.DATETIME_STRING;
 import static com.invisibleteam.goinvisible.model.InputType.DATE_STRING;
 import static com.invisibleteam.goinvisible.model.InputType.POSITION_DOUBLE;
 import static com.invisibleteam.goinvisible.model.InputType.RANGED_INTEGER;
-import static com.invisibleteam.goinvisible.model.InputType.RANGED_STRING;
 import static com.invisibleteam.goinvisible.model.InputType.RATIONAL;
 import static com.invisibleteam.goinvisible.model.InputType.TEXT_STRING;
 import static com.invisibleteam.goinvisible.model.InputType.TIMESTAMP_STRING;
+import static com.invisibleteam.goinvisible.model.InputType.UNMODIFIABLE;
 import static com.invisibleteam.goinvisible.model.InputType.VALUE_DOUBLE;
 import static com.invisibleteam.goinvisible.model.InputType.VALUE_INTEGER;
 
-class TagsManager {
+public class TagsManager {
 
     private static final String TAG = TagsManager.class.getSimpleName();
     private final ExifInterface exifInterface;
 
-    TagsManager(ExifInterface exifInterface) {
+    public TagsManager(ExifInterface exifInterface) {
         this.exifInterface = exifInterface;
     }
 
@@ -103,7 +102,7 @@ class TagsManager {
         return editTag(tag);
     }
 
-    boolean clearTags(List<Tag> tagsList) {
+    public boolean clearTags(List<Tag> tagsList) {
         for (Tag tag : tagsList) {
             resetTag(tag);
             setExifAttributes(tag);
@@ -170,8 +169,7 @@ class TagsManager {
                 tagType);
     }
 
-    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
-    List<Tag> getAllTags() {
+    public List<Tag> getAllTags() {
         List<Tag> tagsList = new ArrayList<>();
         tagsList.add(getGeolocationTag());
         tagsList.addAll(getAllTags(TAG_LIST));
@@ -195,6 +193,7 @@ class TagsManager {
                     break;
                 case RANGED_INTEGER:
                 case RANGED_STRING:
+                case UNMODIFIABLE:
                 case VALUE_INTEGER:
                     tagValue = exifInterface.getAttributeInt(key, 0);
                     break;
@@ -229,15 +228,13 @@ class TagsManager {
         //location
         map.put(TAG_GPS_DATESTAMP, DATE_STRING);
         map.put(TAG_GPS_TIMESTAMP, TIMESTAMP_STRING);
-        map.put(TAG_GPS_LATITUDE_REF, RANGED_STRING);
-        map.put(TAG_GPS_LONGITUDE_REF, RANGED_STRING);
         map.put(TAG_GPS_PROCESSING_METHOD, TEXT_STRING);
         map.put(TAG_GPS_ALTITUDE_REF, RANGED_INTEGER);
-        
+
         //image
         map.put(TAG_DATETIME, DATETIME_STRING);
-        map.put(TAG_IMAGE_LENGTH, VALUE_INTEGER);
-        map.put(TAG_IMAGE_WIDTH, VALUE_INTEGER);
+        map.put(TAG_IMAGE_LENGTH, UNMODIFIABLE);
+        map.put(TAG_IMAGE_WIDTH, UNMODIFIABLE);
         map.put(TAG_ORIENTATION, RANGED_INTEGER);
         map.put(TAG_EXPOSURE_TIME, VALUE_DOUBLE);
 
@@ -336,8 +333,8 @@ class TagsManager {
         map.put(TAG_BITS_PER_SAMPLE, VALUE_INTEGER);
         map.put(TAG_COMPRESSED_BITS_PER_PIXEL, RATIONAL);
         map.put(TAG_COMPRESSION, VALUE_INTEGER);
-        map.put(TAG_JPEG_INTERCHANGE_FORMAT, VALUE_INTEGER);
-        map.put(TAG_JPEG_INTERCHANGE_FORMAT_LENGTH, VALUE_INTEGER);
+        map.put(TAG_JPEG_INTERCHANGE_FORMAT, UNMODIFIABLE);
+        map.put(TAG_JPEG_INTERCHANGE_FORMAT_LENGTH, UNMODIFIABLE);
         map.put(TAG_PLANAR_CONFIGURATION, VALUE_INTEGER);
         map.put(TAG_ROWS_PER_STRIP, VALUE_INTEGER);
         map.put(TAG_SAMPLES_PER_PIXEL, VALUE_INTEGER);
@@ -358,12 +355,13 @@ class TagsManager {
         map.put(TAG_THUMBNAIL_IMAGE_LENGTH, VALUE_INTEGER);
         map.put(TAG_THUMBNAIL_IMAGE_WIDTH, VALUE_INTEGER);
         map.put(TAG_DIGITAL_ZOOM_RATIO, VALUE_DOUBLE);
-        map.put(TAG_EXPOSURE_BIAS_VALUE, VALUE_DOUBLE);
+        map.put(TAG_EXPOSURE_BIAS_VALUE, UNMODIFIABLE);
         map.put(TAG_PRIMARY_CHROMATICITIES, RATIONAL);
         map.put(TAG_REFERENCE_BLACK_WHITE, RATIONAL);
         map.put(TAG_SHUTTER_SPEED_VALUE, RATIONAL);
         map.put(TAG_WHITE_POINT, RATIONAL);
         map.put(TAG_X_RESOLUTION, RATIONAL);
+        map.put(TAG_Y_RESOLUTION, RATIONAL);
 
         return Collections.unmodifiableMap(map);
     }

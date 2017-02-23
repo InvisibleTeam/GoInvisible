@@ -7,6 +7,7 @@
         <variable
             name="viewModel"
             type="com.invisibleteam.goinvisible.mvvm.edition.adapter.EditItemViewModel"/>
+        <import type="android.view.View" />
 
     </data>
 
@@ -50,8 +51,9 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
+                android:visibility="@{viewModel.isModifiable ? View.VISIBLE : View.INVISIBLE}"
                 android:padding="16dp"
-                android:src="@drawable/ic_remove"/>
+                android:src="@drawable/ic_broom"/>
 
         </RelativeLayout>
 
@@ -59,7 +61,7 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_gravity="bottom"
-            android:background="@android:color/darker_gray"
+            android:background="@color/colorWhiteGrey"
             />
     </FrameLayout>
 

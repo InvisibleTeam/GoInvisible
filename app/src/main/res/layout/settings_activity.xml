@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.invisibleteam.goinvisible.mvvm.settings.SettingsViewModel"/>
+
+        <import type="android.view.View"/>
+
+        <import type="android.text.TextUtils"/>
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/main_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimary"
+            android:theme="@style/ActionBarTheme"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/text_view_margin"
+            android:text="@string/clearing"
+            android:textColor="@color/colorAccent"
+            android:textSize="@dimen/section_title_text_size"/>
+
+        <LinearLayout
+            android:id="@+id/periodic_clearing_section_switch_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/text_view_margin"
+            android:layout_marginEnd="@dimen/text_view_margin"
+            android:layout_marginStart="@dimen/text_view_margin"
+            android:orientation="horizontal"
+            android:weightSum="10">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="8"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/periodic_clearing"
+                    android:textSize="@dimen/section_description_text_size"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/enable_periodic_clearing"
+                    android:textColor="@android:color/darker_gray"
+                    android:textSize="@dimen/section_title_text_size"/>
+
+            </LinearLayout>
+
+
+            <Switch
+                android:id="@+id/periodic_clearing_switch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:checked="@{viewModel.isClearServiceEnabled}"
+                android:gravity="center_vertical"
+                android:onCheckedChanged="@{(buttonView, isChecked) -> viewModel.onCheckedChanged(isChecked)}"/>
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:enabled="@{viewModel.isClearServiceEnabled}"
+            android:onClick="@{(v) -> viewModel.onClick()}"
+            android:orientation="horizontal"
+            android:weightSum="4">
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/text_view_margin"
+                android:layout_weight="3"
+                android:enabled="@{viewModel.isClearServiceEnabled}"
+                android:text="@string/clearing_service_interval"
+                android:textSize="@dimen/section_title_text_size"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_margin="@dimen/text_view_margin"
+                android:layout_weight="1"
+                android:enabled="@{viewModel.isClearServiceEnabled}"
+                android:text="@{viewModel.intervalName}"
+                android:textSize="@dimen/section_title_text_size"/>
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray"/>
+
+    </LinearLayout>
+
+</layout>

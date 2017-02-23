@@ -5,15 +5,30 @@
     <string name="permissions_dialog_message">Storage permission is necessary to use this application.</string>
     <string name="exit_app">exit application</string>
     <string name="no_images_info">There are no images to edit</string>
-    <string name="error">Error</string>
     <string name="error_message">There are some problems with editing this tag</string>
     <string name="enter_value_hint">Enter value</string>
     <string name="google_services_error">Google Play Services is not available.</string>
+    <string name="google_api_connection_error">Could not connect to google api.</string>
     <string name="tag_changed_title">Some tags were changed</string>
     <string name="tag_changed_message">Do you want to reject changes?</string>
-    <string name="tags_changed_message">Tags were successfully updated</string>
-    <string name="save">Save</string>
-    <string name="clear_all_tags">Clear all</string>
+    <string name="tags_changed_message_successfully">Tags were successfully updated</string>
+    <string name="tags_changed_message_unsuccessfully">There were some problems during tags updating</string>
+    <string name="menu_item_save">Save</string>
+    <string name="menu_item_clear_all_tags">Clear all</string>
+    <string name="menu_item_share">Share</string>
+    <string name="share_intent_chooser_title">Choose sharing method</string>
+    <string name="unmodifiable_tag_message">Tag is unmodifiable.</string>
+
+    //Settings
+    <string name="settings">Settings</string>
+    <string name="clearing">Clearing</string>
+    <string name="periodic_clearing">Periodic clearing</string>
+    <string name="enable_periodic_clearing">Periodic clearing service</string>
+    <string name="clearing_service_interval">Clearing service intervalName</string>
+    <string name="interval_value_day">every day</string>
+    <string name="interval_value_week">every week</string>
+    <string name="interval_value_month">every month</string>
+    <string name="intervals_dialog_title">Clearing service interval</string>
 
     //Tags descriptions
     <string name="tag_exposure_time_1">No absolute unit of measurement</string>

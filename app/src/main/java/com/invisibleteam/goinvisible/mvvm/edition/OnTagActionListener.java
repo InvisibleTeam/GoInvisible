@@ -17,4 +17,6 @@ public interface OnTagActionListener {
     void onEditEnded(List<Tag> tagsList);
 
     void onTagsUpdated();
+
+    void onEditError();
 }

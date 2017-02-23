@@ -3,11 +3,17 @@ package com.invisibleteam.goinvisible.mvvm.images;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.support.design.internal.NavigationMenu;
+import android.support.design.widget.Snackbar;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import com.invisibleteam.goinvisible.BuildConfig;
 import com.invisibleteam.goinvisible.R;
 import com.invisibleteam.goinvisible.model.ImageDetails;
 import com.invisibleteam.goinvisible.mvvm.edition.EditActivity;
+import com.invisibleteam.goinvisible.mvvm.settings.SettingsActivity;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -19,14 +25,13 @@ import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowActivity;
 import org.robolectric.shadows.ShadowIntent;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-
-import static com.invisibleteam.goinvisible.mvvm.images.ImagesActivity.TAGS_CHANGED_EXTRA;
-import static com.invisibleteam.goinvisible.util.IntentMatcher.containsSameData;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.mockito.ArgumentMatchers.any;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
@@ -35,7 +40,6 @@ import static org.robolectric.Shadows.shadowOf;
 
 @RunWith(RobolectricTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 21)
-@SuppressFBWarnings("NP_NONNULL_PARAM_VIOLATION")
 public class ImagesActivityTest {
 
     private ImagesActivity activity;
@@ -52,7 +56,7 @@ public class ImagesActivityTest {
         ShadowActivity shadowActivity = shadowOf(activity);
 
         //when
-        activity.getImagesCallback().navigateToEdit(imageDetails);
+        activity.navigateToEdit(imageDetails);
 
         //then
         Intent editActivityIntent = shadowActivity.peekNextStartedActivity();
@@ -64,9 +68,52 @@ public class ImagesActivityTest {
     }
 
     @Test
+    public void whenSettingsOptionIsClicked_SettingsActivityIsStarted() {
+        //Given
+        MenuItem menuItem = mock(MenuItem.class);
+        ShadowActivity shadowActivity = shadowOf(activity);
+        when(menuItem.getItemId()).thenReturn(R.id.settings);
+
+        //When
+        activity.onOptionsItemSelected(menuItem);
+
+        //Then
+        Intent settingActivity = shadowActivity.peekNextStartedActivity();
+        assertEquals(new ComponentName(activity, SettingsActivity.class), settingActivity.getComponent());
+    }
+
+    @Test
+    public void whenUnknownOptionItemIsClicked_SettingsActivityIsNotStarted() {
+        //Given
+        MenuItem menuItem = mock(MenuItem.class);
+        ShadowActivity shadowActivity = shadowOf(activity);
+        when(menuItem.getItemId()).thenReturn(R.id.value_text);
+
+        //When
+        activity.onOptionsItemSelected(menuItem);
+
+        //Then
+        Intent settingActivity = shadowActivity.peekNextStartedActivity();
+        assertNull(settingActivity);
+    }
+
+    @Test
+    public void whenCreateOptionsMenuIsCalled_ItReturnsTrue() {
+        //Given
+        activity = spy(activity);
+        Menu menu = new NavigationMenu(activity);
+
+        //When
+        boolean isMenuCreated = activity.onCreateOptionsMenu(menu);
+
+        //Then
+        assertTrue(isMenuCreated);
+    }
+
+    @Test
     public void whenSupportedImageIsClicked_EditActivityIsStarted() {
         //When
-        activity.getImagesCallback().navigateToEdit(new ImageDetails("path", "name"));
+        activity.navigateToEdit(new ImageDetails("path", "name"));
 
         //Then
         Intent startedIntent = shadowOf(activity).getNextStartedActivity();
@@ -79,34 +126,53 @@ public class ImagesActivityTest {
         //Given
         Context context = RuntimeEnvironment.application;
         Intent expectedIntent = new Intent(context, ImagesActivity.class);
-        expectedIntent.putExtra(ImagesActivity.TAGS_CHANGED_EXTRA, true);
-        expectedIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
         //When
         Intent intent = ImagesActivity.buildIntent(context);
 
         //Then
-        assertThat(intent, containsSameData(expectedIntent));
+        assertThat(intent.getComponent(), is(expectedIntent.getComponent()));
     }
 
     @Test
-    public void whenActivityIsStarted_IntentExtractionAndSnackbarAreCalled() {
+    public void whenShowSnackBarIsCalled_ShowOnSnackBarIsCalled() {
         //Given
-        Intent intent = new Intent();
-        intent.putExtra(TAGS_CHANGED_EXTRA, "");
+        ImagesActivity activity = new ImagesActivity();
+        Snackbar snackbar = mock(Snackbar.class);
+        activity.setSnackbar(snackbar);
 
         //When
-        activity = spy(Robolectric.buildActivity(ImagesActivity.class)
-                .withIntent(intent)
-                .get());
+        activity.showSnackBar();
 
-        ImagesCallback callback = mock(ImagesCallback.class);
-        when(activity.buildImagesCallback(any())).thenReturn(callback);
+        //Then
+        verify(snackbar).show();
+    }
 
-        activity.onCreate(null);
+    @Test
+    public void whenShowSnackBarIsAlreadyCreated_ThereIsNoNewCreation() {
+        //Given
+        activity.prepareSnackBar(R.string.error_message);
+        Snackbar expectedSnackbar = activity.getSnackbar();
 
-        verify(activity).extractBundle();
-        verify(callback).prepareSnackBar(R.string.tags_changed_message);
-        verify(callback).showSnackBar();
+        //When
+        activity.prepareSnackBar(R.string.error_message);
+        Snackbar actualSnackbar = activity.getSnackbar();
+
+        //Then
+        assertSame(expectedSnackbar, actualSnackbar);
+    }
+
+    @Test
+    public void whenStopRefreshingImagesIsCalled_RefreshingIsSetToFalse() {
+        //Given
+        ImagesActivity activity = new ImagesActivity();
+        SwipeRefreshLayout refreshLayout = mock(SwipeRefreshLayout.class);
+        activity.setRefreshLayout(refreshLayout);
+
+        //When
+        activity.onStopRefreshingImages();
+
+        //Then
+        verify(refreshLayout).setRefreshing(false);
     }
 }

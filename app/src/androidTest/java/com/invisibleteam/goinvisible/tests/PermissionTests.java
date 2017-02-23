@@ -2,10 +2,9 @@ package com.invisibleteam.goinvisible.tests;
 
 import android.support.test.runner.AndroidJUnit4;
 
-import com.invisibleteam.goinvisible.pages.GoInvisiblePackage;
+import com.invisibleteam.goinvisible.pages.GoInvisibleApplication;
 import com.invisibleteam.goinvisible.pages.ImagesView;
 import com.invisibleteam.goinvisible.pages.MissingPermissionsDialog;
-import com.invisibleteam.goinvisible.pages.system.SystemHomeView;
 import com.invisibleteam.goinvisible.pages.system.SystemPermissionDialog;
 
 import org.junit.Before;
@@ -26,15 +25,8 @@ import static org.junit.Assert.assertTrue;
 public class PermissionTests {
 
     @Before
-    public void startMainActivityFromHomeScreen() throws Exception {
-        // Start from the home screen
-        SystemHomeView.open();
-
-        // Wait for launcher
-        assertTrue(SystemHomeView.isOpened());
-
-        // Launch the GoInvisible app
-        GoInvisiblePackage.launch();
+    public void setUp() throws Exception {
+        GoInvisibleApplication.launchFromHomeScreen();
     }
 
     /**
@@ -52,7 +44,7 @@ public class PermissionTests {
      * - ensure "Missing permissions" dialog is opened
      * - go to permission dialog again
      * - allow access for GoInvisible app
-     * - ensure GoInvisible file view is opened
+     * - ensure GoInvisible ListView is opened
      *
      * @throws Exception
      */

@@ -64,7 +64,7 @@ public class EditItemAdapterTest {
     public void whenTagsListIsNotEmpty_ViewHolderIsBound() {
         //Given
         EditItemAdapter adapter = new EditItemAdapter();
-        adapter.updateImageList(tagList);
+        adapter.updateTagList(tagList);
         ViewGroup view = mock(ViewGroup.class);
         when(view.getContext()).thenReturn(context);
 
@@ -85,7 +85,7 @@ public class EditItemAdapterTest {
     public void whenTagIsUpdated_TagsListIsUpdated() {
         //Given
         EditItemAdapter adapter = new EditItemAdapter();
-        adapter.updateImageList(tagList);
+        adapter.updateTagList(tagList);
         OnTagActionListener listener = mock(OnTagActionListener.class);
         adapter.setOnTagActionListener(listener);
 
@@ -104,7 +104,7 @@ public class EditItemAdapterTest {
         EditItemAdapter adapter = new EditItemAdapter();
         OnTagActionListener listener = mock(OnTagActionListener.class);
         adapter.setOnTagActionListener(listener);
-        adapter.updateImageList(tagList);
+        adapter.updateTagList(tagList);
 
         //When
         TAG1.setValue("changedValue");

@@ -15,14 +15,14 @@ public class ImagesViewModel {
     private final ObservableBoolean isInformationTextVisible = new ObservableBoolean(false);
     private final ImagesCompoundRecyclerView imagesCompoundRecyclerView;
     private final ImagesProvider imagesProvider;
-    private final ImagesView imagesView;
+    private final ImagesViewCallback imagesViewCallback;
 
     ImagesViewModel(ImagesCompoundRecyclerView imagesCompoundRecyclerView,
                     ImagesProvider imagesProvider,
-                    ImagesView imagesView) {
+                    ImagesViewCallback imagesViewCallback) {
         this.imagesCompoundRecyclerView = imagesCompoundRecyclerView;
         this.imagesProvider = imagesProvider;
-        this.imagesView = imagesView;
+        this.imagesViewCallback = imagesViewCallback;
 
         initRecyclerView();
     }
@@ -34,13 +34,13 @@ public class ImagesViewModel {
         imagesCompoundRecyclerView.setOnItemClickListener(new ImagesItemAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(ImageDetails imageDetails) {
-                imagesView.navigateToEdit(imageDetails);
+                imagesViewCallback.navigateToEdit(imageDetails);
             }
 
             @Override
             public void onUnsupportedItemClick() {
-                imagesView.prepareSnackBar(R.string.unsupported_extension);
-                imagesView.showSnackBar();
+                imagesViewCallback.prepareSnackBar(R.string.unsupported_extension);
+                imagesViewCallback.showSnackBar();
             }
         });
     }
@@ -48,7 +48,7 @@ public class ImagesViewModel {
     void updateImages() {
         List<ImageDetails> imagesDetailsList = imagesProvider.getImagesList();
         imagesCompoundRecyclerView.updateResults(imagesDetailsList);
-        imagesView.onStopRefreshingImages();
+        imagesViewCallback.onStopRefreshingImages();
     }
 
     public ObservableBoolean getIsInformationTextVisible() {
