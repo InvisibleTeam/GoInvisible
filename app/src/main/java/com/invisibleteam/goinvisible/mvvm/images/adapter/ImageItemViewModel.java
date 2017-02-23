@@ -5,7 +5,7 @@ import com.invisibleteam.goinvisible.util.ObservableString;
 
 public class ImageItemViewModel {
 
-    private final ObservableString name = new ObservableString("");
+    private ObservableString name = new ObservableString("");
     private ObservableString url = new ObservableString("");
 
     void setModel(ImageDetails image) {

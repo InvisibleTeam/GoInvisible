@@ -27,6 +27,7 @@ import com.invisibleteam.goinvisible.mvvm.common.CommonActivity;
 import com.invisibleteam.goinvisible.mvvm.edition.dialog.EditDialog;
 import com.invisibleteam.goinvisible.mvvm.images.ImagesActivity;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Locale;
 
@@ -44,12 +45,9 @@ public class EditActivity extends CommonActivity implements EditTagCallback, Edi
     }
 
     public static final int PLACE_REQUEST_ID = 1;
-    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
-    static final int CLEAR_ALL_TAGS = 2;
     private static final String TAG_IMAGE_DETAILS = "extra_image_details";
     private static final String TAG_MODEL = "tag";
     private static final String TAG = EditActivity.class.getSimpleName();
-    private static final int APPROVE_CHANGES = 1;
 
     private EditActivityHelper editActivityHelper;
     private GpsEstablisher gpsEstablisher;
@@ -87,13 +85,16 @@ public class EditActivity extends CommonActivity implements EditTagCallback, Edi
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_edit_activity, menu);
         if (editMenuViewModel.isInEditState()) {
-            menu.add(0, APPROVE_CHANGES, 0, R.string.save).setIcon(R.drawable.ic_approve)
-                    .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+            showSaveChangesMenuItem(menu);
         }
-        menu.add(0, CLEAR_ALL_TAGS, 1, R.string.clear_all_tags).setIcon(R.drawable.ic_remove_all)
-                .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+
         return true;
+    }
+
+    private void showSaveChangesMenuItem(Menu menu) {
+        menu.findItem(R.id.menu_item_save_changes).setVisible(true);
     }
 
     @Override
@@ -102,15 +103,34 @@ public class EditActivity extends CommonActivity implements EditTagCallback, Edi
             case android.R.id.home:
                 editMenuViewModel.onBackClick();
                 return true;
-            case APPROVE_CHANGES:
+            case R.id.menu_item_save_changes:
                 editMenuViewModel.onApproveChangesClick();
                 return true;
-            case CLEAR_ALL_TAGS:
+            case R.id.menu_item_clear_all:
                 editMenuViewModel.onClearAllTagsClick();
+                return true;
+            case R.id.menu_item_share:
+                shareImage();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void shareImage() {
+        try {
+            Intent intent = editActivityHelper.buildShareImageIntent(imageDetails, getContentResolver());
+            startActivity(Intent.createChooser(intent, getString(R.string.share_intent_chooser_title)));
+        } catch (FileNotFoundException e) {
+            Log.e(TAG, String.valueOf(e.getMessage()));
+            //TODO log error in crashlytics
+        }
+    }
+
+    @VisibleForTesting
+    @Nullable
+    EditViewModel getEditViewModel() {
+        return editViewModel;
     }
 
     @Override
@@ -225,7 +245,7 @@ public class EditActivity extends CommonActivity implements EditTagCallback, Edi
     }
 
     @Override
-    public void showApproveChangeTagsDialog() {
+    public void showRejectChangesDialog() {
         String positiveMessage = getString(android.R.string.yes).toUpperCase(Locale.getDefault());
         String negativeMessage = getString(android.R.string.no).toUpperCase(Locale.getDefault());
         new AlertDialog
@@ -234,7 +254,7 @@ public class EditActivity extends CommonActivity implements EditTagCallback, Edi
                 .setMessage(R.string.tag_changed_message)
                 .setPositiveButton(
                         positiveMessage,
-                        (dialog, which) -> editMenuViewModel.onApproveChangeTagsDialogPositive())
+                        (dialog, which) -> editMenuViewModel.onRejectTagsChangesDialogPositive())
                 .setNegativeButton(
                         negativeMessage,
                         null)
@@ -254,17 +274,28 @@ public class EditActivity extends CommonActivity implements EditTagCallback, Edi
         finish();
     }
 
+    @Override
+    public void showTagsSuccessfullyUpdatedMessage() {
+        Snackbar.make(findViewById(android.R.id.content), R.string.tags_changed_message_successfully, Snackbar.LENGTH_LONG)
+                .show();
+    }
+
+    @Override
+    public void showTagsUpdateFailureMessage() {
+        Snackbar.make(findViewById(android.R.id.content), R.string.tags_changed_message_unsuccessfully, Snackbar.LENGTH_LONG)
+                .show();
+    }
+
+    @Override
+    public void changeViewToDefaultMode() {
+        invalidateOptionsMenu();
+    }
+
     private void showSnackBar(int message) {
         Snackbar.make(
                 this.findViewById(android.R.id.content),
                 message,
                 Snackbar.LENGTH_LONG).show();
-    }
-
-    @VisibleForTesting
-    @Nullable
-    EditViewModel getEditViewModel() {
-        return editViewModel;
     }
 
 }

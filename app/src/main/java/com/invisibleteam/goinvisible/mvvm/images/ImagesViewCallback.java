@@ -4,7 +4,7 @@ import android.support.annotation.StringRes;
 
 import com.invisibleteam.goinvisible.model.ImageDetails;
 
-interface ImagesView {
+interface ImagesViewCallback {
     void navigateToEdit(ImageDetails imageDetails);
 
     void prepareSnackBar(@StringRes int messageResId);

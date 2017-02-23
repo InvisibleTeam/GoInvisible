@@ -57,15 +57,20 @@ class EditItemAdapter extends RecyclerView.Adapter<EditItemAdapter.ViewHolder> {
         return tagsList.size();
     }
 
-    void updateImageList(List<Tag> imageList) {
-        this.tagsList = imageList;
+    void updateTagList(List<Tag> tags) {
+        this.tagsList = tags;
         if (baseTagsList == null) {
             baseTagsList = new ArrayList<>();
-            for (Tag tag : imageList) {
-                baseTagsList.add(new Tag(tag));
-            }
+            updateBaseTagList(tags);
         } else {
             onTagActionListener.onTagsUpdated();
+        }
+    }
+
+    void updateBaseTagList(List<Tag> tags) {
+        baseTagsList.clear();
+        for (Tag tag : tags) {
+            baseTagsList.add(new Tag(tag));
         }
     }
 
@@ -109,7 +114,7 @@ class EditItemAdapter extends RecyclerView.Adapter<EditItemAdapter.ViewHolder> {
             for (int index = 0; index < tagsList.size(); index++) {
                 if (tagsList.get(index).getKey().equals(tag.getKey())) {
                     tagsList.set(index, tag);
-                    notifyDataSetChanged();
+                    notifyItemChanged(index);
                     onTagActionListener.onTagsUpdated();
                     break;
                 }

@@ -23,10 +23,11 @@ class EditMenuViewModel {
         this.editMenuViewCallback = editMenuViewCallback;
     }
 
-
     void onBackClick() {
         if (areTagsChanged()) {
-            editMenuViewCallback.showApproveChangeTagsDialog();
+            editMenuViewCallback.showRejectChangesDialog();
+        } else {
+            editMenuViewCallback.navigateChangedImagesScreen();
         }
     }
 
@@ -35,7 +36,7 @@ class EditMenuViewModel {
         return !changedTags.isEmpty();
     }
 
-    void onApproveChangeTagsDialogPositive() {
+    void onRejectTagsChangesDialogPositive() {
         editMenuViewCallback.navigateBack();
     }
 
@@ -45,13 +46,18 @@ class EditMenuViewModel {
     }
 
     void onApproveChangesClick() {
-        saveTags();
-        editMenuViewCallback.navigateChangedImagesScreen();
+        if (saveTags()) {
+            editCompoundRecyclerView.updateTagListAfterChanges(tagsManager.getAllTags());
+            editMenuViewCallback.showTagsSuccessfullyUpdatedMessage();
+            editMenuViewCallback.changeViewToDefaultMode();
+        } else {
+            editMenuViewCallback.showTagsUpdateFailureMessage();
+        }
     }
 
-    private void saveTags() {
+    private boolean saveTags() {
         List<Tag> changedTags = editCompoundRecyclerView.getChangedTags();
-        tagsManager.editTags(changedTags);
+        return tagsManager.editTags(changedTags);
     }
 
     boolean isInEditState() {

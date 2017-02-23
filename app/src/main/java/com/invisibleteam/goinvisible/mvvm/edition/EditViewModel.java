@@ -47,16 +47,14 @@ public class EditViewModel implements OnTagActionListener {
 
     @Override
     public void onClear(Tag tag) {
-        if (manager.clearTag(tag)) {
-            onEditEnded(tag);
-        }
+        manager.clearTag(tag);
+        onEditEnded(tag);
     }
 
     @Override
     public void onClear(List<Tag> tagsList) {
-        if (manager.clearTags(tagsList)) {
-            onEditEnded(tagsList);
-        }
+        manager.clearTags(tagsList);
+        onEditEnded(tagsList);
     }
 
     @Override
