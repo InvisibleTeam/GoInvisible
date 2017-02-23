@@ -1,5 +1,6 @@
 package com.invisibleteam.goinvisible.mvvm.images.adapter;
 
+import android.util.Log;
 import android.view.ViewGroup;
 
 import com.google.common.collect.ImmutableList;
@@ -14,6 +15,7 @@ import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
+import java.util.Collections;
 import java.util.List;
 
 import static com.invisibleteam.goinvisible.mvvm.images.adapter.ImagesItemAdapter.JPEG_IMAGE;
@@ -27,7 +29,9 @@ import static org.mockito.Mockito.when;
 @Config(constants = BuildConfig.class, sdk = 21)
 public class ImagesItemAdapterTest {
 
-    private static final List<ImageDetails> IMAGES_DETAILS_LIST = ImmutableList.of(new ImageDetails("Path", "Name"));
+    private static final ImageDetails IMAGES_DETAILS = new ImageDetails("Path", "Name");
+    private static final List<ImageDetails> IMAGES_DETAILS_LIST = ImmutableList.of(IMAGES_DETAILS);
+    private static final String TAG = ImagesItemAdapterTest.class.getSimpleName();
 
     private ImagesActivity activity;
     private ImagesItemAdapter imagesItemAdapter;
@@ -39,23 +43,64 @@ public class ImagesItemAdapterTest {
     }
 
     @Test
-    public void whenViewHolderIsCreatedWithNotEmptyList_thenAdapterHasResults() {
-        //given
+    public void whenViewHolderIsCreatedWithNotEmptyList_AdapterHasResults() {
+        //Given
         ViewGroup parent = mock(ViewGroup.class);
         when(parent.getContext()).thenReturn(activity);
-        ImagesItemAdapter.ViewHolder viewHolder = imagesItemAdapter.onCreateViewHolder(parent, 0);
+        ImagesItemAdapter.ViewHolder viewHolder = imagesItemAdapter.onCreateViewHolder(parent, JPEG_IMAGE);
 
-        //when
+        //When
         imagesItemAdapter.updateImageList(IMAGES_DETAILS_LIST);
         imagesItemAdapter.onBindViewHolder(viewHolder, 0);
 
-        //then
+        //Then
         assertEquals(1, imagesItemAdapter.getItemCount());
     }
 
+    @Test()
+    public void whenViewHolderIsJpegImageViewHolder_ModelIsSet() {
+        //Given
+        ImagesItemAdapter.JpegImageViewHolder viewHolder = mock(ImagesItemAdapter.JpegImageViewHolder.class);
+        ImageItemViewModel viewModel = mock(ImageItemViewModel.class);
+        when(viewHolder.getViewModel()).thenReturn(viewModel);
+        imagesItemAdapter.updateImageList(IMAGES_DETAILS_LIST);
+
+        //When
+        try {
+            imagesItemAdapter.onBindViewHolder(viewHolder, 0);
+        } catch (NullPointerException e) {
+            Log.d(TAG, "Concious NullpointerException");
+            //This exception is thrown because that we cannot mock itemView in holder
+        }
+
+        //Then
+        verify(viewModel).setModel(IMAGES_DETAILS);
+    }
+
+    @Test()
+    public void whenViewHolderIsUnsupportedImageViewHolder_ModelIsSet() {
+        //Given
+        ImagesItemAdapter.UnsupportedImageViewHolder viewHolder =
+                mock(ImagesItemAdapter.UnsupportedImageViewHolder.class);
+        ImageItemViewModel viewModel = mock(ImageItemViewModel.class);
+        when(viewHolder.getViewModel()).thenReturn(viewModel);
+        imagesItemAdapter.updateImageList(IMAGES_DETAILS_LIST);
+
+        //When
+        try {
+            imagesItemAdapter.onBindViewHolder(viewHolder, 0);
+        } catch (NullPointerException e) {
+            Log.d(TAG, "Concious NullpointerException");
+            //This exception is thrown because that we cannot mock itemView in holder
+        }
+
+        //Then
+        verify(viewModel).setModel(IMAGES_DETAILS);
+    }
+
     @Test
-    public void whenAdapterItemIsClicked_thenOnItemClickIsCalled() {
-        //given
+    public void whenAdapterItemIsClicked_OnItemClickIsCalled() {
+        //Given
         ViewGroup parent = mock(ViewGroup.class);
         when(parent.getContext()).thenReturn(activity);
         ImagesItemAdapter.ViewHolder viewHolder = imagesItemAdapter.onCreateViewHolder(parent, JPEG_IMAGE);
@@ -65,17 +110,17 @@ public class ImagesItemAdapterTest {
         imagesItemAdapter.onBindViewHolder(viewHolder, 0);
         ImagesItemAdapter.OnItemClickListener onItemClickListener = mock(ImagesItemAdapter.OnItemClickListener.class);
 
-        //when
+        //When
         imagesItemAdapter.setOnItemClickListener(onItemClickListener);
         viewHolder.itemView.performClick();
 
-        //then
+        //Then
         verify(onItemClickListener).onItemClick(imageDetails);
     }
 
     @Test
-    public void whenAdapterUnsupportedtemIsClicked_thenOnUnsupportedItemClickIsCalled() {
-        //given
+    public void whenAdapterUnsupportedtemIsClicked_OnUnsupportedItemClickIsCalled() {
+        //Given
         ViewGroup parent = mock(ViewGroup.class);
         when(parent.getContext()).thenReturn(activity);
         ImagesItemAdapter.ViewHolder viewHolder = imagesItemAdapter
@@ -85,12 +130,37 @@ public class ImagesItemAdapterTest {
         imagesItemAdapter.onBindViewHolder(viewHolder, 0);
         ImagesItemAdapter.OnItemClickListener onItemClickListener = mock(ImagesItemAdapter.OnItemClickListener.class);
 
-        //when
+        //When
         imagesItemAdapter.setOnItemClickListener(onItemClickListener);
         viewHolder.itemView.performClick();
 
-        //then
+        //Then
         verify(onItemClickListener).onUnsupportedItemClick();
     }
 
+    @Test
+    public void whenImageIsJpeg_JpegViewTypeIsReturned() {
+        //Given
+        ImageDetails imageDetails = new ImageDetails("test.jpg", "name");
+        imagesItemAdapter.updateImageList(Collections.singletonList(imageDetails));
+
+        //When
+        int viewType = imagesItemAdapter.getItemViewType(0);
+
+        //Then
+        assertEquals(viewType, JPEG_IMAGE);
+    }
+
+    @Test
+    public void whenImageIsPng_UnsupportedViewTypeIsReturned() {
+        //Given
+        ImageDetails imageDetails = new ImageDetails("test.png", "name");
+        imagesItemAdapter.updateImageList(Collections.singletonList(imageDetails));
+
+        //When
+        int viewType = imagesItemAdapter.getItemViewType(0);
+
+        //Then
+        assertEquals(viewType, UNSUPPORTED_EXTENSION_IMAGE);
+    }
 }

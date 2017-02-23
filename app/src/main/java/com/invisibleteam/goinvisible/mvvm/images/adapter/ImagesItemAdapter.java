@@ -1,5 +1,6 @@
 package com.invisibleteam.goinvisible.mvvm.images.adapter;
 
+import android.support.annotation.VisibleForTesting;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,7 +17,9 @@ import java.util.List;
 
 public class ImagesItemAdapter extends RecyclerView.Adapter<ImagesItemAdapter.ViewHolder> {
 
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
     static final int JPEG_IMAGE = 0;
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
     static final int UNSUPPORTED_EXTENSION_IMAGE = 1;
 
     private OnItemClickListener onItemClickListener;
@@ -54,12 +57,12 @@ public class ImagesItemAdapter extends RecyclerView.Adapter<ImagesItemAdapter.Vi
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.itemView.setTag(imageList.get(position));
         if (holder instanceof JpegImageViewHolder) {
-            ((JpegImageViewHolder) holder).viewModel.setModel(imageList.get(position));
+            ((JpegImageViewHolder) holder).getViewModel().setModel(imageList.get(position));
         } else if (holder instanceof UnsupportedImageViewHolder) {
-            ((UnsupportedImageViewHolder) holder).viewModel.setModel(imageList.get(position));
+            ((UnsupportedImageViewHolder) holder).getViewModel().setModel(imageList.get(position));
         }
+        holder.itemView.setTag(imageList.get(position));
     }
 
     @Override
@@ -90,10 +93,15 @@ public class ImagesItemAdapter extends RecyclerView.Adapter<ImagesItemAdapter.Vi
         }
     }
 
-    private class JpegImageViewHolder extends ViewHolder {
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    class JpegImageViewHolder extends ViewHolder {
 
         private ImageItemViewBinding binding;
         private ImageItemViewModel viewModel;
+
+        public ImageItemViewModel getViewModel() {
+            return viewModel;
+        }
 
         JpegImageViewHolder(View itemView) {
             super(itemView);
@@ -106,10 +114,15 @@ public class ImagesItemAdapter extends RecyclerView.Adapter<ImagesItemAdapter.Vi
         }
     }
 
-    private class UnsupportedImageViewHolder extends ViewHolder {
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    class UnsupportedImageViewHolder extends ViewHolder {
 
         private UnsupportedImageItemViewBinding binding;
         private ImageItemViewModel viewModel;
+
+        public ImageItemViewModel getViewModel() {
+            return viewModel;
+        }
 
         UnsupportedImageViewHolder(View itemView) {
             super(itemView);
