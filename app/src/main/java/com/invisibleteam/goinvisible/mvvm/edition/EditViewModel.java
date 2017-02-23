@@ -1,6 +1,7 @@
 package com.invisibleteam.goinvisible.mvvm.edition;
 
 
+import com.invisibleteam.goinvisible.model.ImageDetails;
 import android.support.media.ExifInterface;
 
 import com.invisibleteam.goinvisible.model.Tag;
@@ -37,6 +38,15 @@ public class EditViewModel implements OnTagActionListener {
         this.editCompoundRecyclerView = editCompoundRecyclerView;
 
         initRecyclerView(new ArrayList<>());
+    }
+
+    public void updateRecyclerView(ImageDetails imageDetails, TagsManager manager, EditTagCallback callback) {
+        title.set(imageDetails.getName());
+        imageUrl.set(imageDetails.getPath());
+        this.manager = manager;
+        this.callback = callback;
+
+        initRecyclerView(manager.getAllTags());
     }
 
     private void initRecyclerView(List<Tag> tags) {

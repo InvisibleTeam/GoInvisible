@@ -11,6 +11,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 
 import com.invisibleteam.goinvisible.R;
+import com.invisibleteam.goinvisible.model.Tag;
 
 import java.util.Locale;
 
@@ -86,4 +87,14 @@ public abstract class CommonActivity extends AppCompatActivity {
     private void exitFromApp() {
         this.finishAffinity();
     }
+
+    public void changeViewToEditMode(){}
+
+    public void openPlacePickerView(Tag tag){}
+
+    public void showUnmodifiableTagMessage(){}
+
+    public void showTagEditionErrorMessage(){}
+
+    public void showTagEditionView(Tag tag){}
 }

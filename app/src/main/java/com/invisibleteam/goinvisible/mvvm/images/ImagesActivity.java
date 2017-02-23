@@ -17,8 +17,10 @@ import com.invisibleteam.goinvisible.R;
 import com.invisibleteam.goinvisible.databinding.ActivityEditBinding;
 import com.invisibleteam.goinvisible.databinding.ActivityImagesBinding;
 import com.invisibleteam.goinvisible.model.ImageDetails;
+import com.invisibleteam.goinvisible.model.Tag;
 import com.invisibleteam.goinvisible.mvvm.common.CommonActivity;
 import com.invisibleteam.goinvisible.mvvm.edition.EditActivity;
+import com.invisibleteam.goinvisible.mvvm.edition.EditTagCallback;
 import com.invisibleteam.goinvisible.mvvm.edition.EditViewModel;
 import com.invisibleteam.goinvisible.mvvm.edition.TagsManager;
 import com.invisibleteam.goinvisible.mvvm.settings.SettingsActivity;
@@ -27,7 +29,8 @@ import java.io.IOException;
 
 import javax.annotation.Nullable;
 
-public class ImagesActivity extends CommonActivity implements PhoneImagesViewCallback, TabletImagesViewCallback {
+public class ImagesActivity extends CommonActivity implements PhoneImagesViewCallback, TabletImagesViewCallback,
+        EditTagCallback {
 
     private Snackbar snackbar;
     private SwipeRefreshLayout refreshLayout;
@@ -72,40 +75,48 @@ public class ImagesActivity extends CommonActivity implements PhoneImagesViewCal
         float yInches = metrics.heightPixels / metrics.ydpi;
         float xInches = metrics.widthPixels / metrics.xdpi;
         double diagonalInches = Math.sqrt(xInches * xInches + yInches * yInches);
-        ActivityImagesBinding activityImagesBinding = null;
-        ImagesViewModel imagesViewModel;
 
         if (diagonalInches >= 6.5) {
-            ViewGroup viewGroup = (ViewGroup) LayoutInflater.from(this).inflate(R.layout.images_tablet_activity, null);
-            setContentView(viewGroup);
-            ViewGroup imagesViewGroup = (ViewGroup) viewGroup.findViewById(R.id.images_group);
-            ViewGroup editViewGroup = (ViewGroup) viewGroup.findViewById(R.id.edit_group);
-            activityImagesBinding = ActivityImagesBinding.bind(imagesViewGroup);
-
-            ActivityEditBinding editBinding = ActivityEditBinding.bind(editViewGroup);
-            editViewModel = new EditViewModel(editBinding.editCompoundRecyclerView);
-            editBinding.setViewModel(editViewModel);
-
-            imagesViewModel = new TabletImagesViewModel(
-                    activityImagesBinding.imagesCompoundRecyclerView,
-                    new ImagesProvider(getContentResolver()),
-                    this);
-            activityImagesBinding.setViewModel(imagesViewModel);
+            createTabletBinding();
         } else {
-            ViewGroup viewGroup = (ViewGroup) LayoutInflater.from(this).inflate(R.layout.activity_images, null);
-            setContentView(viewGroup);
-            activityImagesBinding = ActivityImagesBinding.bind(viewGroup);
-
-            imagesViewModel = new PhoneImagesViewModel(
-                    activityImagesBinding.imagesCompoundRecyclerView,
-                    new ImagesProvider(getContentResolver()),
-                    this);
-            activityImagesBinding.setViewModel(imagesViewModel);
+            createPhoneBinding();
         }
-
-
 //        setSupportActionBar(activityImagesBinding.mainToolbar);
+    }
 
+    private void createPhoneBinding() {
+        ViewGroup viewGroup = (ViewGroup) LayoutInflater.from(this).inflate(R.layout.activity_images, null);
+        setContentView(viewGroup);
+        ActivityImagesBinding activityImagesBinding = ActivityImagesBinding.bind(viewGroup);
+
+        ImagesViewModel imagesViewModel = new PhoneImagesViewModel(
+                activityImagesBinding.imagesCompoundRecyclerView,
+                new ImagesProvider(getContentResolver()),
+                this);
+        activityImagesBinding.setViewModel(imagesViewModel);
+        createRefreshLayout(activityImagesBinding, imagesViewModel);
+    }
+
+    private void createTabletBinding() {
+        ViewGroup viewGroup = (ViewGroup) LayoutInflater.from(this).inflate(R.layout.images_tablet_activity, null);
+        setContentView(viewGroup);
+        ViewGroup imagesViewGroup = (ViewGroup) viewGroup.findViewById(R.id.images_group);
+        ViewGroup editViewGroup = (ViewGroup) viewGroup.findViewById(R.id.edit_group);
+        ActivityImagesBinding activityImagesBinding = ActivityImagesBinding.bind(imagesViewGroup);
+
+        ActivityEditBinding editBinding = ActivityEditBinding.bind(editViewGroup);
+        editViewModel = new EditViewModel(editBinding.editCompoundRecyclerView);
+        editBinding.setViewModel(editViewModel);
+
+        ImagesViewModel imagesViewModel = new TabletImagesViewModel(
+                activityImagesBinding.imagesCompoundRecyclerView,
+                new ImagesProvider(getContentResolver()),
+                this);
+        activityImagesBinding.setViewModel(imagesViewModel);
+        createRefreshLayout(activityImagesBinding, imagesViewModel);
+    }
+
+    private void createRefreshLayout(ActivityImagesBinding activityImagesBinding, ImagesViewModel imagesViewModel) {
         refreshLayout = activityImagesBinding.swipeRefreshLayout;
         activityImagesBinding.swipeRefreshLayout.setOnRefreshListener(imagesViewModel::updateImages);
     }
@@ -153,9 +164,20 @@ public class ImagesActivity extends CommonActivity implements PhoneImagesViewCal
         if (editViewModel != null) {
             try {
                 editViewModel.setTagsManager(new TagsManager(new ExifInterface(imageDetails.getPath())));
+                editViewModel.updateRecyclerView(
+                        imageDetails,
+                        new TagsManager(new ExifInterface(imageDetails.getPath())),
+                        this);
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
+    }
+
+    private void showSnackBar(int message) {
+        Snackbar.make(
+                this.findViewById(android.R.id.content),
+                message,
+                Snackbar.LENGTH_LONG).show();
     }
 }
