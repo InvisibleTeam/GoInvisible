@@ -38,12 +38,6 @@ public class TagsManager {
         this.exifInterface = exifInterface;
     }
 
-    boolean editTag(Tag tag) {
-        setExifAttributes(tag);
-
-        return true;
-    }
-
     private void setExifAttributes(Tag tag) {
         if (tag.getValue() == null) {
             Log.w(TAG, "Tag value is null");
@@ -87,19 +81,13 @@ public class TagsManager {
         return tag instanceof GeolocationTag;
     }
 
-    boolean clearTag(Tag tag) {
-        resetTag(tag);
-        return editTag(tag);
-    }
-
-    public boolean clearTags(List<Tag> tagsList) {
+    public void clearTags(List<Tag> tagsList) {
         for (Tag tag : tagsList) {
-            resetTag(tag);
+            clearTag(tag);
         }
-        return true;
     }
 
-    private void resetTag(Tag tag) {
+    void clearTag(Tag tag) {
         switch (tag.getTagType().getInputType()) {
             case TEXT_STRING:
                 tag.setValue("");
@@ -128,7 +116,10 @@ public class TagsManager {
                 tag.setValue("0.0");
                 break;
             default:
+                Log.w(TAG, "Incorrect tag type!");
+                break;
         }
+        setExifAttributes(tag);
     }
 
     private void clearPositionTag(GeolocationTag tag) {
