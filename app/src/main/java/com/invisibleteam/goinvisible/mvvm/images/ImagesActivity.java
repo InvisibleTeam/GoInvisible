@@ -17,7 +17,6 @@ import com.invisibleteam.goinvisible.R;
 import com.invisibleteam.goinvisible.databinding.ActivityEditBinding;
 import com.invisibleteam.goinvisible.databinding.ActivityImagesBinding;
 import com.invisibleteam.goinvisible.model.ImageDetails;
-import com.invisibleteam.goinvisible.model.Tag;
 import com.invisibleteam.goinvisible.mvvm.common.CommonActivity;
 import com.invisibleteam.goinvisible.mvvm.edition.EditActivity;
 import com.invisibleteam.goinvisible.mvvm.edition.EditTagCallback;
@@ -108,7 +107,7 @@ public class ImagesActivity extends CommonActivity implements PhoneImagesViewCal
         editViewModel = new EditViewModel(editBinding.editCompoundRecyclerView);
         editBinding.setViewModel(editViewModel);
 
-        ImagesViewModel imagesViewModel = new TabletImagesViewModel(
+        ImagesViewModel imagesViewModel = new Tablet2ImagesViewModel(
                 activityImagesBinding.imagesCompoundRecyclerView,
                 new ImagesProvider(getContentResolver()),
                 this);

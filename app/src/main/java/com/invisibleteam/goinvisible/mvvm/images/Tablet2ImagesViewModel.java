@@ -4,11 +4,11 @@ package com.invisibleteam.goinvisible.mvvm.images;
 import com.invisibleteam.goinvisible.model.ImageDetails;
 import com.invisibleteam.goinvisible.mvvm.images.adapter.ImagesCompoundRecyclerView;
 
-public class TabletImagesViewModel extends ImagesViewModel {
+public class Tablet2ImagesViewModel extends ImagesViewModel {
 
     private TabletImagesViewCallback imagesViewCallback;
 
-    TabletImagesViewModel(ImagesCompoundRecyclerView imagesCompoundRecyclerView, ImagesProvider imagesProvider, TabletImagesViewCallback imagesViewCallback) {
+    Tablet2ImagesViewModel(ImagesCompoundRecyclerView imagesCompoundRecyclerView, ImagesProvider imagesProvider, TabletImagesViewCallback imagesViewCallback) {
         super(imagesCompoundRecyclerView, imagesProvider, imagesViewCallback);
         this.imagesViewCallback = imagesViewCallback;
     }
