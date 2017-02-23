@@ -17,7 +17,6 @@ import com.invisibleteam.goinvisible.R;
 import com.invisibleteam.goinvisible.databinding.ActivityEditBinding;
 import com.invisibleteam.goinvisible.databinding.ActivityImagesBinding;
 import com.invisibleteam.goinvisible.model.ImageDetails;
-import com.invisibleteam.goinvisible.model.Tag;
 import com.invisibleteam.goinvisible.mvvm.common.CommonActivity;
 import com.invisibleteam.goinvisible.mvvm.edition.EditActivity;
 import com.invisibleteam.goinvisible.mvvm.edition.EditTagCallback;

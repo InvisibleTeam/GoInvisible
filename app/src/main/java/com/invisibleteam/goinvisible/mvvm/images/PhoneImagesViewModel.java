@@ -8,7 +8,9 @@ public class PhoneImagesViewModel extends ImagesViewModel {
 
     private PhoneImagesViewCallback imagesViewCallback;
 
-    PhoneImagesViewModel(ImagesCompoundRecyclerView imagesCompoundRecyclerView, ImagesProvider imagesProvider, PhoneImagesViewCallback imagesViewCallback) {
+    PhoneImagesViewModel(ImagesCompoundRecyclerView imagesCompoundRecyclerView,
+                         ImagesProvider imagesProvider,
+                         PhoneImagesViewCallback imagesViewCallback) {
         super(imagesCompoundRecyclerView, imagesProvider, imagesViewCallback);
         this.imagesViewCallback = imagesViewCallback;
     }
