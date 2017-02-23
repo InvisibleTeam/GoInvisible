@@ -34,7 +34,7 @@ public abstract class ImagesViewModel {
         imagesCompoundRecyclerView.setOnItemClickListener(buildItemClickListener());
     }
 
-    private ImagesItemAdapter.OnItemClickListener buildItemClickListener(){
+    private ImagesItemAdapter.OnItemClickListener buildItemClickListener() {
         return new ImagesItemAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(ImageDetails imageDetails) {

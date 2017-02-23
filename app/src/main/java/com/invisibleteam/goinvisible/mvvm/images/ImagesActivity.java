@@ -107,7 +107,7 @@ public class ImagesActivity extends CommonActivity implements PhoneImagesViewCal
         editViewModel = new EditViewModel(editBinding.editCompoundRecyclerView);
         editBinding.setViewModel(editViewModel);
 
-        ImagesViewModel imagesViewModel = new Tablet2ImagesViewModel(
+        ImagesViewModel imagesViewModel = new TabletImagesViewModel(
                 activityImagesBinding.imagesCompoundRecyclerView,
                 new ImagesProvider(getContentResolver()),
                 this);
