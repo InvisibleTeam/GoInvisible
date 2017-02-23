@@ -115,8 +115,8 @@ public class SettingsActivity extends AppCompatActivity {
 
         return new RadioDialogBuilder(SettingsActivity.this, intervalNames, selectedIntervalIndex, callback)
                 .setTitle(getString(R.string.intervals_dialog_title))
-                .setPositiveButton(getText(android.R.string.ok))
-                .setNegativeButton(getText(android.R.string.cancel))
+                .setPositiveButton(getText(R.string.positive_message))
+                .setNegativeButton(getText(R.string.negative_message))
                 .build();
     }
 
