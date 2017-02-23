@@ -6,6 +6,7 @@ import android.databinding.DataBindingUtil;
 import android.support.annotation.VisibleForTesting;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -56,8 +57,21 @@ public class ImagesActivity extends CommonActivity implements ImagesViewCallback
 
     @Override
     public void prepareView() {
-        ActivityImagesBinding activityImagesBinding = DataBindingUtil.setContentView(this, R.layout.activity_images);
-        setSupportActionBar(activityImagesBinding.mainToolbar);
+        DisplayMetrics metrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(metrics);
+
+        float yInches= metrics.heightPixels/metrics.ydpi;
+        float xInches= metrics.widthPixels/metrics.xdpi;
+        double diagonalInches = Math.sqrt(xInches*xInches + yInches*yInches);
+        ActivityImagesBinding activityImagesBinding;
+        if (diagonalInches>=6.5){
+            activityImagesBinding = DataBindingUtil.setContentView(this, R.layout.images_tablet_activity);
+        }else{
+            activityImagesBinding = DataBindingUtil.setContentView(this, R.layout.activity_images);
+        }
+
+
+//        setSupportActionBar(activityImagesBinding.mainToolbar);
 
         refreshLayout = activityImagesBinding.swipeRefreshLayout;
 
