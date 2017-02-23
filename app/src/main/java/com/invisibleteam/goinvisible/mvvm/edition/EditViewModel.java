@@ -1,6 +1,8 @@
 package com.invisibleteam.goinvisible.mvvm.edition;
 
 
+import android.support.media.ExifInterface;
+
 import com.invisibleteam.goinvisible.model.Tag;
 import com.invisibleteam.goinvisible.mvvm.edition.adapter.EditCompoundRecyclerView;
 import com.invisibleteam.goinvisible.util.ObservableString;
@@ -15,18 +17,18 @@ public class EditViewModel implements OnTagActionListener {
 
     private final EditCompoundRecyclerView editCompoundRecyclerView;
     private TagsManager manager;
-    private EditTagListener listener;
+    private EditTagCallback callback;
 
-    public EditViewModel(String title,
-                         String imageUrl,
-                         EditCompoundRecyclerView editCompoundRecyclerView,
-                         TagsManager manager,
-                         EditTagListener listener) {
+    EditViewModel(String title,
+                  String imageUrl,
+                  EditCompoundRecyclerView editCompoundRecyclerView,
+                  TagsManager manager,
+                  EditTagCallback callback) {
         this.title.set(title);
         this.imageUrl.set(imageUrl);
         this.editCompoundRecyclerView = editCompoundRecyclerView;
         this.manager = manager;
-        this.listener = listener;
+        this.callback = callback;
 
         initRecyclerView(manager.getAllTags());
     }
@@ -52,21 +54,33 @@ public class EditViewModel implements OnTagActionListener {
 
     @Override
     public void onClear(Tag tag) {
-        if (manager.clearTag(tag)) {
-            onEditEnded(tag);
-        }
+        manager.clearTag(tag);
+        onEditEnded(tag);
     }
 
     @Override
     public void onClear(List<Tag> tagsList) {
-        if (manager.clearTags(tagsList)) {
-            onEditEnded(tagsList);
-        }
+        manager.clearTags(tagsList);
+        onEditEnded(tagsList);
     }
 
     @Override
     public void onEditStarted(Tag tag) {
-        listener.openTagEditionView(tag);
+        if (ExifInterface.TAG_GPS_LATITUDE.equals(tag.getKey())) {
+            callback.openPlacePickerView(tag);
+            return;
+        }
+
+        switch (tag.getTagType().getInputType()) {
+            case UNMODIFIABLE:
+                callback.showUnmodifiableTagMessage();
+                break;
+            case INDEFINITE:
+                callback.showTagEditionErrorMessage();
+                break;
+            default:
+                callback.showTagEditionView(tag);
+        }
     }
 
     @Override
@@ -81,12 +95,12 @@ public class EditViewModel implements OnTagActionListener {
 
     @Override
     public void onTagsUpdated() {
-        listener.onTagsChanged();
+        callback.changeViewToEditMode();
     }
 
     @Override
     public void onEditError() {
-        listener.onEditError();
+        callback.showTagEditionErrorMessage();
     }
 
     public void setTagsManager(TagsManager tagsManager) {
