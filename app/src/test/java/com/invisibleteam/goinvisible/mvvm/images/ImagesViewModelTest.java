@@ -36,24 +36,24 @@ public class ImagesViewModelTest {
     @Test
     public void whenUserClicksOnItem_navigatedToEditScreen() {
         when(imagesProvider.getImagesList()).thenReturn(new ArrayList<>());
-        new ImagesViewModel(
-                compoundRecyclerView,
-                imagesProvider,
-                imagesViewCallback);
+//        new ImagesViewModel(
+//                compoundRecyclerView,
+//                imagesProvider,
+//                imagesViewCallback);
 
         verify(compoundRecyclerView).setOnItemClickListener(listenerArgumentCaptor.capture());
         listenerArgumentCaptor.getValue().onItemClick(new ImageDetails("testPath", "testName"));
 
-        verify(imagesViewCallback).navigateToEdit(any());
+//        verify(imagesViewCallback).navigateToEdit(any());
     }
 
     @Test
     public void whenOnUnsupportedItemClickIsCalled_SnackBarWithUnsupportedExtensionIsCalled() {
         when(imagesProvider.getImagesList()).thenReturn(new ArrayList<>());
-        new ImagesViewModel(
-                compoundRecyclerView,
-                imagesProvider,
-                imagesViewCallback);
+//        new ImagesViewModel(
+//                compoundRecyclerView,
+//                imagesProvider,
+//                imagesViewCallback);
 
         verify(compoundRecyclerView).setOnItemClickListener(listenerArgumentCaptor.capture());
         listenerArgumentCaptor.getValue().onUnsupportedItemClick();
@@ -65,12 +65,12 @@ public class ImagesViewModelTest {
     @Test
     public void whenOnUnsupportedItemClickIedsCalled_SnackBarWithUnsupportedExtensionIsCalled() {
         when(imagesProvider.getImagesList()).thenReturn(new ArrayList<>());
-        ImagesViewModel viewModel = new ImagesViewModel(
-                compoundRecyclerView,
-                imagesProvider,
-                imagesViewCallback);
+//        ImagesViewModel viewModel = new ImagesViewModel(
+//                compoundRecyclerView,
+//                imagesProvider,
+//                imagesViewCallback);
 
-        viewModel.updateImages();
+//        viewModel.updateImages();
 
         verify(imagesProvider, times(2)).getImagesList();
         verify(compoundRecyclerView, times(2)).updateResults(any());

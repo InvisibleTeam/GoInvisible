@@ -56,7 +56,7 @@ public class ImagesActivityTest {
         ShadowActivity shadowActivity = shadowOf(activity);
 
         //when
-        activity.navigateToEdit(imageDetails);
+//        activity.navigateToEdit(imageDetails);
 
         //then
         Intent editActivityIntent = shadowActivity.peekNextStartedActivity();
@@ -113,7 +113,7 @@ public class ImagesActivityTest {
     @Test
     public void whenSupportedImageIsClicked_EditActivityIsStarted() {
         //When
-        activity.navigateToEdit(new ImageDetails("path", "name"));
+//        activity.navigateToEdit(new ImageDetails("path", "name"));
 
         //Then
         Intent startedIntent = shadowOf(activity).getNextStartedActivity();

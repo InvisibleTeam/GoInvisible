@@ -18,7 +18,7 @@ import android.view.MenuItem;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
 import com.invisibleteam.goinvisible.R;
-import com.invisibleteam.goinvisible.databinding.ActivityEditBinding;
+import com.invisibleteam.goinvisible.databinding.EditViewBinding;
 import com.invisibleteam.goinvisible.helper.EditActivityHelper;
 import com.invisibleteam.goinvisible.model.GeolocationTag;
 import com.invisibleteam.goinvisible.model.ImageDetails;
@@ -135,10 +135,10 @@ public class EditActivity extends CommonActivity implements EditTagCallback, Edi
 
     @Override
     public void prepareView() {
-        ActivityEditBinding activityEditBinding = DataBindingUtil.setContentView(this, R.layout.activity_edit);
-        setSupportActionBar(activityEditBinding.mainToolbar);
+        EditViewBinding editViewBinding = DataBindingUtil.setContentView(this, R.layout.edit_view);
+        setSupportActionBar(editViewBinding.mainToolbar);
         if (extractBundle()) {
-            prepareViewModels(activityEditBinding);
+            prepareViewModels(editViewBinding);
         } //TODO log exception to crashlitycs on else.
     }
 
@@ -155,21 +155,21 @@ public class EditActivity extends CommonActivity implements EditTagCallback, Edi
         return false;
     }
 
-    private void prepareViewModels(ActivityEditBinding activityEditBinding) {
+    private void prepareViewModels(EditViewBinding editViewBinding) {
         try {
             TagsManager tagsManager = new TagsManager(getExifInterface());
 
             editViewModel = new EditViewModel(
                     imageDetails.getName(),
                     imageDetails.getPath(),
-                    activityEditBinding.editCompoundRecyclerView,
+                    editViewBinding.editCompoundRecyclerView,
                     tagsManager,
                     this);
-            activityEditBinding.setViewModel(editViewModel);
+            editViewBinding.setViewModel(editViewModel);
 
             editMenuViewModel = new EditMenuViewModel(
                     tagsManager,
-                    activityEditBinding.editCompoundRecyclerView,
+                    editViewBinding.editCompoundRecyclerView,
                     editViewModel,
                     this);
         } catch (IOException e) {
