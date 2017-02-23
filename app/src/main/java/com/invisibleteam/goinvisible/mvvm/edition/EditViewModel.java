@@ -5,6 +5,7 @@ import com.invisibleteam.goinvisible.model.Tag;
 import com.invisibleteam.goinvisible.mvvm.edition.adapter.EditCompoundRecyclerView;
 import com.invisibleteam.goinvisible.util.ObservableString;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class EditViewModel implements OnTagActionListener {
@@ -13,26 +14,32 @@ public class EditViewModel implements OnTagActionListener {
     private final ObservableString imageUrl = new ObservableString("");
 
     private final EditCompoundRecyclerView editCompoundRecyclerView;
-    private final TagsManager manager;
-    private final EditTagListener listener;
+    private TagsManager manager;
+    private EditTagListener listener;
 
-    EditViewModel(String title,
-                  String imageUrl,
-                  EditCompoundRecyclerView editCompoundRecyclerView,
-                  TagsManager manager,
-                  EditTagListener listener) {
+    public EditViewModel(String title,
+                         String imageUrl,
+                         EditCompoundRecyclerView editCompoundRecyclerView,
+                         TagsManager manager,
+                         EditTagListener listener) {
         this.title.set(title);
         this.imageUrl.set(imageUrl);
         this.editCompoundRecyclerView = editCompoundRecyclerView;
         this.manager = manager;
         this.listener = listener;
 
-        initRecyclerView();
+        initRecyclerView(manager.getAllTags());
     }
 
-    private void initRecyclerView() {
+    public EditViewModel(EditCompoundRecyclerView editCompoundRecyclerView) {
+        this.editCompoundRecyclerView = editCompoundRecyclerView;
+
+        initRecyclerView(new ArrayList<>());
+    }
+
+    private void initRecyclerView(List<Tag> tags) {
         editCompoundRecyclerView.setOnTagActionListener(this);
-        editCompoundRecyclerView.updateResults(manager.getAllTags());
+        editCompoundRecyclerView.updateResults(tags);
     }
 
     public ObservableString getTitle() {
@@ -80,5 +87,9 @@ public class EditViewModel implements OnTagActionListener {
     @Override
     public void onEditError() {
         listener.onEditError();
+    }
+
+    public void setTagsManager(TagsManager tagsManager) {
+        this.manager = tagsManager;
     }
 }
