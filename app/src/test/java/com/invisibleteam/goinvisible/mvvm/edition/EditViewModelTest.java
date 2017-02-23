@@ -14,9 +14,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class EditViewModelTest {
@@ -40,27 +38,12 @@ public class EditViewModelTest {
     }
 
     @Test
-    public void whenTagIsSuccessfullyCleared_ClearingIsPropagate() {
-        //Given
-        when(tagsManager.clearTag(tag)).thenReturn(true);
-
+    public void whenTagIsCleared_ClearingIsPropagate() {
         //When
         editViewModel.onClear(tag);
 
         //Then
         verify(editCompoundRecyclerView).updateTag(tag);
-    }
-
-    @Test
-    public void whenTagIsUnsuccessfullyCleared_ClearingIsNotPropagate() {
-        //Given
-        when(tagsManager.clearTag(tag)).thenReturn(false);
-
-        //When
-        editViewModel.onClear(tag);
-
-        //Then
-        verify(editCompoundRecyclerView, times(0)).updateTag(tag);
     }
 
     @Test
