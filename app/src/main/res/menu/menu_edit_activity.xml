@@ -12,7 +12,7 @@
 
     <item
         android:id="@+id/menu_item_clear_all"
-        android:icon="@drawable/ic_remove_all"
+        android:icon="@drawable/ic_multi_broom"
         android:orderInCategory="300"
         android:title="@string/menu_item_clear_all_tags"
         app:showAsAction="ifRoom"/>
