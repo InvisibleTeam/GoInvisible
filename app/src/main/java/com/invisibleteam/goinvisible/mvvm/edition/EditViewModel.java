@@ -1,6 +1,8 @@
 package com.invisibleteam.goinvisible.mvvm.edition;
 
 
+import android.support.media.ExifInterface;
+
 import com.invisibleteam.goinvisible.model.Tag;
 import com.invisibleteam.goinvisible.mvvm.edition.adapter.EditCompoundRecyclerView;
 import com.invisibleteam.goinvisible.util.ObservableString;
@@ -14,18 +16,18 @@ public class EditViewModel implements OnTagActionListener {
 
     private final EditCompoundRecyclerView editCompoundRecyclerView;
     private final TagsManager manager;
-    private final EditTagListener listener;
+    private final EditTagCallback callback;
 
     EditViewModel(String title,
                   String imageUrl,
                   EditCompoundRecyclerView editCompoundRecyclerView,
                   TagsManager manager,
-                  EditTagListener listener) {
+                  EditTagCallback callback) {
         this.title.set(title);
         this.imageUrl.set(imageUrl);
         this.editCompoundRecyclerView = editCompoundRecyclerView;
         this.manager = manager;
-        this.listener = listener;
+        this.callback = callback;
 
         initRecyclerView();
     }
@@ -57,7 +59,21 @@ public class EditViewModel implements OnTagActionListener {
 
     @Override
     public void onEditStarted(Tag tag) {
-        listener.openTagEditionView(tag);
+        if (ExifInterface.TAG_GPS_LATITUDE.equals(tag.getKey())) {
+            callback.openPlacePickerView(tag);
+            return;
+        }
+
+        switch (tag.getTagType().getInputType()) {
+            case UNMODIFIABLE:
+                callback.showUnmodifiableTagMessage();
+                break;
+            case INDEFINITE:
+                callback.showTagEditionErrorMessage();
+                break;
+            default:
+                callback.showTagEditionView(tag);
+        }
     }
 
     @Override
@@ -72,11 +88,11 @@ public class EditViewModel implements OnTagActionListener {
 
     @Override
     public void onTagsUpdated() {
-        listener.onTagsChanged();
+        callback.changeViewToEditMode();
     }
 
     @Override
     public void onEditError() {
-        listener.onEditError();
+        callback.showTagEditionErrorMessage();
     }
 }
