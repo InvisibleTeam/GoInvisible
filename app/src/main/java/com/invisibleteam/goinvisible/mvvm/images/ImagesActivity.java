@@ -186,6 +186,9 @@ public class ImagesActivity extends CommonEditActivity implements PhoneImagesVie
 
     @Override
     protected void onRejectTagsChangesDialogPositive() {
+    }
 
+    @Override
+    public void changeViewToEditMode() {
     }
 }
