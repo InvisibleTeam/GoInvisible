@@ -150,6 +150,7 @@ public class EditActivity extends CommonEditActivity implements EditTagCallback,
                     tagsManager,
                     this);
             editViewBinding.setViewModel(editViewModel);
+            setEditViewModel(editViewModel);
 
             editMenuViewModel = new EditMenuViewModel(
                     tagsManager,
