@@ -6,7 +6,7 @@ import android.net.Uri;
 
 import com.invisibleteam.goinvisible.BuildConfig;
 import com.invisibleteam.goinvisible.model.ImageDetails;
-import com.invisibleteam.goinvisible.mvvm.edition.Activity;
+import com.invisibleteam.goinvisible.mvvm.edition.EditActivity;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -28,16 +28,16 @@ import static org.mockito.Mockito.spy;
 @Config(constants = BuildConfig.class, sdk = 21)
 public class EditActivityHelperTest {
 
-    private Activity activity;
+    private EditActivity activity;
     private EditActivityHelper helper;
 
     @Before
     public void setUp() {
         Context context = RuntimeEnvironment.application;
         ImageDetails imageDetails = new ImageDetails("Path", "Name");
-        Intent editActivityIntent = Activity.buildIntent(context, imageDetails);
+        Intent editActivityIntent = EditActivity.buildIntent(context, imageDetails);
         activity = Robolectric
-                .buildActivity(Activity.class)
+                .buildActivity(EditActivity.class)
                 .withIntent(editActivityIntent)
                 .create()
                 .get();

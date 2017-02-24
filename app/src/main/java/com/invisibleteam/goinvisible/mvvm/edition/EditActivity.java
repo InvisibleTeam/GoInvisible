@@ -9,7 +9,6 @@ import android.support.annotation.VisibleForTesting;
 import android.support.design.widget.Snackbar;
 import android.support.media.ExifInterface;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -24,7 +23,6 @@ import com.invisibleteam.goinvisible.mvvm.images.ImagesActivity;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Locale;
 
 import javax.annotation.Nullable;
 
@@ -45,7 +43,6 @@ public class EditActivity extends CommonEditActivity implements EditTagCallback,
 
     private EditActivityHelper editActivityHelper;
     private ImageDetails imageDetails;
-    private EditViewModel editViewModel;
     private EditMenuViewModel editMenuViewModel;
     private Tag tag;
 
@@ -146,7 +143,7 @@ public class EditActivity extends CommonEditActivity implements EditTagCallback,
         try {
             TagsManager tagsManager = new TagsManager(getExifInterface());
 
-            editViewModel = new EditViewModel(
+            EditViewModel editViewModel = new EditViewModel(
                     imageDetails.getName(),
                     imageDetails.getPath(),
                     editViewBinding.editCompoundRecyclerView,
@@ -176,26 +173,13 @@ public class EditActivity extends CommonEditActivity implements EditTagCallback,
     }
 
     @Override
-    public void changeViewToEditMode() {
-        invalidateOptionsMenu();
+    protected void onRejectTagsChangesDialogPositive() {
+        editMenuViewModel.onRejectTagsChangesDialogPositive();
     }
 
     @Override
-    public void showRejectChangesDialog() {
-        String positiveMessage = getString(android.R.string.yes).toUpperCase(Locale.getDefault());
-        String negativeMessage = getString(android.R.string.no).toUpperCase(Locale.getDefault());
-        new AlertDialog
-                .Builder(this, R.style.AlertDialogStyle)
-                .setTitle(R.string.tag_changed_title)
-                .setMessage(R.string.tag_changed_message)
-                .setPositiveButton(
-                        positiveMessage,
-                        (dialog, which) -> editMenuViewModel.onRejectTagsChangesDialogPositive())
-                .setNegativeButton(
-                        negativeMessage,
-                        null)
-                .setCancelable(true)
-                .show();
+    public void changeViewToEditMode() {
+        invalidateOptionsMenu();
     }
 
     @Override
@@ -208,18 +192,6 @@ public class EditActivity extends CommonEditActivity implements EditTagCallback,
         Intent intent = ImagesActivity.buildIntent(this);
         startActivity(intent);
         finish();
-    }
-
-    @Override
-    public void showTagsSuccessfullyUpdatedMessage() {
-        Snackbar.make(findViewById(android.R.id.content), R.string.tags_changed_message_successfully, Snackbar.LENGTH_LONG)
-                .show();
-    }
-
-    @Override
-    public void showTagsUpdateFailureMessage() {
-        Snackbar.make(findViewById(android.R.id.content), R.string.tags_changed_message_unsuccessfully, Snackbar.LENGTH_LONG)
-                .show();
     }
 
     @Override

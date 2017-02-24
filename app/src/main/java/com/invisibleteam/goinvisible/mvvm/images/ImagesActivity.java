@@ -22,6 +22,7 @@ import com.invisibleteam.goinvisible.model.ImageDetails;
 import com.invisibleteam.goinvisible.mvvm.common.CommonEditActivity;
 import com.invisibleteam.goinvisible.mvvm.edition.EditActivity;
 import com.invisibleteam.goinvisible.mvvm.edition.EditTagCallback;
+import com.invisibleteam.goinvisible.mvvm.edition.EditTagsTabletCallback;
 import com.invisibleteam.goinvisible.mvvm.edition.EditViewModel;
 import com.invisibleteam.goinvisible.mvvm.edition.TagsManager;
 import com.invisibleteam.goinvisible.mvvm.settings.SettingsActivity;
@@ -31,7 +32,7 @@ import java.io.IOException;
 import javax.annotation.Nullable;
 
 public class ImagesActivity extends CommonEditActivity implements PhoneImagesViewCallback, TabletImagesViewCallback,
-        EditTagCallback {
+        EditTagCallback, EditTagsTabletCallback {
 
     private Snackbar snackbar;
     private SwipeRefreshLayout refreshLayout;
@@ -110,7 +111,7 @@ public class ImagesActivity extends CommonEditActivity implements PhoneImagesVie
         ImagesViewBinding imagesViewBinding = ImagesViewBinding.bind(imagesViewGroup);
 
         EditViewTabletBinding editViewTabletBinding = EditViewTabletBinding.bind(editViewGroup);
-        editViewModel = new EditViewModel(editViewTabletBinding.editCompoundRecyclerView);
+        editViewModel = new EditViewModel(editViewTabletBinding.editCompoundRecyclerView, this);
         editViewTabletBinding.setViewModel(editViewModel);
 
         ImagesViewModel imagesViewModel = new TabletImagesViewModel(
@@ -181,5 +182,10 @@ public class ImagesActivity extends CommonEditActivity implements PhoneImagesVie
                 e.printStackTrace();
             }
         }
+    }
+
+    @Override
+    protected void onRejectTagsChangesDialogPositive() {
+
     }
 }
