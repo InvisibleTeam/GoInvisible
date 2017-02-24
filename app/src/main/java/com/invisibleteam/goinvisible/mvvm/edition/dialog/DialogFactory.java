@@ -110,8 +110,8 @@ class DialogFactory {
 
         return new RadioDialogBuilder(context, tagNames, selectedValueIndex, callback)
                 .setTitle(tag.getKey())
-                .setPositiveButton(context.getText(android.R.string.ok))
-                .setNegativeButton(context.getText(android.R.string.cancel))
+                .setPositiveButton(context.getText(R.string.positive_message))
+                .setNegativeButton(context.getText(R.string.negative_message))
                 .build();
     }
 
