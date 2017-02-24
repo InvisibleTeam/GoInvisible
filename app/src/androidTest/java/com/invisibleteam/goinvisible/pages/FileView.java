@@ -31,7 +31,9 @@ public class FileView {
         LinkedHashMap<String, String> result = new LinkedHashMap<>();
 
         //noinspection SpellCheckingInspection
-        boolean canStillScroll;
+        boolean canStillScroll = true;
+        boolean canStillScrollPrevious = true;
+
         UiObject2 scrollable = UI_DEVICE.findObject(RECYCLER_VIEW_SELECTOR);
 
         do {
@@ -41,16 +43,11 @@ public class FileView {
                 result.put(uiListElement.findObject(TAG_KEY_SELECTOR).getText(), uiListElement.findObject(TAG_VALUE_SELECTOR).getText());
             }
 
-            canStillScroll = scrollable.scroll(Direction.DOWN, 1.0f);
+            canStillScrollPrevious = canStillScroll;
+            canStillScroll = canStillScroll && scrollable.scroll(Direction.DOWN, 1.0f);
 
             Log.d("scrollable", String.valueOf(canStillScroll));
-        } while (canStillScroll);
-
-        List<UiObject2> visibleUiListElements = scrollable.findObjects(VISIBLE_LIST_ITEM_SELECTOR);
-
-        for (UiObject2 uiListElement : visibleUiListElements) {
-            result.put(uiListElement.findObject(TAG_KEY_SELECTOR).getText(), uiListElement.findObject(TAG_VALUE_SELECTOR).getText());
-        }
+        } while (canStillScroll || canStillScrollPrevious);
 
         do {
         } while (scrollable.scroll(Direction.UP, Float.MAX_VALUE));
