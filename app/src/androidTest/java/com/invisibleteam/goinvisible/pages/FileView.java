@@ -44,7 +44,7 @@ public class FileView {
             canStillScroll = scrollable.scroll(Direction.DOWN, 1.0f);
 
             Log.d("scrollable", String.valueOf(canStillScroll));
-        } while (canStillScroll); //add additional condition?
+        } while (canStillScroll);
 
         List<UiObject2> visibleUiListElements = scrollable.findObjects(VISIBLE_LIST_ITEM_SELECTOR);
 
