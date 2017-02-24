@@ -1,5 +1,6 @@
 package com.invisibleteam.goinvisible.mvvm.images;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.VisibleForTesting;
@@ -88,7 +89,9 @@ public class ImagesActivity extends CommonEditActivity implements PhoneImagesVie
         setSupportActionBar(toolbar);
     }
 
+
     private void createPhoneBinding() {
+        @SuppressLint("InflateParams")
         ViewGroup viewGroup = (ViewGroup) LayoutInflater.from(this).inflate(R.layout.activity_images_phone, null);
         setContentView(viewGroup);
         ViewGroup imagesViewGroup = (ViewGroup) viewGroup.findViewById(R.id.images_group);
