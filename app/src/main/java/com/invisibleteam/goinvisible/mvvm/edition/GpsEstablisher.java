@@ -23,7 +23,7 @@ public class GpsEstablisher {
     private static final String TAG = GpsEstablisher.class.getSimpleName();
 
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
-    static final int GPS_REQUEST_CODE_DEFAULT = 1234;
+    public static final int GPS_REQUEST_CODE_DEFAULT = 1234;
     private static final long LOCATION_REQUEST_INTERVAL = 100;
     private static final long LOCATION_REQUEST_FASTEST_INTERVAL = 100;
 
@@ -42,11 +42,11 @@ public class GpsEstablisher {
         this.weakActivityReference = new WeakReference<>(activity);
     }
 
-    boolean isGpsEstablished() {
+    public boolean isGpsEstablished() {
         return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
     }
 
-    void requestGpsConnection() {
+    public void requestGpsConnection() {
         if (!googleLocationApiEstablisher.isApiConnected()) {
             googleLocationApiEstablisher.setGoogleApiConnectionListener(new GoogleLocationApiEstablisher.GoogleApiConnectionListener() {
                 @Override

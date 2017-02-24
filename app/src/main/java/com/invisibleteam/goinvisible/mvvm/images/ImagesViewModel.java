@@ -10,7 +10,7 @@ import com.invisibleteam.goinvisible.mvvm.images.adapter.ImagesItemAdapter;
 
 import java.util.List;
 
-public class ImagesViewModel {
+public abstract class ImagesViewModel {
 
     private final ObservableBoolean isInformationTextVisible = new ObservableBoolean(false);
     private final ImagesCompoundRecyclerView imagesCompoundRecyclerView;
@@ -31,10 +31,14 @@ public class ImagesViewModel {
         List<ImageDetails> imagesDetailsList = imagesProvider.getImagesList();
         isInformationTextVisible.set(imagesDetailsList.isEmpty());
         imagesCompoundRecyclerView.updateResults(imagesDetailsList);
-        imagesCompoundRecyclerView.setOnItemClickListener(new ImagesItemAdapter.OnItemClickListener() {
+        imagesCompoundRecyclerView.setOnItemClickListener(buildItemClickListener());
+    }
+
+    private ImagesItemAdapter.OnItemClickListener buildItemClickListener() {
+        return new ImagesItemAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(ImageDetails imageDetails) {
-                imagesViewCallback.navigateToEdit(imageDetails);
+                onItemViewClick(imageDetails);
             }
 
             @Override
@@ -42,7 +46,7 @@ public class ImagesViewModel {
                 imagesViewCallback.prepareSnackBar(R.string.unsupported_extension);
                 imagesViewCallback.showSnackBar();
             }
-        });
+        };
     }
 
     void updateImages() {
@@ -50,6 +54,8 @@ public class ImagesViewModel {
         imagesCompoundRecyclerView.updateResults(imagesDetailsList);
         imagesViewCallback.onStopRefreshingImages();
     }
+
+    protected abstract void onItemViewClick(ImageDetails imageDetails);
 
     public ObservableBoolean getIsInformationTextVisible() {
         return isInformationTextVisible;
