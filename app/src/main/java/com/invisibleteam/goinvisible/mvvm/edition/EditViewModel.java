@@ -1,9 +1,6 @@
 package com.invisibleteam.goinvisible.mvvm.edition;
 
 
-import com.invisibleteam.goinvisible.model.ImageDetails;
-
-import android.databinding.ObservableBoolean;
 import android.support.media.ExifInterface;
 
 import com.invisibleteam.goinvisible.model.Tag;
@@ -14,14 +11,13 @@ import java.util.List;
 
 public class EditViewModel implements OnTagActionListener {
 
-    private final ObservableString title = new ObservableString("");
-    private final ObservableString imageUrl = new ObservableString("");
-    private final ObservableBoolean isInEditMode = new ObservableBoolean(false);
+    protected final ObservableString title = new ObservableString("");
+    protected final ObservableString imageUrl = new ObservableString("");
 
-    private final EditCompoundRecyclerView editCompoundRecyclerView;
-    private TagsManager manager;
-    private EditTagCallback editTagCallback;
-    private EditTagsTabletCallback editTagsTabletCallback;
+    protected final EditCompoundRecyclerView editCompoundRecyclerView;
+    protected TagsManager manager;
+    protected EditTagCallback editTagCallback;
+    protected EditTagsTabletCallback editTagsTabletCallback;
 
     EditViewModel(String title,
                   String imageUrl,
@@ -40,19 +36,6 @@ public class EditViewModel implements OnTagActionListener {
     public EditViewModel(EditCompoundRecyclerView editCompoundRecyclerView, EditTagCallback callback) {
         this.editCompoundRecyclerView = editCompoundRecyclerView;
         this.editTagCallback = callback;
-    }
-
-    public ObservableBoolean getIsInEditMode() {
-        return isInEditMode;
-    }
-
-    public void updateRecyclerView(ImageDetails imageDetails, TagsManager manager, EditTagsTabletCallback callback) {
-        title.set(imageDetails.getName());
-        imageUrl.set(imageDetails.getPath());
-        this.manager = manager;
-        this.editTagsTabletCallback = callback;
-        editCompoundRecyclerView.setOnTagActionListener(this);
-        editCompoundRecyclerView.prepareTagsList(manager.getAllTags());
     }
 
     private void initRecyclerView(List<Tag> tags) {
@@ -99,25 +82,6 @@ public class EditViewModel implements OnTagActionListener {
         }
     }
 
-    public void onClearAllTags() {
-        onClear(manager.getAllTags());
-    }
-
-    public void onApproveChanges() {
-        if (saveTags()) {
-            editCompoundRecyclerView.updateTagListAfterChanges(manager.getAllTags());
-            isInEditMode.set(!editCompoundRecyclerView.getChangedTags().isEmpty());
-            editTagsTabletCallback.showTagsSuccessfullyUpdatedMessage();
-        } else {
-            editTagsTabletCallback.showTagsUpdateFailureMessage();
-        }
-    }
-
-    private boolean saveTags() {
-        List<Tag> changedTags = editCompoundRecyclerView.getChangedTags();
-        return manager.editTags(changedTags);
-    }
-
     @Override
     public void onEditEnded(Tag tag) {
         editCompoundRecyclerView.updateTag(tag);
@@ -130,7 +94,6 @@ public class EditViewModel implements OnTagActionListener {
 
     @Override
     public void onTagsUpdated() {
-        isInEditMode.set(!editCompoundRecyclerView.getChangedTags().isEmpty());
         editTagCallback.changeViewToEditMode();
     }
 
@@ -139,7 +102,4 @@ public class EditViewModel implements OnTagActionListener {
         editTagCallback.showTagEditionErrorMessage();
     }
 
-    public void setTagsManager(TagsManager tagsManager) {
-        this.manager = tagsManager;
-    }
 }
