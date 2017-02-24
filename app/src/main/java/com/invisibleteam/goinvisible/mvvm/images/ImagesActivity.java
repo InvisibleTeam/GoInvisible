@@ -15,11 +15,11 @@ import android.view.MenuItem;
 import android.view.ViewGroup;
 
 import com.invisibleteam.goinvisible.R;
-import com.invisibleteam.goinvisible.databinding.EditViewBinding;
 import com.invisibleteam.goinvisible.databinding.EditViewTabletBinding;
 import com.invisibleteam.goinvisible.databinding.ImagesViewBinding;
+import com.invisibleteam.goinvisible.helper.EditActivityHelper;
 import com.invisibleteam.goinvisible.model.ImageDetails;
-import com.invisibleteam.goinvisible.mvvm.common.CommonActivity;
+import com.invisibleteam.goinvisible.mvvm.common.CommonEditActivity;
 import com.invisibleteam.goinvisible.mvvm.edition.EditActivity;
 import com.invisibleteam.goinvisible.mvvm.edition.EditTagCallback;
 import com.invisibleteam.goinvisible.mvvm.edition.EditViewModel;
@@ -30,7 +30,7 @@ import java.io.IOException;
 
 import javax.annotation.Nullable;
 
-public class ImagesActivity extends CommonActivity implements PhoneImagesViewCallback, TabletImagesViewCallback,
+public class ImagesActivity extends CommonEditActivity implements PhoneImagesViewCallback, TabletImagesViewCallback,
         EditTagCallback {
 
     private Snackbar snackbar;
@@ -119,6 +119,10 @@ public class ImagesActivity extends CommonActivity implements PhoneImagesViewCal
                 this);
         imagesViewBinding.setViewModel(imagesViewModel);
         createRefreshLayout(imagesViewBinding, imagesViewModel);
+
+        EditActivityHelper editActivityHelper = new EditActivityHelper(this);
+        setEditActivityHelper(editActivityHelper);
+        setEditViewModel(editViewModel);
     }
 
     private void createRefreshLayout(ImagesViewBinding viewBinding, ImagesViewModel viewModel) {
@@ -177,12 +181,5 @@ public class ImagesActivity extends CommonActivity implements PhoneImagesViewCal
                 e.printStackTrace();
             }
         }
-    }
-
-    private void showSnackBar(int message) {
-        Snackbar.make(
-                this.findViewById(android.R.id.content),
-                message,
-                Snackbar.LENGTH_LONG).show();
     }
 }

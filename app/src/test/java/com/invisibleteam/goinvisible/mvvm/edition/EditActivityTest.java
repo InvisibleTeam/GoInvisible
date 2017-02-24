@@ -51,16 +51,16 @@ import static org.mockito.Mockito.when;
 public class EditActivityTest {
 
     private Context context;
-    private EditActivity activity;
+    private Activity activity;
     private ImageDetails imageDetails;
 
     @Before
     public void init() {
         context = RuntimeEnvironment.application;
         imageDetails = new ImageDetails("Path", "Name");
-        Intent editActivityIntent = EditActivity.buildIntent(context, imageDetails);
+        Intent editActivityIntent = Activity.buildIntent(context, imageDetails);
         activity = Robolectric
-                .buildActivity(EditActivity.class)
+                .buildActivity(Activity.class)
                 .withIntent(editActivityIntent)
                 .create()
                 .get();
@@ -71,11 +71,11 @@ public class EditActivityTest {
         //Given
         Bundle bundle = new Bundle();
         bundle.putParcelable("extra_image_details", imageDetails);
-        Intent expectedIntent = new Intent(context, EditActivity.class);
+        Intent expectedIntent = new Intent(context, Activity.class);
         expectedIntent.putExtras(bundle);
 
         //When
-        Intent intent = EditActivity.buildIntent(context, imageDetails);
+        Intent intent = Activity.buildIntent(context, imageDetails);
 
         //Then
         assertThat(intent, containsSameData(expectedIntent));
@@ -216,8 +216,8 @@ public class EditActivityTest {
     @Test
     public void whenNullIntentIsPassed_ExtractionFinishWithFailure() {
         //Given
-        EditActivity activity = Robolectric
-                .buildActivity(EditActivity.class)
+        Activity activity = Robolectric
+                .buildActivity(Activity.class)
                 .withIntent(null)
                 .get();
 
@@ -233,11 +233,11 @@ public class EditActivityTest {
         //Given
         Bundle bundle = new Bundle();
         bundle.putParcelable("filePath", mock(Parcelable.class));
-        Intent intent = new Intent(context, EditActivity.class);
+        Intent intent = new Intent(context, Activity.class);
         intent.putExtras(bundle);
 
-        EditActivity activity = Robolectric
-                .buildActivity(EditActivity.class)
+        Activity activity = Robolectric
+                .buildActivity(Activity.class)
                 .withIntent(intent)
                 .get();
 
@@ -250,13 +250,13 @@ public class EditActivityTest {
 
     @Test
     public void whenProperIntentIsPassed_ViewModelIsInitiated() throws IOException {
-        Intent intent = EditActivity.buildIntent(context, new ImageDetails("Path", "Name"));
-        EditActivity activity = Robolectric
-                .buildActivity(EditActivity.class)
+        Intent intent = Activity.buildIntent(context, new ImageDetails("Path", "Name"));
+        Activity activity = Robolectric
+                .buildActivity(Activity.class)
                 .withIntent(intent)
                 .get();
 
-        EditActivity mockEditActivity = spy(activity);
+        Activity mockEditActivity = spy(activity);
         ExifInterface exifInterface = mock(ExifInterface.class);
         doReturn(exifInterface).when(mockEditActivity).getExifInterface();
 
@@ -271,8 +271,8 @@ public class EditActivityTest {
     @Test
     public void whenNullIntentIsPassed_ViewModelIsNotInitiated() {
         //Given
-        EditActivity activity = Robolectric
-                .buildActivity(EditActivity.class)
+        Activity activity = Robolectric
+                .buildActivity(Activity.class)
                 .withIntent(null)
                 .get();
 
@@ -287,8 +287,8 @@ public class EditActivityTest {
     @Test
     public void whenAllNecessaryPermissionsAreGranted_PrepareViewIsCalled() {
         //Given
-        EditActivity activity = Robolectric.buildActivity(EditActivity.class).get();
-        EditActivity spyActivity = spy(activity);
+        Activity activity = Robolectric.buildActivity(Activity.class).get();
+        Activity spyActivity = spy(activity);
 
         //When
         spyActivity.onCreate(null);

@@ -21,7 +21,7 @@ import com.invisibleteam.goinvisible.R;
 import com.invisibleteam.goinvisible.model.GeolocationTag;
 import com.invisibleteam.goinvisible.model.ImageDetails;
 import com.invisibleteam.goinvisible.model.Tag;
-import com.invisibleteam.goinvisible.mvvm.edition.EditActivity;
+import com.invisibleteam.goinvisible.mvvm.common.CommonEditActivity;
 import com.invisibleteam.goinvisible.mvvm.edition.GoogleLocationApiEstablisher;
 import com.invisibleteam.goinvisible.mvvm.edition.GpsEstablisher;
 import com.invisibleteam.goinvisible.util.LatLngUtil;
@@ -39,10 +39,10 @@ public class EditActivityHelper {
     private static final String IMAGE_EMPTY_DESCRIPTION = "";
     private static final String SHARE_IMAGE_JPG_TYPE = "image/jpg";
 
-    private EditActivity editActivity;
+    private CommonEditActivity activity;
 
-    public EditActivityHelper(EditActivity editActivity) {
-        this.editActivity = editActivity;
+    public EditActivityHelper(CommonEditActivity activity) {
+        this.activity = activity;
     }
 
     @NonNull
@@ -75,19 +75,19 @@ public class EditActivityHelper {
                 intentBuilder.setLatLngBounds(bounds);
             }
 
-            Intent intent = intentBuilder.build(editActivity);
-            editActivity.startActivityForResult(intent, PLACE_REQUEST_ID);
+            Intent intent = intentBuilder.build(activity);
+            activity.startActivityForResult(intent, PLACE_REQUEST_ID);
         } catch (GooglePlayServicesRepairableException e) {
-            GoogleApiAvailability.getInstance().getErrorDialog(editActivity, e.getConnectionStatusCode(), 0);
+            GoogleApiAvailability.getInstance().getErrorDialog(activity, e.getConnectionStatusCode(), 0);
         } catch (GooglePlayServicesNotAvailableException e) {
-            Toast.makeText(editActivity, R.string.google_services_error,
+            Toast.makeText(activity, R.string.google_services_error,
                     Toast.LENGTH_LONG).show();
         }
     }
 
     public Snackbar createGpsSnackBar() {
         return Snackbar.make(
-                editActivity.findViewById(android.R.id.content),
+                activity.findViewById(android.R.id.content),
                 R.string.google_api_connection_error,
                 Snackbar.LENGTH_LONG);
     }
@@ -106,11 +106,11 @@ public class EditActivityHelper {
             }
         };
 
-        LocationManager locationManager = (LocationManager) editActivity.getSystemService(LOCATION_SERVICE);
+        LocationManager locationManager = (LocationManager) activity.getSystemService(LOCATION_SERVICE);
         GoogleLocationApiEstablisher googleLocationApiEstablisher =
                 new GoogleLocationApiEstablisher(
-                        new GoogleApiClient.Builder(editActivity));
-        GpsEstablisher gpsEstablisher = new GpsEstablisher(locationManager, googleLocationApiEstablisher, editActivity);
+                        new GoogleApiClient.Builder(activity));
+        GpsEstablisher gpsEstablisher = new GpsEstablisher(locationManager, googleLocationApiEstablisher, activity);
         gpsEstablisher.setStatusListener(gpsStatusListener);
         return gpsEstablisher;
     }
@@ -139,6 +139,6 @@ public class EditActivityHelper {
      * Cannot use this class after calling this method.
      */
     public void onStop() {
-        editActivity = null;
+        activity = null;
     }
 }

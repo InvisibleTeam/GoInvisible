@@ -1,6 +1,5 @@
 package com.invisibleteam.goinvisible.mvvm.edition;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
@@ -15,16 +14,12 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.google.android.gms.location.places.Place;
-import com.google.android.gms.location.places.ui.PlacePicker;
 import com.invisibleteam.goinvisible.R;
 import com.invisibleteam.goinvisible.databinding.EditViewBinding;
 import com.invisibleteam.goinvisible.helper.EditActivityHelper;
-import com.invisibleteam.goinvisible.model.GeolocationTag;
 import com.invisibleteam.goinvisible.model.ImageDetails;
 import com.invisibleteam.goinvisible.model.Tag;
-import com.invisibleteam.goinvisible.mvvm.common.CommonActivity;
-import com.invisibleteam.goinvisible.mvvm.edition.dialog.EditDialog;
+import com.invisibleteam.goinvisible.mvvm.common.CommonEditActivity;
 import com.invisibleteam.goinvisible.mvvm.images.ImagesActivity;
 
 import java.io.FileNotFoundException;
@@ -33,7 +28,7 @@ import java.util.Locale;
 
 import javax.annotation.Nullable;
 
-public class EditActivity extends CommonActivity implements EditTagCallback, EditMenuViewCallback {
+public class EditActivity extends CommonEditActivity implements EditTagCallback, EditMenuViewCallback {
 
     public static Intent buildIntent(Context context, ImageDetails imageDetails) {
         Bundle bundle = new Bundle();
@@ -44,13 +39,11 @@ public class EditActivity extends CommonActivity implements EditTagCallback, Edi
         return intent;
     }
 
-    public static final int PLACE_REQUEST_ID = 1;
     private static final String TAG_IMAGE_DETAILS = "extra_image_details";
     private static final String TAG_MODEL = "tag";
     private static final String TAG = EditActivity.class.getSimpleName();
 
     private EditActivityHelper editActivityHelper;
-    private GpsEstablisher gpsEstablisher;
     private ImageDetails imageDetails;
     private EditViewModel editViewModel;
     private EditMenuViewModel editMenuViewModel;
@@ -68,7 +61,7 @@ public class EditActivity extends CommonActivity implements EditTagCallback, Edi
             tag = savedInstanceState.getParcelable(TAG_MODEL);
         }
         editActivityHelper = new EditActivityHelper(this);
-        gpsEstablisher = editActivityHelper.createGpsEstablisher(tag);
+        setEditActivityHelper(editActivityHelper);
     }
 
     @Override
@@ -127,12 +120,6 @@ public class EditActivity extends CommonActivity implements EditTagCallback, Edi
         }
     }
 
-    @VisibleForTesting
-    @Nullable
-    EditViewModel getEditViewModel() {
-        return editViewModel;
-    }
-
     @Override
     public void prepareView() {
         EditViewBinding editViewBinding = DataBindingUtil.setContentView(this, R.layout.edit_view);
@@ -184,25 +171,6 @@ public class EditActivity extends CommonActivity implements EditTagCallback, Edi
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == PLACE_REQUEST_ID && resultCode == Activity.RESULT_OK) {
-            Place place = PlacePicker.getPlace(this, data);
-            onNewPlace(place);
-        } else if (
-                requestCode == GpsEstablisher.GPS_REQUEST_CODE_DEFAULT
-                        && resultCode == Activity.RESULT_OK) {
-            startPlaceIntent();
-        }
-    }
-
-    private void onNewPlace(Place place) {
-        GeolocationTag geolocationTag = editActivityHelper.prepareNewPlacePositionTag(place, tag);
-        editViewModel.onEditEnded(geolocationTag);
-    }
-
-    @Override
     public void onBackPressed() {
         editMenuViewModel.onBackClick();
     }
@@ -210,38 +178,6 @@ public class EditActivity extends CommonActivity implements EditTagCallback, Edi
     @Override
     public void changeViewToEditMode() {
         invalidateOptionsMenu();
-    }
-
-    @Override
-    public void openPlacePickerView(Tag tag) {
-        this.tag = tag;
-        startPlaceIntent();
-    }
-
-    @Override
-    public void showUnmodifiableTagMessage() {
-        showSnackBar(R.string.unmodifiable_tag_message);
-    }
-
-    @Override
-    public void showTagEditionErrorMessage() {
-        showSnackBar(R.string.error_message);
-    }
-
-    @Override
-    public void showTagEditionView(Tag tag) {
-        EditDialog dialog = EditDialog.newInstance(EditActivity.this, tag);
-        dialog.setViewModel(editViewModel);
-        dialog.show(getFragmentManager(), EditDialog.FRAGMENT_TAG);
-    }
-
-    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
-    void startPlaceIntent() {
-        if (gpsEstablisher.isGpsEstablished()) {
-            editActivityHelper.openPlacePicker(tag);
-        } else {
-            gpsEstablisher.requestGpsConnection();
-        }
     }
 
     @Override
@@ -290,12 +226,4 @@ public class EditActivity extends CommonActivity implements EditTagCallback, Edi
     public void changeViewToDefaultMode() {
         invalidateOptionsMenu();
     }
-
-    private void showSnackBar(int message) {
-        Snackbar.make(
-                this.findViewById(android.R.id.content),
-                message,
-                Snackbar.LENGTH_LONG).show();
-    }
-
 }
