@@ -13,7 +13,7 @@ import com.invisibleteam.goinvisible.mvvm.edition.adapter.EditCompoundRecyclerVi
 
 import java.util.List;
 
-public class TabletEditViewModel extends EditViewModel{
+public class TabletEditViewModel extends EditViewModel {
 
     private final ObservableBoolean isInEditMode = new ObservableBoolean(false);
 
@@ -57,5 +57,9 @@ public class TabletEditViewModel extends EditViewModel{
     public void onTagsUpdated() {
         isInEditMode.set(!editCompoundRecyclerView.getChangedTags().isEmpty());
         super.onTagsUpdated();
+    }
+
+    void changeViewToDefaultMode() {
+        isInEditMode.set(false);
     }
 }
