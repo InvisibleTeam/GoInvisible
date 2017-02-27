@@ -22,31 +22,31 @@ public class TabletEditViewModel extends EditViewModel{
     }
 
     public void initialize(ImageDetails imageDetails, TagsManager manager, EditTagsTabletCallback callback) {
-        title.set(imageDetails.getName());
-        imageUrl.set(imageDetails.getPath());
-        this.manager = manager;
-        this.editTagsTabletCallback = callback;
-        editCompoundRecyclerView.setOnTagActionListener(this);
-        editCompoundRecyclerView.prepareTagsList(manager.getAllTags());
+        getTitle().set(imageDetails.getName());
+        getImageUrl().set(imageDetails.getPath());
+        setManager(manager);
+        setEditTagsTabletCallback(callback);
+        getEditCompoundRecyclerView().setOnTagActionListener(this);
+        getEditCompoundRecyclerView().prepareTagsList(manager.getAllTags());
     }
 
     public void onApproveChanges() {
         if (saveTags()) {
-            editCompoundRecyclerView.updateTagListAfterChanges(manager.getAllTags());
-            isInEditMode.set(!editCompoundRecyclerView.getChangedTags().isEmpty());
-            editTagsTabletCallback.showTagsSuccessfullyUpdatedMessage();
+            getEditCompoundRecyclerView().updateTagListAfterChanges(getManager().getAllTags());
+            isInEditMode.set(!getEditCompoundRecyclerView().getChangedTags().isEmpty());
+            getEditTagsTabletCallback().showTagsSuccessfullyUpdatedMessage();
         } else {
-            editTagsTabletCallback.showTagsUpdateFailureMessage();
+            getEditTagsTabletCallback().showTagsUpdateFailureMessage();
         }
     }
 
     public void onClearAllTags() {
-        onClear(manager.getAllTags());
+        onClear(getManager().getAllTags());
     }
 
     private boolean saveTags() {
-        List<Tag> changedTags = editCompoundRecyclerView.getChangedTags();
-        return manager.editTags(changedTags);
+        List<Tag> changedTags = getEditCompoundRecyclerView().getChangedTags();
+        return getManager().editTags(changedTags);
     }
 
     public ObservableBoolean getIsInEditMode() {
@@ -55,7 +55,7 @@ public class TabletEditViewModel extends EditViewModel{
 
     @Override
     public void onTagsUpdated() {
-        isInEditMode.set(!editCompoundRecyclerView.getChangedTags().isEmpty());
+        isInEditMode.set(!getEditCompoundRecyclerView().getChangedTags().isEmpty());
         super.onTagsUpdated();
     }
 }

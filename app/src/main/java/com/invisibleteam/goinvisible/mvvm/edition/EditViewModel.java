@@ -11,13 +11,12 @@ import java.util.List;
 
 public class EditViewModel implements OnTagActionListener {
 
-    protected final ObservableString title = new ObservableString("");
-    protected final ObservableString imageUrl = new ObservableString("");
-
-    protected final EditCompoundRecyclerView editCompoundRecyclerView;
-    protected TagsManager manager;
-    protected EditTagCallback editTagCallback;
-    protected EditTagsTabletCallback editTagsTabletCallback;
+    private final ObservableString title = new ObservableString("");
+    private final ObservableString imageUrl = new ObservableString("");
+    private final EditTagCallback editTagCallback;
+    private final EditCompoundRecyclerView editCompoundRecyclerView;
+    private TagsManager manager;
+    private EditTagsTabletCallback editTagsTabletCallback;
 
     EditViewModel(String title,
                   String imageUrl,
@@ -41,14 +40,6 @@ public class EditViewModel implements OnTagActionListener {
     private void initRecyclerView(List<Tag> tags) {
         editCompoundRecyclerView.setOnTagActionListener(this);
         editCompoundRecyclerView.updateResults(tags);
-    }
-
-    public ObservableString getTitle() {
-        return title;
-    }
-
-    public ObservableString getImageUrl() {
-        return imageUrl;
     }
 
     @Override
@@ -100,6 +91,34 @@ public class EditViewModel implements OnTagActionListener {
     @Override
     public void onEditError() {
         editTagCallback.showTagEditionErrorMessage();
+    }
+
+    public ObservableString getTitle() {
+        return title;
+    }
+
+    public ObservableString getImageUrl() {
+        return imageUrl;
+    }
+
+    public EditCompoundRecyclerView getEditCompoundRecyclerView() {
+        return editCompoundRecyclerView;
+    }
+
+    public TagsManager getManager() {
+        return manager;
+    }
+
+    public void setManager(TagsManager manager) {
+        this.manager = manager;
+    }
+
+    public EditTagsTabletCallback getEditTagsTabletCallback() {
+        return editTagsTabletCallback;
+    }
+
+    public void setEditTagsTabletCallback(EditTagsTabletCallback editTagsTabletCallback) {
+        this.editTagsTabletCallback = editTagsTabletCallback;
     }
 
 }
