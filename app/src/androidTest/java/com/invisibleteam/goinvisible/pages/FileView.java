@@ -6,7 +6,6 @@ import android.support.test.uiautomator.Direction;
 import android.support.test.uiautomator.UiObject2;
 import android.support.test.uiautomator.UiObjectNotFoundException;
 import android.support.test.uiautomator.Until;
-import android.util.Log;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -34,23 +33,21 @@ public class FileView {
         boolean canStillScroll = true;
         boolean canStillScrollPrevious = true;
 
-        UiObject2 scrollable = UI_DEVICE.findObject(RECYCLER_VIEW_SELECTOR);
+        UiObject2 exifTagsList = UI_DEVICE.findObject(RECYCLER_VIEW_SELECTOR);
 
         do {
-            List<UiObject2> visibleUiListElements = scrollable.findObjects(VISIBLE_LIST_ITEM_SELECTOR);
+            List<UiObject2> visibleUiListElements = exifTagsList.findObjects(VISIBLE_LIST_ITEM_SELECTOR);
 
             for (UiObject2 uiListElement : visibleUiListElements) {
                 result.put(uiListElement.findObject(TAG_KEY_SELECTOR).getText(), uiListElement.findObject(TAG_VALUE_SELECTOR).getText());
             }
 
             canStillScrollPrevious = canStillScroll;
-            canStillScroll = canStillScroll && scrollable.scroll(Direction.DOWN, 1.0f);
-
-            Log.d("scrollable", String.valueOf(canStillScroll));
+            canStillScroll = canStillScroll && exifTagsList.scroll(Direction.DOWN, 1.0f);
         } while (canStillScroll || canStillScrollPrevious);
 
         do {
-        } while (scrollable.scroll(Direction.UP, Float.MAX_VALUE));
+        } while (exifTagsList.scroll(Direction.UP, Float.MAX_VALUE));
 
         return result;
     }
