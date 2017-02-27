@@ -7,9 +7,9 @@ import com.invisibleteam.goinvisible.model.ImageDetails;
 import com.invisibleteam.goinvisible.model.Tag;
 import com.invisibleteam.goinvisible.mvvm.edition.EditTagCallback;
 import com.invisibleteam.goinvisible.mvvm.edition.EditViewModel;
-import com.invisibleteam.goinvisible.mvvm.edition.callback.EditTagsTabletCallback;
 import com.invisibleteam.goinvisible.mvvm.edition.TagsManager;
 import com.invisibleteam.goinvisible.mvvm.edition.adapter.EditCompoundRecyclerView;
+import com.invisibleteam.goinvisible.mvvm.edition.callback.EditTagsTabletCallback;
 
 import java.util.List;
 
@@ -17,6 +17,7 @@ public class TabletEditViewModel extends EditViewModel {
 
     private final ObservableBoolean isInEditMode = new ObservableBoolean(false);
     private ImageDetails imageDetails;
+    private EditTagsTabletCallback editTagsTabletCallback;
 
     public TabletEditViewModel(EditCompoundRecyclerView editCompoundRecyclerView, EditTagCallback callback) {
         super(editCompoundRecyclerView, callback);
@@ -47,7 +48,7 @@ public class TabletEditViewModel extends EditViewModel {
     }
 
     public void onShare() {
-        getEditTagsTabletCallback().onShare(imageDetails);
+        editTagsTabletCallback.onShare(imageDetails);
     }
 
     private boolean saveTags() {
