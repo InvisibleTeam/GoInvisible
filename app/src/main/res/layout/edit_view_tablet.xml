@@ -25,6 +25,12 @@
                 app:imageUrl="@{viewModel.imageUrl}"
                 app:layout_collapseMode="parallax"/>
 
+            <View
+                android:id="@+id/details_backdrop_gradient"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/edit_header_gradient"/>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="?actionBarSize"
@@ -55,6 +61,17 @@
                     android:src="@drawable/ic_multi_broom"/>
 
             </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:layout_margin="@dimen/text_view_margin"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="@{viewModel.title}"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/information_text_size"/>
 
         </FrameLayout>
 

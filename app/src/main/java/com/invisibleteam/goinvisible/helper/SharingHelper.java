@@ -28,7 +28,7 @@ public class SharingHelper {
     }
 
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
-    public static String prepareImagePathToShare(ImageDetails details, ContentResolver contentResolver) throws
+    private static String prepareImagePathToShare(ImageDetails details, ContentResolver contentResolver) throws
             FileNotFoundException {
         return insertImage(
                 contentResolver,
