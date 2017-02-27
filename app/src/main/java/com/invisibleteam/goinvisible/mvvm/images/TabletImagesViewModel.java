@@ -4,6 +4,7 @@ package com.invisibleteam.goinvisible.mvvm.images;
 import com.invisibleteam.goinvisible.model.ImageDetails;
 import com.invisibleteam.goinvisible.mvvm.edition.adapter.EditCompoundRecyclerView;
 import com.invisibleteam.goinvisible.mvvm.images.adapter.ImagesCompoundRecyclerView;
+import com.invisibleteam.goinvisible.mvvm.images.callback.TabletImagesViewCallback;
 
 import javax.annotation.Nullable;
 

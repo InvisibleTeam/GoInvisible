@@ -1,8 +1,8 @@
 package com.invisibleteam.goinvisible.mvvm.edition;
 
-
 import com.invisibleteam.goinvisible.model.Tag;
 import com.invisibleteam.goinvisible.mvvm.edition.adapter.EditCompoundRecyclerView;
+import com.invisibleteam.goinvisible.mvvm.edition.callback.EditMenuViewCallback;
 
 import java.util.List;
 

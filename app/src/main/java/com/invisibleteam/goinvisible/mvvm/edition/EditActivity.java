@@ -15,9 +15,12 @@ import android.view.MenuItem;
 import com.invisibleteam.goinvisible.R;
 import com.invisibleteam.goinvisible.databinding.EditViewBinding;
 import com.invisibleteam.goinvisible.helper.EditActivityHelper;
+import com.invisibleteam.goinvisible.helper.SharingHelper;
 import com.invisibleteam.goinvisible.model.ImageDetails;
 import com.invisibleteam.goinvisible.model.Tag;
 import com.invisibleteam.goinvisible.mvvm.common.CommonEditActivity;
+import com.invisibleteam.goinvisible.mvvm.edition.callback.EditMenuViewCallback;
+import com.invisibleteam.goinvisible.mvvm.edition.callback.PhoneEditTagCallback;
 import com.invisibleteam.goinvisible.mvvm.images.ImagesActivity;
 
 import java.io.FileNotFoundException;
@@ -108,7 +111,7 @@ public class EditActivity extends CommonEditActivity implements PhoneEditTagCall
 
     private void shareImage() {
         try {
-            Intent intent = editActivityHelper.buildShareImageIntent(imageDetails, getContentResolver());
+            Intent intent = SharingHelper.buildShareImageIntent(imageDetails, getContentResolver());
             startActivity(Intent.createChooser(intent, getString(R.string.share_intent_chooser_title)));
         } catch (FileNotFoundException e) {
             Log.e(TAG, String.valueOf(e.getMessage()));

@@ -20,15 +20,19 @@ import com.invisibleteam.goinvisible.R;
 import com.invisibleteam.goinvisible.databinding.EditViewTabletBinding;
 import com.invisibleteam.goinvisible.databinding.ImagesViewBinding;
 import com.invisibleteam.goinvisible.helper.EditActivityHelper;
+import com.invisibleteam.goinvisible.helper.SharingHelper;
 import com.invisibleteam.goinvisible.model.ImageDetails;
 import com.invisibleteam.goinvisible.mvvm.common.CommonEditActivity;
 import com.invisibleteam.goinvisible.mvvm.edition.EditActivity;
 import com.invisibleteam.goinvisible.mvvm.edition.EditTagCallback;
-import com.invisibleteam.goinvisible.mvvm.edition.EditTagsTabletCallback;
-import com.invisibleteam.goinvisible.mvvm.edition.RejectEditionChangesCallback;
+import com.invisibleteam.goinvisible.mvvm.edition.callback.EditTagsTabletCallback;
+import com.invisibleteam.goinvisible.mvvm.edition.callback.RejectEditionChangesCallback;
 import com.invisibleteam.goinvisible.mvvm.edition.TagsManager;
+import com.invisibleteam.goinvisible.mvvm.images.callback.PhoneImagesViewCallback;
+import com.invisibleteam.goinvisible.mvvm.images.callback.TabletImagesViewCallback;
 import com.invisibleteam.goinvisible.mvvm.settings.SettingsActivity;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import javax.annotation.Nullable;
@@ -98,6 +102,7 @@ public class ImagesActivity extends CommonEditActivity implements PhoneImagesVie
         @SuppressLint("InflateParams")
         ViewGroup viewGroup = (ViewGroup) LayoutInflater.from(this).inflate(R.layout.activity_images_phone, null);
         setContentView(viewGroup);
+
         ViewGroup imagesViewGroup = (ViewGroup) viewGroup.findViewById(R.id.images_group);
         ImagesViewBinding imagesViewBinding = ImagesViewBinding.bind(imagesViewGroup);
 
@@ -106,6 +111,7 @@ public class ImagesActivity extends CommonEditActivity implements PhoneImagesVie
                 new ImagesProvider(getContentResolver()),
                 this);
         imagesViewBinding.setViewModel(imagesViewModel);
+
         createRefreshLayout(imagesViewBinding, imagesViewModel);
     }
 
@@ -203,5 +209,16 @@ public class ImagesActivity extends CommonEditActivity implements PhoneImagesVie
     @Override
     protected void onRejectTagsChangesDialogPositive() {
         tabletImagesViewModel.onRejectTagsChangesDialogPositive();
+    }
+
+    @Override
+    public void onShare(ImageDetails details) {
+        try {
+            Intent intent = SharingHelper.buildShareImageIntent(details, getContentResolver());
+            startActivity(Intent.createChooser(intent, getString(R.string.share_intent_chooser_title)));
+        } catch (FileNotFoundException e) {
+            Log.e(TAG, String.valueOf(e.getMessage()));
+            //TODO log error in crashlytics
+        }
     }
 }

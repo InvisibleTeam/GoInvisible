@@ -1,11 +1,8 @@
 package com.invisibleteam.goinvisible.helper;
 
-import android.content.ContentResolver;
 import android.content.Intent;
 import android.location.LocationManager;
-import android.net.Uri;
 import android.support.annotation.NonNull;
-import android.support.annotation.VisibleForTesting;
 import android.support.design.widget.Snackbar;
 import android.widget.Toast;
 
@@ -19,7 +16,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.invisibleteam.goinvisible.R;
 import com.invisibleteam.goinvisible.model.GeolocationTag;
-import com.invisibleteam.goinvisible.model.ImageDetails;
 import com.invisibleteam.goinvisible.model.Tag;
 import com.invisibleteam.goinvisible.mvvm.common.CommonEditActivity;
 import com.invisibleteam.goinvisible.mvvm.edition.GoogleLocationApiEstablisher;
@@ -27,17 +23,12 @@ import com.invisibleteam.goinvisible.mvvm.edition.GpsEstablisher;
 import com.invisibleteam.goinvisible.util.LatLngUtil;
 import com.invisibleteam.goinvisible.util.TagUtil;
 
-import java.io.FileNotFoundException;
-
 import static android.content.Context.LOCATION_SERVICE;
-import static android.provider.MediaStore.Images.Media.insertImage;
 import static com.invisibleteam.goinvisible.mvvm.edition.EditActivity.PLACE_REQUEST_ID;
 
 public class EditActivityHelper {
 
     private static final int INITIAL_MAP_RADIUS = 20000;
-    private static final String IMAGE_EMPTY_DESCRIPTION = "";
-    private static final String SHARE_IMAGE_JPG_TYPE = "image/jpg";
 
     private CommonEditActivity activity;
 
@@ -113,25 +104,6 @@ public class EditActivityHelper {
         GpsEstablisher gpsEstablisher = new GpsEstablisher(locationManager, googleLocationApiEstablisher, activity);
         gpsEstablisher.setStatusListener(gpsStatusListener);
         return gpsEstablisher;
-    }
-
-    public Intent buildShareImageIntent(ImageDetails imageDetails, ContentResolver contentResolver) throws FileNotFoundException {
-        final String imagePath = prepareImagePathToShare(imageDetails, contentResolver);
-        final Uri imageUri = Uri.parse(imagePath);
-        final Intent intent = new Intent(Intent.ACTION_SEND);
-        intent.putExtra(Intent.EXTRA_STREAM, imageUri);
-        intent.setType(SHARE_IMAGE_JPG_TYPE);
-
-        return intent;
-    }
-
-    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
-    public String prepareImagePathToShare(ImageDetails imageDetails, ContentResolver contentResolver) throws FileNotFoundException {
-        return insertImage(
-                contentResolver,
-                imageDetails.getPath(),
-                imageDetails.getName(),
-                IMAGE_EMPTY_DESCRIPTION);
     }
 
     /**

@@ -35,16 +35,23 @@
                     android:id="@+id/approve_changes_button"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:onClick="@{(view) -> viewModel.onApproveChanges()}"
                     android:layout_margin="@dimen/toolbar_icons_margin"
-                    android:visibility="@{viewModel.isInEditMode ? View.VISIBLE : View.GONE}"
-                    android:src="@drawable/ic_approve"/>
+                    android:onClick="@{(view) -> viewModel.onApproveChanges()}"
+                    android:src="@drawable/ic_approve"
+                    android:visibility="@{viewModel.isInEditMode ? View.VISIBLE : View.GONE}"/>
 
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:onClick="@{(view) -> viewModel.onClearAllTags()}"
                     android:layout_margin="@dimen/toolbar_icons_margin"
+                    android:onClick="@{(view) -> viewModel.onShare()}"
+                    android:src="@drawable/ic_share"/>
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_margin="@dimen/toolbar_icons_margin"
+                    android:onClick="@{(view) -> viewModel.onClearAllTags()}"
                     android:src="@drawable/ic_multi_broom"/>
 
             </LinearLayout>
