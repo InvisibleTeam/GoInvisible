@@ -110,20 +110,21 @@ public class ImagesActivity extends CommonEditActivity implements PhoneImagesVie
     private void createTabletBinding() {
         ViewGroup viewGroup = (ViewGroup) LayoutInflater.from(this).inflate(R.layout.activity_images_tablet, null);
         setContentView(viewGroup);
+
         ViewGroup imagesViewGroup = (ViewGroup) viewGroup.findViewById(R.id.images_group);
-        ViewGroup editViewGroup = (ViewGroup) viewGroup.findViewById(R.id.edit_group);
         ImagesViewBinding imagesViewBinding = ImagesViewBinding.bind(imagesViewGroup);
-
-        EditViewTabletBinding editViewTabletBinding = EditViewTabletBinding.bind(editViewGroup);
-        editViewModel = new TabletEditViewModel(editViewTabletBinding.editCompoundRecyclerView, this);
-        editViewTabletBinding.setViewModel(editViewModel);
-
         ImagesViewModel imagesViewModel = new TabletImagesViewModel(
                 imagesViewBinding.imagesCompoundRecyclerView,
                 new ImagesProvider(getContentResolver()),
                 this);
         imagesViewBinding.setViewModel(imagesViewModel);
+
         createRefreshLayout(imagesViewBinding, imagesViewModel);
+
+        ViewGroup editViewGroup = (ViewGroup) viewGroup.findViewById(R.id.edit_group);
+        EditViewTabletBinding editViewTabletBinding = EditViewTabletBinding.bind(editViewGroup);
+        editViewModel = new TabletEditViewModel(editViewTabletBinding.editCompoundRecyclerView, this);
+        editViewTabletBinding.setViewModel(editViewModel);
 
         EditActivityHelper editActivityHelper = new EditActivityHelper(this);
         setEditActivityHelper(editActivityHelper);

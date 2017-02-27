@@ -57,18 +57,20 @@ class EditItemAdapter extends RecyclerView.Adapter<EditItemAdapter.ViewHolder> {
         return tagsList.size();
     }
 
-    void updateTagList(List<Tag> tags) {
+    boolean updateTagList(List<Tag> tags) {
         this.tagsList = tags;
+        notifyDataSetChanged();
         if (baseTagsList == null) {
             baseTagsList = new ArrayList<>();
             updateBaseTagList(tags);
-        } else {
-            onTagActionListener.onTagsUpdated();
+            return false;
         }
+        return true;
     }
 
     void prepareTagsList(List<Tag> tags) {
         tagsList = tags;
+        notifyDataSetChanged();
         baseTagsList = new ArrayList<>();
         updateBaseTagList(tags);
     }
@@ -115,17 +117,17 @@ class EditItemAdapter extends RecyclerView.Adapter<EditItemAdapter.ViewHolder> {
         this.onTagActionListener = listener;
     }
 
-    void updateTag(Tag tag) {
+    boolean updateTag(Tag tag) {
         if (!tagsList.isEmpty()) {
             for (int index = 0; index < tagsList.size(); index++) {
                 if (tagsList.get(index).getKey().equals(tag.getKey())) {
                     tagsList.set(index, tag);
                     notifyItemChanged(index);
-                    onTagActionListener.onTagsUpdated();
-                    break;
+                    return true;
                 }
             }
         }
+        return false;
     }
 
     @VisibleForTesting
@@ -133,20 +135,20 @@ class EditItemAdapter extends RecyclerView.Adapter<EditItemAdapter.ViewHolder> {
         return tagsList;
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder {
+class ViewHolder extends RecyclerView.ViewHolder {
 
-        @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
-        EditItemViewModel editItemViewModel;
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    EditItemViewModel editItemViewModel;
 
-        EditItemViewBinding editItemViewBinding;
+    EditItemViewBinding editItemViewBinding;
 
-        ViewHolder(View itemView) {
-            super(itemView);
+    ViewHolder(View itemView) {
+        super(itemView);
 
-            editItemViewModel = new EditItemViewModel();
-            editItemViewBinding = EditItemViewBinding.bind(itemView);
-            editItemViewBinding.setViewModel(editItemViewModel);
-            TextViewUtil.setEllipsizedForView(editItemViewBinding.tagKey);
-        }
+        editItemViewModel = new EditItemViewModel();
+        editItemViewBinding = EditItemViewBinding.bind(itemView);
+        editItemViewBinding.setViewModel(editItemViewModel);
+        TextViewUtil.setEllipsizedForView(editItemViewBinding.tagKey);
     }
+}
 }
