@@ -1,15 +1,10 @@
 package com.invisibleteam.goinvisible.mvvm.edition;
 
-interface EditMenuViewCallback {
-    void showRejectChangesDialog();
+public interface EditMenuViewCallback extends EditTagsTabletCallback{
 
     void navigateBack();
 
     void navigateChangedImagesScreen();
-
-    void showTagsSuccessfullyUpdatedMessage();
-
-    void showTagsUpdateFailureMessage();
 
     /**
      * Change view from edit mode to default

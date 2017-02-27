@@ -9,6 +9,7 @@ import android.support.media.ExifInterface;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -23,7 +24,7 @@ import com.invisibleteam.goinvisible.model.ImageDetails;
 import com.invisibleteam.goinvisible.mvvm.common.CommonEditActivity;
 import com.invisibleteam.goinvisible.mvvm.edition.EditActivity;
 import com.invisibleteam.goinvisible.mvvm.edition.EditTagCallback;
-import com.invisibleteam.goinvisible.mvvm.edition.EditViewModel;
+import com.invisibleteam.goinvisible.mvvm.edition.EditTagsTabletCallback;
 import com.invisibleteam.goinvisible.mvvm.edition.TagsManager;
 import com.invisibleteam.goinvisible.mvvm.settings.SettingsActivity;
 
@@ -32,13 +33,14 @@ import java.io.IOException;
 import javax.annotation.Nullable;
 
 public class ImagesActivity extends CommonEditActivity implements PhoneImagesViewCallback, TabletImagesViewCallback,
-        EditTagCallback {
+        EditTagCallback, EditTagsTabletCallback {
 
+    private static final String TAG = ImagesActivity.class.getSimpleName();
     private Snackbar snackbar;
     private SwipeRefreshLayout refreshLayout;
     private
     @Nullable
-    EditViewModel editViewModel;
+    TabletEditViewModel editViewModel;
 
     public static Intent buildIntent(Context context) {
         return new Intent(context, ImagesActivity.class);
@@ -113,7 +115,7 @@ public class ImagesActivity extends CommonEditActivity implements PhoneImagesVie
         ImagesViewBinding imagesViewBinding = ImagesViewBinding.bind(imagesViewGroup);
 
         EditViewTabletBinding editViewTabletBinding = EditViewTabletBinding.bind(editViewGroup);
-        editViewModel = new EditViewModel(editViewTabletBinding.editCompoundRecyclerView);
+        editViewModel = new TabletEditViewModel(editViewTabletBinding.editCompoundRecyclerView, this);
         editViewTabletBinding.setViewModel(editViewModel);
 
         ImagesViewModel imagesViewModel = new TabletImagesViewModel(
@@ -175,14 +177,22 @@ public class ImagesActivity extends CommonEditActivity implements PhoneImagesVie
     public void showEditView(ImageDetails imageDetails) {
         if (editViewModel != null) {
             try {
-                editViewModel.setTagsManager(new TagsManager(new ExifInterface(imageDetails.getPath())));
-                editViewModel.updateRecyclerView(
+                editViewModel.initialize(
                         imageDetails,
                         new TagsManager(new ExifInterface(imageDetails.getPath())),
                         this);
             } catch (IOException e) {
-                e.printStackTrace();
+                Log.e(TAG, e.getMessage(), e);
+                //TODO Log crashlitycs
             }
         }
+    }
+
+    @Override
+    protected void onRejectTagsChangesDialogPositive() {
+    }
+
+    @Override
+    public void changeViewToEditMode() {
     }
 }
