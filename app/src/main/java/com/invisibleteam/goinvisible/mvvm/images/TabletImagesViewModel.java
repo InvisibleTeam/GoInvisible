@@ -11,7 +11,7 @@ class TabletImagesViewModel extends ImagesViewModel {
 
     private TabletImagesViewCallback imagesViewCallback;
     private EditCompoundRecyclerView editCompoundRecyclerView;
-    private @Nullable ImageDetails lastChosenImage = null;
+    private @Nullable ImageDetails chosenImage = null;
 
     TabletImagesViewModel(ImagesCompoundRecyclerView imagesCompoundRecyclerView,
                           ImagesProvider imagesProvider,
@@ -24,7 +24,7 @@ class TabletImagesViewModel extends ImagesViewModel {
 
     @Override
     protected void onItemViewClick(ImageDetails imageDetails) {
-        lastChosenImage = imageDetails;
+        chosenImage = imageDetails;
         if (!editCompoundRecyclerView.getChangedTags().isEmpty()) {
             imagesViewCallback.showRejectChangesDialog();
         } else {
@@ -33,8 +33,8 @@ class TabletImagesViewModel extends ImagesViewModel {
     }
 
     void onRejectTagsChangesDialogPositive() {
-        if (lastChosenImage != null) {
-            imagesViewCallback.showEditView(lastChosenImage);
+        if (chosenImage != null) {
+            imagesViewCallback.showEditView(chosenImage);
             imagesViewCallback.changeViewToDefaultMode();
         }
     }
