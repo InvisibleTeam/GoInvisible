@@ -16,7 +16,6 @@ public class EditViewModel implements OnTagActionListener {
     private final EditTagCallback editTagCallback;
     private final EditCompoundRecyclerView editCompoundRecyclerView;
     private TagsManager manager;
-    private EditTagsTabletCallback editTagsTabletCallback;
 
     EditViewModel(String title,
                   String imageUrl,
@@ -116,14 +115,6 @@ public class EditViewModel implements OnTagActionListener {
 
     public void setManager(TagsManager manager) {
         this.manager = manager;
-    }
-
-    public EditTagsTabletCallback getEditTagsTabletCallback() {
-        return editTagsTabletCallback;
-    }
-
-    public void setEditTagsTabletCallback(EditTagsTabletCallback editTagsTabletCallback) {
-        this.editTagsTabletCallback = editTagsTabletCallback;
     }
 
 }
