@@ -1,5 +1,6 @@
 package com.invisibleteam.goinvisible.mvvm.edition.dialog;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.databinding.DataBindingUtil;
@@ -11,7 +12,6 @@ import com.invisibleteam.goinvisible.databinding.TextDialogBinding;
 import com.invisibleteam.goinvisible.model.InputType;
 import com.invisibleteam.goinvisible.model.Tag;
 import com.invisibleteam.goinvisible.model.TagType;
-import com.invisibleteam.goinvisible.mvvm.edition.Activity;
 import com.invisibleteam.goinvisible.mvvm.edition.EditViewModel;
 import com.invisibleteam.goinvisible.mvvm.edition.OnTagActionListener;
 

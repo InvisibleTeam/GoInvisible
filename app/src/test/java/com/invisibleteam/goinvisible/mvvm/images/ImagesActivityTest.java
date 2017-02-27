@@ -12,7 +12,7 @@ import android.view.MenuItem;
 import com.invisibleteam.goinvisible.BuildConfig;
 import com.invisibleteam.goinvisible.R;
 import com.invisibleteam.goinvisible.model.ImageDetails;
-import com.invisibleteam.goinvisible.mvvm.edition.Activity;
+import com.invisibleteam.goinvisible.mvvm.edition.EditActivity;
 import com.invisibleteam.goinvisible.mvvm.settings.SettingsActivity;
 
 import org.junit.Before;
@@ -64,7 +64,7 @@ public class ImagesActivityTest {
         assertNotNull(editActivityImageDetails);
         assertEquals("ImagePath", editActivityImageDetails.getPath());
         assertEquals("ImageName", editActivityImageDetails.getName());
-        assertEquals(new ComponentName(activity, Activity.class), editActivityIntent.getComponent());
+        assertEquals(new ComponentName(activity, EditActivity.class), editActivityIntent.getComponent());
     }
 
     @Test
@@ -118,7 +118,7 @@ public class ImagesActivityTest {
         //Then
         Intent startedIntent = shadowOf(activity).getNextStartedActivity();
         ShadowIntent shadowIntent = shadowOf(startedIntent);
-        assertEquals(Activity.class, shadowIntent.getIntentClass());
+        assertEquals(EditActivity.class, shadowIntent.getIntentClass());
     }
 
     @Test

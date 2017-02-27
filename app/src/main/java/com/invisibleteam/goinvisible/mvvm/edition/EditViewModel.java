@@ -85,7 +85,6 @@ public class EditViewModel implements OnTagActionListener {
 
     @Override
     public void onTagsUpdated() {
-        editTagCallback.changeViewToEditMode();
     }
 
     @Override
