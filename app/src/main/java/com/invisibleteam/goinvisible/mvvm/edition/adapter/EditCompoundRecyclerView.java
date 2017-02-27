@@ -24,22 +24,20 @@ public class EditCompoundRecyclerView extends CompoundRecyclerView<Tag, EditItem
     }
 
     @Override
-    public void updateResults(List<Tag> tags) {
-        itemAdapter.updateTagList(tags);
-        itemAdapter.notifyDataSetChanged();
+    public boolean updateResults(List<Tag> tags) {
+        return itemAdapter.updateTagList(tags);
     }
 
     public void prepareTagsList(List<Tag> tags) {
         itemAdapter.prepareTagsList(tags);
-        itemAdapter.notifyDataSetChanged();
     }
 
     public void setOnTagActionListener(OnTagActionListener listener) {
         itemAdapter.setOnTagActionListener(listener);
     }
 
-    public void updateTag(Tag tag) {
-        itemAdapter.updateTag(tag);
+    public boolean updateTag(Tag tag) {
+        return itemAdapter.updateTag(tag);
     }
 
     @VisibleForTesting
@@ -51,11 +49,7 @@ public class EditCompoundRecyclerView extends CompoundRecyclerView<Tag, EditItem
         return itemAdapter.getChangedTags();
     }
 
-    public List<Tag> getAllTags() {
-        return itemAdapter.getAllTags();
-    }
-
-    public void updateTagListAfterChanges(List<Tag> tags) {
-        itemAdapter.updateBaseTagList(tags);
+    public void updateTagListAfterChanges() {
+        itemAdapter.resetBaseTags();
     }
 }

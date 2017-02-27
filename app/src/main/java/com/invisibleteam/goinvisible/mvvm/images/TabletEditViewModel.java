@@ -33,7 +33,7 @@ public class TabletEditViewModel extends EditViewModel {
 
     public void onApproveChanges() {
         if (saveTags()) {
-            getEditCompoundRecyclerView().updateTagListAfterChanges(getManager().getAllTags());
+            getEditCompoundRecyclerView().updateTagListAfterChanges();
             isInEditMode.set(!getEditCompoundRecyclerView().getChangedTags().isEmpty());
             getEditTagsTabletCallback().showTagsSuccessfullyUpdatedMessage();
         } else {

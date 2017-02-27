@@ -39,7 +39,9 @@ public class EditViewModel implements OnTagActionListener {
 
     private void initRecyclerView(List<Tag> tags) {
         editCompoundRecyclerView.setOnTagActionListener(this);
-        editCompoundRecyclerView.updateResults(tags);
+        if (editCompoundRecyclerView.updateResults(tags)) {
+            onTagsUpdated();
+        }
     }
 
     @Override
@@ -75,12 +77,16 @@ public class EditViewModel implements OnTagActionListener {
 
     @Override
     public void onEditEnded(Tag tag) {
-        editCompoundRecyclerView.updateTag(tag);
+        if (editCompoundRecyclerView.updateTag(tag)) {
+            onTagsUpdated();
+        }
     }
 
     @Override
     public void onEditEnded(List<Tag> tagsList) {
-        editCompoundRecyclerView.updateResults(tagsList);
+        if (editCompoundRecyclerView.updateResults(tagsList)) {
+            onTagsUpdated();
+        }
     }
 
     @Override
