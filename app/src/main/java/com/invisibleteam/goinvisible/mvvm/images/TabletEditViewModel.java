@@ -26,18 +26,18 @@ public class TabletEditViewModel extends EditViewModel {
         getTitle().set(imageDetails.getName());
         getImageUrl().set(imageDetails.getPath());
         setManager(manager);
-        setEditTagsTabletCallback(callback);
         getEditCompoundRecyclerView().setOnTagActionListener(this);
         getEditCompoundRecyclerView().prepareTagsList(manager.getAllTags());
+        editTagsTabletCallback = callback;
     }
 
     public void onApproveChanges() {
         if (saveTags()) {
             getEditCompoundRecyclerView().updateTagListAfterChanges();
             isInEditMode.set(!getEditCompoundRecyclerView().getChangedTags().isEmpty());
-            getEditTagsTabletCallback().showTagsSuccessfullyUpdatedMessage();
+            editTagsTabletCallback.showTagsSuccessfullyUpdatedMessage();
         } else {
-            getEditTagsTabletCallback().showTagsUpdateFailureMessage();
+            editTagsTabletCallback.showTagsUpdateFailureMessage();
         }
     }
 
