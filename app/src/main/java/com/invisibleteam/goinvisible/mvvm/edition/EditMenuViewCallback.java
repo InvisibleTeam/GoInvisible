@@ -1,6 +1,6 @@
 package com.invisibleteam.goinvisible.mvvm.edition;
 
-public interface EditMenuViewCallback extends EditTagsTabletCallback{
+public interface EditMenuViewCallback extends EditTagsTabletCallback, RejectEditionChangesCallback{
 
     void navigateBack();
 

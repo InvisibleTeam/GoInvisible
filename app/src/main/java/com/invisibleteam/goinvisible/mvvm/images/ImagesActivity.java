@@ -25,6 +25,7 @@ import com.invisibleteam.goinvisible.mvvm.common.CommonEditActivity;
 import com.invisibleteam.goinvisible.mvvm.edition.EditActivity;
 import com.invisibleteam.goinvisible.mvvm.edition.EditTagCallback;
 import com.invisibleteam.goinvisible.mvvm.edition.EditTagsTabletCallback;
+import com.invisibleteam.goinvisible.mvvm.edition.RejectEditionChangesCallback;
 import com.invisibleteam.goinvisible.mvvm.edition.TagsManager;
 import com.invisibleteam.goinvisible.mvvm.settings.SettingsActivity;
 
@@ -33,7 +34,7 @@ import java.io.IOException;
 import javax.annotation.Nullable;
 
 public class ImagesActivity extends CommonEditActivity implements PhoneImagesViewCallback, TabletImagesViewCallback,
-        EditTagCallback, EditTagsTabletCallback {
+        EditTagCallback, EditTagsTabletCallback, RejectEditionChangesCallback {
 
     private static final String TAG = ImagesActivity.class.getSimpleName();
     private Snackbar snackbar;
@@ -41,6 +42,7 @@ public class ImagesActivity extends CommonEditActivity implements PhoneImagesVie
     private
     @Nullable
     TabletEditViewModel editViewModel;
+    private TabletImagesViewModel imagesViewModel;
 
     public static Intent buildIntent(Context context) {
         return new Intent(context, ImagesActivity.class);
@@ -111,20 +113,21 @@ public class ImagesActivity extends CommonEditActivity implements PhoneImagesVie
         ViewGroup viewGroup = (ViewGroup) LayoutInflater.from(this).inflate(R.layout.activity_images_tablet, null);
         setContentView(viewGroup);
 
+        ViewGroup editViewGroup = (ViewGroup) viewGroup.findViewById(R.id.edit_group);
+        EditViewTabletBinding editViewTabletBinding = EditViewTabletBinding.bind(editViewGroup);
+        editViewModel = new TabletEditViewModel(editViewTabletBinding.editCompoundRecyclerView, this);
+        editViewTabletBinding.setViewModel(editViewModel);
+
         ViewGroup imagesViewGroup = (ViewGroup) viewGroup.findViewById(R.id.images_group);
         ImagesViewBinding imagesViewBinding = ImagesViewBinding.bind(imagesViewGroup);
         ImagesViewModel imagesViewModel = new TabletImagesViewModel(
                 imagesViewBinding.imagesCompoundRecyclerView,
                 new ImagesProvider(getContentResolver()),
-                this);
+                this,
+                editViewTabletBinding.editCompoundRecyclerView);
         imagesViewBinding.setViewModel(imagesViewModel);
 
         createRefreshLayout(imagesViewBinding, imagesViewModel);
-
-        ViewGroup editViewGroup = (ViewGroup) viewGroup.findViewById(R.id.edit_group);
-        EditViewTabletBinding editViewTabletBinding = EditViewTabletBinding.bind(editViewGroup);
-        editViewModel = new TabletEditViewModel(editViewTabletBinding.editCompoundRecyclerView, this);
-        editViewTabletBinding.setViewModel(editViewModel);
 
         EditActivityHelper editActivityHelper = new EditActivityHelper(this);
         setEditActivityHelper(editActivityHelper);
@@ -190,10 +193,15 @@ public class ImagesActivity extends CommonEditActivity implements PhoneImagesVie
     }
 
     @Override
-    protected void onRejectTagsChangesDialogPositive() {
+    public void changeViewToDefaultMode() {
+        if (editViewModel != null) {
+            editViewModel.changeViewToDefaultMode();
+        }
+        //onElse TODO Log crashlitycs
     }
 
     @Override
-    public void changeViewToEditMode() {
+    protected void onRejectTagsChangesDialogPositive() {
+        imagesViewModel.onRejectTagsChangesDialogPositive();
     }
 }
