@@ -1,34 +1,53 @@
 package com.invisibleteam.goinvisible.mvvm.images;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
-import android.databinding.DataBindingUtil;
 import android.support.annotation.VisibleForTesting;
 import android.support.design.widget.Snackbar;
+import android.support.media.ExifInterface;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.Toolbar;
+import android.util.DisplayMetrics;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.ViewGroup;
 
 import com.invisibleteam.goinvisible.R;
-import com.invisibleteam.goinvisible.databinding.ActivityImagesBinding;
+import com.invisibleteam.goinvisible.databinding.EditViewTabletBinding;
+import com.invisibleteam.goinvisible.databinding.ImagesViewBinding;
+import com.invisibleteam.goinvisible.helper.EditActivityHelper;
 import com.invisibleteam.goinvisible.model.ImageDetails;
-import com.invisibleteam.goinvisible.mvvm.common.CommonActivity;
+import com.invisibleteam.goinvisible.mvvm.common.CommonEditActivity;
 import com.invisibleteam.goinvisible.mvvm.edition.EditActivity;
-import com.invisibleteam.goinvisible.mvvm.images.adapter.ImagesCompoundRecyclerView;
+import com.invisibleteam.goinvisible.mvvm.edition.EditTagCallback;
+import com.invisibleteam.goinvisible.mvvm.edition.EditTagsTabletCallback;
+import com.invisibleteam.goinvisible.mvvm.edition.TagsManager;
 import com.invisibleteam.goinvisible.mvvm.settings.SettingsActivity;
 
-public class ImagesActivity extends CommonActivity implements ImagesViewCallback {
+import java.io.IOException;
 
+import javax.annotation.Nullable;
+
+public class ImagesActivity extends CommonEditActivity implements PhoneImagesViewCallback, TabletImagesViewCallback,
+        EditTagCallback, EditTagsTabletCallback {
+
+    private static final String TAG = ImagesActivity.class.getSimpleName();
     private Snackbar snackbar;
     private SwipeRefreshLayout refreshLayout;
+    private
+    @Nullable
+    TabletEditViewModel editViewModel;
 
     public static Intent buildIntent(Context context) {
         return new Intent(context, ImagesActivity.class);
     }
 
     @Override
-    public void navigateToEdit(ImageDetails imageDetails) {
+    public void openEditScreen(ImageDetails imageDetails) {
         Intent intent = EditActivity.buildIntent(this, imageDetails);
         startActivity(intent);
     }
@@ -56,20 +75,64 @@ public class ImagesActivity extends CommonActivity implements ImagesViewCallback
 
     @Override
     public void prepareView() {
-        ActivityImagesBinding activityImagesBinding = DataBindingUtil.setContentView(this, R.layout.activity_images);
-        setSupportActionBar(activityImagesBinding.mainToolbar);
+        DisplayMetrics metrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(metrics);
 
-        refreshLayout = activityImagesBinding.swipeRefreshLayout;
+        float yInches = metrics.heightPixels / metrics.ydpi;
+        float xInches = metrics.widthPixels / metrics.xdpi;
+        double diagonalInches = Math.sqrt(xInches * xInches + yInches * yInches);
 
-        ImagesCompoundRecyclerView imagesCompoundRecyclerView =
-                (ImagesCompoundRecyclerView) findViewById(R.id.images_compound_recycler_view);
+        if (diagonalInches >= 6.5) {
+            createTabletBinding();
+        } else {
+            createPhoneBinding();
+        }
+        Toolbar toolbar = (Toolbar) findViewById(R.id.main_toolbar);
+        setSupportActionBar(toolbar);
+    }
 
-        ImagesViewModel imagesViewModel = new ImagesViewModel(
-                imagesCompoundRecyclerView,
+
+    private void createPhoneBinding() {
+        @SuppressLint("InflateParams")
+        ViewGroup viewGroup = (ViewGroup) LayoutInflater.from(this).inflate(R.layout.activity_images_phone, null);
+        setContentView(viewGroup);
+        ViewGroup imagesViewGroup = (ViewGroup) viewGroup.findViewById(R.id.images_group);
+        ImagesViewBinding imagesViewBinding = ImagesViewBinding.bind(imagesViewGroup);
+
+        ImagesViewModel imagesViewModel = new PhoneImagesViewModel(
+                imagesViewBinding.imagesCompoundRecyclerView,
                 new ImagesProvider(getContentResolver()),
                 this);
-        activityImagesBinding.setViewModel(imagesViewModel);
-        activityImagesBinding.swipeRefreshLayout.setOnRefreshListener(imagesViewModel::updateImages);
+        imagesViewBinding.setViewModel(imagesViewModel);
+        createRefreshLayout(imagesViewBinding, imagesViewModel);
+    }
+
+    private void createTabletBinding() {
+        ViewGroup viewGroup = (ViewGroup) LayoutInflater.from(this).inflate(R.layout.activity_images_tablet, null);
+        setContentView(viewGroup);
+        ViewGroup imagesViewGroup = (ViewGroup) viewGroup.findViewById(R.id.images_group);
+        ViewGroup editViewGroup = (ViewGroup) viewGroup.findViewById(R.id.edit_group);
+        ImagesViewBinding imagesViewBinding = ImagesViewBinding.bind(imagesViewGroup);
+
+        EditViewTabletBinding editViewTabletBinding = EditViewTabletBinding.bind(editViewGroup);
+        editViewModel = new TabletEditViewModel(editViewTabletBinding.editCompoundRecyclerView, this);
+        editViewTabletBinding.setViewModel(editViewModel);
+
+        ImagesViewModel imagesViewModel = new TabletImagesViewModel(
+                imagesViewBinding.imagesCompoundRecyclerView,
+                new ImagesProvider(getContentResolver()),
+                this);
+        imagesViewBinding.setViewModel(imagesViewModel);
+        createRefreshLayout(imagesViewBinding, imagesViewModel);
+
+        EditActivityHelper editActivityHelper = new EditActivityHelper(this);
+        setEditActivityHelper(editActivityHelper);
+        setEditViewModel(editViewModel);
+    }
+
+    private void createRefreshLayout(ImagesViewBinding viewBinding, ImagesViewModel viewModel) {
+        refreshLayout = viewBinding.swipeRefreshLayout;
+        viewBinding.swipeRefreshLayout.setOnRefreshListener(viewModel::updateImages);
     }
 
     @Override
@@ -108,5 +171,28 @@ public class ImagesActivity extends CommonActivity implements ImagesViewCallback
     @VisibleForTesting
     public Snackbar getSnackbar() {
         return snackbar;
+    }
+
+    @Override
+    public void showEditView(ImageDetails imageDetails) {
+        if (editViewModel != null) {
+            try {
+                editViewModel.initialize(
+                        imageDetails,
+                        new TagsManager(new ExifInterface(imageDetails.getPath())),
+                        this);
+            } catch (IOException e) {
+                Log.e(TAG, e.getMessage(), e);
+                //TODO Log crashlitycs
+            }
+        }
+    }
+
+    @Override
+    protected void onRejectTagsChangesDialogPositive() {
+    }
+
+    @Override
+    public void changeViewToEditMode() {
     }
 }

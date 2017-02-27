@@ -59,7 +59,7 @@ public class TagsManager {
         }
     }
 
-    boolean editTags(List<Tag> tags) {
+    public boolean editTags(List<Tag> tags) {
         if (tags.isEmpty()) {
             return false;
         }

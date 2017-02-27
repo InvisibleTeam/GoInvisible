@@ -1,6 +1,8 @@
 package com.invisibleteam.goinvisible.mvvm.edition;
 
 
+import android.support.media.ExifInterface;
+
 import com.invisibleteam.goinvisible.model.Tag;
 import com.invisibleteam.goinvisible.mvvm.edition.adapter.EditCompoundRecyclerView;
 import com.invisibleteam.goinvisible.util.ObservableString;
@@ -11,36 +13,33 @@ public class EditViewModel implements OnTagActionListener {
 
     private final ObservableString title = new ObservableString("");
     private final ObservableString imageUrl = new ObservableString("");
-
+    private final EditTagCallback editTagCallback;
     private final EditCompoundRecyclerView editCompoundRecyclerView;
-    private final TagsManager manager;
-    private final EditTagListener listener;
+    private TagsManager manager;
+    private EditTagsTabletCallback editTagsTabletCallback;
 
     EditViewModel(String title,
                   String imageUrl,
                   EditCompoundRecyclerView editCompoundRecyclerView,
                   TagsManager manager,
-                  EditTagListener listener) {
+                  EditTagCallback editTagCallback) {
         this.title.set(title);
         this.imageUrl.set(imageUrl);
         this.editCompoundRecyclerView = editCompoundRecyclerView;
         this.manager = manager;
-        this.listener = listener;
+        this.editTagCallback = editTagCallback;
 
-        initRecyclerView();
+        initRecyclerView(manager.getAllTags());
     }
 
-    private void initRecyclerView() {
+    public EditViewModel(EditCompoundRecyclerView editCompoundRecyclerView, EditTagCallback callback) {
+        this.editCompoundRecyclerView = editCompoundRecyclerView;
+        this.editTagCallback = callback;
+    }
+
+    private void initRecyclerView(List<Tag> tags) {
         editCompoundRecyclerView.setOnTagActionListener(this);
-        editCompoundRecyclerView.updateResults(manager.getAllTags());
-    }
-
-    public ObservableString getTitle() {
-        return title;
-    }
-
-    public ObservableString getImageUrl() {
-        return imageUrl;
+        editCompoundRecyclerView.updateResults(tags);
     }
 
     @Override
@@ -57,7 +56,21 @@ public class EditViewModel implements OnTagActionListener {
 
     @Override
     public void onEditStarted(Tag tag) {
-        listener.openTagEditionView(tag);
+        if (ExifInterface.TAG_GPS_LATITUDE.equals(tag.getKey())) {
+            editTagCallback.openPlacePickerView(tag);
+            return;
+        }
+
+        switch (tag.getTagType().getInputType()) {
+            case UNMODIFIABLE:
+                editTagCallback.showUnmodifiableTagMessage();
+                break;
+            case INDEFINITE:
+                editTagCallback.showTagEditionErrorMessage();
+                break;
+            default:
+                editTagCallback.showTagEditionView(tag);
+        }
     }
 
     @Override
@@ -72,11 +85,40 @@ public class EditViewModel implements OnTagActionListener {
 
     @Override
     public void onTagsUpdated() {
-        listener.onTagsChanged();
+        editTagCallback.changeViewToEditMode();
     }
 
     @Override
     public void onEditError() {
-        listener.onEditError();
+        editTagCallback.showTagEditionErrorMessage();
     }
+
+    public ObservableString getTitle() {
+        return title;
+    }
+
+    public ObservableString getImageUrl() {
+        return imageUrl;
+    }
+
+    public EditCompoundRecyclerView getEditCompoundRecyclerView() {
+        return editCompoundRecyclerView;
+    }
+
+    public TagsManager getManager() {
+        return manager;
+    }
+
+    public void setManager(TagsManager manager) {
+        this.manager = manager;
+    }
+
+    public EditTagsTabletCallback getEditTagsTabletCallback() {
+        return editTagsTabletCallback;
+    }
+
+    public void setEditTagsTabletCallback(EditTagsTabletCallback editTagsTabletCallback) {
+        this.editTagsTabletCallback = editTagsTabletCallback;
+    }
+
 }
