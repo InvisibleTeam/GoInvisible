@@ -99,10 +99,6 @@ class EditItemAdapter extends RecyclerView.Adapter<EditItemAdapter.ViewHolder> {
         return changedTags;
     }
 
-    List<Tag> getAllTags() {
-        return tagsList;
-    }
-
     private boolean isTagChanged(Tag baseTag, Tag tag) {
         if (tag.getValue() == null) {
             return false;
