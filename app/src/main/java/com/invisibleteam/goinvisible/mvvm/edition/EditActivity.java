@@ -25,7 +25,7 @@ import java.io.IOException;
 
 import javax.annotation.Nullable;
 
-public class EditActivity extends CommonEditActivity implements EditTagCallback, EditMenuViewCallback {
+public class EditActivity extends CommonEditActivity implements PhoneEditTagCallback, EditMenuViewCallback {
 
     public static Intent buildIntent(Context context, ImageDetails imageDetails) {
         Bundle bundle = new Bundle();
@@ -142,7 +142,7 @@ public class EditActivity extends CommonEditActivity implements EditTagCallback,
         try {
             TagsManager tagsManager = new TagsManager(getExifInterface());
 
-            EditViewModel editViewModel = new EditViewModel(
+            PhoneEditViewModel editViewModel = new PhoneEditViewModel(
                     imageDetails.getName(),
                     imageDetails.getPath(),
                     editViewBinding.editCompoundRecyclerView,

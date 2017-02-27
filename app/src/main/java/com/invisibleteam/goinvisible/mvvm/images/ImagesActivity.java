@@ -203,9 +203,4 @@ public class ImagesActivity extends CommonEditActivity implements PhoneImagesVie
     protected void onRejectTagsChangesDialogPositive() {
         imagesViewModel.onRejectTagsChangesDialogPositive();
     }
-
-    @Override
-    public void changeViewToEditMode() {
-        //View is already changed by TabletEditViewModel
-    }
 }
