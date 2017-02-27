@@ -41,7 +41,7 @@ class EditMenuViewModel {
 
     void onApproveChangesClick() {
         if (saveTags()) {
-            editCompoundRecyclerView.updateTagListAfterChanges(tagsManager.getAllTags());
+            editCompoundRecyclerView.updateTagListAfterChanges();
             editMenuViewCallback.showTagsSuccessfullyUpdatedMessage();
             editMenuViewCallback.changeViewToDefaultMode();
         } else {

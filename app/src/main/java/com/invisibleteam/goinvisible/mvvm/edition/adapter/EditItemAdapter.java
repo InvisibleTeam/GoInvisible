@@ -82,6 +82,10 @@ class EditItemAdapter extends RecyclerView.Adapter<EditItemAdapter.ViewHolder> {
         }
     }
 
+    void resetBaseTags() {
+        updateBaseTagList(tagsList);
+    }
+
     List<Tag> getChangedTags() {
         List<Tag> changedTags = new ArrayList<>();
         for (Tag tag : tagsList) {

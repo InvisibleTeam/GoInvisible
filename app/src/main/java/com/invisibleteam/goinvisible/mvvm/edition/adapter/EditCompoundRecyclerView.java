@@ -49,11 +49,7 @@ public class EditCompoundRecyclerView extends CompoundRecyclerView<Tag, EditItem
         return itemAdapter.getChangedTags();
     }
 
-    public List<Tag> getAllTags() {
-        return itemAdapter.getAllTags();
-    }
-
-    public void updateTagListAfterChanges(List<Tag> tags) {
-        itemAdapter.updateBaseTagList(tags);
+    public void updateTagListAfterChanges() {
+        itemAdapter.resetBaseTags();
     }
 }
