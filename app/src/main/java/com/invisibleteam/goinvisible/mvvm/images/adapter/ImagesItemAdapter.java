@@ -81,6 +81,7 @@ public class ImagesItemAdapter extends RecyclerView.Adapter<ImagesItemAdapter.Vi
 
     void updateImageList(List<ImageDetails> imageList) {
         this.imageList = imageList;
+        notifyDataSetChanged();
     }
 
     void setOnItemClickListener(OnItemClickListener listener) {

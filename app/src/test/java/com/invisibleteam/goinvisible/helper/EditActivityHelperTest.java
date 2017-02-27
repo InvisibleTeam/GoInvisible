@@ -28,7 +28,7 @@ import static org.mockito.Mockito.spy;
 @Config(constants = BuildConfig.class, sdk = 21)
 public class EditActivityHelperTest {
 
-    private EditActivity editActivity;
+    private EditActivity activity;
     private EditActivityHelper helper;
 
     @Before
@@ -36,12 +36,12 @@ public class EditActivityHelperTest {
         Context context = RuntimeEnvironment.application;
         ImageDetails imageDetails = new ImageDetails("Path", "Name");
         Intent editActivityIntent = EditActivity.buildIntent(context, imageDetails);
-        editActivity = Robolectric
+        activity = Robolectric
                 .buildActivity(EditActivity.class)
                 .withIntent(editActivityIntent)
                 .create()
                 .get();
-        helper = new EditActivityHelper(editActivity);
+        helper = new EditActivityHelper(activity);
         helper = spy(helper);
     }
 
@@ -49,13 +49,13 @@ public class EditActivityHelperTest {
     public void whenShareImageIntentIsBuildWithCorrectImagePath_IntentIsReturned() throws FileNotFoundException {
         //Given
         ImageDetails imageDetails = new ImageDetails("Path", "Name");
-        doReturn("media:content").when(helper).prepareImagePathToShare(imageDetails, editActivity.getContentResolver());
+        doReturn("media:content").when(helper).prepareImagePathToShare(imageDetails, activity.getContentResolver());
         Intent expectedIntent = new Intent(Intent.ACTION_SEND);
         expectedIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse("media:content"));
         expectedIntent.setType("image/jpg");
 
         //When
-        Intent shareIntent = helper.buildShareImageIntent(imageDetails, editActivity.getContentResolver());
+        Intent shareIntent = helper.buildShareImageIntent(imageDetails, activity.getContentResolver());
 
         //Then
         assertThat(shareIntent, is(notNullValue()));
@@ -69,7 +69,7 @@ public class EditActivityHelperTest {
         ImageDetails imageDetails = new ImageDetails("Path", "Name");
 
         //When
-        helper.buildShareImageIntent(imageDetails, editActivity.getContentResolver());
+        helper.buildShareImageIntent(imageDetails, activity.getContentResolver());
     }
 
 }

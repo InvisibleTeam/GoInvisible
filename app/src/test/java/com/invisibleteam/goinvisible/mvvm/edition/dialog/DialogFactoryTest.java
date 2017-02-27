@@ -12,7 +12,6 @@ import com.invisibleteam.goinvisible.databinding.TextDialogBinding;
 import com.invisibleteam.goinvisible.model.InputType;
 import com.invisibleteam.goinvisible.model.Tag;
 import com.invisibleteam.goinvisible.model.TagType;
-import com.invisibleteam.goinvisible.mvvm.edition.EditActivity;
 import com.invisibleteam.goinvisible.mvvm.edition.EditViewModel;
 import com.invisibleteam.goinvisible.mvvm.edition.OnTagActionListener;
 
@@ -50,13 +49,13 @@ import static org.mockito.Mockito.when;
 @Config(constants = BuildConfig.class, sdk = 21)
 public class DialogFactoryTest {
 
-    private Activity activity;
+    private android.app.Activity activity;
     private DialogFragment dialog;
     private DialogFactory dialogFactory;
 
     @Before
     public void setUp() {
-        activity = Robolectric.buildActivity(Activity.class).create().get();
+        activity = Robolectric.buildActivity(android.app.Activity.class).create().get();
         dialog = EditDialog.newInstance(activity, createTag(TEXT_STRING));
         dialog.show(activity.getFragmentManager(), EditDialog.FRAGMENT_TAG);
         dialog = spy(dialog);
@@ -176,7 +175,7 @@ public class DialogFactoryTest {
     public void whenTagWithIndefiniteInputTypeIsPassed_NullDialogIsReturned() {
         //Given
         Tag tag = createTag(INDEFINITE);
-        when(dialog.getActivity()).thenReturn(Mockito.mock(EditActivity.class));
+        when(dialog.getActivity()).thenReturn(Mockito.mock(Activity.class));
         dialogFactory = spy(new DialogFactory(dialog, tag, mock(EditViewModel.class)));
 
         //When
