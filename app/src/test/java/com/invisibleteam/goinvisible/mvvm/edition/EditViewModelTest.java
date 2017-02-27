@@ -2,6 +2,7 @@ package com.invisibleteam.goinvisible.mvvm.edition;
 
 import com.invisibleteam.goinvisible.model.InputType;
 import com.invisibleteam.goinvisible.model.Tag;
+import com.invisibleteam.goinvisible.model.TagGroupType;
 import com.invisibleteam.goinvisible.model.TagType;
 import com.invisibleteam.goinvisible.mvvm.edition.adapter.EditCompoundRecyclerView;
 
@@ -21,7 +22,7 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class EditViewModelTest {
 
-    private final Tag tag = new Tag("key", "value", TagType.build(InputType.DATE_STRING));
+    private final Tag tag = new Tag("key", "value", TagType.build(InputType.DATE_STRING), TagGroupType.ADVANCED);
 
     @Mock
     private EditCompoundRecyclerView editCompoundRecyclerView;

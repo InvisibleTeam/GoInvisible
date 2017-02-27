@@ -13,6 +13,7 @@ import com.invisibleteam.goinvisible.helper.EditActivityHelper;
 import com.invisibleteam.goinvisible.model.ImageDetails;
 import com.invisibleteam.goinvisible.model.InputType;
 import com.invisibleteam.goinvisible.model.Tag;
+import com.invisibleteam.goinvisible.model.TagGroupType;
 import com.invisibleteam.goinvisible.model.TagType;
 import com.invisibleteam.goinvisible.mvvm.edition.adapter.EditCompoundRecyclerView;
 
@@ -287,6 +288,6 @@ public class EditActivityTest {
     }
 
     private Tag createTag(String key, String value) {
-        return new Tag(key, value, TagType.build(InputType.DATETIME_STRING));
+        return new Tag(key, value, TagType.build(InputType.DATETIME_STRING), TagGroupType.ADVANCED);
     }
 }
