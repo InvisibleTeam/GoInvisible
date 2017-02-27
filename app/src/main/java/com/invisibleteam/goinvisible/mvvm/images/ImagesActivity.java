@@ -42,7 +42,7 @@ public class ImagesActivity extends CommonEditActivity implements PhoneImagesVie
     private
     @Nullable
     TabletEditViewModel editViewModel;
-    private TabletImagesViewModel imagesViewModel;
+    private TabletImagesViewModel tabletImagesViewModel;
 
     public static Intent buildIntent(Context context) {
         return new Intent(context, ImagesActivity.class);
@@ -120,14 +120,14 @@ public class ImagesActivity extends CommonEditActivity implements PhoneImagesVie
 
         ViewGroup imagesViewGroup = (ViewGroup) viewGroup.findViewById(R.id.images_group);
         ImagesViewBinding imagesViewBinding = ImagesViewBinding.bind(imagesViewGroup);
-        ImagesViewModel imagesViewModel = new TabletImagesViewModel(
+        tabletImagesViewModel = new TabletImagesViewModel(
                 imagesViewBinding.imagesCompoundRecyclerView,
                 new ImagesProvider(getContentResolver()),
                 this,
                 editViewTabletBinding.editCompoundRecyclerView);
-        imagesViewBinding.setViewModel(imagesViewModel);
+        imagesViewBinding.setViewModel(tabletImagesViewModel);
 
-        createRefreshLayout(imagesViewBinding, imagesViewModel);
+        createRefreshLayout(imagesViewBinding, tabletImagesViewModel);
 
         EditActivityHelper editActivityHelper = new EditActivityHelper(this);
         setEditActivityHelper(editActivityHelper);
@@ -202,6 +202,6 @@ public class ImagesActivity extends CommonEditActivity implements PhoneImagesVie
 
     @Override
     protected void onRejectTagsChangesDialogPositive() {
-        imagesViewModel.onRejectTagsChangesDialogPositive();
+        tabletImagesViewModel.onRejectTagsChangesDialogPositive();
     }
 }
