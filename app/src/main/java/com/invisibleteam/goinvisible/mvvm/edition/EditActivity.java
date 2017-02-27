@@ -6,7 +6,6 @@ import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.VisibleForTesting;
-import android.support.design.widget.Snackbar;
 import android.support.media.ExifInterface;
 import android.support.v7.app.ActionBar;
 import android.util.Log;
