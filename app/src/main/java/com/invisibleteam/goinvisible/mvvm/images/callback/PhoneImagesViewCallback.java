@@ -1,5 +1,4 @@
-package com.invisibleteam.goinvisible.mvvm.images;
-
+package com.invisibleteam.goinvisible.mvvm.images.callback;
 
 import com.invisibleteam.goinvisible.model.ImageDetails;
 

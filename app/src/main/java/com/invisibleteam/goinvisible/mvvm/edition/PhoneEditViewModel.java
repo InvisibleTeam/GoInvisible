@@ -1,7 +1,7 @@
 package com.invisibleteam.goinvisible.mvvm.edition;
 
-
 import com.invisibleteam.goinvisible.mvvm.edition.adapter.EditCompoundRecyclerView;
+import com.invisibleteam.goinvisible.mvvm.edition.callback.PhoneEditTagCallback;
 
 public class PhoneEditViewModel extends EditViewModel {
 

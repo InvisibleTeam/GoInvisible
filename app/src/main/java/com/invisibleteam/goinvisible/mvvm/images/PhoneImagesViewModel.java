@@ -3,6 +3,7 @@ package com.invisibleteam.goinvisible.mvvm.images;
 
 import com.invisibleteam.goinvisible.model.ImageDetails;
 import com.invisibleteam.goinvisible.mvvm.images.adapter.ImagesCompoundRecyclerView;
+import com.invisibleteam.goinvisible.mvvm.images.callback.PhoneImagesViewCallback;
 
 public class PhoneImagesViewModel extends ImagesViewModel {
 

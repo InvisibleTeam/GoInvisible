@@ -1,8 +1,8 @@
-package com.invisibleteam.goinvisible.mvvm.images;
+package com.invisibleteam.goinvisible.mvvm.images.callback;
 
 import android.support.annotation.StringRes;
 
-interface ImagesViewCallback {
+public interface ImagesViewCallback {
     void prepareSnackBar(@StringRes int messageResId);
 
     void showSnackBar();
