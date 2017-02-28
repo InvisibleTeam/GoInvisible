@@ -73,80 +73,80 @@ public class TagsManagerTest {
     public void whenTimestampTagIsCleared_DefaultValueIsReturned() throws IOException {
         //When
         tagsManager.clearTag(new Tag(TAG_GPS_TIMESTAMP, "13:53:20", TagType.build(InputType.TIMESTAMP_STRING), TagGroupType.ADVANCED));
+        exifInterface.saveAttributes();
 
         //Then
         verify(exifInterface).setAttribute(TAG_GPS_TIMESTAMP, "00:00:00");
-        verify(exifInterface).saveAttributes();
     }
 
     @Test
     public void whenStringTagIsCleared_DefaultValueIsReturned() throws IOException {
         //When
         tagsManager.clearTag(new Tag(TAG_MAKE, "text", TagType.build(InputType.TEXT_STRING), TagGroupType.ADVANCED));
+        exifInterface.saveAttributes();
 
         //Then
         verify(exifInterface).setAttribute(TAG_MAKE, "");
-        verify(exifInterface).saveAttributes();
     }
 
     @Test
     public void whenIntegerValueTagIsCleared_DefaultValueIsReturned() throws IOException {
         //When
         tagsManager.clearTag(new Tag(TAG_FLASH, "15", TagType.build(InputType.VALUE_INTEGER), TagGroupType.ADVANCED));
+        exifInterface.saveAttributes();
 
         //Then
         verify(exifInterface).setAttribute(TAG_FLASH, "0");
-        verify(exifInterface).saveAttributes();
     }
 
     @Test
     public void whenDoubleValueTagIsCleared_DefaultValueIsReturned() throws IOException {
         //When
         tagsManager.clearTag(new Tag(TAG_EXPOSURE_TIME, "30.5", TagType.build(InputType.VALUE_DOUBLE), TagGroupType.ADVANCED));
+        exifInterface.saveAttributes();
 
         //Then
         verify(exifInterface).setAttribute(TAG_EXPOSURE_TIME, "0.0");
-        verify(exifInterface).saveAttributes();
     }
 
     @Test
     public void whenDateTimeStringTagIsCleared_DefaultValueIsReturned() throws IOException {
         //When
         tagsManager.clearTag(new Tag(TAG_DATETIME, "2015-12-12 12:55:00", TagType.build(InputType.DATETIME_STRING), TagGroupType.ADVANCED));
+        exifInterface.saveAttributes();
 
         //Then
         verify(exifInterface).setAttribute(TAG_DATETIME, "2001-01-01 00:00:00");
-        verify(exifInterface).saveAttributes();
     }
 
     @Test
     public void whenDateStringTagIsCleared_DefaultValueIsReturned() throws IOException {
         //When
         tagsManager.clearTag(new Tag(TAG_GPS_DATESTAMP, "2015-12-12", TagType.build(InputType.DATE_STRING), TagGroupType.ADVANCED));
+        exifInterface.saveAttributes();
 
         //Then
         verify(exifInterface).setAttribute(TAG_GPS_DATESTAMP, "2001-01-01");
-        verify(exifInterface).saveAttributes();
     }
 
     @Test
     public void whenRangedStringTagIsCleared_DefaultValueIsReturned() throws IOException {
         //When
         tagsManager.clearTag(new Tag(TAG_GPS_LATITUDE_REF, "NE", TagType.build(InputType.RANGED_STRING), TagGroupType.ADVANCED));
+        exifInterface.saveAttributes();
 
         //Then
         verify(exifInterface).setAttribute(TAG_GPS_LATITUDE_REF, "0");
-        verify(exifInterface).saveAttributes();
     }
 
     @Test
     public void whenRangedIntegerTagIsCleared_DefaultValueIsReturned() throws IOException {
         //When
         tagsManager.clearTag(new Tag(TAG_WHITE_BALANCE, "1", TagType.build(InputType.RANGED_INTEGER), TagGroupType.ADVANCED));
+        exifInterface.saveAttributes();
 
         //Then
         verify(exifInterface).setAttribute(TAG_WHITE_BALANCE, "0");
-        verify(exifInterface).saveAttributes();
     }
 
     @Test
@@ -160,13 +160,13 @@ public class TagsManagerTest {
 
         //When
         tagsManager.editTags(tagsList);
+        exifInterface.saveAttributes();
 
         //Then
         verify(exifInterface).setAttribute("key1", "value1");
         verify(exifInterface).setAttribute("key2", "value2");
         verify(exifInterface).setAttribute("key3", "value3");
         verify(exifInterface).setAttribute("key4", "value4");
-        verify(exifInterface).saveAttributes();
     }
 
     private Tag createTag(String key, String value) {

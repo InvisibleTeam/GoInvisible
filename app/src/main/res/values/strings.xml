@@ -24,7 +24,7 @@
     <string name="clearing">Clearing</string>
     <string name="periodic_clearing">Periodic clearing</string>
     <string name="enable_periodic_clearing">Periodic clearing service</string>
-    <string name="clearing_service_interval">Clearing service intervalName</string>
+    <string name="clearing_service_interval">Clearing service interval</string>
     <string name="interval_value_day">every day</string>
     <string name="interval_value_week">every week</string>
     <string name="interval_value_month">every month</string>
@@ -139,6 +139,8 @@
     <string name="tag_value_0059">0059</string>
     <string name="tag_value_005D">005D</string>
     <string name="tag_value_005F">005F</string>
+    <string name="positive_message">OK</string>
+    <string name="negative_message">Cancel</string>
 
     //Tag groups names
     <string name="tag_group_name_image_info">Image info</string>
