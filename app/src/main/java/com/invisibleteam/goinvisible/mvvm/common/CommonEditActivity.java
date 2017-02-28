@@ -27,7 +27,11 @@ public abstract class CommonEditActivity extends CommonActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
+        //This is because of nullpointer exception after killing activity by GC
+        if (tag == null) {
+            finish();
+            return;
+        }
         if (requestCode == PLACE_REQUEST_ID && resultCode == android.app.Activity.RESULT_OK) {
             Place place = PlacePicker.getPlace(this, data);
             onNewPlace(place);
@@ -93,7 +97,7 @@ public abstract class CommonEditActivity extends CommonActivity {
 
     protected void showSnackBar(int message) {
         Snackbar.make(
-                this.findViewById(android.R.id.content),
+                findViewById(android.R.id.content),
                 message,
                 Snackbar.LENGTH_LONG).show();
     }
@@ -107,12 +111,10 @@ public abstract class CommonEditActivity extends CommonActivity {
     }
 
     public void showTagsSuccessfullyUpdatedMessage() {
-        Snackbar.make(findViewById(android.R.id.content), R.string.tags_changed_message_successfully, Snackbar.LENGTH_LONG)
-                .show();
+        showSnackBar(R.string.tags_changed_message_successfully);
     }
 
     public void showTagsUpdateFailureMessage() {
-        Snackbar.make(findViewById(android.R.id.content), R.string.tags_changed_message_unsuccessfully, Snackbar.LENGTH_LONG)
-                .show();
+        showSnackBar(R.string.tags_changed_message_unsuccessfully);
     }
 }
