@@ -7,8 +7,9 @@ import android.support.test.uiautomator.UiObject2;
 import android.support.test.uiautomator.UiObjectNotFoundException;
 import android.support.test.uiautomator.Until;
 
+import com.invisibleteam.goinvisible.utilities.UiScrollable2;
+
 import java.util.LinkedHashMap;
-import java.util.List;
 
 import static com.invisibleteam.goinvisible.utilities.Config.GOINVISIBLE_PACKAGE;
 import static com.invisibleteam.goinvisible.utilities.Config.LAUNCH_TIMEOUT;
@@ -27,28 +28,26 @@ public class FileView {
     }
 
     public static LinkedHashMap<String, String> getExifData() throws UiObjectNotFoundException {
-        LinkedHashMap<String, String> result = new LinkedHashMap<>();
+        LinkedHashMap<String, String> searchResult = new LinkedHashMap<>();
+
+        UiScrollable2 exifTagsList = new UiScrollable2(UI_DEVICE.findObject(RECYCLER_VIEW_SELECTOR));
 
         //noinspection SpellCheckingInspection
-        boolean canStillScroll = true;
-        boolean canStillScrollPrevious = true;
-
-        UiObject2 exifTagsList = UI_DEVICE.findObject(RECYCLER_VIEW_SELECTOR);
+        boolean scrollResult = true;
+        boolean scrollResultPrevious;
 
         do {
-            List<UiObject2> visibleUiListElements = exifTagsList.findObjects(VISIBLE_LIST_ITEM_SELECTOR);
-
-            for (UiObject2 uiListElement : visibleUiListElements) {
-                result.put(uiListElement.findObject(TAG_KEY_SELECTOR).getText(), uiListElement.findObject(TAG_VALUE_SELECTOR).getText());
+            for (UiObject2 uiListElement : exifTagsList.getUiObject2().findObjects(VISIBLE_LIST_ITEM_SELECTOR)) {
+                searchResult.put(uiListElement.findObject(TAG_KEY_SELECTOR).getText(), uiListElement.findObject(TAG_VALUE_SELECTOR).getText());
             }
 
-            canStillScrollPrevious = canStillScroll;
-            canStillScroll = canStillScroll && exifTagsList.scroll(Direction.DOWN, 1.0f);
-        } while (canStillScroll || canStillScrollPrevious);
+            scrollResultPrevious = scrollResult;
 
-        do {
-        } while (exifTagsList.scroll(Direction.UP, Float.MAX_VALUE));
+            scrollResult = exifTagsList.scrollPage(Direction.DOWN);
+        } while (scrollResult || scrollResultPrevious);
 
-        return result;
+        exifTagsList.scrollToBound(Direction.UP);
+
+        return searchResult;
     }
 }
