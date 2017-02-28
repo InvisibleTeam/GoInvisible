@@ -2,6 +2,7 @@ package com.invisibleteam.goinvisible.helper;
 
 import com.invisibleteam.goinvisible.model.InputType;
 import com.invisibleteam.goinvisible.model.Tag;
+import com.invisibleteam.goinvisible.model.TagGroupType;
 import com.invisibleteam.goinvisible.model.TagType;
 
 import java.util.ArrayList;
@@ -53,10 +54,10 @@ public class EditItemAdapterHelper {
     }
 
     private void addHeadersToLists() {
-        imageInfoTagList.add(new Tag("", "", TagType.build(InputType.INDEFINITE), IMAGE_INFO)); //todo generate method for this
-        locationInfoTagList.add(new Tag("", "", TagType.build(InputType.INDEFINITE), LOCATION_INFO));
-        deviceInfoTagList.add(new Tag("", "", TagType.build(InputType.INDEFINITE), DEVICE_INFO));
-        advancedInfoTagList.add(new Tag("", "", TagType.build(InputType.INDEFINITE), ADVANCED));
+        imageInfoTagList.add(createTagWithGroupType(IMAGE_INFO));
+        locationInfoTagList.add(createTagWithGroupType(LOCATION_INFO));
+        deviceInfoTagList.add(createTagWithGroupType(DEVICE_INFO));
+        advancedInfoTagList.add(createTagWithGroupType(ADVANCED));
     }
 
     private void clearTagLists() {
@@ -68,5 +69,9 @@ public class EditItemAdapterHelper {
 
     public List<Tag> getTagsList() {
         return tagsList;
+    }
+
+    private Tag createTagWithGroupType(TagGroupType type) {
+        return new Tag("", "", TagType.build(InputType.INDEFINITE), type);
     }
 }
