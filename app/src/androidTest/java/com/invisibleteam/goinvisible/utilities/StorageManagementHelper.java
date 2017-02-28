@@ -64,6 +64,10 @@ public class StorageManagementHelper {
     public static void deleteImagesFromDirectory(String directoryPath) {
         File directory = new File(directoryPath);
 
+        File[] filesList = directory.listFiles();
+
+        if (filesList == null || filesList.length == 0) return;
+
         for (File file : directory.listFiles()) {
             file.delete();
             updateDeviceMediaList(file.getAbsolutePath());
