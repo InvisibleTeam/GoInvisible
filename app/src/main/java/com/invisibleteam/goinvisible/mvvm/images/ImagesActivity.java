@@ -97,7 +97,6 @@ public class ImagesActivity extends CommonEditActivity implements PhoneImagesVie
         setSupportActionBar(toolbar);
     }
 
-
     private void createPhoneBinding() {
         @SuppressLint("InflateParams")
         ViewGroup viewGroup = (ViewGroup) LayoutInflater.from(this).inflate(R.layout.activity_images_phone, null);

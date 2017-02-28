@@ -14,6 +14,7 @@ import com.invisibleteam.goinvisible.model.Tag;
 import com.invisibleteam.goinvisible.mvvm.edition.EditViewModel;
 import com.invisibleteam.goinvisible.mvvm.edition.GpsEstablisher;
 import com.invisibleteam.goinvisible.mvvm.edition.dialog.EditDialog;
+import com.invisibleteam.goinvisible.mvvm.images.ImagesActivity;
 
 import java.util.Locale;
 
@@ -27,7 +28,11 @@ public abstract class CommonEditActivity extends CommonActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
+        //This is because of nullpointer exception after killing activity by GC
+        if (tag == null) {
+            startImagesActivity();
+            return;
+        }
         if (requestCode == PLACE_REQUEST_ID && resultCode == android.app.Activity.RESULT_OK) {
             Place place = PlacePicker.getPlace(this, data);
             onNewPlace(place);
@@ -36,6 +41,12 @@ public abstract class CommonEditActivity extends CommonActivity {
                         && resultCode == android.app.Activity.RESULT_OK) {
             startPlaceIntent();
         }
+    }
+
+    private void startImagesActivity() {
+        Intent intent = new Intent(this, ImagesActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
     }
 
     public void showRejectChangesDialog() {
@@ -93,7 +104,7 @@ public abstract class CommonEditActivity extends CommonActivity {
 
     protected void showSnackBar(int message) {
         Snackbar.make(
-                this.findViewById(android.R.id.content),
+                findViewById(android.R.id.content),
                 message,
                 Snackbar.LENGTH_LONG).show();
     }
@@ -107,12 +118,10 @@ public abstract class CommonEditActivity extends CommonActivity {
     }
 
     public void showTagsSuccessfullyUpdatedMessage() {
-        Snackbar.make(findViewById(android.R.id.content), R.string.tags_changed_message_successfully, Snackbar.LENGTH_LONG)
-                .show();
+        showSnackBar(R.string.tags_changed_message_successfully);
     }
 
     public void showTagsUpdateFailureMessage() {
-        Snackbar.make(findViewById(android.R.id.content), R.string.tags_changed_message_unsuccessfully, Snackbar.LENGTH_LONG)
-                .show();
+        showSnackBar(R.string.tags_changed_message_unsuccessfully);
     }
 }
