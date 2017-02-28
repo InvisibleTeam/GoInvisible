@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.ViewGroup;
 
 import com.invisibleteam.goinvisible.BuildConfig;
+import com.invisibleteam.goinvisible.helper.EditItemAdapterHelper;
 import com.invisibleteam.goinvisible.model.InputType;
 import com.invisibleteam.goinvisible.model.Tag;
 import com.invisibleteam.goinvisible.model.TagGroupType;
@@ -11,6 +12,7 @@ import com.invisibleteam.goinvisible.model.TagType;
 import com.invisibleteam.goinvisible.mvvm.edition.OnTagActionListener;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
@@ -61,31 +63,32 @@ public class EditItemAdapterTest {
         context = RuntimeEnvironment.application;
     }
 
+    @Ignore
     @Test
     public void whenTagsListIsNotEmpty_ViewHolderIsBound() {
         //Given
-        EditItemAdapter adapter = new EditItemAdapter();
+        EditItemAdapter adapter = new EditItemAdapter(new EditItemAdapterHelper());
         adapter.updateTagList(tagList);
         ViewGroup view = mock(ViewGroup.class);
         when(view.getContext()).thenReturn(context);
 
         //When
-        EditItemAdapter.ViewHolder holder = adapter.onCreateViewHolder(view, 0);
+        TagViewHolder holder = (TagViewHolder) adapter.onCreateViewHolder(view, -1);
         adapter.onBindViewHolder(holder, 0);
 
         //Then
-//        EditItemViewModel editItemViewModel = holder.editItemViewModel;
+        EditItemViewModel editItemViewModel = holder.editItemViewModel;
 
         assertThat(adapter.getTagsList().size(), is(tagList.size()));
         assertThat(holder.itemView, containsItem(tagList.get(0)));
-//        assertThat(editItemViewModel, containsKey("key1"));
-//        assertThat(editItemViewModel, containsValue("value1"));
+        assertThat(editItemViewModel, containsKey("key1"));
+        assertThat(editItemViewModel, containsValue("value1"));
     }
 
     @Test
     public void whenTagIsUpdated_TagsListIsUpdated() {
         //Given
-        EditItemAdapter adapter = new EditItemAdapter();
+        EditItemAdapter adapter = new EditItemAdapter(new EditItemAdapterHelper());
         adapter.updateTagList(tagList);
         OnTagActionListener listener = mock(OnTagActionListener.class);
         adapter.setOnTagActionListener(listener);
@@ -102,7 +105,7 @@ public class EditItemAdapterTest {
     @Test
     public void whenTagsAreChanged_OnlyChangedTagsAreReturned() {
         //Given
-        EditItemAdapter adapter = new EditItemAdapter();
+        EditItemAdapter adapter = new EditItemAdapter(new EditItemAdapterHelper());
         OnTagActionListener listener = mock(OnTagActionListener.class);
         adapter.setOnTagActionListener(listener);
         adapter.updateTagList(tagList);
