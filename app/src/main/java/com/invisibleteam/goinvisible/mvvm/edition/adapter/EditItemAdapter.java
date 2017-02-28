@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import com.invisibleteam.goinvisible.R;
 import com.invisibleteam.goinvisible.databinding.EditItemViewBinding;
 import com.invisibleteam.goinvisible.model.Tag;
-import com.invisibleteam.goinvisible.mvvm.edition.OnTagActionListener;
+import com.invisibleteam.goinvisible.mvvm.edition.EditViewModelCallback;
 import com.invisibleteam.goinvisible.util.TextViewUtil;
 
 import java.util.ArrayList;
@@ -19,7 +19,7 @@ class EditItemAdapter extends RecyclerView.Adapter<EditItemAdapter.ViewHolder> {
 
     private List<Tag> tagsList;
     private List<Tag> baseTagsList;
-    private OnTagActionListener onTagActionListener;
+    private EditViewModelCallback editViewModelCallback;
 
     EditItemAdapter() {
         tagsList = new ArrayList<>();
@@ -30,15 +30,15 @@ class EditItemAdapter extends RecyclerView.Adapter<EditItemAdapter.ViewHolder> {
         final View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.edit_item_view, null, false);
         ViewHolder viewHolder = new ViewHolder(itemView);
         viewHolder.editItemViewBinding.clearButton.setOnClickListener(v -> {
-            if (onTagActionListener != null) {
+            if (editViewModelCallback != null) {
                 Tag tag = (Tag) itemView.getTag();
-                onTagActionListener.onClear(tag);
+                editViewModelCallback.onClear(tag);
             }
         });
         viewHolder.itemView.setOnClickListener(view -> {
-            if (onTagActionListener != null) {
+            if (editViewModelCallback != null) {
                 Tag tag = (Tag) itemView.getTag();
-                onTagActionListener.onEditStarted(tag);
+                editViewModelCallback.onEditStarted(tag);
             }
         });
 
@@ -113,8 +113,8 @@ class EditItemAdapter extends RecyclerView.Adapter<EditItemAdapter.ViewHolder> {
         return false;
     }
 
-    void setOnTagActionListener(OnTagActionListener listener) {
-        this.onTagActionListener = listener;
+    void setEditViewModelCallback(EditViewModelCallback listener) {
+        this.editViewModelCallback = listener;
     }
 
     boolean updateTag(Tag tag) {

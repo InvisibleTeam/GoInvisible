@@ -1,8 +1,8 @@
 package com.invisibleteam.goinvisible.mvvm.edition.callback;
 
-import com.invisibleteam.goinvisible.mvvm.common.MenuCallback;
+import com.invisibleteam.goinvisible.mvvm.common.TagsUpdateStatusCallback;
 
-public interface EditMenuViewCallback extends RejectEditionChangesCallback, MenuCallback {
+public interface EditTagsUpdateStatusViewCallback extends RejectEditionChangesCallback, TagsUpdateStatusCallback {
     void navigateBack();
 
     void navigateChangedImagesScreen();

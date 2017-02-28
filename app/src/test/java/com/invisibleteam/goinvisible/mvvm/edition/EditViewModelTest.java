@@ -35,7 +35,7 @@ public class EditViewModelTest {
     private TagsManager tagsManager;
 
     @Mock
-    private EditTagCallback listener;
+    private TagEditionStartCallback listener;
 
     private EditViewModel editViewModel;
 

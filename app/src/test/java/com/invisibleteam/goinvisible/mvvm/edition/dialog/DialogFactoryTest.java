@@ -13,7 +13,7 @@ import com.invisibleteam.goinvisible.model.InputType;
 import com.invisibleteam.goinvisible.model.Tag;
 import com.invisibleteam.goinvisible.model.TagType;
 import com.invisibleteam.goinvisible.mvvm.edition.EditViewModel;
-import com.invisibleteam.goinvisible.mvvm.edition.OnTagActionListener;
+import com.invisibleteam.goinvisible.mvvm.edition.EditViewModelCallback;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -208,7 +208,7 @@ public class DialogFactoryTest {
     @Test
     public void whenUnproperTextIsSet_ValidationNotPassed() {
         //Given
-        OnTagActionListener listener = spy(OnTagActionListener.class);
+        EditViewModelCallback listener = spy(EditViewModelCallback.class);
 
         Tag tag = createTag("0|^[1-9]([0-9]{0,5})$");
 

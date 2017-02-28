@@ -4,7 +4,7 @@ import com.invisibleteam.goinvisible.model.Tag;
 
 import java.util.List;
 
-public interface OnTagActionListener {
+public interface EditViewModelCallback {
 
     void onClear(Tag tag);
 
