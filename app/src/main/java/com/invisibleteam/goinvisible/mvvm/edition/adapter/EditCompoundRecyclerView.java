@@ -8,7 +8,7 @@ import android.util.AttributeSet;
 
 import com.invisibleteam.goinvisible.model.Tag;
 import com.invisibleteam.goinvisible.mvvm.common.CompoundRecyclerView;
-import com.invisibleteam.goinvisible.mvvm.edition.EditViewModelCallback;
+import com.invisibleteam.goinvisible.mvvm.edition.callback.EditViewModelCallback;
 
 import java.util.List;
 

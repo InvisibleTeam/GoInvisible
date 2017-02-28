@@ -1,4 +1,4 @@
-package com.invisibleteam.goinvisible.mvvm.edition;
+package com.invisibleteam.goinvisible.mvvm.edition.callback;
 
 import com.invisibleteam.goinvisible.model.Tag;
 

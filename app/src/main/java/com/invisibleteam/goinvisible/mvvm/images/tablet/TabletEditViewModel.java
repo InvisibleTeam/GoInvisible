@@ -1,13 +1,13 @@
-package com.invisibleteam.goinvisible.mvvm.images;
+package com.invisibleteam.goinvisible.mvvm.images.tablet;
 
 
 import android.databinding.ObservableBoolean;
 
 import com.invisibleteam.goinvisible.model.ImageDetails;
 import com.invisibleteam.goinvisible.model.Tag;
-import com.invisibleteam.goinvisible.mvvm.edition.TagEditionStartCallback;
+import com.invisibleteam.goinvisible.mvvm.edition.callback.TagEditionStartCallback;
 import com.invisibleteam.goinvisible.mvvm.edition.EditViewModel;
-import com.invisibleteam.goinvisible.mvvm.edition.TagsManager;
+import com.invisibleteam.goinvisible.util.TagsManager;
 import com.invisibleteam.goinvisible.mvvm.edition.adapter.EditCompoundRecyclerView;
 import com.invisibleteam.goinvisible.mvvm.edition.callback.TabletEditTagCallback;
 
@@ -66,7 +66,7 @@ public class TabletEditViewModel extends EditViewModel {
         super.onTagsUpdated();
     }
 
-    void changeViewToDefaultMode() {
+    public void changeViewToDefaultMode() {
         isInEditMode.set(false);
     }
 }

@@ -2,8 +2,6 @@ package com.invisibleteam.goinvisible.util.binding;
 
 import android.text.Editable;
 
-import com.invisibleteam.goinvisible.util.ObservableString;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;

@@ -2,7 +2,7 @@ package com.invisibleteam.goinvisible.mvvm.settings;
 
 import android.databinding.ObservableBoolean;
 
-import com.invisibleteam.goinvisible.util.ObservableString;
+import com.invisibleteam.goinvisible.util.binding.ObservableString;
 
 public class SettingsViewModel {
 

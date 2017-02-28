@@ -1,4 +1,4 @@
-package com.invisibleteam.goinvisible.util;
+package com.invisibleteam.goinvisible.util.binding;
 
 
 import android.databinding.BaseObservable;

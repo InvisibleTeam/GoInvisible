@@ -4,7 +4,10 @@ import android.support.media.ExifInterface;
 
 import com.invisibleteam.goinvisible.model.Tag;
 import com.invisibleteam.goinvisible.mvvm.edition.adapter.EditCompoundRecyclerView;
-import com.invisibleteam.goinvisible.util.ObservableString;
+import com.invisibleteam.goinvisible.mvvm.edition.callback.EditViewModelCallback;
+import com.invisibleteam.goinvisible.mvvm.edition.callback.TagEditionStartCallback;
+import com.invisibleteam.goinvisible.util.binding.ObservableString;
+import com.invisibleteam.goinvisible.util.TagsManager;
 
 import java.util.List;
 

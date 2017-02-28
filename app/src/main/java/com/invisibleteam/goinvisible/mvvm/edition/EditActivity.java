@@ -22,6 +22,7 @@ import com.invisibleteam.goinvisible.mvvm.common.CommonEditActivity;
 import com.invisibleteam.goinvisible.mvvm.edition.callback.EditTagsUpdateStatusViewCallback;
 import com.invisibleteam.goinvisible.mvvm.edition.callback.PhoneTagEditionStartCallback;
 import com.invisibleteam.goinvisible.mvvm.images.ImagesActivity;
+import com.invisibleteam.goinvisible.util.TagsManager;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;

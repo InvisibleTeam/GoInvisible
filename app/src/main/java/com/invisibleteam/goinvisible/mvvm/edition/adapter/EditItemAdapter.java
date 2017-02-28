@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import com.invisibleteam.goinvisible.R;
 import com.invisibleteam.goinvisible.databinding.EditItemViewBinding;
 import com.invisibleteam.goinvisible.model.Tag;
-import com.invisibleteam.goinvisible.mvvm.edition.EditViewModelCallback;
+import com.invisibleteam.goinvisible.mvvm.edition.callback.EditViewModelCallback;
 import com.invisibleteam.goinvisible.util.TextViewUtil;
 
 import java.util.ArrayList;

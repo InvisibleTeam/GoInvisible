@@ -4,6 +4,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.googlecode.zohhak.api.TestWith;
 import com.googlecode.zohhak.api.runners.ZohhakRunner;
+import com.invisibleteam.goinvisible.util.location.LatLngUtil;
 
 import org.junit.runner.RunWith;
 

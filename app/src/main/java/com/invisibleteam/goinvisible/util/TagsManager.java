@@ -1,4 +1,4 @@
-package com.invisibleteam.goinvisible.mvvm.edition;
+package com.invisibleteam.goinvisible.util;
 
 import android.annotation.TargetApi;
 import android.support.media.ExifInterface;
@@ -8,7 +8,6 @@ import com.invisibleteam.goinvisible.model.GeolocationTag;
 import com.invisibleteam.goinvisible.model.InputType;
 import com.invisibleteam.goinvisible.model.Tag;
 import com.invisibleteam.goinvisible.model.TagType;
-import com.invisibleteam.goinvisible.util.TagUtil;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -87,7 +86,7 @@ public class TagsManager {
         }
     }
 
-    void clearTag(Tag tag) {
+    public void clearTag(Tag tag) {
         switch (tag.getTagType().getInputType()) {
             case TEXT_STRING:
                 tag.setValue("");

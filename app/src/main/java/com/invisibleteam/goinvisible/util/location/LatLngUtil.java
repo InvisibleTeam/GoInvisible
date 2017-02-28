@@ -1,4 +1,4 @@
-package com.invisibleteam.goinvisible.util;
+package com.invisibleteam.goinvisible.util.location;
 
 
 import com.google.android.gms.maps.model.LatLng;
