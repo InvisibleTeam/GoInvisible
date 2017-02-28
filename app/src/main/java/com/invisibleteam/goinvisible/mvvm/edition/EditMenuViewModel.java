@@ -17,12 +17,12 @@ class EditMenuViewModel {
     EditMenuViewModel(
             TagsManager tagsManager,
             EditCompoundRecyclerView editCompoundRecyclerView,
-            EditViewModelCallback editViewModelCallback,
-            EditTagsUpdateStatusViewCallback editMenuViewCallback) {
+            EditViewModelCallback viewModelCallback,
+            EditTagsUpdateStatusViewCallback updateStatusCallback) {
         this.tagsManager = tagsManager;
         this.editCompoundRecyclerView = editCompoundRecyclerView;
-        this.editViewModelCallback = editViewModelCallback;
-        this.editMenuViewCallback = editMenuViewCallback;
+        this.editViewModelCallback = viewModelCallback;
+        this.editMenuViewCallback = updateStatusCallback;
     }
 
     void onBackClick() {
