@@ -3,11 +3,15 @@ package com.invisibleteam.goinvisible.mvvm.images;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.support.annotation.Nullable;
 import android.support.design.internal.NavigationMenu;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.util.DisplayMetrics;
+import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.WindowManager;
 
 import com.invisibleteam.goinvisible.BuildConfig;
 import com.invisibleteam.goinvisible.R;
@@ -18,6 +22,8 @@ import com.invisibleteam.goinvisible.mvvm.settings.SettingsActivity;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
@@ -32,6 +38,10 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
@@ -56,7 +66,7 @@ public class ImagesActivityTest {
         ShadowActivity shadowActivity = shadowOf(activity);
 
         //when
-//        activity.navigateToEdit(imageDetails);
+        activity.openEditScreen(imageDetails);
 
         //then
         Intent editActivityIntent = shadowActivity.peekNextStartedActivity();
@@ -113,7 +123,7 @@ public class ImagesActivityTest {
     @Test
     public void whenSupportedImageIsClicked_EditActivityIsStarted() {
         //When
-//        activity.navigateToEdit(new ImageDetails("path", "name"));
+        activity.openEditScreen(new ImageDetails("path", "name"));
 
         //Then
         Intent startedIntent = shadowOf(activity).getNextStartedActivity();
@@ -174,5 +184,51 @@ public class ImagesActivityTest {
 
         //Then
         verify(refreshLayout).setRefreshing(false);
+    }
+
+    @Test
+    public void whenAppIsRunningOnPhone_CreatePhoneBindingIsCalled() {
+        //Given
+        activity = spy(activity);
+        WindowManager manager = mock(WindowManager.class);
+        Display display = mock(Display.class);
+        final DisplayMetrics displayMetrics = mock(DisplayMetrics.class);
+        doNothing().when(display).getMetrics(any());
+        when(manager.getDefaultDisplay()).thenReturn(display);
+        when(activity.getWindowManager()).thenReturn(manager);
+
+        displayMetrics.heightPixels = 1794;
+        displayMetrics.widthPixels = 1080;
+        displayMetrics.xdpi = 422f;
+        displayMetrics.ydpi = 424f;
+
+        //When
+        activity.prepareView();
+
+        //Then
+        verify(activity).createPhoneBinding();
+    }
+
+    @Test
+    public void whenAppIsRunningOnTablet_CreateTabletBindingIsCalled() {
+        //Given
+        activity = spy(activity);
+        WindowManager manager = mock(WindowManager.class);
+        Display display = mock(Display.class);
+        final DisplayMetrics displayMetrics = mock(DisplayMetrics.class);
+        doNothing().when(display).getMetrics(any());
+        when(manager.getDefaultDisplay()).thenReturn(display);
+        when(activity.getWindowManager()).thenReturn(manager);
+
+        displayMetrics.heightPixels = 6048;
+        displayMetrics.widthPixels = 6536;
+        displayMetrics.xdpi = 30f;
+        displayMetrics.ydpi = 31f;
+        
+        //When
+        activity.prepareView();
+
+        //Then
+        verify(activity).createTabletBinding();
     }
 }

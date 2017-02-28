@@ -25,6 +25,7 @@ import com.invisibleteam.goinvisible.model.ImageDetails;
 import com.invisibleteam.goinvisible.mvvm.common.CommonEditActivity;
 import com.invisibleteam.goinvisible.mvvm.edition.EditActivity;
 import com.invisibleteam.goinvisible.mvvm.edition.callback.TagEditionStartCallback;
+import com.invisibleteam.goinvisible.util.ScreenUtil;
 import com.invisibleteam.goinvisible.util.TagsManager;
 import com.invisibleteam.goinvisible.mvvm.edition.callback.RejectEditionChangesCallback;
 import com.invisibleteam.goinvisible.mvvm.edition.callback.TabletEditTagCallback;
@@ -84,14 +85,7 @@ public class ImagesActivity extends CommonEditActivity implements PhoneImagesVie
 
     @Override
     public void prepareView() {
-        DisplayMetrics metrics = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(metrics);
-
-        float yInches = metrics.heightPixels / metrics.ydpi;
-        float xInches = metrics.widthPixels / metrics.xdpi;
-        double diagonalInches = Math.sqrt(xInches * xInches + yInches * yInches);
-
-        if (diagonalInches >= 6.5) {
+        if (ScreenUtil.isTablet(this)) {
             createTabletBinding();
         } else {
             createPhoneBinding();
@@ -100,7 +94,8 @@ public class ImagesActivity extends CommonEditActivity implements PhoneImagesVie
         setSupportActionBar(toolbar);
     }
 
-    private void createPhoneBinding() {
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    void createPhoneBinding() {
         @SuppressLint("InflateParams")
         ViewGroup viewGroup = (ViewGroup) LayoutInflater.from(this).inflate(R.layout.activity_images_phone, null);
         setContentView(viewGroup);
@@ -117,7 +112,8 @@ public class ImagesActivity extends CommonEditActivity implements PhoneImagesVie
         createRefreshLayout(imagesViewBinding, imagesViewModel);
     }
 
-    private void createTabletBinding() {
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    void createTabletBinding() {
         ViewGroup viewGroup = (ViewGroup) LayoutInflater.from(this).inflate(R.layout.activity_images_tablet, null);
         setContentView(viewGroup);
 
