@@ -6,6 +6,8 @@ import com.invisibleteam.goinvisible.model.InputType;
 import com.invisibleteam.goinvisible.model.Tag;
 import com.invisibleteam.goinvisible.model.TagType;
 import com.invisibleteam.goinvisible.mvvm.edition.adapter.EditCompoundRecyclerView;
+import com.invisibleteam.goinvisible.mvvm.edition.callback.TagEditionStartCallback;
+import com.invisibleteam.goinvisible.util.TagsManager;
 
 import org.junit.Before;
 import org.junit.Ignore;
@@ -35,7 +37,7 @@ public class EditViewModelTest {
     private TagsManager tagsManager;
 
     @Mock
-    private EditTagCallback listener;
+    private TagEditionStartCallback listener;
 
     private EditViewModel editViewModel;
 

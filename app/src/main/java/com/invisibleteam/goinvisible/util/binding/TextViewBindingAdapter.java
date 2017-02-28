@@ -4,7 +4,6 @@ import android.databinding.BindingAdapter;
 import android.widget.TextView;
 
 import com.invisibleteam.goinvisible.R;
-import com.invisibleteam.goinvisible.util.ObservableString;
 
 public class TextViewBindingAdapter {
     @BindingAdapter({"android:text"})

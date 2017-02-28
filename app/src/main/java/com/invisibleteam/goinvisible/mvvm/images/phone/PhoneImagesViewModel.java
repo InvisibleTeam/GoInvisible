@@ -1,19 +1,20 @@
-package com.invisibleteam.goinvisible.mvvm.images;
+package com.invisibleteam.goinvisible.mvvm.images.phone;
 
 
 import com.invisibleteam.goinvisible.model.ImageDetails;
+import com.invisibleteam.goinvisible.mvvm.images.ImagesProvider;
+import com.invisibleteam.goinvisible.mvvm.images.ImagesViewModel;
 import com.invisibleteam.goinvisible.mvvm.images.adapter.ImagesCompoundRecyclerView;
-import com.invisibleteam.goinvisible.mvvm.images.callback.PhoneImagesViewCallback;
 
 public class PhoneImagesViewModel extends ImagesViewModel {
 
     private PhoneImagesViewCallback imagesViewCallback;
 
-    PhoneImagesViewModel(ImagesCompoundRecyclerView imagesCompoundRecyclerView,
+    public PhoneImagesViewModel(ImagesCompoundRecyclerView recyclerView,
                          ImagesProvider imagesProvider,
-                         PhoneImagesViewCallback imagesViewCallback) {
-        super(imagesCompoundRecyclerView, imagesProvider, imagesViewCallback);
-        this.imagesViewCallback = imagesViewCallback;
+                         PhoneImagesViewCallback callback) {
+        super(recyclerView, imagesProvider, callback);
+        this.imagesViewCallback = callback;
     }
 
     @Override

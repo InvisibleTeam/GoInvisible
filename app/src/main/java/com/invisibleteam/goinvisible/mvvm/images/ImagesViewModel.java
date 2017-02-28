@@ -7,7 +7,6 @@ import com.invisibleteam.goinvisible.R;
 import com.invisibleteam.goinvisible.model.ImageDetails;
 import com.invisibleteam.goinvisible.mvvm.images.adapter.ImagesCompoundRecyclerView;
 import com.invisibleteam.goinvisible.mvvm.images.adapter.ImagesItemAdapter;
-import com.invisibleteam.goinvisible.mvvm.images.callback.ImagesViewCallback;
 
 import java.util.List;
 
@@ -18,12 +17,12 @@ public abstract class ImagesViewModel {
     private final ImagesProvider imagesProvider;
     private final ImagesViewCallback imagesViewCallback;
 
-    ImagesViewModel(ImagesCompoundRecyclerView imagesCompoundRecyclerView,
+    public ImagesViewModel(ImagesCompoundRecyclerView imagesCompoundRecyclerView,
                     ImagesProvider imagesProvider,
-                    ImagesViewCallback imagesViewCallback) {
+                    ImagesViewCallback callback) {
         this.imagesCompoundRecyclerView = imagesCompoundRecyclerView;
         this.imagesProvider = imagesProvider;
-        this.imagesViewCallback = imagesViewCallback;
+        this.imagesViewCallback = callback;
 
         initRecyclerView();
     }
@@ -50,7 +49,7 @@ public abstract class ImagesViewModel {
         };
     }
 
-    void updateImages() {
+    public void updateImages() {
         List<ImageDetails> imagesDetailsList = imagesProvider.getImagesList();
         imagesCompoundRecyclerView.updateResults(imagesDetailsList);
         imagesViewCallback.onStopRefreshingImages();

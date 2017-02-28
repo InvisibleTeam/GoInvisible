@@ -19,16 +19,17 @@ import com.invisibleteam.goinvisible.helper.SharingHelper;
 import com.invisibleteam.goinvisible.model.ImageDetails;
 import com.invisibleteam.goinvisible.model.Tag;
 import com.invisibleteam.goinvisible.mvvm.common.CommonEditActivity;
-import com.invisibleteam.goinvisible.mvvm.edition.callback.EditMenuViewCallback;
-import com.invisibleteam.goinvisible.mvvm.edition.callback.PhoneEditTagCallback;
+import com.invisibleteam.goinvisible.mvvm.edition.callback.EditTagsUpdateStatusViewCallback;
+import com.invisibleteam.goinvisible.mvvm.edition.callback.PhoneTagEditionStartCallback;
 import com.invisibleteam.goinvisible.mvvm.images.ImagesActivity;
+import com.invisibleteam.goinvisible.util.TagsManager;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import javax.annotation.Nullable;
 
-public class EditActivity extends CommonEditActivity implements PhoneEditTagCallback, EditMenuViewCallback {
+public class EditActivity extends CommonEditActivity implements PhoneTagEditionStartCallback, EditTagsUpdateStatusViewCallback {
 
     public static Intent buildIntent(Context context, ImageDetails imageDetails) {
         Bundle bundle = new Bundle();

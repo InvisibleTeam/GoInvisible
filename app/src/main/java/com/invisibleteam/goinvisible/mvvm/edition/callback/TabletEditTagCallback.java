@@ -1,8 +1,8 @@
 package com.invisibleteam.goinvisible.mvvm.edition.callback;
 
 import com.invisibleteam.goinvisible.model.ImageDetails;
-import com.invisibleteam.goinvisible.mvvm.common.MenuCallback;
+import com.invisibleteam.goinvisible.mvvm.common.TagsUpdateStatusCallback;
 
-public interface EditTagsTabletCallback extends MenuCallback {
+public interface TabletEditTagCallback extends TagsUpdateStatusCallback {
     void onShare(ImageDetails details);
 }

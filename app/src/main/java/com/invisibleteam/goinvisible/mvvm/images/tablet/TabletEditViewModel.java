@@ -1,15 +1,15 @@
-package com.invisibleteam.goinvisible.mvvm.images;
+package com.invisibleteam.goinvisible.mvvm.images.tablet;
 
 
 import android.databinding.ObservableBoolean;
 
 import com.invisibleteam.goinvisible.model.ImageDetails;
 import com.invisibleteam.goinvisible.model.Tag;
-import com.invisibleteam.goinvisible.mvvm.edition.EditTagCallback;
+import com.invisibleteam.goinvisible.mvvm.edition.callback.TagEditionStartCallback;
 import com.invisibleteam.goinvisible.mvvm.edition.EditViewModel;
-import com.invisibleteam.goinvisible.mvvm.edition.TagsManager;
+import com.invisibleteam.goinvisible.util.TagsManager;
 import com.invisibleteam.goinvisible.mvvm.edition.adapter.EditCompoundRecyclerView;
-import com.invisibleteam.goinvisible.mvvm.edition.callback.EditTagsTabletCallback;
+import com.invisibleteam.goinvisible.mvvm.edition.callback.TabletEditTagCallback;
 
 import java.util.List;
 
@@ -17,29 +17,29 @@ public class TabletEditViewModel extends EditViewModel {
 
     private final ObservableBoolean isInEditMode = new ObservableBoolean(false);
     private ImageDetails imageDetails;
-    private EditTagsTabletCallback editTagsTabletCallback;
+    private TabletEditTagCallback tabletEditTagCallback;
 
-    public TabletEditViewModel(EditCompoundRecyclerView editCompoundRecyclerView, EditTagCallback callback) {
+    public TabletEditViewModel(EditCompoundRecyclerView editCompoundRecyclerView, TagEditionStartCallback callback) {
         super(editCompoundRecyclerView, callback);
     }
 
-    public void initialize(ImageDetails details, TagsManager manager, EditTagsTabletCallback callback) {
+    public void initialize(ImageDetails details, TagsManager manager, TabletEditTagCallback callback) {
         imageDetails = details;
         getTitle().set(details.getName());
         getImageUrl().set(details.getPath());
         setManager(manager);
         getEditCompoundRecyclerView().setOnTagActionListener(this);
         getEditCompoundRecyclerView().prepareTagsList(manager.getAllTags());
-        editTagsTabletCallback = callback;
+        tabletEditTagCallback = callback;
     }
 
     public void onApproveChanges() {
         if (saveTags()) {
             getEditCompoundRecyclerView().updateTagListAfterChanges();
             isInEditMode.set(!getEditCompoundRecyclerView().getChangedTags().isEmpty());
-            editTagsTabletCallback.showTagsSuccessfullyUpdatedMessage();
+            tabletEditTagCallback.showTagsSuccessfullyUpdatedMessage();
         } else {
-            editTagsTabletCallback.showTagsUpdateFailureMessage();
+            tabletEditTagCallback.showTagsUpdateFailureMessage();
         }
     }
 
@@ -48,7 +48,7 @@ public class TabletEditViewModel extends EditViewModel {
     }
 
     public void onShare() {
-        editTagsTabletCallback.onShare(imageDetails);
+        tabletEditTagCallback.onShare(imageDetails);
     }
 
     private boolean saveTags() {
@@ -66,7 +66,7 @@ public class TabletEditViewModel extends EditViewModel {
         super.onTagsUpdated();
     }
 
-    void changeViewToDefaultMode() {
+    public void changeViewToDefaultMode() {
         isInEditMode.set(false);
     }
 }

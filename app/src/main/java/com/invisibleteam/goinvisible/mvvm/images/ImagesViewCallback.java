@@ -1,4 +1,4 @@
-package com.invisibleteam.goinvisible.mvvm.images.callback;
+package com.invisibleteam.goinvisible.mvvm.images;
 
 import android.support.annotation.StringRes;
 

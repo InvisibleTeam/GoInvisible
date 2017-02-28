@@ -24,12 +24,15 @@ import com.invisibleteam.goinvisible.helper.SharingHelper;
 import com.invisibleteam.goinvisible.model.ImageDetails;
 import com.invisibleteam.goinvisible.mvvm.common.CommonEditActivity;
 import com.invisibleteam.goinvisible.mvvm.edition.EditActivity;
-import com.invisibleteam.goinvisible.mvvm.edition.EditTagCallback;
-import com.invisibleteam.goinvisible.mvvm.edition.callback.EditTagsTabletCallback;
+import com.invisibleteam.goinvisible.mvvm.edition.callback.TagEditionStartCallback;
+import com.invisibleteam.goinvisible.util.TagsManager;
 import com.invisibleteam.goinvisible.mvvm.edition.callback.RejectEditionChangesCallback;
-import com.invisibleteam.goinvisible.mvvm.edition.TagsManager;
-import com.invisibleteam.goinvisible.mvvm.images.callback.PhoneImagesViewCallback;
-import com.invisibleteam.goinvisible.mvvm.images.callback.TabletImagesViewCallback;
+import com.invisibleteam.goinvisible.mvvm.edition.callback.TabletEditTagCallback;
+import com.invisibleteam.goinvisible.mvvm.images.phone.PhoneImagesViewCallback;
+import com.invisibleteam.goinvisible.mvvm.images.phone.PhoneImagesViewModel;
+import com.invisibleteam.goinvisible.mvvm.images.tablet.TabletEditViewModel;
+import com.invisibleteam.goinvisible.mvvm.images.tablet.TabletImagesViewCallback;
+import com.invisibleteam.goinvisible.mvvm.images.tablet.TabletImagesViewModel;
 import com.invisibleteam.goinvisible.mvvm.settings.SettingsActivity;
 
 import java.io.FileNotFoundException;
@@ -38,7 +41,7 @@ import java.io.IOException;
 import javax.annotation.Nullable;
 
 public class ImagesActivity extends CommonEditActivity implements PhoneImagesViewCallback, TabletImagesViewCallback,
-        EditTagCallback, EditTagsTabletCallback, RejectEditionChangesCallback {
+        TagEditionStartCallback, TabletEditTagCallback, RejectEditionChangesCallback {
 
     private static final String TAG = ImagesActivity.class.getSimpleName();
     private Snackbar snackbar;

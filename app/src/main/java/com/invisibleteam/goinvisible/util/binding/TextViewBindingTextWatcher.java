@@ -3,8 +3,6 @@ package com.invisibleteam.goinvisible.util.binding;
 import android.text.Editable;
 import android.text.TextWatcher;
 
-import com.invisibleteam.goinvisible.util.ObservableString;
-
 class TextViewBindingTextWatcher implements TextWatcher {
 
     private ObservableString observableString;

@@ -7,7 +7,7 @@ import com.invisibleteam.goinvisible.BuildConfig;
 import com.invisibleteam.goinvisible.model.InputType;
 import com.invisibleteam.goinvisible.model.Tag;
 import com.invisibleteam.goinvisible.model.TagType;
-import com.invisibleteam.goinvisible.mvvm.edition.OnTagActionListener;
+import com.invisibleteam.goinvisible.mvvm.edition.callback.EditViewModelCallback;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -86,8 +86,8 @@ public class EditItemAdapterTest {
         //Given
         EditItemAdapter adapter = new EditItemAdapter();
         adapter.updateTagList(tagList);
-        OnTagActionListener listener = mock(OnTagActionListener.class);
-        adapter.setOnTagActionListener(listener);
+        EditViewModelCallback listener = mock(EditViewModelCallback.class);
+        adapter.setEditViewModelCallback(listener);
 
         //When
         Tag editedTag = new Tag("key1", "editedValue", TagType.build(InputType.TEXT_STRING));
@@ -102,8 +102,8 @@ public class EditItemAdapterTest {
     public void whenTagsAreChanged_OnlyChangedTagsAreReturned() {
         //Given
         EditItemAdapter adapter = new EditItemAdapter();
-        OnTagActionListener listener = mock(OnTagActionListener.class);
-        adapter.setOnTagActionListener(listener);
+        EditViewModelCallback listener = mock(EditViewModelCallback.class);
+        adapter.setEditViewModelCallback(listener);
         adapter.updateTagList(tagList);
 
         //When

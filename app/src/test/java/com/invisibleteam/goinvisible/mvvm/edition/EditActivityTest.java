@@ -168,7 +168,7 @@ public class EditActivityTest {
         MenuItem menuItem = mock(MenuItem.class);
         when(menuItem.getItemId()).thenReturn(R.id.menu_item_share);
         EditActivityHelper helper = spy(new EditActivityHelper(activity));
-        doReturn("media:content").when(helper).prepareImagePathToShare(imageDetails, activity.getContentResolver());
+        //doReturn("media:content").when(helper).prepareImagePathToShare(imageDetails, activity.getContentResolver());
         //activity.setEditActivityHelper(helper);
 
         //When
@@ -188,9 +188,9 @@ public class EditActivityTest {
         MenuItem menuItem = mock(MenuItem.class);
         when(menuItem.getItemId()).thenReturn(R.id.menu_item_share);
         EditActivityHelper helper = spy(new EditActivityHelper(activity));
-        doReturn("media:content").when(helper).prepareImagePathToShare(imageDetails, activity.getContentResolver());
+        //doReturn("media:content").when(helper).prepareImagePathToShare(imageDetails, activity.getContentResolver());
         //activity.setEditActivityHelper(helper);
-        when(helper.buildShareImageIntent(imageDetails, activity.getContentResolver())).thenReturn(new Intent(Intent.ACTION_SEND));
+        //when(helper.buildShareImageIntent(imageDetails, activity.getContentResolver())).thenReturn(new Intent(Intent.ACTION_SEND));
 
         //When
         activity.onOptionsItemSelected(menuItem);

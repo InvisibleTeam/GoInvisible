@@ -11,7 +11,7 @@ import android.util.Log;
 
 import com.invisibleteam.goinvisible.helper.ClearingTagsReceiverHelper;
 import com.invisibleteam.goinvisible.model.ImageDetails;
-import com.invisibleteam.goinvisible.mvvm.edition.TagsManager;
+import com.invisibleteam.goinvisible.util.TagsManager;
 import com.invisibleteam.goinvisible.mvvm.images.ImagesProvider;
 import com.invisibleteam.goinvisible.util.SharedPreferencesUtil;
 

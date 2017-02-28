@@ -2,25 +2,27 @@ package com.invisibleteam.goinvisible.mvvm.edition;
 
 import com.invisibleteam.goinvisible.model.Tag;
 import com.invisibleteam.goinvisible.mvvm.edition.adapter.EditCompoundRecyclerView;
-import com.invisibleteam.goinvisible.mvvm.edition.callback.EditMenuViewCallback;
+import com.invisibleteam.goinvisible.mvvm.edition.callback.EditTagsUpdateStatusViewCallback;
+import com.invisibleteam.goinvisible.mvvm.edition.callback.EditViewModelCallback;
+import com.invisibleteam.goinvisible.util.TagsManager;
 
 import java.util.List;
 
 class EditMenuViewModel {
     private final TagsManager tagsManager;
     private final EditCompoundRecyclerView editCompoundRecyclerView;
-    private final OnTagActionListener onTagActionListener;
-    private final EditMenuViewCallback editMenuViewCallback;
+    private final EditViewModelCallback editViewModelCallback;
+    private final EditTagsUpdateStatusViewCallback editMenuViewCallback;
 
     EditMenuViewModel(
             TagsManager tagsManager,
             EditCompoundRecyclerView editCompoundRecyclerView,
-            OnTagActionListener onTagActionListener,
-            EditMenuViewCallback editMenuViewCallback) {
+            EditViewModelCallback viewModelCallback,
+            EditTagsUpdateStatusViewCallback updateStatusCallback) {
         this.tagsManager = tagsManager;
         this.editCompoundRecyclerView = editCompoundRecyclerView;
-        this.onTagActionListener = onTagActionListener;
-        this.editMenuViewCallback = editMenuViewCallback;
+        this.editViewModelCallback = viewModelCallback;
+        this.editMenuViewCallback = updateStatusCallback;
     }
 
     void onBackClick() {
@@ -36,7 +38,7 @@ class EditMenuViewModel {
     }
 
     void onClearAllTagsClick() {
-        onTagActionListener.onClear(tagsManager.getAllTags());
+        editViewModelCallback.onClear(tagsManager.getAllTags());
     }
 
     void onApproveChangesClick() {

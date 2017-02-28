@@ -1,20 +1,21 @@
 package com.invisibleteam.goinvisible.mvvm.edition;
 
 import com.invisibleteam.goinvisible.mvvm.edition.adapter.EditCompoundRecyclerView;
-import com.invisibleteam.goinvisible.mvvm.edition.callback.PhoneEditTagCallback;
+import com.invisibleteam.goinvisible.mvvm.edition.callback.PhoneTagEditionStartCallback;
+import com.invisibleteam.goinvisible.util.TagsManager;
 
 public class PhoneEditViewModel extends EditViewModel {
 
-    private PhoneEditTagCallback editTagCallback;
+    private PhoneTagEditionStartCallback editTagCallback;
 
     PhoneEditViewModel(
             String title,
             String imageUrl,
             EditCompoundRecyclerView editCompoundRecyclerView,
             TagsManager manager,
-            PhoneEditTagCallback editTagCallback) {
-        super(title, imageUrl, editCompoundRecyclerView, manager, editTagCallback);
-        this.editTagCallback = editTagCallback;
+            PhoneTagEditionStartCallback callback) {
+        super(title, imageUrl, editCompoundRecyclerView, manager, callback);
+        this.editTagCallback = callback;
     }
 
     @Override

@@ -1,8 +1,8 @@
-package com.invisibleteam.goinvisible.mvvm.edition;
+package com.invisibleteam.goinvisible.mvvm.edition.callback;
 
 import com.invisibleteam.goinvisible.model.Tag;
 
-public interface EditTagCallback {
+public interface TagEditionStartCallback {
     void openPlacePickerView(Tag tag);
 
     void showUnmodifiableTagMessage();

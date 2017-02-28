@@ -1,6 +1,6 @@
 package com.invisibleteam.goinvisible.mvvm.common;
 
-public interface MenuCallback {
+public interface TagsUpdateStatusCallback {
     void showTagsSuccessfullyUpdatedMessage();
 
     void showTagsUpdateFailureMessage();

@@ -4,7 +4,6 @@ import com.invisibleteam.goinvisible.R;
 import com.invisibleteam.goinvisible.model.ImageDetails;
 import com.invisibleteam.goinvisible.mvvm.images.adapter.ImagesCompoundRecyclerView;
 import com.invisibleteam.goinvisible.mvvm.images.adapter.ImagesItemAdapter;
-import com.invisibleteam.goinvisible.mvvm.images.callback.ImagesViewCallback;
 
 import org.junit.Before;
 import org.junit.Test;
