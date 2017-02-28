@@ -66,7 +66,9 @@ public class StorageManagementHelper {
 
         File[] filesList = directory.listFiles();
 
-        if (filesList == null || filesList.length == 0) return;
+        if (filesList == null || filesList.length == 0) {
+            return;
+        }
 
         for (File file : directory.listFiles()) {
             file.delete();
