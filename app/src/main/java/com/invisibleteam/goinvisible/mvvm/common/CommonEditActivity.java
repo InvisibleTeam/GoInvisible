@@ -14,6 +14,7 @@ import com.invisibleteam.goinvisible.model.Tag;
 import com.invisibleteam.goinvisible.mvvm.edition.EditViewModel;
 import com.invisibleteam.goinvisible.mvvm.edition.GpsEstablisher;
 import com.invisibleteam.goinvisible.mvvm.edition.dialog.EditDialog;
+import com.invisibleteam.goinvisible.mvvm.images.ImagesActivity;
 
 import java.util.Locale;
 
@@ -29,6 +30,7 @@ public abstract class CommonEditActivity extends CommonActivity {
         super.onActivityResult(requestCode, resultCode, data);
         //This is because of nullpointer exception after killing activity by GC
         if (tag == null) {
+            startImagesActivity();
             finish();
             return;
         }
@@ -40,6 +42,13 @@ public abstract class CommonEditActivity extends CommonActivity {
                         && resultCode == android.app.Activity.RESULT_OK) {
             startPlaceIntent();
         }
+    }
+
+    private void startImagesActivity() {
+        Intent intent = new Intent(this, ImagesActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        finish();
     }
 
     public void showRejectChangesDialog() {

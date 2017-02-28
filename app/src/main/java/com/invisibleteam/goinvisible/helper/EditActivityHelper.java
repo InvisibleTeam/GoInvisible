@@ -88,7 +88,7 @@ public class EditActivityHelper {
         GpsEstablisher.StatusListener gpsStatusListener = new GpsEstablisher.StatusListener() {
             @Override
             public void onGpsEstablished() {
-                EditActivityHelper.this.openPlacePicker(tag);
+                openPlacePicker(tag);
             }
 
             @Override
@@ -100,7 +100,7 @@ public class EditActivityHelper {
         LocationManager locationManager = (LocationManager) activity.getSystemService(LOCATION_SERVICE);
         GoogleLocationApiEstablisher googleLocationApiEstablisher =
                 new GoogleLocationApiEstablisher(
-                        new GoogleApiClient.Builder(activity));
+                        new GoogleApiClient.Builder(activity.getApplicationContext()));
         GpsEstablisher gpsEstablisher = new GpsEstablisher(locationManager, googleLocationApiEstablisher, activity);
         gpsEstablisher.setStatusListener(gpsStatusListener);
         return gpsEstablisher;
