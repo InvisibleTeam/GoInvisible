@@ -38,7 +38,10 @@ public class FileView {
 
         do {
             for (UiObject2 uiListElement : exifTagsList.getUiObject2().findObjects(VISIBLE_LIST_ITEM_SELECTOR)) {
-                searchResult.put(uiListElement.findObject(TAG_KEY_SELECTOR).getText(), uiListElement.findObject(TAG_VALUE_SELECTOR).getText());
+                searchResult.put(
+                        uiListElement.findObject(TAG_KEY_SELECTOR).getText(),
+                        uiListElement.findObject(TAG_VALUE_SELECTOR).getText()
+                );
             }
 
             scrollResultPrevious = scrollResult;
