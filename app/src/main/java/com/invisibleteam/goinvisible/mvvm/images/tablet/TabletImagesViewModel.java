@@ -17,10 +17,10 @@ public class TabletImagesViewModel extends ImagesViewModel {
 
     public TabletImagesViewModel(ImagesCompoundRecyclerView imagesCompoundRecyclerView,
                           ImagesProvider imagesProvider,
-                          TabletImagesViewCallback imagesViewCallback,
+                          TabletImagesViewCallback callback,
                           EditCompoundRecyclerView editCompoundRecyclerView) {
-        super(imagesCompoundRecyclerView, imagesProvider, imagesViewCallback);
-        this.imagesViewCallback = imagesViewCallback;
+        super(imagesCompoundRecyclerView, imagesProvider, callback);
+        this.imagesViewCallback = callback;
         this.editCompoundRecyclerView = editCompoundRecyclerView;
     }
 
