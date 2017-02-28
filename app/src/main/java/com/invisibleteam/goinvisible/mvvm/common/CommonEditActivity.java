@@ -31,7 +31,6 @@ public abstract class CommonEditActivity extends CommonActivity {
         //This is because of nullpointer exception after killing activity by GC
         if (tag == null) {
             startImagesActivity();
-            finish();
             return;
         }
         if (requestCode == PLACE_REQUEST_ID && resultCode == android.app.Activity.RESULT_OK) {
@@ -48,7 +47,6 @@ public abstract class CommonEditActivity extends CommonActivity {
         Intent intent = new Intent(this, ImagesActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
-        finish();
     }
 
     public void showRejectChangesDialog() {
