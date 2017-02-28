@@ -19,10 +19,10 @@ public abstract class ImagesViewModel {
 
     public ImagesViewModel(ImagesCompoundRecyclerView imagesCompoundRecyclerView,
                     ImagesProvider imagesProvider,
-                    ImagesViewCallback imagesViewCallback) {
+                    ImagesViewCallback callback) {
         this.imagesCompoundRecyclerView = imagesCompoundRecyclerView;
         this.imagesProvider = imagesProvider;
-        this.imagesViewCallback = imagesViewCallback;
+        this.imagesViewCallback = callback;
 
         initRecyclerView();
     }

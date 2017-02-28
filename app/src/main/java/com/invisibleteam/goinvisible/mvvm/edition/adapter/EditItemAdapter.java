@@ -113,8 +113,8 @@ class EditItemAdapter extends RecyclerView.Adapter<EditItemAdapter.ViewHolder> {
         return false;
     }
 
-    void setEditViewModelCallback(EditViewModelCallback listener) {
-        this.editViewModelCallback = listener;
+    void setEditViewModelCallback(EditViewModelCallback callback) {
+        this.editViewModelCallback = callback;
     }
 
     boolean updateTag(Tag tag) {

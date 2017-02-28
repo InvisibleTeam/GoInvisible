@@ -23,12 +23,12 @@ public class EditViewModel implements EditViewModelCallback {
                   String imageUrl,
                   EditCompoundRecyclerView editCompoundRecyclerView,
                   TagsManager manager,
-                  TagEditionStartCallback tagEditionStartCallback) {
+                  TagEditionStartCallback callback) {
         this.title.set(title);
         this.imageUrl.set(imageUrl);
         this.editCompoundRecyclerView = editCompoundRecyclerView;
         this.manager = manager;
-        this.tagEditionStartCallback = tagEditionStartCallback;
+        this.tagEditionStartCallback = callback;
 
         initRecyclerView(manager.getAllTags());
     }

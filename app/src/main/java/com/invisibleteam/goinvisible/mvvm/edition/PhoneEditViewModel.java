@@ -13,9 +13,9 @@ public class PhoneEditViewModel extends EditViewModel {
             String imageUrl,
             EditCompoundRecyclerView editCompoundRecyclerView,
             TagsManager manager,
-            PhoneTagEditionStartCallback editTagCallback) {
-        super(title, imageUrl, editCompoundRecyclerView, manager, editTagCallback);
-        this.editTagCallback = editTagCallback;
+            PhoneTagEditionStartCallback callback) {
+        super(title, imageUrl, editCompoundRecyclerView, manager, callback);
+        this.editTagCallback = callback;
     }
 
     @Override
