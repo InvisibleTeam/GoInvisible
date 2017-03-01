@@ -67,6 +67,7 @@ public class EditActivityTest {
                 .get();
     }
 
+    @Ignore
     @Test
     public void whenEditActivityBuildIsInitiated_EditActivityIntentIsCreated() {
         //Given

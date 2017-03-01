@@ -8,7 +8,6 @@ import android.support.design.widget.Snackbar;
 import android.support.media.ExifInterface;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.Toolbar;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -24,17 +23,17 @@ import com.invisibleteam.goinvisible.helper.SharingHelper;
 import com.invisibleteam.goinvisible.model.ImageDetails;
 import com.invisibleteam.goinvisible.mvvm.common.CommonEditActivity;
 import com.invisibleteam.goinvisible.mvvm.edition.EditActivity;
-import com.invisibleteam.goinvisible.mvvm.edition.callback.TagEditionStartCallback;
-import com.invisibleteam.goinvisible.util.ScreenUtil;
-import com.invisibleteam.goinvisible.util.TagsManager;
 import com.invisibleteam.goinvisible.mvvm.edition.callback.RejectEditionChangesCallback;
 import com.invisibleteam.goinvisible.mvvm.edition.callback.TabletEditTagCallback;
+import com.invisibleteam.goinvisible.mvvm.edition.callback.TagEditionStartCallback;
 import com.invisibleteam.goinvisible.mvvm.images.phone.PhoneImagesViewCallback;
 import com.invisibleteam.goinvisible.mvvm.images.phone.PhoneImagesViewModel;
 import com.invisibleteam.goinvisible.mvvm.images.tablet.TabletEditViewModel;
 import com.invisibleteam.goinvisible.mvvm.images.tablet.TabletImagesViewCallback;
 import com.invisibleteam.goinvisible.mvvm.images.tablet.TabletImagesViewModel;
 import com.invisibleteam.goinvisible.mvvm.settings.SettingsActivity;
+import com.invisibleteam.goinvisible.util.ScreenUtil;
+import com.invisibleteam.goinvisible.util.TagsManager;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -90,6 +89,12 @@ public class ImagesActivity extends CommonEditActivity implements PhoneImagesVie
         } else {
             createPhoneBinding();
         }
+
+        prepareToolbar();
+    }
+
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    void prepareToolbar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.main_toolbar);
         setSupportActionBar(toolbar);
     }
@@ -181,19 +186,34 @@ public class ImagesActivity extends CommonEditActivity implements PhoneImagesVie
         return snackbar;
     }
 
+    @VisibleForTesting
+    void setTabletImagesViewModel(TabletImagesViewModel imagesViewModel) {
+        this.tabletImagesViewModel = imagesViewModel;
+    }
+
+    @VisibleForTesting
+    void setTabletEditViewModel(TabletEditViewModel editViewModel) {
+        this.editViewModel = editViewModel;
+    }
+
     @Override
     public void showEditView(ImageDetails imageDetails) {
         if (editViewModel != null) {
             try {
                 editViewModel.initialize(
                         imageDetails,
-                        new TagsManager(new ExifInterface(imageDetails.getPath())),
+                        buildTagsManager(imageDetails.getPath()),
                         this);
             } catch (IOException e) {
                 Log.e(TAG, e.getMessage(), e);
                 //TODO Log crashlitycs
             }
         }
+    }
+
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    TagsManager buildTagsManager(String path) throws IOException {
+        return new TagsManager(new ExifInterface(path));
     }
 
     @Override
