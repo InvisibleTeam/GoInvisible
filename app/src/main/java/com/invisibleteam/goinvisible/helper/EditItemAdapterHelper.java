@@ -35,14 +35,21 @@ public class EditItemAdapterHelper {
         clearTagLists();
         addHeadersToLists();
         for (Tag tag : tags) {
-            if (IMAGE_INFO.equals(tag.getTagGroupType())) {
-                imageInfoTagList.add(tag);
-            } else if (LOCATION_INFO.equals(tag.getTagGroupType())) {
-                locationInfoTagList.add(tag);
-            } else if (DEVICE_INFO.equals(tag.getTagGroupType())) {
-                deviceInfoTagList.add(tag);
-            } else {
-                advancedInfoTagList.add(tag);
+            switch (tag.getTagGroupType()) {
+                case IMAGE_INFO:
+                    imageInfoTagList.add(tag);
+                    break;
+                case LOCATION_INFO:
+                    locationInfoTagList.add(tag);
+                    break;
+                case DEVICE_INFO:
+                    deviceInfoTagList.add(tag);
+                    break;
+                case ADVANCED:
+                    advancedInfoTagList.add(tag);
+                    break;
+                default:
+                    break;
             }
         }
 

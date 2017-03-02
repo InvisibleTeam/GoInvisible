@@ -8,14 +8,14 @@ import com.invisibleteam.goinvisible.model.Tag;
 import com.invisibleteam.goinvisible.mvvm.edition.OnTagActionListener;
 import com.invisibleteam.goinvisible.util.TextViewUtil;
 
+import javax.annotation.Nullable;
+
 class TagViewHolder extends ViewHolder {
 
-    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
-    EditItemViewModel editItemViewModel;
+    private EditItemViewModel editItemViewModel;
+    private EditItemViewBinding editItemViewBinding;
 
-    EditItemViewBinding editItemViewBinding;
-
-    TagViewHolder(View itemView, OnTagActionListener onTagActionListener) {
+    TagViewHolder(View itemView, @Nullable OnTagActionListener onTagActionListener) {
         super(itemView);
 
         editItemViewModel = new EditItemViewModel();
@@ -25,7 +25,7 @@ class TagViewHolder extends ViewHolder {
         setupListeners(onTagActionListener);
     }
 
-    private void setupListeners(OnTagActionListener onTagActionListener) {
+    private void setupListeners(@Nullable OnTagActionListener onTagActionListener) {
         editItemViewBinding.clearButton.setOnClickListener(v -> {
             if (onTagActionListener != null) {
                 Tag tag = (Tag) itemView.getTag();
@@ -39,5 +39,15 @@ class TagViewHolder extends ViewHolder {
                 onTagActionListener.onEditStarted(tag);
             }
         });
+    }
+
+    void setTag(Tag tag) {
+        this.itemView.setTag(tag);
+        this.editItemViewModel.setModel(tag);
+    }
+
+    @VisibleForTesting
+    EditItemViewModel getEditItemViewModel() {
+        return editItemViewModel;
     }
 }

@@ -22,15 +22,16 @@ import static com.invisibleteam.goinvisible.model.TagGroupType.LOCATION_INFO;
 
 class EditItemAdapter extends RecyclerView.Adapter<ViewHolder> {
 
-    private static final int IMAGE_INFO_SECTION_POSITION = 0;
-    private static final int LOCATION_INFO_SECTION_POSITION = 21;
-    private static final int DEVICE_INFO_SECTION_POSITION = 47;
-    private static final int ADVANCED_INFO_SECTION_POSITION = 59;
+    static final int IMAGE_INFO_SECTION_POSITION = 0;
+    static final int LOCATION_INFO_SECTION_POSITION = 21;
+    static final int DEVICE_INFO_SECTION_POSITION = 47;
+    static final int ADVANCED_INFO_SECTION_POSITION = 59;
+    static final int DEFAULT_VIEW_TYPE = -1;
 
     private List<Tag> baseTagsList;
     private OnTagActionListener onTagActionListener;
     private Context context;
-    private EditItemAdapterHelper helper;
+    private final EditItemAdapterHelper helper;
 
     EditItemAdapter(EditItemAdapterHelper helper) {
         this.helper = helper;
@@ -40,7 +41,7 @@ class EditItemAdapter extends RecyclerView.Adapter<ViewHolder> {
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         context = parent.getContext();
 
-        if (viewType != -1) {
+        if (viewType != DEFAULT_VIEW_TYPE) {
             final View sectionItemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.section_edit_item_view, parent, false);
             return new SectionViewHolder(sectionItemView);
         }
@@ -52,28 +53,29 @@ class EditItemAdapter extends RecyclerView.Adapter<ViewHolder> {
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         final Tag tag = getTagsList().get(position);
-        holder.itemView.setTag(tag);
 
         if (holder instanceof SectionViewHolder) {
             final String sectionName = tag.getTagGroupTypeName(context);
             ((SectionViewHolder) holder).setSectionName(sectionName);
         } else {
-            ((TagViewHolder) holder).editItemViewModel.setModel(tag);
+            TagViewHolder tagViewHolder = (TagViewHolder) holder;
+            tagViewHolder.setTag(tag);
         }
     }
 
     @Override
     public int getItemViewType(int position) {
-        if (position == IMAGE_INFO_SECTION_POSITION) {
-            return IMAGE_INFO.ordinal();
-        } else if (position == LOCATION_INFO_SECTION_POSITION) {
-            return LOCATION_INFO.ordinal();
-        } else if (position == DEVICE_INFO_SECTION_POSITION) {
-            return DEVICE_INFO.ordinal();
-        } else if (position == ADVANCED_INFO_SECTION_POSITION) {
-            return ADVANCED.ordinal();
-        } else {
-            return -1;
+        switch (position) {
+            case IMAGE_INFO_SECTION_POSITION:
+                return IMAGE_INFO.ordinal();
+            case LOCATION_INFO_SECTION_POSITION:
+                return LOCATION_INFO.ordinal();
+            case DEVICE_INFO_SECTION_POSITION:
+                return DEVICE_INFO.ordinal();
+            case ADVANCED_INFO_SECTION_POSITION:
+                return ADVANCED.ordinal();
+            default:
+                return DEFAULT_VIEW_TYPE;
         }
     }
 
@@ -133,14 +135,16 @@ class EditItemAdapter extends RecyclerView.Adapter<ViewHolder> {
 
     void updateTag(Tag tag) {
         List<Tag> tagList = getTagsList();
-        if (!tagList.isEmpty()) {
-            for (int index = 0; index < tagList.size(); index++) {
-                if (tagList.get(index).getKey().equals(tag.getKey())) {
-                    tagList.set(index, tag);
-                    notifyItemChanged(index);
-                    onTagActionListener.onTagsUpdated();
-                    break;
-                }
+        if (tagList.isEmpty()) {
+            return;
+        }
+
+        for (int index = 0; index < tagList.size(); index++) {
+            if (tagList.get(index).getKey().equals(tag.getKey())) {
+                tagList.set(index, tag);
+                notifyItemChanged(index);
+                onTagActionListener.onTagsUpdated();
+                break;
             }
         }
     }

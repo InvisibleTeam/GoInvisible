@@ -7,20 +7,22 @@ import com.invisibleteam.goinvisible.databinding.SectionEditItemViewBinding;
 
 class SectionViewHolder extends ViewHolder {
 
-    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
-    SectionEditItemViewModel sectionEditItemViewModel;
-
-    SectionEditItemViewBinding sectionEditItemViewBinding;
+    private SectionEditItemViewModel sectionEditItemViewModel;
 
     SectionViewHolder(View itemView) {
         super(itemView);
 
         sectionEditItemViewModel = new SectionEditItemViewModel();
-        sectionEditItemViewBinding = SectionEditItemViewBinding.bind(itemView);
+        SectionEditItemViewBinding sectionEditItemViewBinding = SectionEditItemViewBinding.bind(itemView);
         sectionEditItemViewBinding.setViewModel(sectionEditItemViewModel);
     }
 
     void setSectionName(String name) {
         sectionEditItemViewModel.setSectionName(name);
+    }
+
+    @VisibleForTesting
+    SectionEditItemViewModel getSectionEditItemViewModel() {
+        return sectionEditItemViewModel;
     }
 }
