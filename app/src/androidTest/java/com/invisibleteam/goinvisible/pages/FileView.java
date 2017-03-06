@@ -77,7 +77,8 @@ public class FileView {
 
         exifTagsList.scrollToText(tagName);
 
-        UiObject2 cleanTagUiElement = exifTagsList.getUiObject2().findObject(By.text(tagName)).getParent().findObject(CLEAR_BUTTON_SELECTOR);
+        UiObject2 cleanTagUiElement =
+                exifTagsList.getUiObject2().findObject(By.text(tagName)).getParent().findObject(CLEAR_BUTTON_SELECTOR);
 
         cleanTagUiElement.click();
     }
