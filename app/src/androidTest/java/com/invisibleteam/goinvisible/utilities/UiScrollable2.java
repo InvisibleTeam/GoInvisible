@@ -43,7 +43,7 @@ public class UiScrollable2 {
             scrollResultPrevious = scrollResult;
 
             scrollResult = scrollPage(Direction.DOWN);
-        } while (scrollResult || scrollResultPrevious);
+        } while (searchResult || (scrollResult && scrollResultPrevious));
 
         return searchResult;
     }
