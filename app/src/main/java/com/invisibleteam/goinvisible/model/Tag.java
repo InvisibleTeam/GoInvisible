@@ -64,10 +64,6 @@ public class Tag implements Parcelable {
         return context.getString(tagGroupType.getGroupNameResId());
     }
 
-    public void setTagGroupType(TagGroupType tagGroupType) {
-        this.tagGroupType = tagGroupType;
-    }
-
     @Override
     public int describeContents() {
         return 0;
@@ -79,7 +75,7 @@ public class Tag implements Parcelable {
         dest.writeString(this.value);
         dest.writeString(this.formattedValue);
         dest.writeParcelable(this.tagType, flags);
-        dest.writeInt(this.tagGroupType == null ? -1 : this.tagGroupType.ordinal());
+        dest.writeInt(this.tagGroupType.ordinal());
     }
 
     protected Tag(Parcel in) {
@@ -88,7 +84,7 @@ public class Tag implements Parcelable {
         this.formattedValue = in.readString();
         this.tagType = in.readParcelable(TagType.class.getClassLoader());
         int tmpTagGroupType = in.readInt();
-        this.tagGroupType = tmpTagGroupType == -1 ? null : TagGroupType.values()[tmpTagGroupType];
+        this.tagGroupType = TagGroupType.values()[tmpTagGroupType];
     }
 
     public static final Parcelable.Creator<Tag> CREATOR = new Parcelable.Creator<Tag>() {

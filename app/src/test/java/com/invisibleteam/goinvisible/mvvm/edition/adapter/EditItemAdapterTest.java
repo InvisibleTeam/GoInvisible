@@ -1,6 +1,6 @@
 package com.invisibleteam.goinvisible.mvvm.edition.adapter;
 
-import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import com.invisibleteam.goinvisible.BuildConfig;
 import com.invisibleteam.goinvisible.helper.EditItemAdapterHelper;
@@ -65,12 +65,7 @@ public class EditItemAdapterTest {
         //Given
         EditItemAdapter adapter = new EditItemAdapter(new EditItemAdapterHelper());
         adapter.updateTagList(tagList);
-        ViewGroup parent = new ViewGroup(activity) {
-            @Override
-            protected void onLayout(boolean b, int i, int i1, int i2, int i3) {
-
-            }
-        };
+        LinearLayout parent = new LinearLayout(activity);
 
         //When
         TagViewHolder holder = (TagViewHolder) adapter.onCreateViewHolder(parent, DEFAULT_VIEW_TYPE);
@@ -88,12 +83,7 @@ public class EditItemAdapterTest {
         //Given
         EditItemAdapter adapter = new EditItemAdapter(new EditItemAdapterHelper());
         adapter.updateTagList(tagList);
-        ViewGroup parent = new ViewGroup(activity) {
-            @Override
-            protected void onLayout(boolean b, int i, int i1, int i2, int i3) {
-
-            }
-        };
+        LinearLayout parent = new LinearLayout(activity);
 
         //When
         SectionViewHolder holder = (SectionViewHolder) adapter.onCreateViewHolder(parent, TagGroupType.IMAGE_INFO.ordinal());

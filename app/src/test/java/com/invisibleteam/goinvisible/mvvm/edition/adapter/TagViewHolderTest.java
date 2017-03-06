@@ -2,7 +2,7 @@ package com.invisibleteam.goinvisible.mvvm.edition.adapter;
 
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import com.invisibleteam.goinvisible.BuildConfig;
 import com.invisibleteam.goinvisible.R;
@@ -37,12 +37,7 @@ public class TagViewHolderTest {
     @Before
     public void setUp() throws Exception {
         EditActivity activity = Robolectric.buildActivity(EditActivity.class).create().get();
-        ViewGroup parent = new ViewGroup(activity) {
-            @Override
-            protected void onLayout(boolean b, int i, int i1, int i2, int i3) {
-
-            }
-        };
+        LinearLayout parent = new LinearLayout(activity);
         itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.edit_item_view, parent, false);
     }
 

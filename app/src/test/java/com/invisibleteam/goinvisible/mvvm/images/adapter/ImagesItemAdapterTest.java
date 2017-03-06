@@ -1,7 +1,7 @@
 package com.invisibleteam.goinvisible.mvvm.images.adapter;
 
 import android.util.Log;
-import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import com.google.common.collect.ImmutableList;
 import com.invisibleteam.goinvisible.BuildConfig;
@@ -46,12 +46,7 @@ public class ImagesItemAdapterTest {
     @Test
     public void whenViewHolderIsCreatedWithNotEmptyList_AdapterHasResults() {
         //Given
-        ViewGroup parent = new ViewGroup(activity) {
-            @Override
-            protected void onLayout(boolean b, int i, int i1, int i2, int i3) {
-
-            }
-        };
+        LinearLayout parent = new LinearLayout(activity);
         ImagesItemAdapter.ViewHolder viewHolder = imagesItemAdapter.onCreateViewHolder(parent, JPEG_IMAGE);
 
         //When
@@ -106,12 +101,7 @@ public class ImagesItemAdapterTest {
     @Test
     public void whenAdapterItemIsClicked_OnItemClickIsCalled() {
         //Given
-        ViewGroup parent = new ViewGroup(activity) {
-            @Override
-            protected void onLayout(boolean b, int i, int i1, int i2, int i3) {
-
-            }
-        };
+        LinearLayout parent = new LinearLayout(activity);
         parent = spy(parent);
         ImagesItemAdapter.ViewHolder viewHolder = imagesItemAdapter.onCreateViewHolder(parent, JPEG_IMAGE);
 
@@ -131,12 +121,7 @@ public class ImagesItemAdapterTest {
     @Test
     public void whenAdapterUnsupportedItemIsClicked_OnUnsupportedItemClickIsCalled() {
         //Given
-        ViewGroup parent = new ViewGroup(activity) {
-            @Override
-            protected void onLayout(boolean b, int i, int i1, int i2, int i3) {
-
-            }
-        };
+        LinearLayout parent = new LinearLayout(activity);
         parent = spy(parent);
         ImagesItemAdapter.ViewHolder viewHolder = imagesItemAdapter
                 .onCreateViewHolder(parent, UNSUPPORTED_EXTENSION_IMAGE);
