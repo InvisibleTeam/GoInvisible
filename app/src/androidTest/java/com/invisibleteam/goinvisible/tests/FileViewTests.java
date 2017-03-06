@@ -53,9 +53,9 @@ public class FileViewTests {
      * <p>
      * Steps to execute:
      * - ensure GoInvisible ListView is opened
-     * - ensure that on ListView images are displayed
-     * -
-     * - ensure that GoInvisible is displaying that image on ListView
+     * - ensure that images are displayed on ListView
+     * - open photo
+     * - ensure that GoInvisible is displaying image and exif data
      *
      * @throws Exception
      */
