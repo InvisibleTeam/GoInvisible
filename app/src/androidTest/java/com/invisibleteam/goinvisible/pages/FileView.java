@@ -42,6 +42,8 @@ public class FileView {
 
         UiScrollable2 exifTagsList = new UiScrollable2(UI_DEVICE.findObject(RECYCLER_VIEW_SELECTOR));
 
+        exifTagsList.scrollToBound(Direction.UP);
+
         //noinspection SpellCheckingInspection
         boolean scrollResult = true;
         boolean scrollResultPrevious;
@@ -67,6 +69,20 @@ public class FileView {
     public static void clearAllData() {
         UI_DEVICE.findObject(MENU_ITEM_CLEAR_ALL_SELECTOR).click();
         UI_DEVICE.wait(Until.hasObject(MENU_ITEM_SAVE_CHANGES_SELECTOR), LAUNCH_TIMEOUT);
+        saveTagChanges();
+    }
+
+    public static void clearExifTagData(String tagName) {
+        UiScrollable2 exifTagsList = new UiScrollable2(UI_DEVICE.findObject(RECYCLER_VIEW_SELECTOR));
+
+        exifTagsList.scrollToText(tagName);
+
+        UiObject2 cleanTagUiElement = exifTagsList.getUiObject2().findObject(By.text(tagName)).getParent().findObject(CLEAR_BUTTON_SELECTOR);
+
+        cleanTagUiElement.click();
+    }
+
+    public static void saveTagChanges() {
         UI_DEVICE.findObject(MENU_ITEM_SAVE_CHANGES_SELECTOR).click();
         UI_DEVICE.wait(Until.hasObject(SNACKBAR_TEXT_SELECTOR), LAUNCH_TIMEOUT);
     }
