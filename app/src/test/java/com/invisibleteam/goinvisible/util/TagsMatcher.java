@@ -101,6 +101,21 @@ public class TagsMatcher {
         };
     }
 
+    public static Matcher<ObservableString> containsSectionName(final String value) {
+        return new TypeSafeMatcher<ObservableString>() {
+
+            @Override
+            public boolean matchesSafely(ObservableString observable) {
+                return observable.get().equals(value);
+            }
+
+            @Override
+            public void describeTo(Description description) {
+                description.appendValue("ViewModel doesn't contain expected value");
+            }
+        };
+    }
+
     public static Matcher<View> containsItem(final Tag tag) {
         return new TypeSafeMatcher<View>() {
 
