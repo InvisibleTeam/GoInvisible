@@ -19,14 +19,19 @@ public class FileView {
     private static final BySelector DETAILS_BACKDROP_GRADIENT_SELECTOR = By.res(GOINVISIBLE_PACKAGE, "details_backdrop_gradient");
     private static final BySelector RECYCLER_VIEW_SELECTOR = By.res(GOINVISIBLE_PACKAGE, "recycler");
 
+    //selectors for top menu elements
     private static final BySelector MENU_ITEM_CLEAR_ALL_SELECTOR = By.res(GOINVISIBLE_PACKAGE, "menu_item_clear_all");
     private static final BySelector MENU_ITEM_SAVE_CHANGES_SELECTOR = By.res(GOINVISIBLE_PACKAGE, "menu_item_save_changes");
-    @SuppressWarnings("SpellCheckingInspection")
-    private static final BySelector SNACKBAR_TEXT_SELECTOR = By.res(GOINVISIBLE_PACKAGE, "snackbar_text");
 
+    //selectors for exif tag list element
     private static final BySelector TAG_KEY_SELECTOR = By.res(GOINVISIBLE_PACKAGE, "tag_key");
     private static final BySelector TAG_VALUE_SELECTOR = By.res(GOINVISIBLE_PACKAGE, "tag_value");
+    private static final BySelector CLEAR_BUTTON_SELECTOR = By.res(GOINVISIBLE_PACKAGE, "clear_button");
     private static final BySelector VISIBLE_LIST_ITEM_SELECTOR = By.clazz("android.widget.RelativeLayout").hasChild(TAG_KEY_SELECTOR);
+
+    //selector for toast message after cleaning all tags
+    @SuppressWarnings("SpellCheckingInspection")
+    private static final BySelector SNACKBAR_TEXT_SELECTOR = By.res(GOINVISIBLE_PACKAGE, "snackbar_text");
 
     public static boolean isOpened() {
         return UI_DEVICE.wait(Until.hasObject(DETAILS_BACKDROP_GRADIENT_SELECTOR), LAUNCH_TIMEOUT);
