@@ -19,6 +19,11 @@ public class FileView {
     private static final BySelector DETAILS_BACKDROP_GRADIENT_SELECTOR = By.res(GOINVISIBLE_PACKAGE, "details_backdrop_gradient");
     private static final BySelector RECYCLER_VIEW_SELECTOR = By.res(GOINVISIBLE_PACKAGE, "recycler");
 
+    private static final BySelector MENU_ITEM_CLEAR_ALL_SELECTOR = By.res(GOINVISIBLE_PACKAGE, "menu_item_clear_all");
+    private static final BySelector MENU_ITEM_SAVE_CHANGES_SELECTOR = By.res(GOINVISIBLE_PACKAGE, "menu_item_save_changes");
+    @SuppressWarnings("SpellCheckingInspection")
+    private static final BySelector SNACKBAR_TEXT_SELECTOR = By.res(GOINVISIBLE_PACKAGE, "snackbar_text");
+
     private static final BySelector TAG_KEY_SELECTOR = By.res(GOINVISIBLE_PACKAGE, "tag_key");
     private static final BySelector TAG_VALUE_SELECTOR = By.res(GOINVISIBLE_PACKAGE, "tag_value");
     private static final BySelector VISIBLE_LIST_ITEM_SELECTOR = By.clazz("android.widget.RelativeLayout").hasChild(TAG_KEY_SELECTOR);
@@ -52,5 +57,12 @@ public class FileView {
         exifTagsList.scrollToBound(Direction.UP);
 
         return searchResult;
+    }
+
+    public static void clearAllData() {
+        UI_DEVICE.findObject(MENU_ITEM_CLEAR_ALL_SELECTOR).click();
+        UI_DEVICE.wait(Until.hasObject(MENU_ITEM_SAVE_CHANGES_SELECTOR), LAUNCH_TIMEOUT);
+        UI_DEVICE.findObject(MENU_ITEM_SAVE_CHANGES_SELECTOR).click();
+        UI_DEVICE.wait(Until.hasObject(SNACKBAR_TEXT_SELECTOR), LAUNCH_TIMEOUT);
     }
 }
