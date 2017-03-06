@@ -14,10 +14,13 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.LinkedHashMap;
+
 import static com.invisibleteam.goinvisible.utilities.Config.UI_DEVICE;
 import static com.invisibleteam.goinvisible.utilities.StorageManagementHelper.PICTURES_OUTPUT_PATH;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
+import static org.junit.Assert.assertNotEquals;
 
 @RunWith(AndroidJUnit4.class)
 public class FileViewTests {
@@ -73,5 +76,44 @@ public class FileViewTests {
         int displayedTagCount = FileView.getExifData().size();
 
         assertEquals(expectedTagCount, displayedTagCount);
+    }
+
+    /**
+     * Test case:
+     * - Check that all tags can be cleaned at once
+     * <p>
+     * Preconditions:
+     * - GoInvisible app is opened
+     * - permissions are granted
+     * - there is files with EXIF data in device storage
+     * <p>
+     * Steps to execute:
+     * - ensure GoInvisible ListView is opened
+     * - ensure that images are displayed on ListView
+     * - open photo with EXIF data
+     * - clear all data at once
+     * - ensure that EXIF data was cleared
+     *
+     * @throws Exception
+     */
+    @Test
+    public void checkImageTagsCanBeAllCleared() throws Exception {
+        //noinspection SpellCheckingInspection
+        String photoName = "FullOfExifs";
+
+        ImagesView.isOpened();
+        ImagesView.isAnyImageLoaded();
+
+        ImagesView.openPhoto(photoName);
+
+        assertTrue(FileView.isOpened());
+
+        LinkedHashMap<String, String> tagsBeforeCleaning = FileView.getExifData();
+
+        FileView.clearAllData();
+
+        LinkedHashMap<String, String> tagsAfterCleaning = FileView.getExifData();
+
+        assertNotEquals(tagsAfterCleaning, tagsBeforeCleaning);
     }
 }
