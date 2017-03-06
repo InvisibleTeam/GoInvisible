@@ -116,4 +116,63 @@ public class FileViewTests {
 
         assertNotEquals(tagsAfterCleaning, tagsBeforeCleaning);
     }
+
+    /**
+     * Test case:
+     * - Check that tags can be cleaned individually
+     * <p>
+     * Preconditions:
+     * - GoInvisible app is opened
+     * - permissions are granted
+     * - there is files with EXIF data in device storage
+     * <p>
+     * Steps to execute:
+     * - ensure GoInvisible ListView is opened
+     * - ensure that images are displayed on ListView
+     * - open photo with EXIF data
+     * - clear data for:
+     * -- GPSLatitude
+     * -- ExposureTime
+     * -- GPSTimeStamp
+     * -- Model
+     * - ensure that ONLY selected EXIF data was cleared
+     *
+     * @throws Exception
+     */
+    @Test
+    public void checkImageTagsCanBeClearedIndividually() throws Exception {
+        //noinspection SpellCheckingInspection
+        String photoName = "FullOfExifs";
+
+        ImagesView.isOpened();
+        ImagesView.isAnyImageLoaded();
+
+        ImagesView.openPhoto(photoName);
+
+        assertTrue(FileView.isOpened());
+
+        LinkedHashMap<String, String> tagsBeforeCleaning = FileView.getExifData();
+
+        FileView.clearExifTagData("GPSLatitude");
+        FileView.clearExifTagData("GPSTimeStamp");
+        FileView.clearExifTagData("Model");
+        FileView.clearExifTagData("Compression");
+
+        FileView.saveTagChanges();
+
+        LinkedHashMap<String, String> tagsAfterCleaning = FileView.getExifData();
+
+        LinkedHashMap<String, String> expectedTagsAfterCleaning = (LinkedHashMap<String, String>) tagsBeforeCleaning.clone();
+
+        expectedTagsAfterCleaning.put("GPSLatitude", "0° 0' 0'' N\n0° 0' 0'' E");
+        expectedTagsAfterCleaning.put("GPSTimeStamp", "00:00:00");
+        expectedTagsAfterCleaning.put("Model", "null");
+        expectedTagsAfterCleaning.put("Compression", "0");
+
+        assertEquals(tagsBeforeCleaning.size(), tagsAfterCleaning.size());
+        assertNotEquals(tagsBeforeCleaning, tagsAfterCleaning);
+
+        assertEquals(expectedTagsAfterCleaning.size(), tagsAfterCleaning.size());
+        assertNotEquals(expectedTagsAfterCleaning, tagsAfterCleaning);
+    }
 }
