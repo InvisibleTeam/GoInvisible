@@ -11,7 +11,7 @@ import com.invisibleteam.goinvisible.model.Tag;
 import com.invisibleteam.goinvisible.model.TagGroupType;
 import com.invisibleteam.goinvisible.model.TagType;
 import com.invisibleteam.goinvisible.mvvm.edition.EditActivity;
-import com.invisibleteam.goinvisible.mvvm.edition.OnTagActionListener;
+import com.invisibleteam.goinvisible.mvvm.edition.callback.EditViewModelCallback;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -58,29 +58,29 @@ public class TagViewHolderTest {
     @Test
     public void whenViewHolderHasSetTagActionListenerAndClearButtonIsClicked_OnClearMethodIsCalled() {
         //Given
-        OnTagActionListener onTagActionListener = mock(OnTagActionListener.class);
-        TagViewHolder holder = new TagViewHolder(itemView, onTagActionListener);
+        EditViewModelCallback editViewModelCallback = mock(EditViewModelCallback.class);
+        TagViewHolder holder = new TagViewHolder(itemView, editViewModelCallback);
         holder.setTag(tag);
 
         //When
         holder.itemView.findViewById(R.id.clear_button).performClick();
 
         //Then
-        verify(onTagActionListener).onClear(tag);
+        verify(editViewModelCallback).onClear(tag);
     }
 
     @Test
     public void whenViewHolderHasSetTagActionListenerAndItemViewIsClicked_OnEditStartedMethodIsCalled() {
         //Given
-        OnTagActionListener onTagActionListener = mock(OnTagActionListener.class);
-        TagViewHolder holder = new TagViewHolder(itemView, onTagActionListener);
+        EditViewModelCallback editViewModelCallback = mock(EditViewModelCallback.class);
+        TagViewHolder holder = new TagViewHolder(itemView, editViewModelCallback);
         holder.setTag(tag);
 
         //When
         holder.itemView.performClick();
 
         //Then
-        verify(onTagActionListener).onEditStarted(tag);
+        verify(editViewModelCallback).onEditStarted(tag);
     }
 
 }

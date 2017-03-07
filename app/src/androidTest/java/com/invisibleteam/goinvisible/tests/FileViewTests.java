@@ -3,10 +3,10 @@ package com.invisibleteam.goinvisible.tests;
 import android.support.media.ExifInterface;
 import android.support.test.runner.AndroidJUnit4;
 
-import com.invisibleteam.goinvisible.mvvm.edition.TagsManager;
 import com.invisibleteam.goinvisible.pages.FileView;
 import com.invisibleteam.goinvisible.pages.GoInvisibleApplication;
 import com.invisibleteam.goinvisible.pages.ImagesView;
+import com.invisibleteam.goinvisible.util.TagsManager;
 import com.invisibleteam.goinvisible.utilities.StorageManagementHelper;
 
 import org.junit.After;

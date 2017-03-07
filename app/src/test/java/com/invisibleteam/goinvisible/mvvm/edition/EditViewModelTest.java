@@ -113,7 +113,8 @@ public class EditViewModelTest {
         Tag tag = new Tag(
                 ExifInterface.TAG_GPS_LATITUDE,
                 "value",
-                TagType.build(InputType.POSITION_DOUBLE));
+                TagType.build(InputType.POSITION_DOUBLE),
+                TagGroupType.IMAGE_INFO);
 
         //When
         editViewModel.onEditStarted(tag);
@@ -128,7 +129,8 @@ public class EditViewModelTest {
         Tag tag = new Tag(
                 ExifInterface.TAG_IMAGE_WIDTH,
                 "value",
-                TagType.build(InputType.UNMODIFIABLE));
+                TagType.build(InputType.UNMODIFIABLE),
+                TagGroupType.IMAGE_INFO);
 
         //When
         editViewModel.onEditStarted(tag);
@@ -152,7 +154,8 @@ public class EditViewModelTest {
         Tag tag = new Tag(
                 ExifInterface.TAG_IMAGE_WIDTH,
                 "value",
-                TagType.build(InputType.INDEFINITE));
+                TagType.build(InputType.INDEFINITE),
+                TagGroupType.IMAGE_INFO);
 
         //When
         editViewModel.onEditStarted(tag);

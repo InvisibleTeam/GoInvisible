@@ -10,9 +10,7 @@ import android.view.ViewGroup;
 import com.invisibleteam.goinvisible.R;
 import com.invisibleteam.goinvisible.helper.EditItemAdapterHelper;
 import com.invisibleteam.goinvisible.model.Tag;
-import com.invisibleteam.goinvisible.mvvm.edition.OnTagActionListener;
 import com.invisibleteam.goinvisible.mvvm.edition.callback.EditViewModelCallback;
-import com.invisibleteam.goinvisible.util.TextViewUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +30,6 @@ class EditItemAdapter extends RecyclerView.Adapter<ViewHolder> {
 
     private List<Tag> baseTagsList;
     private EditViewModelCallback editViewModelCallback;
-    private OnTagActionListener onTagActionListener;
     private Context context;
     private final EditItemAdapterHelper helper;
 
@@ -50,7 +47,7 @@ class EditItemAdapter extends RecyclerView.Adapter<ViewHolder> {
         }
 
         final View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.edit_item_view, parent, false);
-        return new TagViewHolder(itemView, onTagActionListener);
+        return new TagViewHolder(itemView, editViewModelCallback);
     }
 
     @Override
@@ -88,10 +85,10 @@ class EditItemAdapter extends RecyclerView.Adapter<ViewHolder> {
     }
 
     boolean updateTagList(List<Tag> tags) {
-        this.tagsList = tags;
         notifyDataSetChanged();
         if (baseTagsList == null) {
             baseTagsList = new ArrayList<>();
+            helper.createGroups(tags);
             updateBaseTagList(tags);
             return false;
         }
@@ -99,9 +96,9 @@ class EditItemAdapter extends RecyclerView.Adapter<ViewHolder> {
     }
 
     void prepareTagsList(List<Tag> tags) {
-        tagsList = tags;
         notifyDataSetChanged();
         baseTagsList = new ArrayList<>();
+        helper.createGroups(tags);
         updateBaseTagList(tags);
     }
 
@@ -114,7 +111,7 @@ class EditItemAdapter extends RecyclerView.Adapter<ViewHolder> {
     }
 
     void resetBaseTags() {
-        updateBaseTagList(tagsList);
+        updateBaseTagList(getTagsList());
     }
 
     List<Tag> getChangedTags() {

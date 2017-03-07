@@ -4,6 +4,7 @@ import android.view.View;
 
 import com.invisibleteam.goinvisible.model.Tag;
 import com.invisibleteam.goinvisible.mvvm.edition.adapter.EditItemViewModel;
+import com.invisibleteam.goinvisible.util.binding.ObservableString;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;

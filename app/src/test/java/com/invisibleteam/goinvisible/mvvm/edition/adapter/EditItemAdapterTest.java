@@ -9,7 +9,6 @@ import com.invisibleteam.goinvisible.model.Tag;
 import com.invisibleteam.goinvisible.model.TagGroupType;
 import com.invisibleteam.goinvisible.model.TagType;
 import com.invisibleteam.goinvisible.mvvm.edition.EditActivity;
-import com.invisibleteam.goinvisible.mvvm.edition.OnTagActionListener;
 import com.invisibleteam.goinvisible.mvvm.edition.callback.EditViewModelCallback;
 
 import org.junit.Before;
@@ -211,23 +210,23 @@ public class EditItemAdapterTest {
     public void whenTagListIsUpdatedTwice_OnlyOnTagsUpdatedMethodIsCalled() {
         //Given
         EditItemAdapter adapter = new EditItemAdapter(new EditItemAdapterHelper());
-        OnTagActionListener onTagActionListener = mock(OnTagActionListener.class);
-        adapter.setOnTagActionListener(onTagActionListener);
+        EditViewModelCallback editViewModelCallback = mock(EditViewModelCallback.class);
+        adapter.setEditViewModelCallback(editViewModelCallback);
         adapter.updateTagList(tagList);
 
         //When
         adapter.updateTagList(tagList);
 
         //Then
-        verify(onTagActionListener).onTagsUpdated();
+        verify(editViewModelCallback).onTagsUpdated();
     }
 
     @Test
     public void whenTagIsUpdatedAndTagListIsEmpty_NothingIsHappened() {
         //Given
         EditItemAdapter adapter = new EditItemAdapter(new EditItemAdapterHelper());
-        OnTagActionListener onTagActionListener = mock(OnTagActionListener.class);
-        adapter.setOnTagActionListener(onTagActionListener);
+        EditViewModelCallback editViewModelCallback = mock(EditViewModelCallback.class);
+        adapter.setEditViewModelCallback(editViewModelCallback);
         adapter = spy(adapter);
 
         //When
@@ -235,7 +234,7 @@ public class EditItemAdapterTest {
         adapter.updateTag(tag1);
 
         //Then
-        verify(onTagActionListener, times(0)).onTagsUpdated();
+        verify(editViewModelCallback, times(0)).onTagsUpdated();
     }
 
     private Tag createTag(String key, String value, TagGroupType groupType) {

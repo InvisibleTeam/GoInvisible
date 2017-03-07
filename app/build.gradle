@@ -1,7 +1,6 @@
 apply plugin: 'com.android.application'
 apply from: 'nonnull.gradle'
 apply plugin: 'me.tatarka.retrolambda'
-apply plugin: 'android-apt'
 apply from: 'jacoco.gradle'
 
 android {
