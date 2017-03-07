@@ -49,4 +49,8 @@ public class ImagesView {
         int centerOfWidth = UI_DEVICE.getDisplayWidth() / 2;
         UI_DEVICE.drag(centerOfWidth, UI_DEVICE.getDisplayHeight() / 3, centerOfWidth, UI_DEVICE.getDisplayHeight() / 2, 6);
     }
+
+    public static void openPhoto(String photoName) {
+        UI_DEVICE.findObject(By.text(photoName)).click();
+    }
 }

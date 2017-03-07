@@ -1,7 +1,7 @@
 package com.invisibleteam.goinvisible.mvvm.images.adapter;
 
 import android.util.Log;
-import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import com.google.common.collect.ImmutableList;
 import com.invisibleteam.goinvisible.BuildConfig;
@@ -22,6 +22,7 @@ import static com.invisibleteam.goinvisible.mvvm.images.adapter.ImagesItemAdapte
 import static com.invisibleteam.goinvisible.mvvm.images.adapter.ImagesItemAdapter.UNSUPPORTED_EXTENSION_IMAGE;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -45,8 +46,7 @@ public class ImagesItemAdapterTest {
     @Test
     public void whenViewHolderIsCreatedWithNotEmptyList_AdapterHasResults() {
         //Given
-        ViewGroup parent = mock(ViewGroup.class);
-        when(parent.getContext()).thenReturn(activity);
+        LinearLayout parent = new LinearLayout(activity);
         ImagesItemAdapter.ViewHolder viewHolder = imagesItemAdapter.onCreateViewHolder(parent, JPEG_IMAGE);
 
         //When
@@ -101,8 +101,8 @@ public class ImagesItemAdapterTest {
     @Test
     public void whenAdapterItemIsClicked_OnItemClickIsCalled() {
         //Given
-        ViewGroup parent = mock(ViewGroup.class);
-        when(parent.getContext()).thenReturn(activity);
+        LinearLayout parent = new LinearLayout(activity);
+        parent = spy(parent);
         ImagesItemAdapter.ViewHolder viewHolder = imagesItemAdapter.onCreateViewHolder(parent, JPEG_IMAGE);
 
         ImageDetails imageDetails = IMAGES_DETAILS_LIST.get(0);
@@ -119,10 +119,10 @@ public class ImagesItemAdapterTest {
     }
 
     @Test
-    public void whenAdapterUnsupportedtemIsClicked_OnUnsupportedItemClickIsCalled() {
+    public void whenAdapterUnsupportedItemIsClicked_OnUnsupportedItemClickIsCalled() {
         //Given
-        ViewGroup parent = mock(ViewGroup.class);
-        when(parent.getContext()).thenReturn(activity);
+        LinearLayout parent = new LinearLayout(activity);
+        parent = spy(parent);
         ImagesItemAdapter.ViewHolder viewHolder = imagesItemAdapter
                 .onCreateViewHolder(parent, UNSUPPORTED_EXTENSION_IMAGE);
 

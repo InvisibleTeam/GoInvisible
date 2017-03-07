@@ -1,32 +1,37 @@
 package com.invisibleteam.goinvisible.mvvm.edition.adapter;
 
-import android.content.Context;
-import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import com.invisibleteam.goinvisible.BuildConfig;
+import com.invisibleteam.goinvisible.helper.EditItemAdapterHelper;
 import com.invisibleteam.goinvisible.model.InputType;
 import com.invisibleteam.goinvisible.model.Tag;
+import com.invisibleteam.goinvisible.model.TagGroupType;
 import com.invisibleteam.goinvisible.model.TagType;
+import com.invisibleteam.goinvisible.mvvm.edition.EditActivity;
+import com.invisibleteam.goinvisible.mvvm.edition.OnTagActionListener;
 import com.invisibleteam.goinvisible.mvvm.edition.callback.EditViewModelCallback;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
-import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.invisibleteam.goinvisible.util.TagsMatcher.containsItem;
 import static com.invisibleteam.goinvisible.util.TagsMatcher.containsKey;
+import static com.invisibleteam.goinvisible.util.TagsMatcher.containsSectionName;
 import static com.invisibleteam.goinvisible.util.TagsMatcher.containsTag;
 import static com.invisibleteam.goinvisible.util.TagsMatcher.containsValue;
 import static com.invisibleteam.goinvisible.util.TagsMatcher.notContainsTag;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -34,63 +39,73 @@ import static org.mockito.Mockito.when;
 @Config(constants = BuildConfig.class, sdk = 21)
 public class EditItemAdapterTest {
 
-    private Tag TAG1 = createTag("key1", "value1");
-    private Tag TAG2 = createTag("key2", "value2");
-    private Tag TAG3 = createTag("key3", "value3");
-    private Tag TAG4 = createTag("key4", "value4");
-    private Tag TAG5 = createTag("key5", "value5");
-    private Tag TAG6 = createTag("key6", "value6");
-    private Tag TAG7 = createTag("key7", "value7");
+    private static final int DEFAULT_VIEW_TYPE = -1;
+    private static final int NUMBER_OF_HEADERS = 4;
+    private final Tag tag1 = createTag("key1", "value1", TagGroupType.IMAGE_INFO);
+    private final Tag tag2 = createTag("key2", "value2", TagGroupType.LOCATION_INFO);
+    private final Tag tag3 = createTag("key3", "value3", TagGroupType.DEVICE_INFO);
+    private final Tag tag4 = createTag("key4", "value4", TagGroupType.ADVANCED);
 
     private final List<Tag> tagList = new ArrayList<Tag>() {
         {
-            add(TAG1);
-            add(TAG2);
-            add(TAG3);
-            add(TAG4);
-            add(TAG5);
-            add(TAG6);
-            add(TAG7);
+            add(tag1);
+            add(tag2);
+            add(tag3);
+            add(tag4);
         }
     };
-    private Context context;
+    private EditActivity activity;
 
     @Before
     public void init() {
-        context = RuntimeEnvironment.application;
+        activity = Robolectric.buildActivity(EditActivity.class).create().get();
     }
 
     @Test
-    public void whenTagsListIsNotEmpty_ViewHolderIsBound() {
+    public void whenTagsListIsNotEmpty_TagViewHolderIsBound() {
         //Given
-        EditItemAdapter adapter = new EditItemAdapter();
+        EditItemAdapter adapter = new EditItemAdapter(new EditItemAdapterHelper());
         adapter.updateTagList(tagList);
-        ViewGroup view = mock(ViewGroup.class);
-        when(view.getContext()).thenReturn(context);
+        LinearLayout parent = new LinearLayout(activity);
 
         //When
-        EditItemAdapter.ViewHolder holder = adapter.onCreateViewHolder(view, 0);
-        adapter.onBindViewHolder(holder, 0);
+        TagViewHolder holder = (TagViewHolder) adapter.onCreateViewHolder(parent, DEFAULT_VIEW_TYPE);
+        adapter.onBindViewHolder(holder, 1);
+        int tagListSize = tagList.size() + NUMBER_OF_HEADERS;
 
         //Then
-        EditItemViewModel editItemViewModel = holder.editItemViewModel;
+        assertThat(adapter.getTagsList().size(), is(tagListSize));
+        assertThat(holder.getEditItemViewModel(), containsKey("key1"));
+        assertThat(holder.getEditItemViewModel(), containsValue("value1"));
+    }
 
-        assertThat(adapter.getTagsList().size(), is(tagList.size()));
-        assertThat(holder.itemView, containsItem(tagList.get(0)));
-        assertThat(editItemViewModel, containsKey("key1"));
-        assertThat(editItemViewModel, containsValue("value1"));
+    @Test
+    public void whenTagsListIsNotEmpty_SectionViewHolderIsBound() {
+        //Given
+        EditItemAdapter adapter = new EditItemAdapter(new EditItemAdapterHelper());
+        adapter.updateTagList(tagList);
+        LinearLayout parent = new LinearLayout(activity);
+
+        //When
+        SectionViewHolder holder = (SectionViewHolder) adapter.onCreateViewHolder(parent, TagGroupType.IMAGE_INFO.ordinal());
+        adapter.onBindViewHolder(holder, 0);
+        int tagListSize = tagList.size() + NUMBER_OF_HEADERS;
+
+        //Then
+        assertThat(adapter.getTagsList().size(), is(tagListSize));
+        assertThat(holder.getSectionEditItemViewModel().getTagSectionName(), containsSectionName("Image info"));
     }
 
     @Test
     public void whenTagIsUpdated_TagsListIsUpdated() {
         //Given
-        EditItemAdapter adapter = new EditItemAdapter();
+        EditItemAdapter adapter = new EditItemAdapter(new EditItemAdapterHelper());
         adapter.updateTagList(tagList);
         EditViewModelCallback listener = mock(EditViewModelCallback.class);
         adapter.setEditViewModelCallback(listener);
 
         //When
-        Tag editedTag = new Tag("key1", "editedValue", TagType.build(InputType.TEXT_STRING));
+        Tag editedTag = new Tag("key1", "editedValue", TagType.build(InputType.TEXT_STRING), TagGroupType.ADVANCED);
         adapter.updateTag(editedTag);
 
         //Then
@@ -101,30 +116,129 @@ public class EditItemAdapterTest {
     @Test
     public void whenTagsAreChanged_OnlyChangedTagsAreReturned() {
         //Given
-        EditItemAdapter adapter = new EditItemAdapter();
+        EditItemAdapter adapter = new EditItemAdapter(new EditItemAdapterHelper());
         EditViewModelCallback listener = mock(EditViewModelCallback.class);
         adapter.setEditViewModelCallback(listener);
         adapter.updateTagList(tagList);
 
         //When
-        TAG1.setValue("changedValue");
-        TAG3.setValue("changedValue");
-        adapter.updateTag(TAG1);
-        adapter.updateTag(TAG2);
-        adapter.updateTag(TAG3);
+        tag1.setValue("changedValue");
+        tag3.setValue("changedValue");
+        adapter.updateTag(tag1);
+        adapter.updateTag(tag2);
+        adapter.updateTag(tag3);
         List<Tag> changedTags = adapter.getChangedTags();
 
         //Then
-        assertThat(changedTags, containsTag(TAG1));
-        assertThat(changedTags, notContainsTag(TAG2));
-        assertThat(changedTags, containsTag(TAG3));
-        assertThat(changedTags, notContainsTag(TAG4));
-        assertThat(changedTags, notContainsTag(TAG5));
-        assertThat(changedTags, notContainsTag(TAG6));
-        assertThat(changedTags, notContainsTag(TAG7));
+        assertThat(changedTags, containsTag(tag1));
+        assertThat(changedTags, notContainsTag(tag2));
+        assertThat(changedTags, containsTag(tag3));
+        assertThat(changedTags, notContainsTag(tag4));
     }
 
-    private Tag createTag(String key, String value) {
-        return new Tag(key, value, TagType.build(InputType.TEXT_STRING));
+    @Test
+    public void whenTagIsAnImageInfoSection_ImageInfoSectionViewTypeIsReturned() {
+        //Given
+        EditItemAdapter adapter = new EditItemAdapter(new EditItemAdapterHelper());
+
+        //When
+        int viewType = adapter.getItemViewType(EditItemAdapter.IMAGE_INFO_SECTION_POSITION);
+
+        //Then
+        assertThat(viewType, is(TagGroupType.IMAGE_INFO.ordinal()));
+    }
+
+    @Test
+    public void whenTagIsALocationInfoSection_LocationInfoSectionViewTypeIsReturned() {
+        //Given
+        EditItemAdapter adapter = new EditItemAdapter(new EditItemAdapterHelper());
+
+        //When
+        int viewType = adapter.getItemViewType(EditItemAdapter.LOCATION_INFO_SECTION_POSITION);
+
+        //Then
+        assertThat(viewType, is(TagGroupType.LOCATION_INFO.ordinal()));
+    }
+
+    @Test
+    public void whenTagIsADeviceInfoSection_DeviceInfoSectionViewTypeIsReturned() {
+        //Given
+        EditItemAdapter adapter = new EditItemAdapter(new EditItemAdapterHelper());
+
+        //When
+        int viewType = adapter.getItemViewType(EditItemAdapter.DEVICE_INFO_SECTION_POSITION);
+
+        //Then
+        assertThat(viewType, is(TagGroupType.DEVICE_INFO.ordinal()));
+    }
+
+    @Test
+    public void whenTagIsAnAdvancedInfoSection_AdvancedInfoSectionViewTypeIsReturned() {
+        //Given
+        EditItemAdapter adapter = new EditItemAdapter(new EditItemAdapterHelper());
+
+        //When
+        int viewType = adapter.getItemViewType(EditItemAdapter.ADVANCED_INFO_SECTION_POSITION);
+
+        //Then
+        assertThat(viewType, is(TagGroupType.ADVANCED.ordinal()));
+    }
+
+    @Test
+    public void whenTagIsNotASection_DefaultViewTypeIsReturned() {
+        //Given
+        EditItemAdapter adapter = new EditItemAdapter(new EditItemAdapterHelper());
+
+        //When
+        int viewType = adapter.getItemViewType(10);
+
+        //Then
+        assertThat(viewType, is(EditItemAdapter.DEFAULT_VIEW_TYPE));
+    }
+
+    @Test
+    public void whenTagListIsUpdated_HeadersAreAddedToListSuccessfully() {
+        //Given
+        EditItemAdapter adapter = new EditItemAdapter(new EditItemAdapterHelper());
+        adapter.updateTagList(tagList);
+        int tagListWithSectionHeaders = tagList.size() + NUMBER_OF_HEADERS;
+
+        //Then
+        assertThat(adapter.getItemCount(), is(tagListWithSectionHeaders));
+    }
+
+    @Test
+    public void whenTagListIsUpdatedTwice_OnlyOnTagsUpdatedMethodIsCalled() {
+        //Given
+        EditItemAdapter adapter = new EditItemAdapter(new EditItemAdapterHelper());
+        OnTagActionListener onTagActionListener = mock(OnTagActionListener.class);
+        adapter.setOnTagActionListener(onTagActionListener);
+        adapter.updateTagList(tagList);
+
+        //When
+        adapter.updateTagList(tagList);
+
+        //Then
+        verify(onTagActionListener).onTagsUpdated();
+    }
+
+    @Test
+    public void whenTagIsUpdatedAndTagListIsEmpty_NothingIsHappened() {
+        //Given
+        EditItemAdapter adapter = new EditItemAdapter(new EditItemAdapterHelper());
+        OnTagActionListener onTagActionListener = mock(OnTagActionListener.class);
+        adapter.setOnTagActionListener(onTagActionListener);
+        adapter = spy(adapter);
+
+        //When
+        when(adapter.getTagsList()).thenReturn(new ArrayList<>());
+        adapter.updateTag(tag1);
+
+        //Then
+        verify(onTagActionListener, times(0)).onTagsUpdated();
+    }
+
+    private Tag createTag(String key, String value, TagGroupType groupType) {
+        return new Tag(key, value, TagType.build(InputType.TEXT_STRING), groupType);
     }
 }

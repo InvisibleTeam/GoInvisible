@@ -4,6 +4,7 @@ import android.media.ExifInterface;
 
 import com.invisibleteam.goinvisible.model.InputType;
 import com.invisibleteam.goinvisible.model.Tag;
+import com.invisibleteam.goinvisible.model.TagGroupType;
 import com.invisibleteam.goinvisible.model.TagType;
 import com.invisibleteam.goinvisible.mvvm.edition.adapter.EditCompoundRecyclerView;
 import com.invisibleteam.goinvisible.mvvm.edition.callback.TagEditionStartCallback;
@@ -28,7 +29,7 @@ import static org.mockito.Mockito.verify;
 @RunWith(MockitoJUnitRunner.class)
 public class EditViewModelTest {
 
-    private final Tag tag = new Tag("key", "value", TagType.build(InputType.DATE_STRING));
+    private final Tag tag = new Tag("key", "value", TagType.build(InputType.DATE_STRING), TagGroupType.ADVANCED);
 
     @Mock
     private EditCompoundRecyclerView editCompoundRecyclerView;

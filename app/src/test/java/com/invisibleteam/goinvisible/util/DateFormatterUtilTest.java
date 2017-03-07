@@ -3,6 +3,7 @@ package com.invisibleteam.goinvisible.util;
 import com.invisibleteam.goinvisible.BuildConfig;
 import com.invisibleteam.goinvisible.model.InputType;
 import com.invisibleteam.goinvisible.model.Tag;
+import com.invisibleteam.goinvisible.model.TagGroupType;
 import com.invisibleteam.goinvisible.model.TagType;
 
 import org.junit.Before;
@@ -80,6 +81,6 @@ public class DateFormatterUtilTest {
 
     private Tag createTag(InputType textString) {
         TagType tagType = TagType.build(textString);
-        return new Tag("key", "value", tagType);
+        return new Tag("key", "value", tagType, TagGroupType.ADVANCED);
     }
 }

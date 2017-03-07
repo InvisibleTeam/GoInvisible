@@ -11,6 +11,7 @@ import com.invisibleteam.goinvisible.R;
 import com.invisibleteam.goinvisible.databinding.TextDialogBinding;
 import com.invisibleteam.goinvisible.model.InputType;
 import com.invisibleteam.goinvisible.model.Tag;
+import com.invisibleteam.goinvisible.model.TagGroupType;
 import com.invisibleteam.goinvisible.model.TagType;
 import com.invisibleteam.goinvisible.mvvm.edition.EditViewModel;
 import com.invisibleteam.goinvisible.mvvm.edition.callback.EditViewModelCallback;
@@ -158,7 +159,7 @@ public class DialogFactoryTest {
     public void whenTagWithRangedIntegerInputTypeIsPassed_CreateRangedDialogReturnsDialogInstance() {
         //Given
         TagType tagType = TagType.build(RANGED_INTEGER);
-        Tag tag = new Tag(TAG_ORIENTATION, "value", tagType);
+        Tag tag = new Tag(TAG_ORIENTATION, "value", tagType, TagGroupType.ADVANCED);
         dialogFactory = spy(new DialogFactory(dialog, tag, mock(EditViewModel.class)));
 
         //When
@@ -229,7 +230,7 @@ public class DialogFactoryTest {
 
     private Tag createTag(InputType textString) {
         TagType tagType = TagType.build(textString);
-        return new Tag("key", "value", tagType);
+        return new Tag("key", "value", tagType, TagGroupType.ADVANCED);
     }
 
     private Tag createTag(String regexp) {
@@ -237,7 +238,7 @@ public class DialogFactoryTest {
         tagType = spy(tagType);
         when(tagType.getValidationRegexp()).thenReturn(regexp);
 
-        return new Tag("key", "value", tagType);
+        return new Tag("key", "value", tagType, TagGroupType.ADVANCED);
     }
 
     private TextDialogBinding createBinding() {

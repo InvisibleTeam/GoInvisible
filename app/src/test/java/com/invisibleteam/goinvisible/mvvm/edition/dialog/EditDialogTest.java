@@ -6,6 +6,7 @@ import android.os.Bundle;
 import com.invisibleteam.goinvisible.BuildConfig;
 import com.invisibleteam.goinvisible.model.InputType;
 import com.invisibleteam.goinvisible.model.Tag;
+import com.invisibleteam.goinvisible.model.TagGroupType;
 import com.invisibleteam.goinvisible.model.TagType;
 import com.invisibleteam.goinvisible.util.TagsMatcher;
 
@@ -28,7 +29,7 @@ import static org.mockito.Mockito.when;
 @Config(constants = BuildConfig.class, sdk = 21)
 public class EditDialogTest {
 
-    private final Tag TAG = new Tag("key", "value", TagType.build(InputType.TEXT_STRING));
+    private final Tag TAG = new Tag("key", "value", TagType.build(InputType.TEXT_STRING), TagGroupType.ADVANCED);
     private Activity activity;
 
     @Before
