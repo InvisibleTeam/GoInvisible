@@ -14,7 +14,6 @@ import android.view.WindowManager;
 
 import com.invisibleteam.goinvisible.BuildConfig;
 import com.invisibleteam.goinvisible.R;
-import com.invisibleteam.goinvisible.helper.EditActivityHelper;
 import com.invisibleteam.goinvisible.helper.SharingHelper;
 import com.invisibleteam.goinvisible.model.ImageDetails;
 import com.invisibleteam.goinvisible.mvvm.edition.EditActivity;

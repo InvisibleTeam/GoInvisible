@@ -3,9 +3,9 @@ package com.invisibleteam.goinvisible.mvvm.view;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
-import android.widget.AutoCompleteTextView;
+import android.support.v7.widget.AppCompatAutoCompleteTextView;
 
-public class EditTextField extends AutoCompleteTextView {
+public class EditTextField extends AppCompatAutoCompleteTextView {
 
     public EditTextField(Context context) {
         super(context);

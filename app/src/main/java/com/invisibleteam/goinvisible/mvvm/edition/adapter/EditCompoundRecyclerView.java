@@ -50,6 +50,7 @@ public class EditCompoundRecyclerView extends CompoundRecyclerView<Tag, ViewHold
         return itemAdapter.getChangedTags();
     }
 
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
     public List<Tag> getAllTags() {
         return itemAdapter.getTagsList();
     }
