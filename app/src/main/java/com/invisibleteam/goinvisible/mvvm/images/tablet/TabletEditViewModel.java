@@ -3,6 +3,7 @@ package com.invisibleteam.goinvisible.mvvm.images.tablet;
 
 import android.databinding.ObservableBoolean;
 
+import com.invisibleteam.goinvisible.helper.SharingHelper;
 import com.invisibleteam.goinvisible.model.ImageDetails;
 import com.invisibleteam.goinvisible.model.Tag;
 import com.invisibleteam.goinvisible.mvvm.edition.callback.TagEditionStartCallback;
@@ -48,7 +49,7 @@ public class TabletEditViewModel extends EditViewModel {
     }
 
     public void onShare() {
-        tabletEditTagCallback.onShare(imageDetails);
+        tabletEditTagCallback.onShare(imageDetails, new SharingHelper());
     }
 
     private boolean saveTags() {

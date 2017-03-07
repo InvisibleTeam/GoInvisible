@@ -230,9 +230,9 @@ public class ImagesActivity extends CommonEditActivity implements PhoneImagesVie
     }
 
     @Override
-    public void onShare(ImageDetails details) {
+    public void onShare(ImageDetails details, SharingHelper sharingHelper) {
         try {
-            Intent intent = SharingHelper.buildShareImageIntent(details, getContentResolver());
+            Intent intent = sharingHelper.buildShareImageIntent(details, getContentResolver());
             startActivity(Intent.createChooser(intent, getString(R.string.share_intent_chooser_title)));
         } catch (FileNotFoundException e) {
             Log.e(TAG, String.valueOf(e.getMessage()));

@@ -112,7 +112,7 @@ public class EditActivity extends CommonEditActivity implements PhoneTagEditionS
 
     private void shareImage() {
         try {
-            Intent intent = SharingHelper.buildShareImageIntent(imageDetails, getContentResolver());
+            Intent intent = new SharingHelper().buildShareImageIntent(imageDetails, getContentResolver());
             startActivity(Intent.createChooser(intent, getString(R.string.share_intent_chooser_title)));
         } catch (FileNotFoundException e) {
             Log.e(TAG, String.valueOf(e.getMessage()));

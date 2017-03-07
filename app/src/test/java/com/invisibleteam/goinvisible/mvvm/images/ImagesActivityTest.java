@@ -14,6 +14,8 @@ import android.view.WindowManager;
 
 import com.invisibleteam.goinvisible.BuildConfig;
 import com.invisibleteam.goinvisible.R;
+import com.invisibleteam.goinvisible.helper.EditActivityHelper;
+import com.invisibleteam.goinvisible.helper.SharingHelper;
 import com.invisibleteam.goinvisible.model.ImageDetails;
 import com.invisibleteam.goinvisible.mvvm.edition.EditActivity;
 import com.invisibleteam.goinvisible.mvvm.images.tablet.TabletEditViewModel;
@@ -27,14 +29,17 @@ import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
+import org.robolectric.Shadows;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowActivity;
 import org.robolectric.shadows.ShadowIntent;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.core.IsNull.notNullValue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -299,5 +304,38 @@ public class ImagesActivityTest {
 
         //Then
         verify(editViewModel).initialize(any(), any(), any());
+    }
+
+    @Test
+    public void whenShareImageIsCalled_IntentChooserWithSharingImageIsCalled() throws FileNotFoundException {
+        //Given
+        ShadowActivity shadowActivity = Shadows.shadowOf(activity);
+        SharingHelper helper = spy(new SharingHelper());
+        ImageDetails imageDetails = new ImageDetails("Path", "Name");
+        doReturn("media:content").when(helper).prepareImagePathToShare(imageDetails, activity.getContentResolver());
+
+        //When
+        activity.onShare(imageDetails, helper);
+        Intent shareIntent = shadowActivity.getNextStartedActivity();
+
+        //Then
+        assertThat(shareIntent, is(notNullValue()));
+    }
+
+    @Test
+    public void whenShareImageIsCalledAndShareIntentDoNotHaveExtras_IntentChooserWithSharingImageIsCalled() throws FileNotFoundException {
+        //Given
+        ShadowActivity shadowActivity = Shadows.shadowOf(activity);
+        SharingHelper helper = spy(new SharingHelper());
+        ImageDetails imageDetails = new ImageDetails("Path", "Name");
+        doReturn("media:content").when(helper).prepareImagePathToShare(imageDetails, activity.getContentResolver());
+        when(helper.buildShareImageIntent(imageDetails, activity.getContentResolver())).thenReturn(new Intent(Intent.ACTION_SEND));
+
+        //When
+        activity.onShare(imageDetails, helper);
+        Intent shareIntent = shadowActivity.getNextStartedActivity();
+
+        //Then
+        assertThat(shareIntent, is(notNullValue()));
     }
 }
