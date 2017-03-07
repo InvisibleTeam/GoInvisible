@@ -4,6 +4,7 @@ import android.support.media.ExifInterface;
 
 import com.invisibleteam.goinvisible.model.InputType;
 import com.invisibleteam.goinvisible.model.Tag;
+import com.invisibleteam.goinvisible.model.TagGroupType;
 import com.invisibleteam.goinvisible.model.TagType;
 import com.invisibleteam.goinvisible.util.TagsManager;
 
@@ -65,14 +66,14 @@ public class TagsManagerTest {
         List<Tag> tagList = tagsManager.getAllTags();
 
         //Then
-        assertThat(tagList, containsTag(new Tag(TAG_MAKE, "tag1", TagType.build(InputType.TEXT_STRING))));
-        assertThat(tagList, containsTag(new Tag(TAG_MODEL, "tag2", TagType.build(InputType.TEXT_STRING))));
+        assertThat(tagList, containsTag(new Tag(TAG_MAKE, "tag1", TagType.build(InputType.TEXT_STRING), TagGroupType.ADVANCED)));
+        assertThat(tagList, containsTag(new Tag(TAG_MODEL, "tag2", TagType.build(InputType.TEXT_STRING), TagGroupType.ADVANCED)));
     }
 
     @Test
     public void whenTimestampTagIsCleared_DefaultValueIsReturned() throws IOException {
         //When
-        tagsManager.clearTag(new Tag(TAG_GPS_TIMESTAMP, "13:53:20", TagType.build(InputType.TIMESTAMP_STRING)));
+        tagsManager.clearTag(new Tag(TAG_GPS_TIMESTAMP, "13:53:20", TagType.build(InputType.TIMESTAMP_STRING), TagGroupType.ADVANCED));
         exifInterface.saveAttributes();
 
         //Then
@@ -82,7 +83,7 @@ public class TagsManagerTest {
     @Test
     public void whenStringTagIsCleared_DefaultValueIsReturned() throws IOException {
         //When
-        tagsManager.clearTag(new Tag(TAG_MAKE, "text", TagType.build(InputType.TEXT_STRING)));
+        tagsManager.clearTag(new Tag(TAG_MAKE, "text", TagType.build(InputType.TEXT_STRING), TagGroupType.ADVANCED));
         exifInterface.saveAttributes();
 
         //Then
@@ -92,7 +93,7 @@ public class TagsManagerTest {
     @Test
     public void whenIntegerValueTagIsCleared_DefaultValueIsReturned() throws IOException {
         //When
-        tagsManager.clearTag(new Tag(TAG_FLASH, "15", TagType.build(InputType.VALUE_INTEGER)));
+        tagsManager.clearTag(new Tag(TAG_FLASH, "15", TagType.build(InputType.VALUE_INTEGER), TagGroupType.ADVANCED));
         exifInterface.saveAttributes();
 
         //Then
@@ -102,7 +103,7 @@ public class TagsManagerTest {
     @Test
     public void whenDoubleValueTagIsCleared_DefaultValueIsReturned() throws IOException {
         //When
-        tagsManager.clearTag(new Tag(TAG_EXPOSURE_TIME, "30.5", TagType.build(InputType.VALUE_DOUBLE)));
+        tagsManager.clearTag(new Tag(TAG_EXPOSURE_TIME, "30.5", TagType.build(InputType.VALUE_DOUBLE), TagGroupType.ADVANCED));
         exifInterface.saveAttributes();
 
         //Then
@@ -112,7 +113,7 @@ public class TagsManagerTest {
     @Test
     public void whenDateTimeStringTagIsCleared_DefaultValueIsReturned() throws IOException {
         //When
-        tagsManager.clearTag(new Tag(TAG_DATETIME, "2015-12-12 12:55:00", TagType.build(InputType.DATETIME_STRING)));
+        tagsManager.clearTag(new Tag(TAG_DATETIME, "2015-12-12 12:55:00", TagType.build(InputType.DATETIME_STRING), TagGroupType.ADVANCED));
         exifInterface.saveAttributes();
 
         //Then
@@ -122,7 +123,7 @@ public class TagsManagerTest {
     @Test
     public void whenDateStringTagIsCleared_DefaultValueIsReturned() throws IOException {
         //When
-        tagsManager.clearTag(new Tag(TAG_GPS_DATESTAMP, "2015-12-12", TagType.build(InputType.DATE_STRING)));
+        tagsManager.clearTag(new Tag(TAG_GPS_DATESTAMP, "2015-12-12", TagType.build(InputType.DATE_STRING), TagGroupType.ADVANCED));
         exifInterface.saveAttributes();
 
         //Then
@@ -132,7 +133,7 @@ public class TagsManagerTest {
     @Test
     public void whenRangedStringTagIsCleared_DefaultValueIsReturned() throws IOException {
         //When
-        tagsManager.clearTag(new Tag(TAG_GPS_LATITUDE_REF, "NE", TagType.build(InputType.RANGED_STRING)));
+        tagsManager.clearTag(new Tag(TAG_GPS_LATITUDE_REF, "NE", TagType.build(InputType.RANGED_STRING), TagGroupType.ADVANCED));
         exifInterface.saveAttributes();
 
         //Then
@@ -142,7 +143,7 @@ public class TagsManagerTest {
     @Test
     public void whenRangedIntegerTagIsCleared_DefaultValueIsReturned() throws IOException {
         //When
-        tagsManager.clearTag(new Tag(TAG_WHITE_BALANCE, "1", TagType.build(InputType.RANGED_INTEGER)));
+        tagsManager.clearTag(new Tag(TAG_WHITE_BALANCE, "1", TagType.build(InputType.RANGED_INTEGER), TagGroupType.ADVANCED));
         exifInterface.saveAttributes();
 
         //Then
@@ -170,6 +171,6 @@ public class TagsManagerTest {
     }
 
     private Tag createTag(String key, String value) {
-        return new Tag(key, value, TagType.build(InputType.DATETIME_STRING));
+        return new Tag(key, value, TagType.build(InputType.DATETIME_STRING), TagGroupType.ADVANCED);
     }
 }

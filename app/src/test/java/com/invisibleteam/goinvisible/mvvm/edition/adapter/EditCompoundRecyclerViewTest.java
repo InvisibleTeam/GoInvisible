@@ -7,6 +7,7 @@ import android.util.AttributeSet;
 import com.invisibleteam.goinvisible.BuildConfig;
 import com.invisibleteam.goinvisible.model.InputType;
 import com.invisibleteam.goinvisible.model.Tag;
+import com.invisibleteam.goinvisible.model.TagGroupType;
 import com.invisibleteam.goinvisible.model.TagType;
 
 import org.junit.Before;
@@ -23,7 +24,7 @@ import static org.mockito.Mockito.verify;
 @Config(constants = BuildConfig.class, sdk = 21)
 public class EditCompoundRecyclerViewTest {
 
-    private final Tag tag = new Tag("key", "value", TagType.build(InputType.TEXT_STRING));
+    private final Tag tag = new Tag("key", "value", TagType.build(InputType.TEXT_STRING), TagGroupType.ADVANCED);
     private Context context;
 
     @Before

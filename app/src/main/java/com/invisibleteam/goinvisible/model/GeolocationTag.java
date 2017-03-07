@@ -21,7 +21,7 @@ public class GeolocationTag extends Tag {
             String longitudeRef,
             TagType tagType) {
 
-        super(key, value, tagType);
+        super(key, value, tagType, TagGroupType.LOCATION_INFO);
 
         this.secondKey = secondKey;
         this.secondValue = secondValue;

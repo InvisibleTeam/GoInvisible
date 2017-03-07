@@ -35,7 +35,7 @@ public class ImagesItemAdapter extends RecyclerView.Adapter<ImagesItemAdapter.Vi
         if (viewType == JPEG_IMAGE) {
             itemView = LayoutInflater
                     .from(parent.getContext())
-                    .inflate(R.layout.image_item_view, null, false);
+                    .inflate(R.layout.image_item_view, parent, false);
             itemView.setOnClickListener(view1 -> {
                 if (onItemClickListener != null) {
                     ImageDetails imageDetails = (ImageDetails) view1.getTag();
@@ -46,7 +46,7 @@ public class ImagesItemAdapter extends RecyclerView.Adapter<ImagesItemAdapter.Vi
         }
         itemView = LayoutInflater
                 .from(parent.getContext())
-                .inflate(R.layout.unsupported_image_item_view, null, false);
+                .inflate(R.layout.unsupported_image_item_view, parent, false);
         itemView.setOnClickListener(view1 -> {
             if (onItemClickListener != null) {
                 onItemClickListener.onUnsupportedItemClick();

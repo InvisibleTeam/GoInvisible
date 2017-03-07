@@ -16,7 +16,7 @@ public class StorageManagementHelper {
     @SuppressWarnings("SpellCheckingInspection")
     private static final String CAMERA_OUTPUT_DIRECTORY = Environment.getExternalStorageDirectory().getPath() + "/DCIM/Camera";
 
-    private static final String PICTURES_OUTPUT_PATH = Environment.getExternalStorageDirectory().getPath() + "/Pictures";
+    public static final String PICTURES_OUTPUT_PATH = Environment.getExternalStorageDirectory().getPath() + "/Pictures";
 
     public static void deleteImagesFromPhotoDirectory() {
         StorageManagementHelper.deleteImagesFromDirectory(CAMERA_OUTPUT_DIRECTORY);
@@ -63,6 +63,12 @@ public class StorageManagementHelper {
      */
     public static void deleteImagesFromDirectory(String directoryPath) {
         File directory = new File(directoryPath);
+
+        File[] filesList = directory.listFiles();
+
+        if (filesList == null || filesList.length == 0) {
+            return;
+        }
 
         for (File file : directory.listFiles()) {
             file.delete();

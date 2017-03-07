@@ -4,6 +4,7 @@ import android.view.View;
 
 import com.invisibleteam.goinvisible.model.Tag;
 import com.invisibleteam.goinvisible.mvvm.edition.adapter.EditItemViewModel;
+import com.invisibleteam.goinvisible.util.binding.ObservableString;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
@@ -92,6 +93,21 @@ public class TagsMatcher {
             @Override
             public boolean matchesSafely(EditItemViewModel model) {
                 return model.getValue().get().equals(value);
+            }
+
+            @Override
+            public void describeTo(Description description) {
+                description.appendValue("ViewModel doesn't contain expected value");
+            }
+        };
+    }
+
+    public static Matcher<ObservableString> containsSectionName(final String value) {
+        return new TypeSafeMatcher<ObservableString>() {
+
+            @Override
+            public boolean matchesSafely(ObservableString observable) {
+                return observable.get().equals(value);
             }
 
             @Override

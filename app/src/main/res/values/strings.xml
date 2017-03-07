@@ -142,4 +142,10 @@
     <string name="positive_message">OK</string>
     <string name="negative_message">Cancel</string>
 
+    //Tag groups names
+    <string name="tag_group_name_image_info">Image info</string>
+    <string name="tag_group_name_device_info">Device info</string>
+    <string name="tag_group_name_location_info">Location info</string>
+    <string name="tag_group_name_advanced">Advanced</string>
+
 </resources>

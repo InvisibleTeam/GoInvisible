@@ -4,6 +4,7 @@ import android.media.ExifInterface;
 
 import com.invisibleteam.goinvisible.model.InputType;
 import com.invisibleteam.goinvisible.model.Tag;
+import com.invisibleteam.goinvisible.model.TagGroupType;
 import com.invisibleteam.goinvisible.model.TagType;
 import com.invisibleteam.goinvisible.mvvm.edition.adapter.EditCompoundRecyclerView;
 import com.invisibleteam.goinvisible.mvvm.edition.callback.TagEditionStartCallback;
@@ -28,7 +29,7 @@ import static org.mockito.Mockito.verify;
 @RunWith(MockitoJUnitRunner.class)
 public class EditViewModelTest {
 
-    private final Tag tag = new Tag("key", "value", TagType.build(InputType.DATE_STRING));
+    private final Tag tag = new Tag("key", "value", TagType.build(InputType.DATE_STRING), TagGroupType.ADVANCED);
 
     @Mock
     private EditCompoundRecyclerView editCompoundRecyclerView;
@@ -112,7 +113,8 @@ public class EditViewModelTest {
         Tag tag = new Tag(
                 ExifInterface.TAG_GPS_LATITUDE,
                 "value",
-                TagType.build(InputType.POSITION_DOUBLE));
+                TagType.build(InputType.POSITION_DOUBLE),
+                TagGroupType.IMAGE_INFO);
 
         //When
         editViewModel.onEditStarted(tag);
@@ -127,7 +129,8 @@ public class EditViewModelTest {
         Tag tag = new Tag(
                 ExifInterface.TAG_IMAGE_WIDTH,
                 "value",
-                TagType.build(InputType.UNMODIFIABLE));
+                TagType.build(InputType.UNMODIFIABLE),
+                TagGroupType.IMAGE_INFO);
 
         //When
         editViewModel.onEditStarted(tag);
@@ -151,7 +154,8 @@ public class EditViewModelTest {
         Tag tag = new Tag(
                 ExifInterface.TAG_IMAGE_WIDTH,
                 "value",
-                TagType.build(InputType.INDEFINITE));
+                TagType.build(InputType.INDEFINITE),
+                TagGroupType.IMAGE_INFO);
 
         //When
         editViewModel.onEditStarted(tag);
