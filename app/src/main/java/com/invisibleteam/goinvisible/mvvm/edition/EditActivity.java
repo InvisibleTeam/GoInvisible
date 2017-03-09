@@ -193,8 +193,6 @@ public class EditActivity extends CommonEditActivity implements PhoneTagEditionS
 
     @Override
     public void navigateChangedImagesScreen() {
-        Intent intent = ImagesActivity.buildIntent(this);
-        startActivity(intent);
         finish();
     }
 
