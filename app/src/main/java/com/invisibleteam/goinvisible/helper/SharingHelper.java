@@ -16,7 +16,13 @@ public class SharingHelper {
     private static final String IMAGE_EMPTY_DESCRIPTION = "";
     private static final String SHARE_IMAGE_JPG_TYPE = "image/jpg";
 
-    public static Intent buildShareImageIntent(ImageDetails details, ContentResolver contentResolver) throws
+    private ContentResolver contentResolver;
+
+    public SharingHelper(ContentResolver contentResolver) {
+        this.contentResolver = contentResolver;
+    }
+
+    public Intent buildShareImageIntent(ImageDetails details) throws
             FileNotFoundException {
         final String imagePath = prepareImagePathToShare(details, contentResolver);
         final Uri imageUri = Uri.parse(imagePath);
@@ -28,12 +34,16 @@ public class SharingHelper {
     }
 
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
-    private static String prepareImagePathToShare(ImageDetails details, ContentResolver contentResolver) throws
+    public String prepareImagePathToShare(ImageDetails details, ContentResolver contentResolver) throws
             FileNotFoundException {
         return insertImage(
                 contentResolver,
                 details.getPath(),
                 details.getName(),
                 IMAGE_EMPTY_DESCRIPTION);
+    }
+
+    public void onStop() {
+        contentResolver = null;
     }
 }

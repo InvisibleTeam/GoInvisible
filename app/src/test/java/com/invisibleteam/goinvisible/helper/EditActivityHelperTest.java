@@ -2,7 +2,6 @@ package com.invisibleteam.goinvisible.helper;
 
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 
 import com.invisibleteam.goinvisible.BuildConfig;
 import com.invisibleteam.goinvisible.model.ImageDetails;
@@ -46,11 +45,11 @@ public class EditActivityHelperTest {
     @Test
     public void whenShareImageIntentIsBuildWithCorrectImagePath_IntentIsReturned() throws FileNotFoundException {
         //Given
-        ImageDetails imageDetails = new ImageDetails("Path", "Name");
-        //doReturn("media:content").when(helper).prepareImagePathToShare(imageDetails, activity.getContentResolver());
+        /*ImageDetails imageDetails = new ImageDetails("Path", "Name");
+        doReturn("media:content").when(helper).prepareImagePathToShare(imageDetails, activity.getContentResolver());
         Intent expectedIntent = new Intent(Intent.ACTION_SEND);
         expectedIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse("media:content"));
-        expectedIntent.setType("image/jpg");
+        expectedIntent.setType("image/jpg");*/
 
         //When
         //Intent shareIntent = helper.buildShareImageIntent(imageDetails, activity.getContentResolver());
@@ -65,7 +64,7 @@ public class EditActivityHelperTest {
     @Test(expected = FileNotFoundException.class)
     public void whenShareImageIntentIsBuildWithIncorrectImagePath_ExceptionIsThrown() throws FileNotFoundException {
         //Given
-        ImageDetails imageDetails = new ImageDetails("Path", "Name");
+        //ImageDetails imageDetails = new ImageDetails("Path", "Name");
 
         //When
         //helper.buildShareImageIntent(imageDetails, activity.getContentResolver());

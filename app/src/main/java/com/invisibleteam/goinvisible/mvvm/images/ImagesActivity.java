@@ -8,7 +8,6 @@ import android.support.design.widget.Snackbar;
 import android.support.media.ExifInterface;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.Toolbar;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -24,18 +23,18 @@ import com.invisibleteam.goinvisible.helper.SharingHelper;
 import com.invisibleteam.goinvisible.model.ImageDetails;
 import com.invisibleteam.goinvisible.mvvm.common.CommonEditActivity;
 import com.invisibleteam.goinvisible.mvvm.edition.EditActivity;
-import com.invisibleteam.goinvisible.mvvm.edition.callback.TagEditionStartCallback;
-import com.invisibleteam.goinvisible.util.TagsManager;
 import com.invisibleteam.goinvisible.mvvm.edition.callback.RejectEditionChangesCallback;
 import com.invisibleteam.goinvisible.mvvm.edition.callback.TabletEditTagCallback;
+import com.invisibleteam.goinvisible.mvvm.edition.callback.TagEditionStartCallback;
 import com.invisibleteam.goinvisible.mvvm.images.phone.PhoneImagesViewCallback;
 import com.invisibleteam.goinvisible.mvvm.images.phone.PhoneImagesViewModel;
 import com.invisibleteam.goinvisible.mvvm.images.tablet.TabletEditViewModel;
 import com.invisibleteam.goinvisible.mvvm.images.tablet.TabletImagesViewCallback;
 import com.invisibleteam.goinvisible.mvvm.images.tablet.TabletImagesViewModel;
 import com.invisibleteam.goinvisible.mvvm.settings.SettingsActivity;
+import com.invisibleteam.goinvisible.util.ScreenUtil;
+import com.invisibleteam.goinvisible.util.TagsManager;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import javax.annotation.Nullable;
@@ -50,6 +49,7 @@ public class ImagesActivity extends CommonEditActivity implements PhoneImagesVie
     @Nullable
     TabletEditViewModel editViewModel;
     private TabletImagesViewModel tabletImagesViewModel;
+    private SharingHelper sharingHelper;
 
     public static Intent buildIntent(Context context) {
         return new Intent(context, ImagesActivity.class);
@@ -84,23 +84,24 @@ public class ImagesActivity extends CommonEditActivity implements PhoneImagesVie
 
     @Override
     public void prepareView() {
-        DisplayMetrics metrics = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(metrics);
-
-        float yInches = metrics.heightPixels / metrics.ydpi;
-        float xInches = metrics.widthPixels / metrics.xdpi;
-        double diagonalInches = Math.sqrt(xInches * xInches + yInches * yInches);
-
-        if (diagonalInches >= 6.5) {
+        if (ScreenUtil.isTablet(this)) {
             createTabletBinding();
         } else {
             createPhoneBinding();
         }
+
+        prepareToolbar();
+        sharingHelper = new SharingHelper(getContentResolver());
+    }
+
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    void prepareToolbar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.main_toolbar);
         setSupportActionBar(toolbar);
     }
 
-    private void createPhoneBinding() {
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    void createPhoneBinding() {
         @SuppressLint("InflateParams")
         ViewGroup viewGroup = (ViewGroup) LayoutInflater.from(this).inflate(R.layout.activity_images_phone, null);
         setContentView(viewGroup);
@@ -117,13 +118,14 @@ public class ImagesActivity extends CommonEditActivity implements PhoneImagesVie
         createRefreshLayout(imagesViewBinding, imagesViewModel);
     }
 
-    private void createTabletBinding() {
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    void createTabletBinding() {
         ViewGroup viewGroup = (ViewGroup) LayoutInflater.from(this).inflate(R.layout.activity_images_tablet, null);
         setContentView(viewGroup);
 
         ViewGroup editViewGroup = (ViewGroup) viewGroup.findViewById(R.id.edit_group);
         EditViewTabletBinding editViewTabletBinding = EditViewTabletBinding.bind(editViewGroup);
-        editViewModel = new TabletEditViewModel(editViewTabletBinding.editCompoundRecyclerView, this);
+        editViewModel = new TabletEditViewModel(editViewTabletBinding.editCompoundRecyclerView, this, sharingHelper);
         editViewTabletBinding.setViewModel(editViewModel);
 
         ViewGroup imagesViewGroup = (ViewGroup) viewGroup.findViewById(R.id.images_group);
@@ -185,19 +187,34 @@ public class ImagesActivity extends CommonEditActivity implements PhoneImagesVie
         return snackbar;
     }
 
+    @VisibleForTesting
+    void setTabletImagesViewModel(TabletImagesViewModel imagesViewModel) {
+        this.tabletImagesViewModel = imagesViewModel;
+    }
+
+    @VisibleForTesting
+    void setTabletEditViewModel(TabletEditViewModel editViewModel) {
+        this.editViewModel = editViewModel;
+    }
+
     @Override
     public void showEditView(ImageDetails imageDetails) {
         if (editViewModel != null) {
             try {
                 editViewModel.initialize(
                         imageDetails,
-                        new TagsManager(new ExifInterface(imageDetails.getPath())),
+                        buildTagsManager(imageDetails.getPath()),
                         this);
             } catch (IOException e) {
                 Log.e(TAG, e.getMessage(), e);
                 //TODO Log crashlitycs
             }
         }
+    }
+
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    TagsManager buildTagsManager(String path) throws IOException {
+        return new TagsManager(new ExifInterface(path));
     }
 
     @Override
@@ -214,13 +231,13 @@ public class ImagesActivity extends CommonEditActivity implements PhoneImagesVie
     }
 
     @Override
-    public void onShare(ImageDetails details) {
-        try {
-            Intent intent = SharingHelper.buildShareImageIntent(details, getContentResolver());
-            startActivity(Intent.createChooser(intent, getString(R.string.share_intent_chooser_title)));
-        } catch (FileNotFoundException e) {
-            Log.e(TAG, String.valueOf(e.getMessage()));
-            //TODO log error in crashlytics
-        }
+    public void onShare(Intent shareIntent) {
+        startActivity(Intent.createChooser(shareIntent, getString(R.string.share_intent_chooser_title)));
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        sharingHelper.onStop();
     }
 }

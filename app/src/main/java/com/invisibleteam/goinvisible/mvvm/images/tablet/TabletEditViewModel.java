@@ -1,26 +1,35 @@
 package com.invisibleteam.goinvisible.mvvm.images.tablet;
 
 
+import android.content.Intent;
 import android.databinding.ObservableBoolean;
+import android.util.Log;
 
+import com.invisibleteam.goinvisible.helper.SharingHelper;
 import com.invisibleteam.goinvisible.model.ImageDetails;
 import com.invisibleteam.goinvisible.model.Tag;
-import com.invisibleteam.goinvisible.mvvm.edition.callback.TagEditionStartCallback;
 import com.invisibleteam.goinvisible.mvvm.edition.EditViewModel;
-import com.invisibleteam.goinvisible.util.TagsManager;
 import com.invisibleteam.goinvisible.mvvm.edition.adapter.EditCompoundRecyclerView;
 import com.invisibleteam.goinvisible.mvvm.edition.callback.TabletEditTagCallback;
+import com.invisibleteam.goinvisible.mvvm.edition.callback.TagEditionStartCallback;
+import com.invisibleteam.goinvisible.util.TagsManager;
 
+import java.io.FileNotFoundException;
 import java.util.List;
 
 public class TabletEditViewModel extends EditViewModel {
 
+    private static final String TAG = TabletEditViewModel.class.getName();
+
     private final ObservableBoolean isInEditMode = new ObservableBoolean(false);
     private ImageDetails imageDetails;
     private TabletEditTagCallback tabletEditTagCallback;
+    private SharingHelper sharingHelper;
 
-    public TabletEditViewModel(EditCompoundRecyclerView editCompoundRecyclerView, TagEditionStartCallback callback) {
+    public TabletEditViewModel(EditCompoundRecyclerView editCompoundRecyclerView, TagEditionStartCallback callback,
+                               SharingHelper sharingHelper) {
         super(editCompoundRecyclerView, callback);
+        this.sharingHelper = sharingHelper;
     }
 
     public void initialize(ImageDetails details, TagsManager manager, TabletEditTagCallback callback) {
@@ -48,7 +57,12 @@ public class TabletEditViewModel extends EditViewModel {
     }
 
     public void onShare() {
-        tabletEditTagCallback.onShare(imageDetails);
+        try {
+            Intent shareIntent = sharingHelper.buildShareImageIntent(imageDetails);
+            tabletEditTagCallback.onShare(shareIntent);
+        } catch (FileNotFoundException e) {
+            Log.e(TAG, "Error during sharing image", e);
+        }
     }
 
     private boolean saveTags() {
