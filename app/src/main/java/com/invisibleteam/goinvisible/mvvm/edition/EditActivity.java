@@ -21,7 +21,6 @@ import com.invisibleteam.goinvisible.model.Tag;
 import com.invisibleteam.goinvisible.mvvm.common.CommonEditActivity;
 import com.invisibleteam.goinvisible.mvvm.edition.callback.EditTagsUpdateStatusViewCallback;
 import com.invisibleteam.goinvisible.mvvm.edition.callback.PhoneTagEditionStartCallback;
-import com.invisibleteam.goinvisible.mvvm.images.ImagesActivity;
 import com.invisibleteam.goinvisible.util.TagsManager;
 
 import java.io.FileNotFoundException;
@@ -188,11 +187,6 @@ public class EditActivity extends CommonEditActivity implements PhoneTagEditionS
 
     @Override
     public void navigateBack() {
-        finish();
-    }
-
-    @Override
-    public void navigateChangedImagesScreen() {
         finish();
     }
 

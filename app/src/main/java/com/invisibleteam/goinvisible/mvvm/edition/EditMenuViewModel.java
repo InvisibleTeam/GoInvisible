@@ -29,7 +29,7 @@ class EditMenuViewModel {
         if (isInEditState()) {
             editMenuViewCallback.showRejectChangesDialog();
         } else {
-            editMenuViewCallback.navigateChangedImagesScreen();
+            editMenuViewCallback.navigateBack();
         }
     }
 
