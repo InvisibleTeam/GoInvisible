@@ -1,24 +1,25 @@
 package com.invisibleteam.goinvisible.mvvm.images;
 
 import com.invisibleteam.goinvisible.R;
-import com.invisibleteam.goinvisible.model.ImageDetails;
 import com.invisibleteam.goinvisible.mvvm.images.adapter.ImagesCompoundRecyclerView;
 import com.invisibleteam.goinvisible.mvvm.images.adapter.ImagesItemAdapter;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
-import org.mockito.Mockito;
 
 import java.util.ArrayList;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class ImagesViewModelTest {
 
+    private MockImagesViewModel mockImagesViewModel;
     private ImagesProvider imagesProvider;
     private ImagesCompoundRecyclerView compoundRecyclerView;
     private ImagesViewCallback imagesViewCallback;
@@ -26,52 +27,38 @@ public class ImagesViewModelTest {
 
     @Before
     public void setUp() {
-        compoundRecyclerView = Mockito.mock(ImagesCompoundRecyclerView.class);
-        imagesProvider = Mockito.mock(ImagesProvider.class);
-        imagesViewCallback = Mockito.mock(ImagesViewCallback.class);
+        compoundRecyclerView = mock(ImagesCompoundRecyclerView.class);
+        imagesProvider = mock(ImagesProvider.class);
+        imagesViewCallback = mock(ImagesViewCallback.class);
         listenerArgumentCaptor = ArgumentCaptor.forClass(ImagesItemAdapter.OnItemClickListener.class);
 
-    }
-
-    @Test
-    public void whenUserClicksOnItem_navigatedToEditScreen() {
-        when(imagesProvider.getImagesList()).thenReturn(new ArrayList<>());
-        new ImagesViewModel(
-                compoundRecyclerView,
-                imagesProvider,
-                imagesViewCallback);
-
-        verify(compoundRecyclerView).setOnItemClickListener(listenerArgumentCaptor.capture());
-        listenerArgumentCaptor.getValue().onItemClick(new ImageDetails("testPath", "testName"));
-
-        verify(imagesViewCallback).navigateToEdit(any());
+        mockImagesViewModel = new MockImagesViewModel(compoundRecyclerView, imagesProvider, imagesViewCallback);
+        mockImagesViewModel = spy(mockImagesViewModel);
     }
 
     @Test
     public void whenOnUnsupportedItemClickIsCalled_SnackBarWithUnsupportedExtensionIsCalled() {
+        //Given
         when(imagesProvider.getImagesList()).thenReturn(new ArrayList<>());
-        new ImagesViewModel(
-                compoundRecyclerView,
-                imagesProvider,
-                imagesViewCallback);
 
+        //When
         verify(compoundRecyclerView).setOnItemClickListener(listenerArgumentCaptor.capture());
         listenerArgumentCaptor.getValue().onUnsupportedItemClick();
 
+        //Then
         verify(imagesViewCallback).prepareSnackBar(R.string.unsupported_extension);
         verify(imagesViewCallback).showSnackBar();
     }
 
     @Test
-    public void whenOnUnsupportedItemClickIedsCalled_SnackBarWithUnsupportedExtensionIsCalled() {
+    public void whenUpdateImagesMethodIsCalled_ImagesAreUpdated() {
+        //Given
         when(imagesProvider.getImagesList()).thenReturn(new ArrayList<>());
-        ImagesViewModel viewModel = new ImagesViewModel(
-                compoundRecyclerView,
-                imagesProvider,
-                imagesViewCallback);
 
-        viewModel.updateImages();
+        //When
+        mockImagesViewModel.updateImages();
 
+        //Then
         verify(imagesProvider, times(2)).getImagesList();
         verify(compoundRecyclerView, times(2)).updateResults(any());
         verify(imagesViewCallback).onStopRefreshingImages();

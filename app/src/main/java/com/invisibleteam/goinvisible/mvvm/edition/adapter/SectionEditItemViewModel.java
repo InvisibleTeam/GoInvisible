@@ -1,6 +1,6 @@
 package com.invisibleteam.goinvisible.mvvm.edition.adapter;
 
-import com.invisibleteam.goinvisible.util.ObservableString;
+import com.invisibleteam.goinvisible.util.binding.ObservableString;
 
 public class SectionEditItemViewModel {
 

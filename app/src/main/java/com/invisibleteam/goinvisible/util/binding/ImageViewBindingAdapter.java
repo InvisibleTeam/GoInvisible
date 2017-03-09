@@ -6,7 +6,6 @@ import android.util.Log;
 import android.widget.ImageView;
 
 import com.invisibleteam.goinvisible.R;
-import com.invisibleteam.goinvisible.util.ObservableString;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;

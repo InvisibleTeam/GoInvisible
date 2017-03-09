@@ -9,7 +9,7 @@ import android.util.AttributeSet;
 import com.invisibleteam.goinvisible.helper.EditItemAdapterHelper;
 import com.invisibleteam.goinvisible.model.Tag;
 import com.invisibleteam.goinvisible.mvvm.common.CompoundRecyclerView;
-import com.invisibleteam.goinvisible.mvvm.edition.OnTagActionListener;
+import com.invisibleteam.goinvisible.mvvm.edition.callback.EditViewModelCallback;
 
 import java.util.List;
 
@@ -25,17 +25,20 @@ public class EditCompoundRecyclerView extends CompoundRecyclerView<Tag, ViewHold
     }
 
     @Override
-    public void updateResults(List<Tag> imageList) {
-        itemAdapter.updateTagList(imageList);
-        itemAdapter.notifyDataSetChanged();
+    public boolean updateResults(List<Tag> tags) {
+        return itemAdapter.updateTagList(tags);
     }
 
-    public void setOnTagActionListener(OnTagActionListener listener) {
-        itemAdapter.setOnTagActionListener(listener);
+    public void prepareTagsList(List<Tag> tags) {
+        itemAdapter.prepareTagsList(tags);
     }
 
-    public void updateTag(Tag tag) {
-        itemAdapter.updateTag(tag);
+    public void setOnTagActionListener(EditViewModelCallback listener) {
+        itemAdapter.setEditViewModelCallback(listener);
+    }
+
+    public boolean updateTag(Tag tag) {
+        return itemAdapter.updateTag(tag);
     }
 
     @VisibleForTesting
@@ -47,11 +50,12 @@ public class EditCompoundRecyclerView extends CompoundRecyclerView<Tag, ViewHold
         return itemAdapter.getChangedTags();
     }
 
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
     public List<Tag> getAllTags() {
         return itemAdapter.getTagsList();
     }
 
-    public void updateTagListAfterChanges(List<Tag> tags) {
-        itemAdapter.updateBaseTagList(tags);
+    public void updateTagListAfterChanges() {
+        itemAdapter.resetBaseTags();
     }
 }

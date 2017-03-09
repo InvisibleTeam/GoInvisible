@@ -1,9 +1,10 @@
-package com.invisibleteam.goinvisible.mvvm.edition;
+package com.invisibleteam.goinvisible.util.location;
 
 import android.content.Context;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.invisibleteam.goinvisible.util.location.GoogleLocationApiEstablisher;
 
 import org.junit.Before;
 import org.junit.Test;

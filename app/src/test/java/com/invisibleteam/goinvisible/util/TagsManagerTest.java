@@ -1,4 +1,4 @@
-package com.invisibleteam.goinvisible.mvvm.edition;
+package com.invisibleteam.goinvisible.util;
 
 import android.support.media.ExifInterface;
 
@@ -6,6 +6,7 @@ import com.invisibleteam.goinvisible.model.InputType;
 import com.invisibleteam.goinvisible.model.Tag;
 import com.invisibleteam.goinvisible.model.TagGroupType;
 import com.invisibleteam.goinvisible.model.TagType;
+import com.invisibleteam.goinvisible.util.TagsManager;
 
 import org.junit.Before;
 import org.junit.Test;

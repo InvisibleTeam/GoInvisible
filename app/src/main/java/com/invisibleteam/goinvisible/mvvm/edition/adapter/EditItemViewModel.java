@@ -4,7 +4,7 @@ import android.databinding.ObservableBoolean;
 
 import com.invisibleteam.goinvisible.model.InputType;
 import com.invisibleteam.goinvisible.model.Tag;
-import com.invisibleteam.goinvisible.util.ObservableString;
+import com.invisibleteam.goinvisible.util.binding.ObservableString;
 
 public class EditItemViewModel {
 

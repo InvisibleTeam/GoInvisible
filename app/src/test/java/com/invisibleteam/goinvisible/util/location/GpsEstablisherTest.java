@@ -1,4 +1,4 @@
-package com.invisibleteam.goinvisible.mvvm.edition;
+package com.invisibleteam.goinvisible.util.location;
 
 import android.app.Activity;
 import android.content.IntentSender;
@@ -9,6 +9,8 @@ import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
+import com.invisibleteam.goinvisible.util.location.GoogleLocationApiEstablisher;
+import com.invisibleteam.goinvisible.util.location.GpsEstablisher;
 
 import org.junit.Before;
 import org.junit.Test;

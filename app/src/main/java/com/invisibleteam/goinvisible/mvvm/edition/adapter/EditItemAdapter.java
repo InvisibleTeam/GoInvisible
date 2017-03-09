@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import com.invisibleteam.goinvisible.R;
 import com.invisibleteam.goinvisible.helper.EditItemAdapterHelper;
 import com.invisibleteam.goinvisible.model.Tag;
-import com.invisibleteam.goinvisible.mvvm.edition.OnTagActionListener;
+import com.invisibleteam.goinvisible.mvvm.edition.callback.EditViewModelCallback;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +29,7 @@ class EditItemAdapter extends RecyclerView.Adapter<ViewHolder> {
     static final int DEFAULT_VIEW_TYPE = -1;
 
     private List<Tag> baseTagsList;
-    private OnTagActionListener onTagActionListener;
+    private EditViewModelCallback editViewModelCallback;
     private Context context;
     private final EditItemAdapterHelper helper;
 
@@ -47,7 +47,7 @@ class EditItemAdapter extends RecyclerView.Adapter<ViewHolder> {
         }
 
         final View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.edit_item_view, parent, false);
-        return new TagViewHolder(itemView, onTagActionListener);
+        return new TagViewHolder(itemView, editViewModelCallback);
     }
 
     @Override
@@ -84,14 +84,22 @@ class EditItemAdapter extends RecyclerView.Adapter<ViewHolder> {
         return getTagsList().size();
     }
 
-    void updateTagList(List<Tag> tags) {
-        helper.createGroups(tags);
+    boolean updateTagList(List<Tag> tags) {
+        notifyDataSetChanged();
         if (baseTagsList == null) {
             baseTagsList = new ArrayList<>();
+            helper.createGroups(tags);
             updateBaseTagList(tags);
-        } else {
-            onTagActionListener.onTagsUpdated();
+            return false;
         }
+        return true;
+    }
+
+    void prepareTagsList(List<Tag> tags) {
+        notifyDataSetChanged();
+        baseTagsList = new ArrayList<>();
+        helper.createGroups(tags);
+        updateBaseTagList(tags);
     }
 
 
@@ -100,6 +108,10 @@ class EditItemAdapter extends RecyclerView.Adapter<ViewHolder> {
         for (Tag tag : tags) {
             baseTagsList.add(new Tag(tag));
         }
+    }
+
+    void resetBaseTags() {
+        updateBaseTagList(getTagsList());
     }
 
     List<Tag> getChangedTags() {
@@ -129,24 +141,25 @@ class EditItemAdapter extends RecyclerView.Adapter<ViewHolder> {
         return false;
     }
 
-    void setOnTagActionListener(OnTagActionListener listener) {
-        this.onTagActionListener = listener;
+    void setEditViewModelCallback(EditViewModelCallback callback) {
+        this.editViewModelCallback = callback;
     }
 
-    void updateTag(Tag tag) {
+    boolean updateTag(Tag tag) {
         List<Tag> tagList = getTagsList();
         if (tagList.isEmpty()) {
-            return;
+            return false;
         }
 
         for (int index = 0; index < tagList.size(); index++) {
             if (tagList.get(index).getKey().equals(tag.getKey())) {
                 tagList.set(index, tag);
                 notifyItemChanged(index);
-                onTagActionListener.onTagsUpdated();
-                break;
+                return true;
             }
         }
+
+        return false;
     }
 
     @VisibleForTesting

@@ -1,4 +1,4 @@
-package com.invisibleteam.goinvisible.mvvm.edition;
+package com.invisibleteam.goinvisible.util.location;
 
 import android.os.Bundle;
 import android.support.annotation.VisibleForTesting;
@@ -20,11 +20,11 @@ public class GoogleLocationApiEstablisher {
         this.googleApiClientBuilder = googleApiClientBuilder;
     }
 
-    boolean isApiConnected() {
+    public boolean isApiConnected() {
         return (googleApiClient != null && googleApiClient.isConnected());
     }
 
-    void requestConnection() {
+    public void requestConnection() {
         if (googleApiClient == null) {
             buildGoogleApiClient();
         }
@@ -65,16 +65,16 @@ public class GoogleLocationApiEstablisher {
         };
     }
 
-    void setGoogleApiConnectionListener(GoogleApiConnectionListener listener) {
+    public void setGoogleApiConnectionListener(GoogleApiConnectionListener listener) {
         this.googleApiConnectionListener = listener;
     }
 
     @Nullable
-    GoogleApiClient getGoogleApiClient() {
+    public GoogleApiClient getGoogleApiClient() {
         return googleApiClient;
     }
 
-    interface GoogleApiConnectionListener {
+    public interface GoogleApiConnectionListener {
         void onSuccess();
 
         void onFailure();

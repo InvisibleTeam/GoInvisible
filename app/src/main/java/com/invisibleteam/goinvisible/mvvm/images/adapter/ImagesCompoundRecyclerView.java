@@ -32,9 +32,9 @@ public class ImagesCompoundRecyclerView extends CompoundRecyclerView<ImageDetail
     }
 
     @Override
-    public void updateResults(List<ImageDetails> imageList) {
+    public boolean updateResults(List<ImageDetails> imageList) {
         itemAdapter.updateImageList(imageList);
-        itemAdapter.notifyDataSetChanged();
+        return true;
     }
 
     public void setOnItemClickListener(ImagesItemAdapter.OnItemClickListener listener) {

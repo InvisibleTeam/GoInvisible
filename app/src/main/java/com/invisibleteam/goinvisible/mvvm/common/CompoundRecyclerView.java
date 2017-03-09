@@ -30,5 +30,5 @@ public abstract class CompoundRecyclerView<T, K extends RecyclerView.ViewHolder>
 
     protected void initRecyclerViewItemDecorators(RecyclerView recyclerView){}
 
-    public abstract void updateResults(List<T> imageList);
+    public abstract boolean updateResults(List<T> imageList);
 }

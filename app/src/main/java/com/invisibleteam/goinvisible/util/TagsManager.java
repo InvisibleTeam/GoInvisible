@@ -1,4 +1,4 @@
-package com.invisibleteam.goinvisible.mvvm.edition;
+package com.invisibleteam.goinvisible.util;
 
 import android.support.media.ExifInterface;
 import android.util.Log;
@@ -8,7 +8,6 @@ import com.invisibleteam.goinvisible.model.InputType;
 import com.invisibleteam.goinvisible.model.Tag;
 import com.invisibleteam.goinvisible.model.TagGroupType;
 import com.invisibleteam.goinvisible.model.TagType;
-import com.invisibleteam.goinvisible.util.TagUtil;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -63,7 +62,7 @@ public class TagsManager {
         }
     }
 
-    boolean editTags(List<Tag> tags) {
+    public boolean editTags(List<Tag> tags) {
         if (tags.isEmpty()) {
             return false;
         }
@@ -91,7 +90,7 @@ public class TagsManager {
         }
     }
 
-    void clearTag(Tag tag) {
+    public void clearTag(Tag tag) {
         switch (tag.getTagType().getInputType()) {
             case TEXT_STRING:
                 tag.setValue("");
