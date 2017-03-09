@@ -48,7 +48,6 @@ public class EditActivity extends CommonEditActivity implements PhoneTagEditionS
     private ImageDetails imageDetails;
     private EditMenuViewModel editMenuViewModel;
     private Tag tag;
-    private SharingHelper sharingHelper;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -68,9 +67,6 @@ public class EditActivity extends CommonEditActivity implements PhoneTagEditionS
     @Override
     protected void onStop() {
         editActivityHelper.onStop();
-        if (sharingHelper != null) {
-            sharingHelper.onStop();
-        }
         super.onStop();
     }
 
@@ -115,9 +111,8 @@ public class EditActivity extends CommonEditActivity implements PhoneTagEditionS
     }
 
     private void shareImage() {
-        sharingHelper = new SharingHelper(getContentResolver());
         try {
-            Intent intent = sharingHelper.buildShareImageIntent(imageDetails);
+            Intent intent = new SharingHelper(getContentResolver()).buildShareImageIntent(imageDetails);
             startActivity(Intent.createChooser(intent, getString(R.string.share_intent_chooser_title)));
         } catch (FileNotFoundException e) {
             Log.e(TAG, String.valueOf(e.getMessage()));

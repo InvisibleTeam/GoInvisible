@@ -1,9 +1,9 @@
 package com.invisibleteam.goinvisible.mvvm.edition.callback;
 
-import com.invisibleteam.goinvisible.helper.SharingHelper;
-import com.invisibleteam.goinvisible.model.ImageDetails;
+import android.content.Intent;
+
 import com.invisibleteam.goinvisible.mvvm.common.TagsUpdateStatusCallback;
 
 public interface TabletEditTagCallback extends TagsUpdateStatusCallback {
-    void onShare(ImageDetails details, SharingHelper sharingHelper);
+    void onShare(Intent intent);
 }

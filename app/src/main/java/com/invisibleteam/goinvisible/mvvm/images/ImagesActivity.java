@@ -35,7 +35,6 @@ import com.invisibleteam.goinvisible.mvvm.settings.SettingsActivity;
 import com.invisibleteam.goinvisible.util.ScreenUtil;
 import com.invisibleteam.goinvisible.util.TagsManager;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import javax.annotation.Nullable;
@@ -232,14 +231,8 @@ public class ImagesActivity extends CommonEditActivity implements PhoneImagesVie
     }
 
     @Override
-    public void onShare(ImageDetails details, SharingHelper sharingHelper) {
-        try {
-            Intent intent = sharingHelper.buildShareImageIntent(details);
-            startActivity(Intent.createChooser(intent, getString(R.string.share_intent_chooser_title)));
-        } catch (FileNotFoundException e) {
-            Log.e(TAG, String.valueOf(e.getMessage()));
-            //TODO log error in crashlytics
-        }
+    public void onShare(Intent shareIntent) {
+        startActivity(Intent.createChooser(shareIntent, getString(R.string.share_intent_chooser_title)));
     }
 
     @Override

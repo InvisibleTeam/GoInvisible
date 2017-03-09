@@ -1,7 +1,6 @@
 package com.invisibleteam.goinvisible.mvvm.images;
 
 import android.content.ComponentName;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.support.design.internal.NavigationMenu;
@@ -196,7 +195,8 @@ public class ImagesActivityTest {
     @Test
     public void whenAppIsRunningOnPhone_CreatePhoneBindingIsCalled() {
         //Given
-        ImagesActivity activity = spy(ImagesActivity.class);
+        ImagesActivity activity = Robolectric.buildActivity(ImagesActivity.class).create().get();
+        activity = spy(activity);
         WindowManager manager = mock(WindowManager.class);
         Display display = mock(Display.class);
 
@@ -224,7 +224,8 @@ public class ImagesActivityTest {
     @Test
     public void whenAppIsRunningOnTablet_CreateTabletBindingIsCalled() {
         //Given
-        ImagesActivity activity = spy(ImagesActivity.class);
+        ImagesActivity activity = Robolectric.buildActivity(ImagesActivity.class).create().get();
+        activity = spy(activity);
         WindowManager manager = mock(WindowManager.class);
         Display display = mock(Display.class);
 
@@ -313,13 +314,14 @@ public class ImagesActivityTest {
         SharingHelper helper = spy(new SharingHelper(activity.getContentResolver()));
         ImageDetails imageDetails = new ImageDetails("Path", "Name");
         doReturn("media:content").when(helper).prepareImagePathToShare(imageDetails, activity.getContentResolver());
+        Intent shareIntent = helper.buildShareImageIntent(imageDetails);
 
         //When
-        activity.onShare(imageDetails, helper);
-        Intent shareIntent = shadowActivity.getNextStartedActivity();
+        activity.onShare(shareIntent);
+        Intent startedShareIntent = shadowActivity.getNextStartedActivity();
 
         //Then
-        assertThat(shareIntent, is(notNullValue()));
+        assertThat(startedShareIntent, is(notNullValue()));
     }
 
     @Test
@@ -330,12 +332,13 @@ public class ImagesActivityTest {
         ImageDetails imageDetails = new ImageDetails("Path", "Name");
         doReturn("media:content").when(helper).prepareImagePathToShare(imageDetails, activity.getContentResolver());
         when(helper.buildShareImageIntent(imageDetails)).thenReturn(new Intent(Intent.ACTION_SEND));
+        Intent shareIntent = helper.buildShareImageIntent(imageDetails);
 
         //When
-        activity.onShare(imageDetails, helper);
-        Intent shareIntent = shadowActivity.getNextStartedActivity();
+        activity.onShare(shareIntent);
+        Intent startedShareIntent = shadowActivity.getNextStartedActivity();
 
         //Then
-        assertThat(shareIntent, is(notNullValue()));
+        assertThat(startedShareIntent, is(notNullValue()));
     }
 }
