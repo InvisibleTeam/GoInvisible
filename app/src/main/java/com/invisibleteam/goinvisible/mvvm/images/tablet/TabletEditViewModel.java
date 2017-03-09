@@ -19,9 +19,12 @@ public class TabletEditViewModel extends EditViewModel {
     private final ObservableBoolean isInEditMode = new ObservableBoolean(false);
     private ImageDetails imageDetails;
     private TabletEditTagCallback tabletEditTagCallback;
+    private SharingHelper sharingHelper;
 
-    public TabletEditViewModel(EditCompoundRecyclerView editCompoundRecyclerView, TagEditionStartCallback callback) {
+    public TabletEditViewModel(EditCompoundRecyclerView editCompoundRecyclerView, TagEditionStartCallback callback,
+                               SharingHelper sharingHelper) {
         super(editCompoundRecyclerView, callback);
+        this.sharingHelper = sharingHelper;
     }
 
     public void initialize(ImageDetails details, TagsManager manager, TabletEditTagCallback callback) {
@@ -49,7 +52,7 @@ public class TabletEditViewModel extends EditViewModel {
     }
 
     public void onShare() {
-        tabletEditTagCallback.onShare(imageDetails, new SharingHelper());
+        tabletEditTagCallback.onShare(imageDetails, sharingHelper);
     }
 
     private boolean saveTags() {

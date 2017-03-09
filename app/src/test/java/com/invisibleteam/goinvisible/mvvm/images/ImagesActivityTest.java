@@ -1,6 +1,7 @@
 package com.invisibleteam.goinvisible.mvvm.images;
 
 import android.content.ComponentName;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.support.design.internal.NavigationMenu;
@@ -309,7 +310,7 @@ public class ImagesActivityTest {
     public void whenShareImageIsCalled_IntentChooserWithSharingImageIsCalled() throws FileNotFoundException {
         //Given
         ShadowActivity shadowActivity = Shadows.shadowOf(activity);
-        SharingHelper helper = spy(new SharingHelper());
+        SharingHelper helper = spy(new SharingHelper(activity.getContentResolver()));
         ImageDetails imageDetails = new ImageDetails("Path", "Name");
         doReturn("media:content").when(helper).prepareImagePathToShare(imageDetails, activity.getContentResolver());
 
@@ -325,10 +326,10 @@ public class ImagesActivityTest {
     public void whenShareImageIsCalledAndShareIntentDoNotHaveExtras_IntentChooserWithSharingImageIsCalled() throws FileNotFoundException {
         //Given
         ShadowActivity shadowActivity = Shadows.shadowOf(activity);
-        SharingHelper helper = spy(new SharingHelper());
+        SharingHelper helper = spy(new SharingHelper(activity.getContentResolver()));
         ImageDetails imageDetails = new ImageDetails("Path", "Name");
         doReturn("media:content").when(helper).prepareImagePathToShare(imageDetails, activity.getContentResolver());
-        when(helper.buildShareImageIntent(imageDetails, activity.getContentResolver())).thenReturn(new Intent(Intent.ACTION_SEND));
+        when(helper.buildShareImageIntent(imageDetails)).thenReturn(new Intent(Intent.ACTION_SEND));
 
         //When
         activity.onShare(imageDetails, helper);
