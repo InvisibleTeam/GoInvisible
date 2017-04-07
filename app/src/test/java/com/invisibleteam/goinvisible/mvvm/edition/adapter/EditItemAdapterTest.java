@@ -12,7 +12,6 @@ import com.invisibleteam.goinvisible.mvvm.edition.EditActivity;
 import com.invisibleteam.goinvisible.mvvm.edition.callback.EditViewModelCallback;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
@@ -95,24 +94,6 @@ public class EditItemAdapterTest {
         //Then
         assertThat(adapter.getTagsList().size(), is(tagListSize));
         assertThat(holder.getSectionEditItemViewModel().getTagSectionName(), containsSectionName("Image info"));
-    }
-
-    @Ignore
-    @Test
-    public void whenTagIsUpdated_TagsListIsUpdated() {
-        //Given
-        EditItemAdapter adapter = new EditItemAdapter(new EditItemAdapterHelper());
-        adapter.updateTagList(tagList);
-        EditViewModelCallback listener = mock(EditViewModelCallback.class);
-        adapter.setEditViewModelCallback(listener);
-
-        //When
-        Tag editedTag = new Tag("key1", "editedValue", TagType.build(InputType.TEXT_STRING), TagGroupType.ADVANCED);
-        adapter.updateTag(editedTag);
-
-        //Then
-        verify(listener).onTagsUpdated();
-        assertThat(adapter.getTagsList(), containsTag(editedTag));
     }
 
     @Test

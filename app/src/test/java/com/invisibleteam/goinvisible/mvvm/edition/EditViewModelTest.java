@@ -11,7 +11,6 @@ import com.invisibleteam.goinvisible.mvvm.edition.callback.TagEditionStartCallba
 import com.invisibleteam.goinvisible.util.TagsManager;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -47,13 +46,8 @@ public class EditViewModelTest {
         editViewModel = new EditViewModel("title", "image_url", editCompoundRecyclerView, tagsManager, listener);
     }
 
-    @Ignore
     @Test
     public void whenTagIsSuccessfullyCleared_ClearingIsPropagate() {
-        //TODO fix this test
-        //Given
-        //when(tagsManager.clearTag(tag)).thenReturn(true);
-
         //When
         editViewModel.onClear(tag);
 
@@ -61,13 +55,10 @@ public class EditViewModelTest {
         verify(editCompoundRecyclerView).updateTag(tag);
     }
 
-    @Ignore
     @Test
     public void whenAllTagsAreSuccessfullyCleared_TagsAreUpdated() {
-        //TODO fix this test
         //Given
         List<Tag> tagList = new ArrayList<>();
-        //when(tagsManager.clearTags()).thenReturn(true);
 
         //When
         editViewModel.onClear(tagList);
@@ -75,36 +66,6 @@ public class EditViewModelTest {
         //Then
         //editCompoundRecyclerView.updateResults(...) is also called in EditViewModel constructor.
         verify(editCompoundRecyclerView, times(2)).updateResults(tagList);
-    }
-
-    @Ignore
-    @Test
-    public void whenAllTagsClearFailed_TagsAreNotUpdated() {
-        //TODO fix this test
-        //Given
-        List<Tag> tagList = new ArrayList<>();
-        //when(tagsManager.clearTags(anyList())).thenReturn(false);
-
-        //When
-        editViewModel.onClear(tagList);
-
-        //Then
-        //editCompoundRecyclerView.updateResults(...) is also called in EditViewModel constructor.
-        verify(editCompoundRecyclerView, times(1)).updateResults(tagList);
-    }
-
-    @Ignore
-    @Test
-    public void whenTagIsUnsuccessfullyCleared_ClearingIsNotPropagate() {
-        //TODO fix this test
-        //Given
-        //when(tagsManager.clearTag(tag)).thenReturn(false);
-
-        //When
-        editViewModel.onClear(tag);
-
-        //Then
-        verify(editCompoundRecyclerView, times(0)).updateTag(tag);
     }
 
     @Test

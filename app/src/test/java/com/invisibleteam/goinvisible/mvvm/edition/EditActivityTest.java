@@ -5,43 +5,26 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.support.media.ExifInterface;
 import android.view.MenuItem;
 
 import com.invisibleteam.goinvisible.BuildConfig;
-import com.invisibleteam.goinvisible.R;
-import com.invisibleteam.goinvisible.helper.EditActivityHelper;
 import com.invisibleteam.goinvisible.model.ImageDetails;
 import com.invisibleteam.goinvisible.model.InputType;
 import com.invisibleteam.goinvisible.model.Tag;
 import com.invisibleteam.goinvisible.model.TagGroupType;
 import com.invisibleteam.goinvisible.model.TagType;
-import com.invisibleteam.goinvisible.mvvm.edition.adapter.EditCompoundRecyclerView;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
-import org.robolectric.Shadows;
 import org.robolectric.annotation.Config;
-import org.robolectric.shadows.ShadowActivity;
-
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 import static com.invisibleteam.goinvisible.util.IntentMatcher.containsSameData;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
@@ -68,13 +51,12 @@ public class EditActivityTest {
                 .get();
     }
 
-    @Ignore
     @Test
     public void whenEditActivityBuildIsInitiated_EditActivityIntentIsCreated() {
         //Given
         Bundle bundle = new Bundle();
         bundle.putParcelable("extra_image_details", imageDetails);
-        Intent expectedIntent = new Intent(context, Activity.class);
+        Intent expectedIntent = new Intent(context, EditActivity.class);
         expectedIntent.putExtras(bundle);
 
         //When
@@ -91,115 +73,6 @@ public class EditActivityTest {
 
         //Then
         assertTrue(isExtractionSucceed);
-    }
-
-    @Ignore
-    @Test
-    public void whenOptionItemIsSelectedAndTagsAreChanged_TagsAreSavedAndBackToImageActivityIsCalled() {
-        //TODO fix this test
-        //Given
-        activity = spy(activity);
-        List<Tag> tagsList = Arrays.asList(
-                createTag("key1", "value1"),
-                createTag("key2", "value2"));
-
-        EditCompoundRecyclerView recyclerView = mock(EditCompoundRecyclerView.class);
-        when(recyclerView.getChangedTags()).thenReturn(tagsList);
-
-        MenuItem menuItem = mock(MenuItem.class);
-        when(menuItem.getItemId()).thenReturn(android.R.id.home);
-
-        //activity.setEditCompoundRecyclerView(recyclerView);
-        Mockito.doNothing().when(activity).showRejectChangesDialog();
-
-        //when
-        activity.onOptionsItemSelected(menuItem);
-
-        //then
-        verify(recyclerView).getChangedTags();
-        verify(activity).showRejectChangesDialog();
-        verify(activity).onBackPressed();
-    }
-
-    @Ignore
-    @Test
-    public void whenOptionItemIsSelectedAndTagsAreNotChanged_OnlyBackToImageActivityIsCalled() {
-        //TODO fix this test
-        //Given
-        activity = spy(activity);
-        EditCompoundRecyclerView recyclerView = mock(EditCompoundRecyclerView.class);
-        when(recyclerView.getChangedTags()).thenReturn(new ArrayList<>());
-
-        //activity.setEditCompoundRecyclerView(recyclerView);
-
-        MenuItem menuItem = mock(MenuItem.class);
-        when(menuItem.getItemId()).thenReturn(android.R.id.home);
-
-        //when
-        activity.onOptionsItemSelected(menuItem);
-
-        //then
-        verify(recyclerView).getChangedTags();
-        verify(activity, times(0)).showRejectChangesDialog();
-        verify(activity).onBackPressed();
-    }
-
-    @Ignore
-    @Test
-    public void whenClearAllTagsIsCalled_OnlyBackToImageActivityIsCalled() {
-        //TODO fix this test
-        //Given
-        activity = spy(activity);
-        MenuItem menuItem = mock(MenuItem.class);
-        when(menuItem.getItemId()).thenReturn(R.id.menu_item_clear_all);
-        //Mockito.doNothing().when(activity).clearAllTags();
-
-        //When
-        activity.onOptionsItemSelected(menuItem);
-
-        //Then
-        //verify(activity).clearAllTags();
-    }
-
-    @Ignore
-    @Test
-    public void whenShareImageIsCalled_IntentChooserWithSharingImageIsCalled() throws FileNotFoundException {
-        //TODO fix this test
-        //Given
-        ShadowActivity shadowActivity = Shadows.shadowOf(activity);
-        MenuItem menuItem = mock(MenuItem.class);
-        when(menuItem.getItemId()).thenReturn(R.id.menu_item_share);
-        EditActivityHelper helper = spy(new EditActivityHelper(activity));
-        //doReturn("media:content").when(helper).prepareImagePathToShare(imageDetails, activity.getContentResolver());
-        //activity.setEditActivityHelper(helper);
-
-        //When
-        activity.onOptionsItemSelected(menuItem);
-        Intent shareIntent = shadowActivity.getNextStartedActivity();
-
-        //Then
-        assertThat(shareIntent, is(notNullValue()));
-    }
-
-    @Ignore
-    @Test
-    public void whenShareImageIsCalledAndShareIntentDoNotHaveExtras_IntentChooserWithSharingImageIsCalled() throws FileNotFoundException {
-        //TODO fix this test
-        //Given
-        ShadowActivity shadowActivity = Shadows.shadowOf(activity);
-        MenuItem menuItem = mock(MenuItem.class);
-        when(menuItem.getItemId()).thenReturn(R.id.menu_item_share);
-        EditActivityHelper helper = spy(new EditActivityHelper(activity));
-        //doReturn("media:content").when(helper).prepareImagePathToShare(imageDetails, activity.getContentResolver());
-        //activity.setEditActivityHelper(helper);
-        //when(helper.buildShareImageIntent(imageDetails, activity.getContentResolver())).thenReturn(new Intent(Intent.ACTION_SEND));
-
-        //When
-        activity.onOptionsItemSelected(menuItem);
-        Intent shareIntent = shadowActivity.getNextStartedActivity();
-
-        //Then
-        assertThat(shareIntent, is(notNullValue()));
     }
 
     @Test
@@ -249,44 +122,6 @@ public class EditActivityTest {
 
         //Then
         assertTrue(isExtractionFailure);
-    }
-
-    @Ignore
-    @Test
-    public void whenProperIntentIsPassed_ViewModelIsInitiated() throws IOException {
-        Intent intent = EditActivity.buildIntent(context, new ImageDetails("Path", "Name"));
-        EditActivity activity = Robolectric
-                .buildActivity(EditActivity.class)
-                .withIntent(intent)
-                .get();
-
-        EditActivity mockEditActivity = spy(activity);
-        ExifInterface exifInterface = mock(ExifInterface.class);
-        doReturn(exifInterface).when(mockEditActivity).getExifInterface();
-
-        //When
-        mockEditActivity.onCreate(null);
-        //boolean isViewModelInitiated = mockEditActivity.getEditViewModel() != null;
-
-        //Then
-        //assertTrue(isViewModelInitiated);
-    }
-
-    @Ignore
-    @Test
-    public void whenNullIntentIsPassed_ViewModelIsNotInitiated() {
-        //Given
-        EditActivity activity = Robolectric
-                .buildActivity(EditActivity.class)
-                .withIntent(null)
-                .get();
-
-        //When
-        activity.onCreate(null);
-        ///boolean isViewModelNotInitiated = activity.getEditViewModel() == null;
-
-        //Then
-        //assertTrue(isViewModelNotInitiated);
     }
 
     @Test
