@@ -85,21 +85,23 @@ class EditItemAdapter extends RecyclerView.Adapter<ViewHolder> {
     }
 
     boolean updateTagList(List<Tag> tags) {
-        notifyDataSetChanged();
         if (baseTagsList == null) {
             baseTagsList = new ArrayList<>();
             helper.createGroups(tags);
             updateBaseTagList(tags);
             return false;
+        } else {
+            helper.createGroups(tags);
         }
+        notifyDataSetChanged();
         return true;
     }
 
     void prepareTagsList(List<Tag> tags) {
-        notifyDataSetChanged();
         baseTagsList = new ArrayList<>();
         helper.createGroups(tags);
         updateBaseTagList(tags);
+        notifyDataSetChanged();
     }
 
 
