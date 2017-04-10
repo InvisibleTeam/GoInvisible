@@ -20,11 +20,13 @@ public class ImageDetails implements Parcelable {
 
     private String path;
     private String name;
+    private int timeStamp;
     private boolean isJpeg;
 
-    public ImageDetails(String path, String name) {
+    public ImageDetails(String path, String name, int timeStamp) {
         this.path = path;
         this.name = name;
+        this.timeStamp = timeStamp;
         isJpeg = path.matches(".*jpg$");
     }
 
@@ -39,6 +41,7 @@ public class ImageDetails implements Parcelable {
     protected ImageDetails(Parcel in) {
         path = in.readString();
         name = in.readString();
+        timeStamp = in.readInt();
         isJpeg = in.readByte() != 0;
     }
 
@@ -51,10 +54,15 @@ public class ImageDetails implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(path);
         dest.writeString(name);
+        dest.writeInt(timeStamp);
         dest.writeByte((byte) (isJpeg ? 1 : 0));
     }
 
     public boolean isJpeg() {
         return isJpeg;
+    }
+
+    public int getTimeStamp() {
+        return timeStamp;
     }
 }

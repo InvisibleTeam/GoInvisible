@@ -8,6 +8,7 @@ import android.provider.MediaStore;
 import com.invisibleteam.goinvisible.model.ImageDetails;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class ImagesProvider {
@@ -20,7 +21,8 @@ public class ImagesProvider {
     public List<ImageDetails> getImagesList() {
         String[] columns = new String[]{
                 MediaStore.Images.ImageColumns.TITLE,
-                MediaStore.Images.ImageColumns.DATA};
+                MediaStore.Images.ImageColumns.DATA,
+                MediaStore.Images.ImageColumns.DATE_TAKEN};
         Cursor cur = contentResolver.query(
                 MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
                 columns,
@@ -33,11 +35,27 @@ public class ImagesProvider {
                 do {
                     String title = cur.getString(0);
                     String data = cur.getString(1);
-                    imagesList.add(new ImageDetails(data, title));
+                    int timestamp = cur.getInt(2);
+                    imagesList.add(new ImageDetails(data, title, timestamp));
                 } while (cur.moveToNext());
             }
             cur.close();
         }
-        return imagesList;
+        return sort(imagesList);
+    }
+
+    private List<ImageDetails> sort(List<ImageDetails> imagesList) {
+        ImageDetails[] array = new ImageDetails[imagesList.size()];
+        imagesList.toArray(array);
+        Arrays.sort(array, (firstItem, secondItem) -> {
+                    if (firstItem.getTimeStamp() > secondItem.getTimeStamp()) {
+                        return -1;
+                    } else if (firstItem.getTimeStamp() == secondItem.getTimeStamp()) {
+                        return 0;
+                    }
+                    return 1;
+                }
+        );
+        return Arrays.asList(array);
     }
 }

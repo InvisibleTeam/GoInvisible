@@ -30,7 +30,7 @@ import static org.mockito.Mockito.when;
 @Config(constants = BuildConfig.class, sdk = 21)
 public class ImagesItemAdapterTest {
 
-    private static final ImageDetails IMAGES_DETAILS = new ImageDetails("Path", "Name");
+    private static final ImageDetails IMAGES_DETAILS = new ImageDetails("Path", "Name", 0);
     private static final List<ImageDetails> IMAGES_DETAILS_LIST = ImmutableList.of(IMAGES_DETAILS);
     private static final String TAG = ImagesItemAdapterTest.class.getSimpleName();
 
@@ -141,7 +141,7 @@ public class ImagesItemAdapterTest {
     @Test
     public void whenImageIsJpeg_JpegViewTypeIsReturned() {
         //Given
-        ImageDetails imageDetails = new ImageDetails("test.jpg", "name");
+        ImageDetails imageDetails = new ImageDetails("test.jpg", "name", 0);
         imagesItemAdapter.updateImageList(Collections.singletonList(imageDetails));
 
         //When
@@ -154,7 +154,7 @@ public class ImagesItemAdapterTest {
     @Test
     public void whenImageIsPng_UnsupportedViewTypeIsReturned() {
         //Given
-        ImageDetails imageDetails = new ImageDetails("test.png", "name");
+        ImageDetails imageDetails = new ImageDetails("test.png", "name", 0);
         imagesItemAdapter.updateImageList(Collections.singletonList(imageDetails));
 
         //When
