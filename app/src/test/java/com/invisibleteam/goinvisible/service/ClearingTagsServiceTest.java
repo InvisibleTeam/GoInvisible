@@ -56,7 +56,7 @@ public class ClearingTagsServiceTest {
     public void WhenClearingServiceIsActivated_ServiceIsStarted() {
         //Given
         SharedPreferencesUtil.setClearingServiceActivation(context, true);
-        when(service.getImages()).thenReturn(Collections.singletonList(new ImageDetails("path", "name")));
+        when(service.getImages()).thenReturn(Collections.singletonList(new ImageDetails("path", "name", 0)));
 
         //When
         service.onHandleIntent(new Intent());
@@ -71,7 +71,7 @@ public class ClearingTagsServiceTest {
         //Given
         SharedPreferencesUtil.setClearingServiceActivation(context, true);
         SharedPreferencesUtil.setClearingServiceActivation(context, false);
-        when(service.getImages()).thenReturn(Collections.singletonList(new ImageDetails("path", "name")));
+        when(service.getImages()).thenReturn(Collections.singletonList(new ImageDetails("path", "name", 0)));
 
         //When
         service.onHandleIntent(new Intent());
@@ -93,7 +93,7 @@ public class ClearingTagsServiceTest {
     @Test(expected = IOException.class)
     public void WhenNotProperFilePath_IOExceptionIsThrown() throws IOException {
         //When
-        ImageDetails imageDetails = new ImageDetails("path", "name");
+        ImageDetails imageDetails = new ImageDetails("path", "name", 0);
 
         service.getExifInterface(imageDetails);
     }

@@ -18,7 +18,7 @@ public class ImageItemViewModelTest {
     @Test
     public void WhenImageItemViewModelIsCreated_ProperValuesAreSet() {
         //Given
-        ImageDetails imageDetails = new ImageDetails("path", "name");
+        ImageDetails imageDetails = new ImageDetails("path", "name", 0);
         ImageItemViewModel imageItemViewModel = new ImageItemViewModel();
 
         //When

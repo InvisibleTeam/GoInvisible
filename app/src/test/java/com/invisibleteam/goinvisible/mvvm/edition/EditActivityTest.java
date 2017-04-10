@@ -42,7 +42,7 @@ public class EditActivityTest {
     @Before
     public void init() {
         context = RuntimeEnvironment.application;
-        imageDetails = new ImageDetails("Path", "Name");
+        imageDetails = new ImageDetails("Path", "Name", 0);
         Intent editActivityIntent = EditActivity.buildIntent(context, imageDetails);
         activity = Robolectric
                 .buildActivity(EditActivity.class)

@@ -68,7 +68,7 @@ public class ImagesActivityTest {
     @Test
     public void whenNavigateToEditIsCalled_thenEditActivityWillBeStarted() {
         //given
-        ImageDetails imageDetails = new ImageDetails("ImagePath", "ImageName");
+        ImageDetails imageDetails = new ImageDetails("ImagePath", "ImageName", 0);
         ShadowActivity shadowActivity = shadowOf(activity);
 
         //when
@@ -129,7 +129,7 @@ public class ImagesActivityTest {
     @Test
     public void whenSupportedImageIsClicked_EditActivityIsStarted() {
         //When
-        activity.openEditScreen(new ImageDetails("path", "name"));
+        activity.openEditScreen(new ImageDetails("path", "name", 0));
 
         //Then
         Intent startedIntent = shadowOf(activity).getNextStartedActivity();
@@ -312,7 +312,7 @@ public class ImagesActivityTest {
         //Given
         ShadowActivity shadowActivity = Shadows.shadowOf(activity);
         SharingHelper helper = spy(new SharingHelper(activity.getContentResolver()));
-        ImageDetails imageDetails = new ImageDetails("Path", "Name");
+        ImageDetails imageDetails = new ImageDetails("Path", "Name", 0);
         doReturn("media:content").when(helper).prepareImagePathToShare(imageDetails, activity.getContentResolver());
         Intent shareIntent = helper.buildShareImageIntent(imageDetails);
 
@@ -329,7 +329,7 @@ public class ImagesActivityTest {
         //Given
         ShadowActivity shadowActivity = Shadows.shadowOf(activity);
         SharingHelper helper = spy(new SharingHelper(activity.getContentResolver()));
-        ImageDetails imageDetails = new ImageDetails("Path", "Name");
+        ImageDetails imageDetails = new ImageDetails("Path", "Name", 0);
         doReturn("media:content").when(helper).prepareImagePathToShare(imageDetails, activity.getContentResolver());
         when(helper.buildShareImageIntent(imageDetails)).thenReturn(new Intent(Intent.ACTION_SEND));
         Intent shareIntent = helper.buildShareImageIntent(imageDetails);

@@ -38,7 +38,8 @@ public class ImagesProviderTest {
         //given
         String[] columns = new String[]{
                 MediaStore.Images.ImageColumns.TITLE,
-                MediaStore.Images.ImageColumns.DATA};
+                MediaStore.Images.ImageColumns.DATA,
+                MediaStore.Images.ImageColumns.DATE_TAKEN};
         Cursor cursor = mock(Cursor.class);
 
         //when
@@ -46,6 +47,7 @@ public class ImagesProviderTest {
         when(cursor.moveToFirst()).thenReturn(true);
         when(cursor.getString(0)).thenReturn("Title");
         when(cursor.getString(1)).thenReturn("Path");
+        when(cursor.getInt(2)).thenReturn(0);
         List<ImageDetails> imagesList = imagesProvider.getImagesList();
 
         //then
