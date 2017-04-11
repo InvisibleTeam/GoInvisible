@@ -147,5 +147,6 @@
     <string name="tag_group_name_device_info">Device info</string>
     <string name="tag_group_name_location_info">Location info</string>
     <string name="tag_group_name_advanced">Advanced</string>
+    <string name="no_image_error">Could not open image.</string>
 
 </resources>

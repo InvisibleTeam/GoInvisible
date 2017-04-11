@@ -10,9 +10,14 @@ import com.squareup.picasso.Picasso;
 
 import java.io.File;
 
+import javax.annotation.Nullable;
+
 public class ImageViewBindingAdapter {
-    @BindingAdapter({"bind:imageUrl"})
-    public static void loadImage(ImageView view, ObservableString imageUrl) {
+    @BindingAdapter({"imageUrl"})
+    public static void loadImage(ImageView view, @Nullable ObservableString imageUrl) {
+        if (imageUrl == null) {
+            return;
+        }
         Uri uri = Uri.fromFile(new File(imageUrl.get()));
         Log.d("ImageViewBindingAdapter", uri.toString());
 
