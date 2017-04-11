@@ -109,7 +109,7 @@ public class EditActivity extends CommonEditActivity implements PhoneTagEditionS
                 }
                 return true;
             case R.id.menu_item_share:
-                if (editMenuViewModel != null) {
+                if (imageDetails != null) {
                     shareImage();
                 }
                 return true;
