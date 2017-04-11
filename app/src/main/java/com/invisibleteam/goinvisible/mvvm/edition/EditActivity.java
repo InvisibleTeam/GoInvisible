@@ -3,9 +3,11 @@ package com.invisibleteam.goinvisible.mvvm.edition;
 import android.content.Context;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.VisibleForTesting;
+import android.support.design.widget.Snackbar;
 import android.support.media.ExifInterface;
 import android.support.v7.app.ActionBar;
 import android.util.Log;
@@ -21,6 +23,7 @@ import com.invisibleteam.goinvisible.model.Tag;
 import com.invisibleteam.goinvisible.mvvm.common.CommonEditActivity;
 import com.invisibleteam.goinvisible.mvvm.edition.callback.EditTagsUpdateStatusViewCallback;
 import com.invisibleteam.goinvisible.mvvm.edition.callback.PhoneTagEditionStartCallback;
+import com.invisibleteam.goinvisible.mvvm.images.ImagesProvider;
 import com.invisibleteam.goinvisible.util.TagsManager;
 
 import java.io.FileNotFoundException;
@@ -47,6 +50,7 @@ public class EditActivity extends CommonEditActivity implements PhoneTagEditionS
     private ImageDetails imageDetails;
     private EditMenuViewModel editMenuViewModel;
     private Tag tag;
+    private Uri imageUri;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -78,7 +82,7 @@ public class EditActivity extends CommonEditActivity implements PhoneTagEditionS
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_edit_activity, menu);
-        if (editMenuViewModel.isInEditState()) {
+        if (editMenuViewModel != null && editMenuViewModel.isInEditState()) {
             showSaveChangesMenuItem(menu);
         }
 
@@ -93,16 +97,22 @@ public class EditActivity extends CommonEditActivity implements PhoneTagEditionS
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                editMenuViewModel.onBackClick();
+                onBackPressed();
                 return true;
             case R.id.menu_item_save_changes:
-                editMenuViewModel.onApproveChangesClick();
+                if (editMenuViewModel != null) {
+                    editMenuViewModel.onApproveChangesClick();
+                }
                 return true;
             case R.id.menu_item_clear_all:
-                editMenuViewModel.onClearAllTagsClick();
+                if (editMenuViewModel != null) {
+                    editMenuViewModel.onClearAllTagsClick();
+                }
                 return true;
             case R.id.menu_item_share:
-                shareImage();
+                if (editMenuViewModel != null) {
+                    shareImage();
+                }
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -123,9 +133,15 @@ public class EditActivity extends CommonEditActivity implements PhoneTagEditionS
     public void prepareView() {
         EditViewBinding editViewBinding = DataBindingUtil.setContentView(this, R.layout.edit_view);
         setSupportActionBar(editViewBinding.mainToolbar);
-        if (extractBundle()) {
+
+        if (extractBundle() || extractShareIntent()) {
             prepareViewModels(editViewBinding);
-        } //TODO log exception to crashlitycs on else.
+        } else {
+            Snackbar.make(
+                    findViewById(android.R.id.content),
+                    R.string.no_image_error,
+                    Snackbar.LENGTH_LONG).show();
+        }
     }
 
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
@@ -133,9 +149,30 @@ public class EditActivity extends CommonEditActivity implements PhoneTagEditionS
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             Parcelable extra = extras.getParcelable(TAG_IMAGE_DETAILS);
-            if (extra instanceof ImageDetails) {
+            if (extra != null && extra instanceof ImageDetails) {
                 imageDetails = extras.getParcelable(TAG_IMAGE_DETAILS);
                 return true;
+            }
+        }
+        return false;
+    }
+
+    boolean extractShareIntent() {
+        Intent intent = getIntent();
+        String action = intent.getAction();
+        String type = intent.getType();
+
+        if (Intent.ACTION_SEND.equals(action) && type != null) {
+            if (type.startsWith("image/jpeg")) {
+                imageUri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
+                if (imageUri == null) {
+                    return false;
+                }
+
+                imageDetails = new ImagesProvider(getContentResolver()).getImage(imageUri);
+                if (imageDetails != null) {
+                    return true;
+                }
             }
         }
         return false;
@@ -172,7 +209,11 @@ public class EditActivity extends CommonEditActivity implements PhoneTagEditionS
 
     @Override
     public void onBackPressed() {
-        editMenuViewModel.onBackClick();
+        if (editMenuViewModel != null) {
+            editMenuViewModel.onBackClick();
+        } else {
+            finish();
+        }
     }
 
     @Override

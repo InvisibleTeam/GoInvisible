@@ -3,6 +3,7 @@ package com.invisibleteam.goinvisible.mvvm.images;
 
 import android.content.ContentResolver;
 import android.database.Cursor;
+import android.net.Uri;
 import android.provider.MediaStore;
 
 import com.invisibleteam.goinvisible.model.ImageDetails;
@@ -11,11 +12,44 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.annotation.Nullable;
+
 public class ImagesProvider {
     private final ContentResolver contentResolver;
 
     public ImagesProvider(ContentResolver contentResolver) {
         this.contentResolver = contentResolver;
+    }
+
+    @Nullable
+    public ImageDetails getImage(Uri imageUri) {
+        ImageDetails imageDetails = null;
+
+        String[] columns = new String[]{
+                MediaStore.Images.ImageColumns.TITLE,
+                MediaStore.Images.ImageColumns.DATA,
+                MediaStore.Images.ImageColumns.DATE_TAKEN};
+        Cursor cur = contentResolver.query(
+                imageUri,
+                columns,
+                null,
+                null,
+                null);
+        if (cur != null) {
+            if (cur.moveToFirst()) {
+                String title = cur.getString(0);
+                String data = cur.getString(1);
+                int timestamp = cur.getInt(2);
+                if (data != null) {
+                    if (title == null) {
+                        title = Uri.parse(data).getLastPathSegment();
+                    }
+                    imageDetails = new ImageDetails(data, title, timestamp);
+                }
+            }
+            cur.close();
+        }
+        return imageDetails;
     }
 
     public List<ImageDetails> getImagesList() {

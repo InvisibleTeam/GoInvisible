@@ -10,18 +10,22 @@ import com.squareup.picasso.Picasso;
 
 import java.io.File;
 
-public class ImageViewBindingAdapter {
-    @BindingAdapter({"bind:imageUrl"})
-    public static void loadImage(ImageView view, ObservableString imageUrl) {
-        Uri uri = Uri.fromFile(new File(imageUrl.get()));
-        Log.d("ImageViewBindingAdapter", uri.toString());
+import javax.annotation.Nullable;
 
-        Picasso.with(view.getContext())
-                .load(uri)
-                .fit()
-                .centerCrop()
-                .placeholder(R.drawable.ic_image_placeholder_small)
-                .error(R.drawable.ic_image_error_small)
-                .into(view);
+public class ImageViewBindingAdapter {
+    @BindingAdapter({"imageUrl"})
+    public static void loadImage(ImageView view, @Nullable ObservableString imageUrl) {
+        if (imageUrl != null) {
+            Uri uri = Uri.fromFile(new File(imageUrl.get()));
+            Log.d("ImageViewBindingAdapter", uri.toString());
+
+            Picasso.with(view.getContext())
+                    .load(uri)
+                    .fit()
+                    .centerCrop()
+                    .placeholder(R.drawable.ic_image_placeholder_small)
+                    .error(R.drawable.ic_image_error_small)
+                    .into(view);
+        }
     }
 }
