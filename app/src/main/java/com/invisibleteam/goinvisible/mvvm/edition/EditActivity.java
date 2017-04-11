@@ -162,14 +162,14 @@ public class EditActivity extends CommonEditActivity implements PhoneTagEditionS
         String type = intent.getType();
 
         if (Intent.ACTION_SEND.equals(action) && type != null) {
-            if (type.startsWith("image/jpeg")) {
+            if (type.startsWith("image/")) {
                 Uri imageUri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
                 if (imageUri == null) {
                     return false;
                 }
 
                 imageDetails = new ImagesProvider(getContentResolver()).getImage(imageUri);
-                if (imageDetails != null) {
+                if (imageDetails != null && imageDetails.isJpeg()) {
                     return true;
                 }
             }
