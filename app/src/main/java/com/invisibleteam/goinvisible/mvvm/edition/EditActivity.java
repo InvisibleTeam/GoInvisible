@@ -50,7 +50,6 @@ public class EditActivity extends CommonEditActivity implements PhoneTagEditionS
     private ImageDetails imageDetails;
     private EditMenuViewModel editMenuViewModel;
     private Tag tag;
-    private Uri imageUri;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -164,7 +163,7 @@ public class EditActivity extends CommonEditActivity implements PhoneTagEditionS
 
         if (Intent.ACTION_SEND.equals(action) && type != null) {
             if (type.startsWith("image/jpeg")) {
-                imageUri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
+                Uri imageUri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
                 if (imageUri == null) {
                     return false;
                 }
