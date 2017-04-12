@@ -92,7 +92,7 @@ public class ImagesActivity extends CommonEditActivity implements PhoneImagesVie
         }
 
         prepareToolbar();
-        sharingHelper = new SharingHelper(getContentResolver());
+        sharingHelper = new SharingHelper();
     }
 
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
@@ -235,11 +235,5 @@ public class ImagesActivity extends CommonEditActivity implements PhoneImagesVie
     @Override
     public void onShare(Intent shareIntent) {
         startActivity(Intent.createChooser(shareIntent, getString(R.string.share_intent_chooser_title)));
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        sharingHelper.onStop();
     }
 }
