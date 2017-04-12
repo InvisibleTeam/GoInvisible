@@ -10,6 +10,7 @@ import android.support.annotation.VisibleForTesting;
 import android.support.design.widget.Snackbar;
 import android.support.media.ExifInterface;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -54,11 +55,6 @@ public class EditActivity extends CommonEditActivity implements PhoneTagEditionS
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setDisplayHomeAsUpEnabled(true);
-        }
-
         if (savedInstanceState != null) {
             tag = savedInstanceState.getParcelable(TAG_MODEL);
         }
@@ -123,13 +119,15 @@ public class EditActivity extends CommonEditActivity implements PhoneTagEditionS
         EditViewBinding editViewBinding = DataBindingUtil.setContentView(this, R.layout.edit_view);
         setSupportActionBar(editViewBinding.mainToolbar);
 
-        if (extractBundle() || extractShareIntent()) {
+        boolean bundleExtracted = extractBundle();
+        boolean shareIntentExtracted = extractShareIntent();
+        if (bundleExtracted || shareIntentExtracted) {
             prepareViewModels(editViewBinding);
+            if (bundleExtracted) {
+                setupHomeButton();
+            }
         } else {
-            Snackbar.make(
-                    findViewById(android.R.id.content),
-                    R.string.no_image_error,
-                    Snackbar.LENGTH_LONG).show();
+            showWrongImageDialog();
         }
     }
 
@@ -191,6 +189,17 @@ public class EditActivity extends CommonEditActivity implements PhoneTagEditionS
         }
     }
 
+    private void showWrongImageDialog() {
+        new AlertDialog
+                .Builder(EditActivity.this, R.style.AlertDialogStyle)
+                .setTitle(R.string.wrong_image_error)
+                .setMessage(R.string.wrong_image_error_message)
+                .setPositiveButton(getText(R.string.positive_message), (dialog, which) -> finish())
+                .setOnDismissListener(dialog -> finish())
+                .create()
+                .show();
+    }
+
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
     ExifInterface getExifInterface() throws IOException {
         return new ExifInterface(imageDetails.getPath());
@@ -241,6 +250,13 @@ public class EditActivity extends CommonEditActivity implements PhoneTagEditionS
         } catch (FileNotFoundException e) {
             Log.e(TAG, String.valueOf(e.getMessage()));
             //TODO log error in crashlytics
+        }
+    }
+
+    private void setupHomeButton() {
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
         }
     }
 }
