@@ -147,7 +147,8 @@
     <string name="tag_group_name_device_info">Device info</string>
     <string name="tag_group_name_location_info">Location info</string>
     <string name="tag_group_name_advanced">Advanced</string>
-    <string name="no_image_error">Could not open image.</string>
+    <string name="wrong_image_error">Wrong image</string>
     <string name="save_before_share">Save changes before sharing.</string>
+    <string name="wrong_image_error_message">Could not open image or wrong image format.</string>
 
 </resources>

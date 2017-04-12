@@ -46,8 +46,8 @@ public class ImagesActivity extends CommonEditActivity implements PhoneImagesVie
     private static final String TAG = ImagesActivity.class.getSimpleName();
     private Snackbar snackbar;
     private SwipeRefreshLayout refreshLayout;
-    private
     @Nullable
+    private
     TabletEditViewModel editViewModel;
     private TabletImagesViewModel tabletImagesViewModel;
 
