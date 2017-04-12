@@ -311,9 +311,8 @@ public class ImagesActivityTest {
     public void whenShareImageIsCalled_IntentChooserWithSharingImageIsCalled() throws FileNotFoundException {
         //Given
         ShadowActivity shadowActivity = Shadows.shadowOf(activity);
-        SharingHelper helper = spy(new SharingHelper(activity.getContentResolver()));
+        SharingHelper helper = spy(new SharingHelper());
         ImageDetails imageDetails = new ImageDetails("Path", "Name", 0);
-        doReturn("media:content").when(helper).prepareImagePathToShare(imageDetails, activity.getContentResolver());
         Intent shareIntent = helper.buildShareImageIntent(imageDetails);
 
         //When
@@ -328,9 +327,8 @@ public class ImagesActivityTest {
     public void whenShareImageIsCalledAndShareIntentDoNotHaveExtras_IntentChooserWithSharingImageIsCalled() throws FileNotFoundException {
         //Given
         ShadowActivity shadowActivity = Shadows.shadowOf(activity);
-        SharingHelper helper = spy(new SharingHelper(activity.getContentResolver()));
+        SharingHelper helper = spy(new SharingHelper());
         ImageDetails imageDetails = new ImageDetails("Path", "Name", 0);
-        doReturn("media:content").when(helper).prepareImagePathToShare(imageDetails, activity.getContentResolver());
         when(helper.buildShareImageIntent(imageDetails)).thenReturn(new Intent(Intent.ACTION_SEND));
         Intent shareIntent = helper.buildShareImageIntent(imageDetails);
 
