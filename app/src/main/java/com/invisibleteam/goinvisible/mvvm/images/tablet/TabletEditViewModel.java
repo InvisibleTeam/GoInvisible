@@ -57,11 +57,15 @@ public class TabletEditViewModel extends EditViewModel {
     }
 
     public void onShare() {
-        try {
-            Intent shareIntent = sharingHelper.buildShareImageIntent(imageDetails);
-            tabletEditTagCallback.onShare(shareIntent);
-        } catch (FileNotFoundException e) {
-            Log.e(TAG, "Error during sharing image", e);
+        if (isInEditMode.get()) {
+            tabletEditTagCallback.showViewInEditStateInformation();
+        } else {
+            try {
+                Intent shareIntent = sharingHelper.buildShareImageIntent(imageDetails);
+                tabletEditTagCallback.onShare(shareIntent);
+            } catch (FileNotFoundException e) {
+                Log.e(TAG, "Error during sharing image", e);
+            }
         }
     }
 
