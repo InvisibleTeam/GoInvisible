@@ -59,4 +59,12 @@ class EditMenuViewModel {
     boolean isInEditState() {
         return editCompoundRecyclerView.getChangedTags().size() > 0;
     }
+
+    void onShareClick() {
+        if (isInEditState()) {
+            editMenuViewCallback.showViewInEditStateInformation();
+        } else {
+            editMenuViewCallback.shareImage();
+        }
+    }
 }

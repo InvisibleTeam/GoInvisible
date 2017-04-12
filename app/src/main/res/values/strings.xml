@@ -148,5 +148,6 @@
     <string name="tag_group_name_location_info">Location info</string>
     <string name="tag_group_name_advanced">Advanced</string>
     <string name="no_image_error">Could not open image.</string>
+    <string name="save_before_share">Save changes before sharing.</string>
 
 </resources>

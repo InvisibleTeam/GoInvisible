@@ -9,4 +9,8 @@ public interface EditTagsUpdateStatusViewCallback extends RejectEditionChangesCa
      * Change view from edit mode to default
      */
     void changeViewToDefaultMode();
+
+    void showViewInEditStateInformation();
+
+    void shareImage();
 }

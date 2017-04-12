@@ -109,22 +109,12 @@ public class EditActivity extends CommonEditActivity implements PhoneTagEditionS
                 }
                 return true;
             case R.id.menu_item_share:
-                if (imageDetails != null) {
-                    shareImage();
+                if (editMenuViewModel != null) {
+                    editMenuViewModel.onShareClick();
                 }
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
-        }
-    }
-
-    private void shareImage() {
-        try {
-            Intent intent = new SharingHelper().buildShareImageIntent(imageDetails);
-            startActivity(Intent.createChooser(intent, getString(R.string.share_intent_chooser_title)));
-        } catch (FileNotFoundException e) {
-            Log.e(TAG, String.valueOf(e.getMessage()));
-            //TODO log error in crashlytics
         }
     }
 
@@ -233,5 +223,24 @@ public class EditActivity extends CommonEditActivity implements PhoneTagEditionS
     @Override
     public void changeViewToDefaultMode() {
         invalidateOptionsMenu();
+    }
+
+    @Override
+    public void showViewInEditStateInformation() {
+        Snackbar.make(
+                findViewById(android.R.id.content),
+                R.string.save_before_share,
+                Snackbar.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void shareImage() {
+        try {
+            Intent intent = new SharingHelper().buildShareImageIntent(imageDetails);
+            startActivity(Intent.createChooser(intent, getString(R.string.share_intent_chooser_title)));
+        } catch (FileNotFoundException e) {
+            Log.e(TAG, String.valueOf(e.getMessage()));
+            //TODO log error in crashlytics
+        }
     }
 }

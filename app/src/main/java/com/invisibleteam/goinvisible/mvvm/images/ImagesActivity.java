@@ -50,7 +50,6 @@ public class ImagesActivity extends CommonEditActivity implements PhoneImagesVie
     @Nullable
     TabletEditViewModel editViewModel;
     private TabletImagesViewModel tabletImagesViewModel;
-    private SharingHelper sharingHelper;
 
     public static Intent buildIntent(Context context) {
         return new Intent(context, ImagesActivity.class);
@@ -92,7 +91,6 @@ public class ImagesActivity extends CommonEditActivity implements PhoneImagesVie
         }
 
         prepareToolbar();
-        sharingHelper = new SharingHelper();
     }
 
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
@@ -126,7 +124,10 @@ public class ImagesActivity extends CommonEditActivity implements PhoneImagesVie
 
         ViewGroup editViewGroup = (ViewGroup) viewGroup.findViewById(R.id.edit_group);
         EditViewTabletBinding editViewTabletBinding = EditViewTabletBinding.bind(editViewGroup);
-        editViewModel = new TabletEditViewModel(editViewTabletBinding.editCompoundRecyclerView, this, sharingHelper);
+        editViewModel = new TabletEditViewModel(
+                editViewTabletBinding.editCompoundRecyclerView,
+                this,
+                new SharingHelper());
         editViewTabletBinding.setViewModel(editViewModel);
 
         ViewGroup imagesViewGroup = (ViewGroup) viewGroup.findViewById(R.id.images_group);
@@ -235,5 +236,13 @@ public class ImagesActivity extends CommonEditActivity implements PhoneImagesVie
     @Override
     public void onShare(Intent shareIntent) {
         startActivity(Intent.createChooser(shareIntent, getString(R.string.share_intent_chooser_title)));
+    }
+
+    @Override
+    public void showViewInEditStateInformation() {
+        Snackbar.make(
+                findViewById(android.R.id.content),
+                R.string.save_before_share,
+                Snackbar.LENGTH_LONG).show();
     }
 }
