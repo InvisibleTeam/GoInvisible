@@ -1,11 +1,12 @@
 package com.invisibleteam.goinvisible.mvvm.edition.adapter;
 
 import android.support.annotation.VisibleForTesting;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.invisibleteam.goinvisible.databinding.SectionEditItemViewBinding;
 
-class SectionViewHolder extends ViewHolder {
+class SectionViewHolder extends RecyclerView.ViewHolder {
 
     private SectionEditItemViewModel sectionEditItemViewModel;
 

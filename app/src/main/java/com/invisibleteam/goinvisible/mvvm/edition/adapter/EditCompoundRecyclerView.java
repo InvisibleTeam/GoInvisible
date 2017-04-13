@@ -4,6 +4,7 @@ package com.invisibleteam.goinvisible.mvvm.edition.adapter;
 import android.content.Context;
 import android.support.annotation.VisibleForTesting;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 
 import com.invisibleteam.goinvisible.helper.EditItemAdapterHelper;
@@ -13,7 +14,7 @@ import com.invisibleteam.goinvisible.mvvm.edition.callback.EditViewModelCallback
 
 import java.util.List;
 
-public class EditCompoundRecyclerView extends CompoundRecyclerView<Tag, ViewHolder> {
+public class EditCompoundRecyclerView extends CompoundRecyclerView<Tag, RecyclerView.ViewHolder> {
 
     private EditItemAdapter itemAdapter;
 
