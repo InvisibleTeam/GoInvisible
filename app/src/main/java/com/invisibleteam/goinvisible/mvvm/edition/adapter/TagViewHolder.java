@@ -1,9 +1,9 @@
 package com.invisibleteam.goinvisible.mvvm.edition.adapter;
 
 import android.support.annotation.VisibleForTesting;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
+import com.bignerdranch.expandablerecyclerview.ChildViewHolder;
 import com.invisibleteam.goinvisible.databinding.EditItemViewBinding;
 import com.invisibleteam.goinvisible.model.Tag;
 import com.invisibleteam.goinvisible.mvvm.edition.callback.EditViewModelCallback;
@@ -11,7 +11,7 @@ import com.invisibleteam.goinvisible.util.TextViewUtil;
 
 import javax.annotation.Nullable;
 
-class TagViewHolder extends RecyclerView.ViewHolder {
+class TagViewHolder extends ChildViewHolder {
 
     private EditItemViewModel editItemViewModel;
     private EditItemViewBinding editItemViewBinding;
