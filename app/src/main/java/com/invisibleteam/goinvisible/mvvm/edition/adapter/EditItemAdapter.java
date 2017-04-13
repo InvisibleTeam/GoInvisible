@@ -1,14 +1,11 @@
 package com.invisibleteam.goinvisible.mvvm.edition.adapter;
 
-import android.content.Context;
-import android.support.annotation.VisibleForTesting;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.invisibleteam.goinvisible.R;
-import com.invisibleteam.goinvisible.helper.EditItemAdapterHelper;
 import com.invisibleteam.goinvisible.model.Tag;
 import com.invisibleteam.goinvisible.mvvm.edition.callback.EditViewModelCallback;
 
@@ -28,19 +25,11 @@ class EditItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     static final int ADVANCED_INFO_SECTION_POSITION = 59;
     static final int DEFAULT_VIEW_TYPE = -1;
 
-    private List<Tag> baseTagsList;
+    private List<Tag> tagList = new ArrayList<>();
     private EditViewModelCallback editViewModelCallback;
-    private Context context;
-    private final EditItemAdapterHelper helper;
-
-    EditItemAdapter(EditItemAdapterHelper helper) {
-        this.helper = helper;
-    }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        context = parent.getContext();
-
         if (viewType != DEFAULT_VIEW_TYPE) {
             final View sectionItemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.section_edit_item_view, parent, false);
             return new SectionViewHolder(sectionItemView);
@@ -52,10 +41,9 @@ class EditItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        final Tag tag = getTagsList().get(position);
-
+        Tag tag = tagList.get(position);
         if (holder instanceof SectionViewHolder) {
-            final String sectionName = tag.getTagGroupTypeName(context);
+            String sectionName = tag.getTagGroupTypeName(holder.itemView.getContext());
             ((SectionViewHolder) holder).setSectionName(sectionName);
         } else {
             TagViewHolder tagViewHolder = (TagViewHolder) holder;
@@ -81,91 +69,14 @@ class EditItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     @Override
     public int getItemCount() {
-        return getTagsList().size();
+        return tagList.size();
     }
 
-    boolean updateTagList(List<Tag> tags) {
-        if (baseTagsList == null) {
-            baseTagsList = new ArrayList<>();
-            helper.createGroups(tags);
-            updateBaseTagList(tags);
-            return false;
-        } else {
-            helper.createGroups(tags);
-        }
-        notifyDataSetChanged();
-        return true;
-    }
-
-    void prepareTagsList(List<Tag> tags) {
-        baseTagsList = new ArrayList<>();
-        helper.createGroups(tags);
-        updateBaseTagList(tags);
-        notifyDataSetChanged();
-    }
-
-
-    void updateBaseTagList(List<Tag> tags) {
-        baseTagsList.clear();
-        for (Tag tag : tags) {
-            baseTagsList.add(new Tag(tag));
-        }
-    }
-
-    void resetBaseTags() {
-        updateBaseTagList(getTagsList());
-    }
-
-    List<Tag> getChangedTags() {
-        List<Tag> changedTags = new ArrayList<>();
-        for (Tag tag : getTagsList()) {
-            for (Tag baseTag : baseTagsList) {
-                if (isTagChanged(baseTag, tag)) {
-                    changedTags.add(tag);
-                    break;
-                }
-            }
-        }
-        return changedTags;
-    }
-
-    private boolean isTagChanged(Tag baseTag, Tag tag) {
-        if (tag.getValue() == null) {
-            return false;
-        }
-
-        if (tag.getKey().equals(baseTag.getKey())) {
-            if (!tag.getValue().equals(baseTag.getValue())) {
-                return true;
-            }
-        }
-
-        return false;
+    void updateItems(List<Tag> items) {
+        this.tagList = items;
     }
 
     void setEditViewModelCallback(EditViewModelCallback callback) {
         this.editViewModelCallback = callback;
-    }
-
-    boolean updateTag(Tag tag) {
-        List<Tag> tagList = getTagsList();
-        if (tagList.isEmpty()) {
-            return false;
-        }
-
-        for (int index = 0; index < tagList.size(); index++) {
-            if (tagList.get(index).getKey().equals(tag.getKey())) {
-                tagList.set(index, tag);
-                notifyItemChanged(index);
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    @VisibleForTesting
-    List<Tag> getTagsList() {
-        return helper.getTagsList();
     }
 }
