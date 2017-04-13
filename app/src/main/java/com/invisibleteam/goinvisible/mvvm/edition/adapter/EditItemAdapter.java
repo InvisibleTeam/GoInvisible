@@ -20,7 +20,7 @@ import static com.invisibleteam.goinvisible.model.TagGroupType.DEVICE_INFO;
 import static com.invisibleteam.goinvisible.model.TagGroupType.IMAGE_INFO;
 import static com.invisibleteam.goinvisible.model.TagGroupType.LOCATION_INFO;
 
-class EditItemAdapter extends RecyclerView.Adapter<ViewHolder> {
+class EditItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     static final int IMAGE_INFO_SECTION_POSITION = 0;
     static final int LOCATION_INFO_SECTION_POSITION = 21;
@@ -38,7 +38,7 @@ class EditItemAdapter extends RecyclerView.Adapter<ViewHolder> {
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         context = parent.getContext();
 
         if (viewType != DEFAULT_VIEW_TYPE) {
@@ -51,7 +51,7 @@ class EditItemAdapter extends RecyclerView.Adapter<ViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         final Tag tag = getTagsList().get(position);
 
         if (holder instanceof SectionViewHolder) {
