@@ -44,7 +44,7 @@ public class TagViewHolderTest {
     @Test
     public void whenViewHolderHasSetTag_ItsViewModelHasSetTag() {
         //Given
-        TagViewHolder holder = new TagViewHolder(itemView, null);
+        TagViewHolder holder = new TagViewHolder(itemView, mock(EditItemGroupAdapter.ItemActionListener.class));
 
         //When
         holder.setTag(tag);

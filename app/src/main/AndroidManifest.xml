@@ -34,6 +34,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".mvvm.settings.SettingsActivity"/>
+        <activity android:name=".mvvm.edition.NewActivity"/>
 
         <service android:name=".service.ClearingTagsService"/>
 

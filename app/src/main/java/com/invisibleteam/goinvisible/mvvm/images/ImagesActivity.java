@@ -23,7 +23,7 @@ import com.invisibleteam.goinvisible.helper.EditActivityHelper;
 import com.invisibleteam.goinvisible.helper.SharingHelper;
 import com.invisibleteam.goinvisible.model.ImageDetails;
 import com.invisibleteam.goinvisible.mvvm.common.CommonEditActivity;
-import com.invisibleteam.goinvisible.mvvm.edition.EditActivity;
+import com.invisibleteam.goinvisible.mvvm.edition.NewActivity;
 import com.invisibleteam.goinvisible.mvvm.edition.callback.RejectEditionChangesCallback;
 import com.invisibleteam.goinvisible.mvvm.edition.callback.TabletEditTagCallback;
 import com.invisibleteam.goinvisible.mvvm.edition.callback.TagEditionStartCallback;
@@ -57,7 +57,7 @@ public class ImagesActivity extends CommonEditActivity implements PhoneImagesVie
 
     @Override
     public void openEditScreen(ImageDetails imageDetails) {
-        Intent intent = EditActivity.buildIntent(this, imageDetails);
+        Intent intent = NewActivity.buildIntent(this, imageDetails);
         startActivity(intent);
     }
 

@@ -10,13 +10,15 @@ import com.bignerdranch.expandablerecyclerview.ExpandableRecyclerAdapter;
 import com.invisibleteam.goinvisible.R;
 import com.invisibleteam.goinvisible.model.Tag;
 import com.invisibleteam.goinvisible.model.TagGroup;
-import com.invisibleteam.goinvisible.mvvm.edition.callback.EditViewModelCallback;
 
 import java.util.List;
 
+import javax.annotation.Nullable;
+
 public class EditItemGroupAdapter extends ExpandableRecyclerAdapter<TagGroup, Tag, SectionViewHolder, TagViewHolder> {
 
-    private EditViewModelCallback editViewModelCallback;
+    @Nullable
+    private ItemActionListener itemActionListener = null;
 
     /**
      * Primary constructor. Sets up {@link #mParentList} and {@link #mFlatItemList}.
@@ -57,20 +59,27 @@ public class EditItemGroupAdapter extends ExpandableRecyclerAdapter<TagGroup, Ta
                         R.layout.edit_item_view,
                         childViewGroup,
                         false);
-        return new TagViewHolder(itemView, editViewModelCallback);
+        return new TagViewHolder(itemView, itemActionListener);
     }
 
     @Override
     public void onBindParentViewHolder(@NonNull SectionViewHolder parentViewHolder, int parentPosition, @NonNull TagGroup parent) {
-        parentViewHolder.setSectionName(parent.getName());
+        String groupName = parentViewHolder.itemView.getContext().getString(parent.getType().getGroupNameResId());
+        parentViewHolder.setSectionName(groupName);
     }
 
     @Override
     public void onBindChildViewHolder(@NonNull TagViewHolder childViewHolder, int parentPosition, int childPosition, @NonNull Tag child) {
-        childViewHolder.setTag(child);
+        childViewHolder.setModel(parentPosition, childPosition, child);
     }
 
-    public void setEditViewModelCallback(EditViewModelCallback editViewModelCallback) {
-        this.editViewModelCallback = editViewModelCallback;
+    public void setItemActionListener(ItemActionListener itemActionListener) {
+        this.itemActionListener = itemActionListener;
+    }
+
+    public interface ItemActionListener {
+        void onItemClick(int parentPosition, int childPosition, Tag tag);
+
+        void onItemClearClick(int parentPosition, int childPosition, Tag tag);
     }
 }

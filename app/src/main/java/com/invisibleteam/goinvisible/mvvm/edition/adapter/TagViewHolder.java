@@ -18,6 +18,7 @@ class TagViewHolder extends ChildViewHolder {
 
     TagViewHolder(View itemView, @Nullable EditViewModelCallback editViewModelCallback) {
         super(itemView);
+        //TODO remove this constructor
 
         editItemViewModel = new EditItemViewModel();
         editItemViewBinding = EditItemViewBinding.bind(itemView);
@@ -26,7 +27,18 @@ class TagViewHolder extends ChildViewHolder {
         setupListeners(editViewModelCallback);
     }
 
+
+    public TagViewHolder(View itemView, @Nullable EditItemGroupAdapter.ItemActionListener itemActionListener) {
+        super(itemView);
+
+        editItemViewModel = new EditItemViewModel(itemActionListener);
+        editItemViewBinding = EditItemViewBinding.bind(itemView);
+        editItemViewBinding.setViewModel(editItemViewModel);
+        TextViewUtil.setEllipsizedForView(editItemViewBinding.tagKey);
+    }
+
     private void setupListeners(@Nullable EditViewModelCallback editViewModelCallback) {
+        //TODO REMOVE this method
         editItemViewBinding.clearButton.setOnClickListener(v -> {
             if (editViewModelCallback != null) {
                 Tag tag = (Tag) itemView.getTag();
@@ -43,8 +55,13 @@ class TagViewHolder extends ChildViewHolder {
     }
 
     void setTag(Tag tag) {
+        //TODO REMOVE this method
         this.itemView.setTag(tag);
         this.editItemViewModel.setModel(tag);
+    }
+
+    void setModel(int parentPosition, int childPosition, Tag tag) {
+        editItemViewModel.setModel(parentPosition, childPosition, tag);
     }
 
     @VisibleForTesting

@@ -63,11 +63,6 @@ public class EditCompoundRecyclerView extends CompoundRecyclerView<Tag, Recycler
         return changedTags;
     }
 
-    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
-    public List<Tag> getAllTags() {
-        return helper.getTagsList();
-    }
-
     public boolean updateTag(Tag tag) {
         List<Tag> tagList = helper.getTagsList();
         if (tagList.isEmpty()) {

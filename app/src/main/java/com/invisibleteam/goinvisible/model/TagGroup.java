@@ -7,11 +7,16 @@ import java.util.List;
 
 public class TagGroup implements Parent<Tag> {
 
-    private List<Tag> tags;
-    private String name;
+    private final TagGroupType type;
+    private final List<Tag> tags;
 
-    public TagGroup(String name, List<Tag> tags) {
+    public TagGroup(TagGroupType type, List<Tag> tags) {
+        this.type = type;
         this.tags = tags;
+    }
+
+    public TagGroupType getType() {
+        return type;
     }
 
     @Override
@@ -22,9 +27,5 @@ public class TagGroup implements Parent<Tag> {
     @Override
     public boolean isInitiallyExpanded() {
         return true;
-    }
-
-    public String getName() {
-        return name;
     }
 }
