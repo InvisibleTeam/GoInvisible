@@ -10,7 +10,7 @@ import android.support.annotation.VisibleForTesting;
 import android.util.Log;
 
 import com.invisibleteam.goinvisible.model.Tag;
-import com.invisibleteam.goinvisible.mvvm.edition.EditViewModel;
+import com.invisibleteam.goinvisible.mvvm.edition.EditDialogInterface;
 
 import javax.annotation.Nullable;
 
@@ -20,7 +20,7 @@ public class EditDialog extends DialogFragment {
     public static final String EXTRA_TAG = "extra_tag";
     public static final String TAG = EditDialog.class.getSimpleName();
 
-    private EditViewModel editViewModel;
+    private EditDialogInterface editDialogInterface;
 
     public static EditDialog newInstance(Context context, Tag tag) {
         Bundle bundle = new Bundle();
@@ -31,7 +31,7 @@ public class EditDialog extends DialogFragment {
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        DialogFactory factory = new DialogFactory(this, extractTag(), editViewModel);
+        DialogFactory factory = new DialogFactory(this, extractTag(), editDialogInterface);
 
         Dialog dialog = factory.createDialog();
         if (dialog == null) {
@@ -44,7 +44,7 @@ public class EditDialog extends DialogFragment {
     private void onEditError() {
         setShowsDialog(false);
         dismiss();
-        editViewModel.onEditError();
+        editDialogInterface.onEditError();
     }
 
     @Nullable
@@ -61,7 +61,7 @@ public class EditDialog extends DialogFragment {
         return null;
     }
 
-    public void setViewModel(EditViewModel viewModel) {
-        editViewModel = viewModel;
+    public void setViewModel(EditDialogInterface editDialogInterface) {
+        this.editDialogInterface = editDialogInterface;
     }
 }

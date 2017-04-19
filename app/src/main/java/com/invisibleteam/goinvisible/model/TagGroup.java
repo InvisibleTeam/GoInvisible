@@ -9,10 +9,12 @@ public class TagGroup implements Parent<Tag> {
 
     private final TagGroupType type;
     private final List<Tag> tags;
+    private final boolean initiallyExpanded;
 
-    public TagGroup(TagGroupType type, List<Tag> tags) {
+    public TagGroup(TagGroupType type, List<Tag> tags, boolean initiallyExpanded) {
         this.type = type;
         this.tags = tags;
+        this.initiallyExpanded = initiallyExpanded;
     }
 
     public TagGroupType getType() {
@@ -26,6 +28,6 @@ public class TagGroup implements Parent<Tag> {
 
     @Override
     public boolean isInitiallyExpanded() {
-        return true;
+        return initiallyExpanded;
     }
 }

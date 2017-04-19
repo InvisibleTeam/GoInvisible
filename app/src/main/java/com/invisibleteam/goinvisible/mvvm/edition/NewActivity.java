@@ -12,15 +12,16 @@ import android.view.MenuItem;
 
 import com.invisibleteam.goinvisible.R;
 import com.invisibleteam.goinvisible.databinding.NewEditViewBinding;
+import com.invisibleteam.goinvisible.helper.NewEditActivityHelper;
 import com.invisibleteam.goinvisible.model.ImageDetails;
-import com.invisibleteam.goinvisible.mvvm.common.CommonEditActivity;
+import com.invisibleteam.goinvisible.mvvm.common.NewCommonEditActivity;
 import com.invisibleteam.goinvisible.util.TagsManager;
 
 import java.io.IOException;
 
 import javax.annotation.Nullable;
 
-public class NewActivity extends CommonEditActivity {
+public class NewActivity extends NewCommonEditActivity implements NewEditViewModel.EditViewModelCallback {
 
     private static final String TAG_IMAGE_DETAILS = "extra_image_details";
 
@@ -48,8 +49,10 @@ public class NewActivity extends CommonEditActivity {
         extractBundle();
         try {
             TagsManager tagsManager = new TagsManager(new ExifInterface(imageDetails.getPath()));
-            editViewModel = new NewEditViewModel(imageDetails, tagsManager);
+            editViewModel = new NewEditViewModel(imageDetails, tagsManager, this);
             editViewBinding.setViewModel(editViewModel);
+            setEditDialogInterface(editViewModel);
+            setEditActivityHelper(new NewEditActivityHelper(this));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -75,8 +78,15 @@ public class NewActivity extends CommonEditActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_edit_activity, menu);
+        if (editViewModel != null && editViewModel.isInEditState()) {
+            showSaveChangesMenuItem(menu);
+        }
 
         return true;
+    }
+
+    private void showSaveChangesMenuItem(Menu menu) {
+        menu.findItem(R.id.menu_item_save_changes).setVisible(true);
     }
 
     @Override
@@ -91,5 +101,10 @@ public class NewActivity extends CommonEditActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    public void updateViewState() {
+        invalidateOptionsMenu();
     }
 }

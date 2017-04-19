@@ -11,7 +11,7 @@ import com.invisibleteam.goinvisible.util.TagsManager;
 
 import java.util.List;
 
-public class EditViewModel implements EditViewModelCallback {
+public class EditViewModel implements EditViewModelCallback, EditDialogInterface {
 
     private final ObservableString title = new ObservableString("");
     private final ObservableString imageUrl = new ObservableString("");
