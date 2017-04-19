@@ -62,7 +62,7 @@ public class TagsManager {
         }
     }
 
-    public boolean editTags(List<Tag> tags) {
+    public boolean saveTags(List<Tag> tags) {
         if (tags.isEmpty()) {
             return false;
         }

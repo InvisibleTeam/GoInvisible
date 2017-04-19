@@ -6,7 +6,6 @@ import com.invisibleteam.goinvisible.model.InputType;
 import com.invisibleteam.goinvisible.model.Tag;
 import com.invisibleteam.goinvisible.model.TagGroupType;
 import com.invisibleteam.goinvisible.model.TagType;
-import com.invisibleteam.goinvisible.util.TagsManager;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -160,7 +159,7 @@ public class TagsManagerTest {
                 createTag("key4", "value4"));
 
         //When
-        tagsManager.editTags(tagsList);
+        tagsManager.saveTags(tagsList);
         exifInterface.saveAttributes();
 
         //Then

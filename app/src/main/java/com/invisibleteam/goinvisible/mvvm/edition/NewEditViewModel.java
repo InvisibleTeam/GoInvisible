@@ -9,6 +9,7 @@ import com.invisibleteam.goinvisible.model.ImageDetails;
 import com.invisibleteam.goinvisible.model.Tag;
 import com.invisibleteam.goinvisible.model.TagGroup;
 import com.invisibleteam.goinvisible.model.TagGroupType;
+import com.invisibleteam.goinvisible.mvvm.common.TagsUpdateStatusCallback;
 import com.invisibleteam.goinvisible.mvvm.edition.adapter.EditItemGroupAdapter;
 import com.invisibleteam.goinvisible.mvvm.edition.callback.TagEditionStartCallback;
 import com.invisibleteam.goinvisible.util.TagsManager;
@@ -31,7 +32,7 @@ public class NewEditViewModel implements EditItemGroupAdapter.ItemActionListener
     private final ObservableString imageUrl = new ObservableString("");
     private final ObservableArrayList<TagGroup> modelList = new ObservableArrayList<>();
     private final ObservableTagGroupDiffResultModel diffList = new ObservableTagGroupDiffResultModel();
-    private final List<TagGroup> originalModelList;
+    private List<TagGroup> originalModelList;
     private final Map<String, Tag> diffMap = new HashMap<>();
 
     private final TagsManager tagsManager;
@@ -189,7 +190,58 @@ public class NewEditViewModel implements EditItemGroupAdapter.ItemActionListener
         return !diffMap.isEmpty();
     }
 
-    public interface EditViewModelCallback extends TagEditionStartCallback {
+    public void onApproveChangesClick() {
+        List<Tag> tagList = getTagList(modelList);
+        if (tagsManager.saveTags(tagList)) {
+            originalModelList = createTagGroups(tagsManager.getAllTags());
+            updateModelList(tagsManager.getAllTags());
+            diffMap.clear();
+
+            callback.updateViewState();
+            callback.showTagsSuccessfullyUpdatedMessage();
+        } else {
+            callback.showTagsUpdateFailureMessage();
+        }
+    }
+
+    private void updateModelList(List<Tag> tagList) {
+        List<Tag> imageInfoSectionTagList = tagList.subList(IMAGE_INFO_SECTION_POSITION, LOCATION_INFO_SECTION_POSITION);
+        List<Tag> locationInfoSectionTagList = tagList.subList(LOCATION_INFO_SECTION_POSITION, DEVICE_INFO_SECTION_POSITION);
+        List<Tag> deviceInfoSectionTagList = tagList.subList(DEVICE_INFO_SECTION_POSITION, ADVANCED_INFO_SECTION_POSITION);
+        List<Tag> advancedInfoSectionTagList = tagList.subList(ADVANCED_INFO_SECTION_POSITION, tagList.size());
+
+        TagGroup imageInfoGroup = new TagGroup(TagGroupType.IMAGE_INFO, imageInfoSectionTagList, true);
+        TagGroup locationInfoGroup = new TagGroup(TagGroupType.LOCATION_INFO, locationInfoSectionTagList, false);
+        TagGroup deviceInfoGroup = new TagGroup(TagGroupType.DEVICE_INFO, deviceInfoSectionTagList, false);
+        TagGroup advancedInfoGroup = new TagGroup(TagGroupType.ADVANCED, advancedInfoSectionTagList, false);
+
+        originalModelList.set(0, imageInfoGroup);
+        originalModelList.set(1, locationInfoGroup);
+        originalModelList.set(2, deviceInfoGroup);
+        originalModelList.set(3, advancedInfoGroup);
+    }
+
+    private List<Tag> getTagList(List<TagGroup> tagGroupList) {
+        List<Tag> tagList = new ArrayList<>();
+        for (int i = 0; i < tagGroupList.size(); i++) {
+            tagList.addAll(tagGroupList.get(i).getChildList());
+        }
+        return tagList;
+    }
+
+    public void onShareClick() {
+        if (isInEditState()) {
+            callback.showViewInEditStateInformation();
+        } else {
+            callback.shareImage();
+        }
+    }
+
+    public interface EditViewModelCallback extends TagEditionStartCallback, TagsUpdateStatusCallback {
         void updateViewState();
+
+        void shareImage();
+
+        void showViewInEditStateInformation();
     }
 }

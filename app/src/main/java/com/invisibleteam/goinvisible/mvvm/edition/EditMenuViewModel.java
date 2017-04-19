@@ -53,7 +53,7 @@ class EditMenuViewModel {
 
     private boolean saveTags() {
         List<Tag> changedTags = editCompoundRecyclerView.getChangedTags();
-        return tagsManager.editTags(changedTags);
+        return tagsManager.saveTags(changedTags);
     }
 
     boolean isInEditState() {

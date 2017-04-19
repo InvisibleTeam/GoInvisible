@@ -71,7 +71,7 @@ public class TabletEditViewModel extends EditViewModel {
 
     private boolean saveTags() {
         List<Tag> changedTags = getEditCompoundRecyclerView().getChangedTags();
-        return getManager().editTags(changedTags);
+        return getManager().saveTags(changedTags);
     }
 
     public ObservableBoolean getIsInEditMode() {

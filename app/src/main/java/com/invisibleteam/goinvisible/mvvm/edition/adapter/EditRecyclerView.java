@@ -38,10 +38,10 @@ public class EditRecyclerView extends FrameLayout {
         recyclerView.setAdapter(adapter);
     }
 
-    public void insertList(List<TagGroup> tagList) {
+    public void updateList(List<TagGroup> tagList) {
         arrayList.clear();
         arrayList.addAll(tagList);
-        adapter.notifyParentRangeInserted(0, tagList.size());
+        adapter.notifyParentDataSetChanged(true);
     }
 
     public void setOnItemActionListener(EditItemGroupAdapter.ItemActionListener listener) {

@@ -6,23 +6,28 @@ import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.design.widget.Snackbar;
 import android.support.media.ExifInterface;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.invisibleteam.goinvisible.R;
 import com.invisibleteam.goinvisible.databinding.NewEditViewBinding;
 import com.invisibleteam.goinvisible.helper.NewEditActivityHelper;
+import com.invisibleteam.goinvisible.helper.SharingHelper;
 import com.invisibleteam.goinvisible.model.ImageDetails;
 import com.invisibleteam.goinvisible.mvvm.common.NewCommonEditActivity;
 import com.invisibleteam.goinvisible.util.TagsManager;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import javax.annotation.Nullable;
 
 public class NewActivity extends NewCommonEditActivity implements NewEditViewModel.EditViewModelCallback {
 
+    private static final String TAG = NewActivity.class.getSimpleName();
     private static final String TAG_IMAGE_DETAILS = "extra_image_details";
 
     public static Intent buildIntent(Context context, ImageDetails imageDetails) {
@@ -95,8 +100,20 @@ public class NewActivity extends NewCommonEditActivity implements NewEditViewMod
             case android.R.id.home:
                 onBackPressed();
                 return true;
+            case R.id.menu_item_save_changes:
+                if (editViewModel != null) {
+                    editViewModel.onApproveChangesClick();
+                }
+                return true;
             case R.id.menu_item_clear_all:
-                editViewModel.onClearAllClick();
+                if (editViewModel != null) {
+                    editViewModel.onClearAllClick();
+                }
+                return true;
+            case R.id.menu_item_share:
+                if (editViewModel != null) {
+                    editViewModel.onShareClick();
+                }
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -106,5 +123,23 @@ public class NewActivity extends NewCommonEditActivity implements NewEditViewMod
     @Override
     public void updateViewState() {
         invalidateOptionsMenu();
+    }
+
+    public void shareImage() {
+        try {
+            Intent intent = new SharingHelper().buildShareImageIntent(imageDetails);
+            startActivity(Intent.createChooser(intent, getString(R.string.share_intent_chooser_title)));
+        } catch (FileNotFoundException e) {
+            Log.e(TAG, String.valueOf(e.getMessage()));
+            //TODO log error in crashlytics
+        }
+    }
+
+    @Override
+    public void showViewInEditStateInformation() {
+        Snackbar.make(
+                findViewById(android.R.id.content),
+                R.string.save_before_share,
+                Snackbar.LENGTH_LONG).show();
     }
 }

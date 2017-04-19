@@ -13,7 +13,7 @@ import java.util.List;
 public class EditRecyclerViewBindingAdapter {
     @BindingAdapter("modelList")
     public static void bindList(EditRecyclerView compoundRecyclerView, List<TagGroup> resultModel) {
-        compoundRecyclerView.insertList(resultModel);
+        compoundRecyclerView.updateList(resultModel);
     }
 
     @BindingAdapter("diffList")
