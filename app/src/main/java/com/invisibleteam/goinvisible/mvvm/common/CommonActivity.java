@@ -8,13 +8,13 @@ import android.support.annotation.VisibleForTesting;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 
 import com.invisibleteam.goinvisible.R;
+import com.trello.rxlifecycle.components.support.RxAppCompatActivity;
 
 import java.util.Locale;
 
-public abstract class CommonActivity extends AppCompatActivity {
+public abstract class CommonActivity extends RxAppCompatActivity {
 
     private static final int REQUEST_FOR_PERMISSIONS_REQUEST_CODE = 0;
 

@@ -18,6 +18,7 @@ import com.invisibleteam.goinvisible.helper.NewEditActivityHelper;
 import com.invisibleteam.goinvisible.helper.SharingHelper;
 import com.invisibleteam.goinvisible.model.ImageDetails;
 import com.invisibleteam.goinvisible.mvvm.common.NewCommonEditActivity;
+import com.invisibleteam.goinvisible.util.LifecycleBinder;
 import com.invisibleteam.goinvisible.util.TagsManager;
 
 import java.io.FileNotFoundException;
@@ -25,7 +26,9 @@ import java.io.IOException;
 
 import javax.annotation.Nullable;
 
-public class NewActivity extends NewCommonEditActivity implements NewEditViewModel.EditViewModelCallback {
+import rx.Observable;
+
+public class NewActivity extends NewCommonEditActivity implements NewEditViewModel.EditViewModelCallback, LifecycleBinder {
 
     private static final String TAG = NewActivity.class.getSimpleName();
     private static final String TAG_IMAGE_DETAILS = "extra_image_details";
@@ -54,7 +57,13 @@ public class NewActivity extends NewCommonEditActivity implements NewEditViewMod
         extractBundle();
         try {
             TagsManager tagsManager = new TagsManager(new ExifInterface(imageDetails.getPath()));
-            editViewModel = new NewEditViewModel(imageDetails, tagsManager, this);
+            editViewModel = new NewEditViewModel(
+                    imageDetails,
+                    tagsManager,
+                    this,
+                    new TagDiffMicroServiceFactory(this),
+                    new TagListDiffMicroService(this),
+                    this);
             editViewBinding.setViewModel(editViewModel);
             setEditDialogInterface(editViewModel);
             setEditActivityHelper(new NewEditActivityHelper(this));
@@ -141,5 +150,10 @@ public class NewActivity extends NewCommonEditActivity implements NewEditViewMod
                 findViewById(android.R.id.content),
                 R.string.save_before_share,
                 Snackbar.LENGTH_LONG).show();
+    }
+
+    @Override
+    public <T> Observable.Transformer<T, T> bind() {
+        return bindToLifecycle();
     }
 }

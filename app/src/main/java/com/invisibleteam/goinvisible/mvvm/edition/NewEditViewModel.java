@@ -3,76 +3,67 @@ package com.invisibleteam.goinvisible.mvvm.edition;
 
 import android.databinding.ObservableArrayList;
 import android.support.media.ExifInterface;
-import android.support.v7.util.DiffUtil;
 
 import com.invisibleteam.goinvisible.model.ImageDetails;
 import com.invisibleteam.goinvisible.model.Tag;
 import com.invisibleteam.goinvisible.model.TagGroup;
-import com.invisibleteam.goinvisible.model.TagGroupType;
 import com.invisibleteam.goinvisible.mvvm.common.TagsUpdateStatusCallback;
 import com.invisibleteam.goinvisible.mvvm.edition.adapter.EditItemGroupAdapter;
 import com.invisibleteam.goinvisible.mvvm.edition.callback.TagEditionStartCallback;
+import com.invisibleteam.goinvisible.util.LifecycleBinder;
 import com.invisibleteam.goinvisible.util.TagsManager;
 import com.invisibleteam.goinvisible.util.binding.ObservableString;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.exceptions.Exceptions;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
+
 public class NewEditViewModel implements EditItemGroupAdapter.ItemActionListener, EditDialogInterface {
-
-    private static final int IMAGE_INFO_SECTION_POSITION = 0;
-    private static final int LOCATION_INFO_SECTION_POSITION = 21;
-    private static final int DEVICE_INFO_SECTION_POSITION = 47;
-    private static final int ADVANCED_INFO_SECTION_POSITION = 59;
-
     private final ObservableString title = new ObservableString("");
     private final ObservableString imageUrl = new ObservableString("");
     private final ObservableArrayList<TagGroup> modelList = new ObservableArrayList<>();
     private final ObservableTagGroupDiffResultModel diffList = new ObservableTagGroupDiffResultModel();
-    private List<TagGroup> originalModelList;
-    private final Map<String, Tag> diffMap = new HashMap<>();
 
     private final TagsManager tagsManager;
     private final EditViewModelCallback callback;
+    private final TagDiffMicroServiceFactory microServiceFactory;
+    private final TagListDiffMicroService listDiffMicroService;
+    private final LifecycleBinder lifecycleBinder;
 
+    private final Map<String, Tag> diffMap = new HashMap<>();
+    private List<TagGroup> originalModelList;
     private int editedGroupPosition = 0;
     private int editedChildPosition = 0;
 
     public NewEditViewModel(
             ImageDetails imageDetails,
             TagsManager tagsManager,
-            EditViewModelCallback callback) {
+            EditViewModelCallback callback,
+            TagDiffMicroServiceFactory microServiceFactory,
+            TagListDiffMicroService listDiffMicroService,
+            LifecycleBinder lifecycleBinder) {
         this.tagsManager = tagsManager;
         this.callback = callback;
+        this.microServiceFactory = microServiceFactory;
+        this.listDiffMicroService = listDiffMicroService;
+        this.lifecycleBinder = lifecycleBinder;
         title.set(imageDetails.getName());
         imageUrl.set(imageDetails.getPath());
 
-        originalModelList = createTagGroups(tagsManager.getAllTags());
-        List<TagGroup> tagGroups = createTagGroups(tagsManager.getAllTags());
+        List<Tag> allTags = tagsManager.getAllTags();
+        originalModelList = TagGroupUtil.createTagGroups(allTags);
+        List<TagGroup> tagGroups = TagGroupUtil.createTagGroups(TagGroupUtil.deepCopyList(allTags));
         modelList.addAll(tagGroups);
-    }
 
-    private List<TagGroup> createTagGroups(List<Tag> tagList) {
-        List<Tag> imageInfoSectionTagList = tagList.subList(IMAGE_INFO_SECTION_POSITION, LOCATION_INFO_SECTION_POSITION);
-        List<Tag> locationInfoSectionTagList = tagList.subList(LOCATION_INFO_SECTION_POSITION, DEVICE_INFO_SECTION_POSITION);
-        List<Tag> deviceInfoSectionTagList = tagList.subList(DEVICE_INFO_SECTION_POSITION, ADVANCED_INFO_SECTION_POSITION);
-        List<Tag> advancedInfoSectionTagList = tagList.subList(ADVANCED_INFO_SECTION_POSITION, tagList.size());
-
-        TagGroup imageInfoGroup = new TagGroup(TagGroupType.IMAGE_INFO, imageInfoSectionTagList, true);
-        TagGroup locationInfoGroup = new TagGroup(TagGroupType.LOCATION_INFO, locationInfoSectionTagList, false);
-        TagGroup deviceInfoGroup = new TagGroup(TagGroupType.DEVICE_INFO, deviceInfoSectionTagList, false);
-        TagGroup advancedInfoGroup = new TagGroup(TagGroupType.ADVANCED, advancedInfoSectionTagList, false);
-
-        List<TagGroup> tagGroups = new ArrayList<>();
-        tagGroups.add(imageInfoGroup);
-        tagGroups.add(locationInfoGroup);
-        tagGroups.add(deviceInfoGroup);
-        tagGroups.add(advancedInfoGroup);
-
-        return tagGroups;
+        setupListDiffMicroService();
     }
 
     public ObservableString getTitle() {
@@ -119,41 +110,34 @@ public class NewEditViewModel implements EditItemGroupAdapter.ItemActionListener
 
     @Override
     public void onItemClearClick(int parentPosition, int childPosition, Tag tag) {
-        //TODO some kind of threaded micro service
         TagGroup tagGroup = modelList.get(parentPosition);
-        ArrayList<Tag> copy = new ArrayList<>(tagGroup.getChildList());
-        Collections.copy(copy, tagGroup.getChildList());
-
         Tag tagCopy = tag.copy();
-        tagsManager.clearTag(tagCopy);
-        tagGroup.getChildList().set(childPosition, tagCopy);
 
-        DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new TagListDiffCallback(tagGroup.getChildList(), copy), false);
-        diffList.clear();
-        diffList.add(new TagDiffResultModel(parentPosition, diffResult));
-        checkDifferentFromOriginal(parentPosition, childPosition, tagCopy);
-        callback.updateViewState();
+        editTag(parentPosition, childPosition, tag, tagList -> {
+            tagsManager.clearTag(tagCopy);
+            tagGroup.getChildList().set(childPosition, tagCopy);
+        });
     }
 
-    public void onClearAllClick() {
-        //TODO some kind of threaded micro service
-        List<TagDiffResultModel> resultModels = new ArrayList<>(modelList.size());
-        for (int i = 0; i < modelList.size(); i++) {
-            TagGroup tagGroup = modelList.get(i);
-            ArrayList<Tag> copy = new ArrayList<>(tagGroup.getChildList());
-            Collections.copy(copy, tagGroup.getChildList());
-            for (int j = 0; j < tagGroup.getChildList().size(); j++) {
-                Tag tagCopy = tagGroup.getChildList().get(j).copy();
-                tagGroup.getChildList().set(j, tagCopy);
-                tagsManager.clearTag(tagCopy);
-                checkDifferentFromOriginal(i, j, tagCopy);
-            }
-            DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new TagListDiffCallback(tagGroup.getChildList(), copy), false);
-            resultModels.add(new TagDiffResultModel(i, diffResult));
-        }
-        diffList.clear();
-        diffList.addAll(resultModels);
-        callback.updateViewState();
+    private void setupListDiffMicroService() {
+        listDiffMicroService.setEditListener((tagList, groupPosition, childPosition) -> {
+            Tag tagCopy = tagList.get(childPosition).copy();
+            tagList.set(childPosition, tagCopy);
+            tagsManager.clearTag(tagCopy);
+            checkDifferentFromOriginal(groupPosition, childPosition, tagCopy);
+        });
+    }
+
+    void onClearAllClick() {
+        listDiffMicroService
+                .buildObservable(modelList)
+                .map(tagDiffResultModels -> {
+                    diffList.clear();
+                    diffList.addAll(tagDiffResultModels);
+                    return tagDiffResultModels;
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(tagDiffResultModels -> callback.updateViewState());
     }
 
     @Override
@@ -163,18 +147,77 @@ public class NewEditViewModel implements EditItemGroupAdapter.ItemActionListener
 
     @Override
     public void onEditEnded(Tag tag) {
-        //TODO some kind of threaded micro service
-        TagGroup tagGroup = modelList.get(editedGroupPosition);
-        ArrayList<Tag> copy = new ArrayList<>(tagGroup.getChildList());
-        Collections.copy(copy, tagGroup.getChildList());
+        editTag(editedGroupPosition, editedChildPosition, tag, tagList -> {
+            tagList.set(editedChildPosition, tag);
+        });
+    }
 
-        tagGroup.getChildList().set(editedChildPosition, tag);
+    void onApproveChangesClick() {
+        Observable.just(diffMap)
+                .compose(lifecycleBinder.bind())
+                .subscribeOn(Schedulers.computation())
+                .map((Func1<Map<String, Tag>, List<Tag>>) stringTagMap -> new ArrayList<>(diffMap.values()))
+                .map(tags -> {
+                    if (tagsManager.saveTags(tags)) {
+                        return tags;
+                    }
+                    throw Exceptions.propagate(new Exception("There were problems saving tags."));
+                })
+                .map(tagList -> {
+                    TagGroupUtil.updateTagList(originalModelList, tagsManager.getAllTags());
+                    diffMap.clear();
+                    return originalModelList;
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<List<TagGroup>>() {
+                    @Override
+                    public void onCompleted() {
 
-        DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new TagListDiffCallback(tagGroup.getChildList(), copy), false);
-        diffList.clear();
-        diffList.add(new TagDiffResultModel(editedGroupPosition, diffResult));
-        checkDifferentFromOriginal(editedGroupPosition, editedChildPosition, tag);
-        callback.updateViewState();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        callback.showTagsUpdateFailureMessage();
+                    }
+
+                    @Override
+                    public void onNext(List<TagGroup> tags) {
+                        callback.updateViewState();
+                        callback.showTagsSuccessfullyUpdatedMessage();
+                    }
+                });
+    }
+
+    void onShareClick() {
+        if (isInEditState()) {
+            callback.showViewInEditStateInformation();
+        } else {
+            callback.shareImage();
+        }
+    }
+
+    boolean isInEditState() {
+        return !diffMap.isEmpty();
+    }
+
+    private void editTag(int parentPosition,
+                         int childPosition,
+                         Tag tag,
+                         TagDiffMicroService.EditListener editListener) {
+        TagGroup tagGroup = modelList.get(parentPosition);
+        Tag tagCopy = tag.copy();
+
+        microServiceFactory
+                .buildService(editListener)
+                .buildObservable(tagGroup)
+                .map(diffResult -> {
+                    diffList.clear();
+                    diffList.add(new TagDiffResultModel(parentPosition, diffResult));
+                    checkDifferentFromOriginal(parentPosition, childPosition, tagCopy);
+                    return diffResult;
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(diffResult -> callback.updateViewState());
     }
 
     private void checkDifferentFromOriginal(int editedGroupPosition, int editedChildPosition, Tag tag) {
@@ -184,57 +227,6 @@ public class NewEditViewModel implements EditItemGroupAdapter.ItemActionListener
             return;
         }
         diffMap.put(tag.getKey(), tag);
-    }
-
-    boolean isInEditState() {
-        return !diffMap.isEmpty();
-    }
-
-    public void onApproveChangesClick() {
-        List<Tag> tagList = getTagList(modelList);
-        if (tagsManager.saveTags(tagList)) {
-            originalModelList = createTagGroups(tagsManager.getAllTags());
-            updateModelList(tagsManager.getAllTags());
-            diffMap.clear();
-
-            callback.updateViewState();
-            callback.showTagsSuccessfullyUpdatedMessage();
-        } else {
-            callback.showTagsUpdateFailureMessage();
-        }
-    }
-
-    private void updateModelList(List<Tag> tagList) {
-        List<Tag> imageInfoSectionTagList = tagList.subList(IMAGE_INFO_SECTION_POSITION, LOCATION_INFO_SECTION_POSITION);
-        List<Tag> locationInfoSectionTagList = tagList.subList(LOCATION_INFO_SECTION_POSITION, DEVICE_INFO_SECTION_POSITION);
-        List<Tag> deviceInfoSectionTagList = tagList.subList(DEVICE_INFO_SECTION_POSITION, ADVANCED_INFO_SECTION_POSITION);
-        List<Tag> advancedInfoSectionTagList = tagList.subList(ADVANCED_INFO_SECTION_POSITION, tagList.size());
-
-        TagGroup imageInfoGroup = new TagGroup(TagGroupType.IMAGE_INFO, imageInfoSectionTagList, true);
-        TagGroup locationInfoGroup = new TagGroup(TagGroupType.LOCATION_INFO, locationInfoSectionTagList, false);
-        TagGroup deviceInfoGroup = new TagGroup(TagGroupType.DEVICE_INFO, deviceInfoSectionTagList, false);
-        TagGroup advancedInfoGroup = new TagGroup(TagGroupType.ADVANCED, advancedInfoSectionTagList, false);
-
-        originalModelList.set(0, imageInfoGroup);
-        originalModelList.set(1, locationInfoGroup);
-        originalModelList.set(2, deviceInfoGroup);
-        originalModelList.set(3, advancedInfoGroup);
-    }
-
-    private List<Tag> getTagList(List<TagGroup> tagGroupList) {
-        List<Tag> tagList = new ArrayList<>();
-        for (int i = 0; i < tagGroupList.size(); i++) {
-            tagList.addAll(tagGroupList.get(i).getChildList());
-        }
-        return tagList;
-    }
-
-    public void onShareClick() {
-        if (isInEditState()) {
-            callback.showViewInEditStateInformation();
-        } else {
-            callback.shareImage();
-        }
     }
 
     public interface EditViewModelCallback extends TagEditionStartCallback, TagsUpdateStatusCallback {
