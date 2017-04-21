@@ -156,4 +156,16 @@ public class NewActivity extends NewCommonEditActivity implements NewEditViewMod
     public <T> Observable.Transformer<T, T> bind() {
         return bindToLifecycle();
     }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        editViewModel.onSaveInstanceState(outState);
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        editViewModel.onRestoreInstanceState(savedInstanceState);
+    }
 }

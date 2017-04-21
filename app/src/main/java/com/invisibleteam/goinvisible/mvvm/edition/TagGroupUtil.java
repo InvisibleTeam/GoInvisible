@@ -60,6 +60,12 @@ public class TagGroupUtil {
         }
     }
 
+    public static void updateTagGroupList(List<TagGroup> tagGroupList, List<TagGroup> newTagGroupList) {
+        for (int i = 0; i < tagGroupList.size() && i < newTagGroupList.size(); i++) {
+            tagGroupList.set(i, newTagGroupList.get(i));
+        }
+    }
+
     public static List<Tag> deepCopyList(List<Tag> tagList) {
         List<Tag> newTagList = new ArrayList<>(tagList.size());
         for (int i = 0; i < tagList.size(); i++) {

@@ -2,6 +2,7 @@ package com.invisibleteam.goinvisible.mvvm.edition;
 
 
 import android.databinding.ObservableArrayList;
+import android.os.Bundle;
 import android.support.media.ExifInterface;
 
 import com.invisibleteam.goinvisible.model.ImageDetails;
@@ -14,10 +15,13 @@ import com.invisibleteam.goinvisible.util.LifecycleBinder;
 import com.invisibleteam.goinvisible.util.TagsManager;
 import com.invisibleteam.goinvisible.util.binding.ObservableString;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.annotation.Nullable;
 
 import rx.Observable;
 import rx.Subscriber;
@@ -27,6 +31,10 @@ import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 public class NewEditViewModel implements EditItemGroupAdapter.ItemActionListener, EditDialogInterface {
+
+    private static final String MODEL_LIST_EXTRA_KEY = "model_list_extra";
+    private static final String DIFF_MAP_EXTRA_KEY = "diff_map_extra";
+
     private final ObservableString title = new ObservableString("");
     private final ObservableString imageUrl = new ObservableString("");
     private final ObservableArrayList<TagGroup> modelList = new ObservableArrayList<>();
@@ -38,7 +46,7 @@ public class NewEditViewModel implements EditItemGroupAdapter.ItemActionListener
     private final TagListDiffMicroService listDiffMicroService;
     private final LifecycleBinder lifecycleBinder;
 
-    private final Map<String, Tag> diffMap = new HashMap<>();
+    private final HashMap<String, Tag> diffMap = new HashMap<>();
     private List<TagGroup> originalModelList;
     private int editedGroupPosition = 0;
     private int editedChildPosition = 0;
@@ -116,7 +124,7 @@ public class NewEditViewModel implements EditItemGroupAdapter.ItemActionListener
         editTag(
                 parentPosition,
                 childPosition,
-                tag,
+                tagCopy,
                 tagList -> {
                     tagsManager.clearTag(tagCopy);
                     tagGroup.getChildList().set(childPosition, tagCopy);
@@ -211,7 +219,6 @@ public class NewEditViewModel implements EditItemGroupAdapter.ItemActionListener
                          Tag tag,
                          TagDiffMicroService.EditListener editListener) {
         TagGroup tagGroup = modelList.get(parentPosition);
-        Tag tagCopy = tag.copy();
 
         microServiceFactory
                 .buildService(editListener)
@@ -219,7 +226,7 @@ public class NewEditViewModel implements EditItemGroupAdapter.ItemActionListener
                 .map(diffResult -> {
                     diffList.clear();
                     diffList.add(new TagDiffResultModel(parentPosition, diffResult));
-                    checkDifferentFromOriginal(parentPosition, childPosition, tagCopy);
+                    checkDifferentFromOriginal(parentPosition, childPosition, tag);
                     return diffResult;
                 })
                 .observeOn(AndroidSchedulers.mainThread())
@@ -233,6 +240,32 @@ public class NewEditViewModel implements EditItemGroupAdapter.ItemActionListener
             return;
         }
         diffMap.put(tag.getKey(), tag);
+    }
+
+    void onSaveInstanceState(Bundle bundle) {
+        bundle.putParcelableArrayList(MODEL_LIST_EXTRA_KEY, modelList);
+        bundle.putSerializable(DIFF_MAP_EXTRA_KEY, diffMap);
+
+    }
+
+    void onRestoreInstanceState(@Nullable Bundle bundle) {
+        if (bundle == null) {
+            return;
+        }
+
+        if (bundle.containsKey(MODEL_LIST_EXTRA_KEY)) {
+            List<TagGroup> savedModelList = bundle.getParcelableArrayList(MODEL_LIST_EXTRA_KEY);
+            if (savedModelList != null) {
+                TagGroupUtil.updateTagGroupList(modelList, savedModelList);
+            }
+        }
+        if (bundle.containsKey(DIFF_MAP_EXTRA_KEY)) {
+            Serializable serializable = bundle.getSerializable(DIFF_MAP_EXTRA_KEY);
+            if (serializable != null) {
+                Map<String, Tag> map = (Map<String, Tag>) serializable;
+                diffMap.putAll(map);
+            }
+        }
     }
 
     public interface EditViewModelCallback extends TagEditionStartCallback, TagsUpdateStatusCallback {
