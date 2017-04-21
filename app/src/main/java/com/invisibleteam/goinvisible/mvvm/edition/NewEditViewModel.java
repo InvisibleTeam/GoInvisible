@@ -113,10 +113,14 @@ public class NewEditViewModel implements EditItemGroupAdapter.ItemActionListener
         TagGroup tagGroup = modelList.get(parentPosition);
         Tag tagCopy = tag.copy();
 
-        editTag(parentPosition, childPosition, tag, tagList -> {
-            tagsManager.clearTag(tagCopy);
-            tagGroup.getChildList().set(childPosition, tagCopy);
-        });
+        editTag(
+                parentPosition,
+                childPosition,
+                tag,
+                tagList -> {
+                    tagsManager.clearTag(tagCopy);
+                    tagGroup.getChildList().set(childPosition, tagCopy);
+                });
     }
 
     private void setupListDiffMicroService() {
@@ -147,9 +151,11 @@ public class NewEditViewModel implements EditItemGroupAdapter.ItemActionListener
 
     @Override
     public void onEditEnded(Tag tag) {
-        editTag(editedGroupPosition, editedChildPosition, tag, tagList -> {
-            tagList.set(editedChildPosition, tag);
-        });
+        editTag(
+                editedGroupPosition,
+                editedChildPosition,
+                tag,
+                tagList -> tagList.set(editedChildPosition, tag));
     }
 
     void onApproveChangesClick() {
