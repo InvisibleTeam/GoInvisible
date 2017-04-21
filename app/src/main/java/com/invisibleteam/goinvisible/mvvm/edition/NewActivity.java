@@ -4,10 +4,13 @@ package com.invisibleteam.goinvisible.mvvm.edition;
 import android.content.Context;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.design.widget.Snackbar;
 import android.support.media.ExifInterface;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -18,6 +21,7 @@ import com.invisibleteam.goinvisible.helper.NewEditActivityHelper;
 import com.invisibleteam.goinvisible.helper.SharingHelper;
 import com.invisibleteam.goinvisible.model.ImageDetails;
 import com.invisibleteam.goinvisible.mvvm.common.NewCommonEditActivity;
+import com.invisibleteam.goinvisible.mvvm.images.ImagesProvider;
 import com.invisibleteam.goinvisible.util.LifecycleBinder;
 import com.invisibleteam.goinvisible.util.TagsManager;
 
@@ -54,21 +58,16 @@ public class NewActivity extends NewCommonEditActivity implements NewEditViewMod
     public void prepareView() {
         NewEditViewBinding editViewBinding = DataBindingUtil.setContentView(this, R.layout.new_edit_view);
         setSupportActionBar(editViewBinding.mainToolbar);
-        extractBundle();
-        try {
-            TagsManager tagsManager = new TagsManager(new ExifInterface(imageDetails.getPath()));
-            editViewModel = new NewEditViewModel(
-                    imageDetails,
-                    tagsManager,
-                    this,
-                    new TagDiffMicroServiceFactory(this),
-                    new TagListDiffMicroService(this),
-                    this);
-            editViewBinding.setViewModel(editViewModel);
-            setEditDialogInterface(editViewModel);
-            setEditActivityHelper(new NewEditActivityHelper(this));
-        } catch (IOException e) {
-            e.printStackTrace();
+
+        boolean bundleExtracted = extractBundle();
+        boolean shareIntentExtracted = extractShareIntent();
+        if (bundleExtracted || shareIntentExtracted) {
+            prepareViewModels(editViewBinding);
+            if (bundleExtracted) {
+                setupHomeButton();
+            }
+        } else {
+            showWrongImageDialog();
         }
     }
 
@@ -84,9 +83,67 @@ public class NewActivity extends NewCommonEditActivity implements NewEditViewMod
         return false;
     }
 
+    boolean extractShareIntent() {
+        Intent intent = getIntent();
+        String action = intent.getAction();
+        String type = intent.getType();
+
+        if (Intent.ACTION_SEND.equals(action) && type != null) {
+            if (type.startsWith("image/")) {
+                Uri imageUri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
+                if (imageUri == null) {
+                    return false;
+                }
+
+                imageDetails = new ImagesProvider(getContentResolver()).getImage(imageUri);
+                if (imageDetails != null && imageDetails.isJpeg()) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private void prepareViewModels(NewEditViewBinding binding) {
+        try {
+            TagsManager tagsManager = new TagsManager(new ExifInterface(imageDetails.getPath()));
+            editViewModel = new NewEditViewModel(
+                    imageDetails,
+                    tagsManager,
+                    this,
+                    new TagDiffMicroServiceFactory(this),
+                    new TagListDiffMicroService(this),
+                    this);
+            binding.setViewModel(editViewModel);
+            setEditDialogInterface(editViewModel);
+            setEditActivityHelper(new NewEditActivityHelper(this));
+        } catch (IOException e) {
+            Log.d(TAG, String.valueOf(e.getMessage()));
+            //TODO log exception to crashlitycs on else.
+        }
+    }
+
+    private void setupHomeButton() {
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
+    }
+
+    private void showWrongImageDialog() {
+        new AlertDialog
+                .Builder(NewActivity.this, R.style.AlertDialogStyle)
+                .setTitle(R.string.wrong_image_error)
+                .setMessage(R.string.wrong_image_error_message)
+                .setPositiveButton(getText(R.string.positive_message), (dialog, which) -> finish())
+                .setOnDismissListener(dialog -> finish())
+                .create()
+                .show();
+    }
+
     @Override
     protected void onRejectTagsChangesDialogPositive() {
-
+        finish();
     }
 
     @Override
@@ -130,6 +187,15 @@ public class NewActivity extends NewCommonEditActivity implements NewEditViewMod
     }
 
     @Override
+    public void onBackPressed() {
+        if (editViewModel != null) {
+            editViewModel.onFinishScene();
+        } else {
+            finish();
+        }
+    }
+
+    @Override
     public void updateViewState() {
         invalidateOptionsMenu();
     }
@@ -150,6 +216,11 @@ public class NewActivity extends NewCommonEditActivity implements NewEditViewMod
                 findViewById(android.R.id.content),
                 R.string.save_before_share,
                 Snackbar.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void finishScene() {
+        finish();
     }
 
     @Override

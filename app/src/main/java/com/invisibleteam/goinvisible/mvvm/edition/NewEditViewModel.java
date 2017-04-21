@@ -10,6 +10,7 @@ import com.invisibleteam.goinvisible.model.Tag;
 import com.invisibleteam.goinvisible.model.TagGroup;
 import com.invisibleteam.goinvisible.mvvm.common.TagsUpdateStatusCallback;
 import com.invisibleteam.goinvisible.mvvm.edition.adapter.EditItemGroupAdapter;
+import com.invisibleteam.goinvisible.mvvm.edition.callback.RejectEditionChangesCallback;
 import com.invisibleteam.goinvisible.mvvm.edition.callback.TagEditionStartCallback;
 import com.invisibleteam.goinvisible.util.LifecycleBinder;
 import com.invisibleteam.goinvisible.util.TagsManager;
@@ -41,10 +42,10 @@ public class NewEditViewModel implements EditItemGroupAdapter.ItemActionListener
     private final ObservableTagGroupDiffResultModel diffList = new ObservableTagGroupDiffResultModel();
 
     private final TagsManager tagsManager;
-    private final EditViewModelCallback callback;
     private final TagDiffMicroServiceFactory microServiceFactory;
     private final TagListDiffMicroService listDiffMicroService;
     private final LifecycleBinder lifecycleBinder;
+    protected final EditViewModelCallback callback;
 
     private final HashMap<String, Tag> diffMap = new HashMap<>();
     private List<TagGroup> originalModelList;
@@ -268,11 +269,21 @@ public class NewEditViewModel implements EditItemGroupAdapter.ItemActionListener
         }
     }
 
-    public interface EditViewModelCallback extends TagEditionStartCallback, TagsUpdateStatusCallback {
+    public void onFinishScene() {
+        if (isInEditState()) {
+            callback.showRejectChangesDialog();
+        } else {
+            callback.finishScene();
+        }
+    }
+
+    public interface EditViewModelCallback extends TagEditionStartCallback, TagsUpdateStatusCallback, RejectEditionChangesCallback {
         void updateViewState();
 
         void shareImage();
 
         void showViewInEditStateInformation();
+
+        void finishScene();
     }
 }

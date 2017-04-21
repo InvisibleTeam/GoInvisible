@@ -10,16 +10,22 @@ import com.invisibleteam.goinvisible.mvvm.edition.adapter.EditRecyclerView;
 
 import java.util.List;
 
+import javax.annotation.Nullable;
+
 public class EditRecyclerViewBindingAdapter {
     @BindingAdapter("modelList")
-    public static void bindList(EditRecyclerView compoundRecyclerView, List<TagGroup> resultModel) {
-        compoundRecyclerView.updateList(resultModel);
+    public static void bindList(EditRecyclerView compoundRecyclerView, @Nullable List<TagGroup> resultModel) {
+        if (resultModel != null) {
+            compoundRecyclerView.updateList(resultModel);
+        }
     }
 
     @BindingAdapter("diffList")
     public static void bindDiffList(EditRecyclerView compoundRecyclerView,
-                                    ObservableTagGroupDiffResultModel diffResultListModel) {
-        compoundRecyclerView.updateData(diffResultListModel.getResultModels());
+                                    @Nullable ObservableTagGroupDiffResultModel diffResultListModel) {
+        if (diffResultListModel != null) {
+            compoundRecyclerView.updateData(diffResultListModel.getResultModels());
+        }
     }
 
     @BindingAdapter("onItemAction")
