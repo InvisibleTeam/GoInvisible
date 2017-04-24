@@ -32,7 +32,7 @@ import javax.annotation.Nullable;
 
 import rx.Observable;
 
-public class NewActivity extends NewCommonEditActivity implements NewEditViewModel.EditViewModelCallback, LifecycleBinder {
+public class NewActivity extends NewCommonEditActivity implements PhoneNewEditViewModel.PhoneViewModelCallback, LifecycleBinder {
 
     private static final String TAG = NewActivity.class.getSimpleName();
     private static final String TAG_IMAGE_DETAILS = "extra_image_details";
@@ -47,7 +47,7 @@ public class NewActivity extends NewCommonEditActivity implements NewEditViewMod
     }
 
     private ImageDetails imageDetails;
-    private NewEditViewModel editViewModel;
+    private PhoneNewEditViewModel editViewModel;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -107,7 +107,7 @@ public class NewActivity extends NewCommonEditActivity implements NewEditViewMod
     private void prepareViewModels(NewEditViewBinding binding) {
         try {
             TagsManager tagsManager = new TagsManager(new ExifInterface(imageDetails.getPath()));
-            editViewModel = new NewEditViewModel(
+            editViewModel = new PhoneNewEditViewModel(
                     imageDetails,
                     tagsManager,
                     this,
@@ -200,7 +200,7 @@ public class NewActivity extends NewCommonEditActivity implements NewEditViewMod
         invalidateOptionsMenu();
     }
 
-    public void shareImage() {
+    public void shareImage(ImageDetails imageDetails) {
         try {
             Intent intent = new SharingHelper().buildShareImageIntent(imageDetails);
             startActivity(Intent.createChooser(intent, getString(R.string.share_intent_chooser_title)));

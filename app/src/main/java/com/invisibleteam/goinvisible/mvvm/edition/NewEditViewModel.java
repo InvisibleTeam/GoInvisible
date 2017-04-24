@@ -31,7 +31,11 @@ import rx.exceptions.Exceptions;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
-public class NewEditViewModel implements EditItemGroupAdapter.ItemActionListener, EditDialogInterface {
+public abstract class NewEditViewModel
+        implements
+        EditItemGroupAdapter.ItemActionListener,
+        EditDialogInterface,
+        TagChangesStatusProvider {
 
     private static final String MODEL_LIST_EXTRA_KEY = "model_list_extra";
     private static final String DIFF_MAP_EXTRA_KEY = "diff_map_extra";
@@ -41,38 +45,49 @@ public class NewEditViewModel implements EditItemGroupAdapter.ItemActionListener
     private final ObservableArrayList<TagGroup> modelList = new ObservableArrayList<>();
     private final ObservableTagGroupDiffResultModel diffList = new ObservableTagGroupDiffResultModel();
 
-    private final TagsManager tagsManager;
     private final TagDiffMicroServiceFactory microServiceFactory;
     private final TagListDiffMicroService listDiffMicroService;
     private final LifecycleBinder lifecycleBinder;
+    private TagsManager tagsManager;
     protected final EditViewModelCallback callback;
 
     private final HashMap<String, Tag> diffMap = new HashMap<>();
     private List<TagGroup> originalModelList;
     private int editedGroupPosition = 0;
     private int editedChildPosition = 0;
+    @Nullable
+    private ImageDetails imageDetails;
 
     public NewEditViewModel(
-            ImageDetails imageDetails,
-            TagsManager tagsManager,
             EditViewModelCallback callback,
             TagDiffMicroServiceFactory microServiceFactory,
             TagListDiffMicroService listDiffMicroService,
             LifecycleBinder lifecycleBinder) {
-        this.tagsManager = tagsManager;
         this.callback = callback;
         this.microServiceFactory = microServiceFactory;
         this.listDiffMicroService = listDiffMicroService;
         this.lifecycleBinder = lifecycleBinder;
+
+        setupListDiffMicroService();
+    }
+
+    public void initialize(ImageDetails imageDetails, TagsManager manager) {
+        this.imageDetails = imageDetails;
         title.set(imageDetails.getName());
         imageUrl.set(imageDetails.getPath());
+        tagsManager = manager;
 
+        initializeModels();
+        diffMap.clear();
+        updateViewState();
+    }
+
+    private void initializeModels() {
         List<Tag> allTags = tagsManager.getAllTags();
         originalModelList = TagGroupUtil.createTagGroups(allTags);
         List<TagGroup> tagGroups = TagGroupUtil.createTagGroups(TagGroupUtil.deepCopyList(allTags));
+        modelList.clear();
         modelList.addAll(tagGroups);
-
-        setupListDiffMicroService();
     }
 
     public ObservableString getTitle() {
@@ -141,7 +156,7 @@ public class NewEditViewModel implements EditItemGroupAdapter.ItemActionListener
         });
     }
 
-    void onClearAllClick() {
+    public void onClearAllClick() {
         listDiffMicroService
                 .buildObservable(modelList)
                 .map(tagDiffResultModels -> {
@@ -150,7 +165,7 @@ public class NewEditViewModel implements EditItemGroupAdapter.ItemActionListener
                     return tagDiffResultModels;
                 })
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(tagDiffResultModels -> callback.updateViewState());
+                .subscribe(tagDiffResultModels -> updateViewState());
     }
 
     @Override
@@ -167,7 +182,7 @@ public class NewEditViewModel implements EditItemGroupAdapter.ItemActionListener
                 tagList -> tagList.set(editedChildPosition, tag));
     }
 
-    void onApproveChangesClick() {
+    public void onApproveChangesClick() {
         Observable.just(diffMap)
                 .compose(lifecycleBinder.bind())
                 .subscribeOn(Schedulers.computation())
@@ -197,21 +212,22 @@ public class NewEditViewModel implements EditItemGroupAdapter.ItemActionListener
 
                     @Override
                     public void onNext(List<TagGroup> tags) {
-                        callback.updateViewState();
+                        updateViewState();
                         callback.showTagsSuccessfullyUpdatedMessage();
                     }
                 });
     }
 
-    void onShareClick() {
+    public void onShareClick() {
         if (isInEditState()) {
             callback.showViewInEditStateInformation();
-        } else {
-            callback.shareImage();
+        } else if (imageDetails != null) {
+            callback.shareImage(imageDetails);
         }
     }
 
-    boolean isInEditState() {
+    @Override
+    public boolean isInEditState() {
         return !diffMap.isEmpty();
     }
 
@@ -231,8 +247,10 @@ public class NewEditViewModel implements EditItemGroupAdapter.ItemActionListener
                     return diffResult;
                 })
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(diffResult -> callback.updateViewState());
+                .subscribe(diffResult -> updateViewState());
     }
+
+    protected abstract void updateViewState();
 
     private void checkDifferentFromOriginal(int editedGroupPosition, int editedChildPosition, Tag tag) {
         Tag originalTag = originalModelList.get(editedGroupPosition).getChildList().get(editedChildPosition);
@@ -269,21 +287,9 @@ public class NewEditViewModel implements EditItemGroupAdapter.ItemActionListener
         }
     }
 
-    public void onFinishScene() {
-        if (isInEditState()) {
-            callback.showRejectChangesDialog();
-        } else {
-            callback.finishScene();
-        }
-    }
-
     public interface EditViewModelCallback extends TagEditionStartCallback, TagsUpdateStatusCallback, RejectEditionChangesCallback {
-        void updateViewState();
-
-        void shareImage();
+        void shareImage(ImageDetails imageDetails);
 
         void showViewInEditStateInformation();
-
-        void finishScene();
     }
 }

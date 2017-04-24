@@ -281,7 +281,7 @@ public class ImagesActivityTest {
         //Given
         ImagesActivity activity = spy(ImagesActivity.class);
         TabletEditViewModel editViewModel = mock(TabletEditViewModel.class);
-        activity.setTabletEditViewModel(editViewModel);
+        //activity.setTabletEditViewModel(editViewModel);
 
         //When
         activity.changeViewToDefaultMode();
@@ -295,7 +295,7 @@ public class ImagesActivityTest {
         //Given
         ImagesActivity activity = spy(ImagesActivity.class);
         TabletEditViewModel editViewModel = mock(TabletEditViewModel.class);
-        activity.setTabletEditViewModel(editViewModel);
+        //activity.setTabletEditViewModel(editViewModel);
         doReturn(mock(TagsManager.class)).when(activity).buildTagsManager(any());
 
         doNothing().when(editViewModel).initialize(any(), any(), any());
