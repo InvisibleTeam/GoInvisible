@@ -20,22 +20,6 @@ public class EditItemGroupAdapter extends ExpandableRecyclerAdapter<TagGroup, Ta
     @Nullable
     private ItemActionListener itemActionListener = null;
 
-    /**
-     * Primary constructor. Sets up {@link #mParentList} and {@link #mFlatItemList}.
-     * <p>
-     * Any changes to {@link #mParentList} should be made on the original instance, and notified via
-     * {@link #notifyParentInserted(int)}
-     * {@link #notifyParentRemoved(int)}
-     * {@link #notifyParentChanged(int)}
-     * {@link #notifyParentRangeInserted(int, int)}
-     * {@link #notifyChildInserted(int, int)}
-     * {@link #notifyChildRemoved(int, int)}
-     * {@link #notifyChildChanged(int, int)}
-     * methods and not the notify methods of RecyclerView.Adapter.
-     *
-     * @param parentList List of all parents to be displayed in the RecyclerView that this
-     *                   adapter is linked to
-     */
     public EditItemGroupAdapter(@NonNull List<TagGroup> parentList) {
         super(parentList);
     }

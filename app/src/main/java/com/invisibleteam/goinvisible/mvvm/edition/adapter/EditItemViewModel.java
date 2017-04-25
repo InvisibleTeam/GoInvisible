@@ -20,19 +20,8 @@ public class EditItemViewModel {
     private int childPosition = 0;
     private Tag tag;
 
-    public EditItemViewModel() {
-        //TODO remove this constructor
-    }
-
     public EditItemViewModel(@Nullable EditItemGroupAdapter.ItemActionListener itemActionListener) {
         this.itemActionListener = itemActionListener;
-    }
-
-    void setModel(Tag tag) {
-        //TODO remove this constructor
-        this.key.set(tag.getKey());
-        this.value.set(tag.getFormattedValue());
-        showClearButton(tag.getTagType().getInputType());
     }
 
     void setModel(int parentPosition, int childPosition, Tag tag) {

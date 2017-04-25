@@ -20,13 +20,13 @@ public class EditItemViewModelTest {
 
     @Before
     public void setUp() {
-        editItemViewModel = new EditItemViewModel();
+        editItemViewModel = new EditItemViewModel(null);
     }
 
     @Test
     public void whenTagTypeIsUnmodifiable_ClearButtonIsInvisible() {
         //When
-        editItemViewModel.setModel(unmodifiableTag);
+        editItemViewModel.setModel(0, 0, unmodifiableTag);
 
         //Then
         assertThat(editItemViewModel.getIsModifiable().get(), is(false));
@@ -35,7 +35,7 @@ public class EditItemViewModelTest {
     @Test
     public void whenTagTypeModifiable_ClearButtonIsVisible() {
         //When
-        editItemViewModel.setModel(tag);
+        editItemViewModel.setModel(0, 0, tag);
 
         //Then
         assertThat(editItemViewModel.getIsModifiable().get(), is(true));

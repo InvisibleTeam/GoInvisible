@@ -23,8 +23,12 @@ public class TabletEditViewModel extends EditViewModel {
 
     private ObservableBoolean inEditState = new ObservableBoolean(false);
 
-    public TabletEditViewModel(EditViewModelCallback callback, TagDiffMicroServiceFactory microServiceFactory, TagListDiffMicroService
-            listDiffMicroService, LifecycleBinder lifecycleBinder) {
+    public TabletEditViewModel(
+            EditViewModelCallback callback,
+            TagDiffMicroServiceFactory microServiceFactory,
+            TagListDiffMicroService
+            listDiffMicroService,
+            LifecycleBinder lifecycleBinder) {
         super(callback, microServiceFactory, listDiffMicroService, lifecycleBinder);
     }
 

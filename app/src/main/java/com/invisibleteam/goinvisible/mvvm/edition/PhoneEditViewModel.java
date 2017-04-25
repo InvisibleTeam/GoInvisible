@@ -9,8 +9,11 @@ public class PhoneEditViewModel extends EditViewModel {
 
     private PhoneViewModelCallback callback;
 
-    public PhoneEditViewModel(ImageDetails imageDetails, TagsManager tagsManager, PhoneViewModelCallback callback,
-                              TagDiffMicroServiceFactory microServiceFactory, TagListDiffMicroService listDiffMicroService,
+    public PhoneEditViewModel(ImageDetails imageDetails,
+                              TagsManager tagsManager,
+                              PhoneViewModelCallback callback,
+                              TagDiffMicroServiceFactory microServiceFactory,
+                              TagListDiffMicroService listDiffMicroService,
                               LifecycleBinder lifecycleBinder) {
         super(callback, microServiceFactory, listDiffMicroService, lifecycleBinder);
         this.callback = callback;

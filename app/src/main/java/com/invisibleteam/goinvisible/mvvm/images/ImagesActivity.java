@@ -263,7 +263,7 @@ public class ImagesActivity extends CommonEditActivity implements PhoneImagesVie
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        if (tabletImagesViewModel != null) { //order of restoring these viemodels is important
+        if (tabletImagesViewModel != null) {
             tabletImagesViewModel.onRestoreInstanceState(savedInstanceState);
         }
         if (editViewModel != null) {

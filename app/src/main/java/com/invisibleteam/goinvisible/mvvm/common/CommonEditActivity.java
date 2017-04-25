@@ -79,7 +79,7 @@ public abstract class CommonEditActivity extends CommonActivity {
 
     public void showTagEditionView(Tag tag) {
         EditDialog dialog = EditDialog.newInstance(this, tag);
-        dialog.setViewModel(editDialogInterface);
+        dialog.setDialogInterface(editDialogInterface);
         dialog.show(getFragmentManager(), EditDialog.FRAGMENT_TAG);
     }
 

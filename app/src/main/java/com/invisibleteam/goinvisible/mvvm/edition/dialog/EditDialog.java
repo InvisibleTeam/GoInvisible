@@ -61,7 +61,7 @@ public class EditDialog extends DialogFragment {
         return null;
     }
 
-    public void setViewModel(EditDialogInterface editDialogInterface) {
+    public void setDialogInterface(EditDialogInterface editDialogInterface) {
         this.editDialogInterface = editDialogInterface;
     }
 }
