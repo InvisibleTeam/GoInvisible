@@ -1,26 +1,38 @@
 package com.invisibleteam.goinvisible.mvvm.edition;
 
-import com.invisibleteam.goinvisible.mvvm.edition.adapter.EditCompoundRecyclerView;
-import com.invisibleteam.goinvisible.mvvm.edition.callback.PhoneTagEditionStartCallback;
+
+import com.invisibleteam.goinvisible.model.ImageDetails;
+import com.invisibleteam.goinvisible.util.LifecycleBinder;
 import com.invisibleteam.goinvisible.util.TagsManager;
 
 public class PhoneEditViewModel extends EditViewModel {
 
-    private PhoneTagEditionStartCallback editTagCallback;
+    private PhoneViewModelCallback callback;
 
-    PhoneEditViewModel(
-            String title,
-            String imageUrl,
-            EditCompoundRecyclerView editCompoundRecyclerView,
-            TagsManager manager,
-            PhoneTagEditionStartCallback callback) {
-        super(title, imageUrl, editCompoundRecyclerView, manager, callback);
-        this.editTagCallback = callback;
+    public PhoneEditViewModel(ImageDetails imageDetails, TagsManager tagsManager, PhoneViewModelCallback callback,
+                              TagDiffMicroServiceFactory microServiceFactory, TagListDiffMicroService listDiffMicroService,
+                              LifecycleBinder lifecycleBinder) {
+        super(callback, microServiceFactory, listDiffMicroService, lifecycleBinder);
+        this.callback = callback;
+        initialize(imageDetails, tagsManager);
     }
 
     @Override
-    public void onTagsUpdated() {
-        super.onTagsUpdated();
-        editTagCallback.changeViewToEditMode();
+    protected void updateViewState() {
+        callback.updateViewState();
+    }
+
+    public void onFinishScene() {
+        if (isInEditState()) {
+            callback.showRejectChangesDialog();
+        } else {
+            callback.finishScene();
+        }
+    }
+
+    public interface PhoneViewModelCallback extends EditViewModelCallback {
+        void updateViewState();
+
+        void finishScene();
     }
 }

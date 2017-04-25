@@ -1,12 +1,12 @@
 package com.invisibleteam.goinvisible.mvvm.edition;
 
+
 import android.content.Context;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.support.annotation.VisibleForTesting;
 import android.support.design.widget.Snackbar;
 import android.support.media.ExifInterface;
 import android.support.v7.app.ActionBar;
@@ -16,15 +16,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.invisibleteam.goinvisible.R;
-import com.invisibleteam.goinvisible.databinding.EditViewBinding;
+import com.invisibleteam.goinvisible.databinding.NewEditViewBinding;
 import com.invisibleteam.goinvisible.helper.EditActivityHelper;
 import com.invisibleteam.goinvisible.helper.SharingHelper;
 import com.invisibleteam.goinvisible.model.ImageDetails;
-import com.invisibleteam.goinvisible.model.Tag;
 import com.invisibleteam.goinvisible.mvvm.common.CommonEditActivity;
-import com.invisibleteam.goinvisible.mvvm.edition.callback.EditTagsUpdateStatusViewCallback;
-import com.invisibleteam.goinvisible.mvvm.edition.callback.PhoneTagEditionStartCallback;
 import com.invisibleteam.goinvisible.mvvm.images.ImagesProvider;
+import com.invisibleteam.goinvisible.util.LifecycleBinder;
 import com.invisibleteam.goinvisible.util.TagsManager;
 
 import java.io.FileNotFoundException;
@@ -32,7 +30,12 @@ import java.io.IOException;
 
 import javax.annotation.Nullable;
 
-public class EditActivity extends CommonEditActivity implements PhoneTagEditionStartCallback, EditTagsUpdateStatusViewCallback {
+import rx.Observable;
+
+public class EditActivity extends CommonEditActivity implements PhoneEditViewModel.PhoneViewModelCallback, LifecycleBinder {
+
+    private static final String TAG = EditActivity.class.getSimpleName();
+    private static final String TAG_IMAGE_DETAILS = "extra_image_details";
 
     public static Intent buildIntent(Context context, ImageDetails imageDetails) {
         Bundle bundle = new Bundle();
@@ -43,80 +46,17 @@ public class EditActivity extends CommonEditActivity implements PhoneTagEditionS
         return intent;
     }
 
-    private static final String TAG_IMAGE_DETAILS = "extra_image_details";
-    private static final String TAG_MODEL = "tag";
-    private static final String TAG = EditActivity.class.getSimpleName();
-
-    private EditActivityHelper editActivityHelper;
     private ImageDetails imageDetails;
-    private EditMenuViewModel editMenuViewModel;
-    private Tag tag;
+    private PhoneEditViewModel editViewModel;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (savedInstanceState != null) {
-            tag = savedInstanceState.getParcelable(TAG_MODEL);
-        }
-        editActivityHelper = new EditActivityHelper(this);
-        setEditActivityHelper(editActivityHelper);
-    }
-
-    @Override
-    protected void onStop() {
-        editActivityHelper.onStop();
-        super.onStop();
-    }
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        outState.putParcelable(TAG_MODEL, tag);
-        super.onSaveInstanceState(outState);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_edit_activity, menu);
-        if (editMenuViewModel != null && editMenuViewModel.isInEditState()) {
-            showSaveChangesMenuItem(menu);
-        }
-
-        return true;
-    }
-
-    private void showSaveChangesMenuItem(Menu menu) {
-        menu.findItem(R.id.menu_item_save_changes).setVisible(true);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                onBackPressed();
-                return true;
-            case R.id.menu_item_save_changes:
-                if (editMenuViewModel != null) {
-                    editMenuViewModel.onApproveChangesClick();
-                }
-                return true;
-            case R.id.menu_item_clear_all:
-                if (editMenuViewModel != null) {
-                    editMenuViewModel.onClearAllTagsClick();
-                }
-                return true;
-            case R.id.menu_item_share:
-                if (editMenuViewModel != null) {
-                    editMenuViewModel.onShareClick();
-                }
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
     }
 
     @Override
     public void prepareView() {
-        EditViewBinding editViewBinding = DataBindingUtil.setContentView(this, R.layout.edit_view);
+        NewEditViewBinding editViewBinding = DataBindingUtil.setContentView(this, R.layout.new_edit_view);
         setSupportActionBar(editViewBinding.mainToolbar);
 
         boolean bundleExtracted = extractBundle();
@@ -131,7 +71,6 @@ public class EditActivity extends CommonEditActivity implements PhoneTagEditionS
         }
     }
 
-    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
     boolean extractBundle() {
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
@@ -165,27 +104,29 @@ public class EditActivity extends CommonEditActivity implements PhoneTagEditionS
         return false;
     }
 
-    private void prepareViewModels(EditViewBinding editViewBinding) {
+    private void prepareViewModels(NewEditViewBinding binding) {
         try {
-            TagsManager tagsManager = new TagsManager(getExifInterface());
-
-            PhoneEditViewModel editViewModel = new PhoneEditViewModel(
-                    imageDetails.getName(),
-                    imageDetails.getPath(),
-                    editViewBinding.editCompoundRecyclerView,
+            TagsManager tagsManager = new TagsManager(new ExifInterface(imageDetails.getPath()));
+            editViewModel = new PhoneEditViewModel(
+                    imageDetails,
                     tagsManager,
+                    this,
+                    new TagDiffMicroServiceFactory(this),
+                    new TagListDiffMicroService(this),
                     this);
-            editViewBinding.setViewModel(editViewModel);
-            setEditViewModel(editViewModel);
-
-            editMenuViewModel = new EditMenuViewModel(
-                    tagsManager,
-                    editViewBinding.editCompoundRecyclerView,
-                    editViewModel,
-                    this);
+            binding.setViewModel(editViewModel);
+            setEditDialogInterface(editViewModel);
+            setEditActivityHelper(new EditActivityHelper(this));
         } catch (IOException e) {
             Log.d(TAG, String.valueOf(e.getMessage()));
             //TODO log exception to crashlitycs on else.
+        }
+    }
+
+    private void setupHomeButton() {
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
         }
     }
 
@@ -200,38 +141,73 @@ public class EditActivity extends CommonEditActivity implements PhoneTagEditionS
                 .show();
     }
 
-    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
-    ExifInterface getExifInterface() throws IOException {
-        return new ExifInterface(imageDetails.getPath());
+    @Override
+    protected void onRejectTagsChangesDialogPositive() {
+        finish();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_edit_activity, menu);
+        if (editViewModel != null && editViewModel.isInEditState()) {
+            showSaveChangesMenuItem(menu);
+        }
+
+        return true;
+    }
+
+    private void showSaveChangesMenuItem(Menu menu) {
+        menu.findItem(R.id.menu_item_save_changes).setVisible(true);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+            case R.id.menu_item_save_changes:
+                if (editViewModel != null) {
+                    editViewModel.onApproveChangesClick();
+                }
+                return true;
+            case R.id.menu_item_clear_all:
+                if (editViewModel != null) {
+                    editViewModel.onClearAllClick();
+                }
+                return true;
+            case R.id.menu_item_share:
+                if (editViewModel != null) {
+                    editViewModel.onShareClick();
+                }
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     @Override
     public void onBackPressed() {
-        if (editMenuViewModel != null) {
-            editMenuViewModel.onBackClick();
+        if (editViewModel != null) {
+            editViewModel.onFinishScene();
         } else {
             finish();
         }
     }
 
     @Override
-    protected void onRejectTagsChangesDialogPositive() {
-        editMenuViewModel.onRejectTagsChangesDialogPositive();
-    }
-
-    @Override
-    public void changeViewToEditMode() {
+    public void updateViewState() {
         invalidateOptionsMenu();
     }
 
-    @Override
-    public void navigateBack() {
-        finish();
-    }
-
-    @Override
-    public void changeViewToDefaultMode() {
-        invalidateOptionsMenu();
+    public void shareImage(ImageDetails imageDetails) {
+        try {
+            Intent intent = new SharingHelper().buildShareImageIntent(imageDetails);
+            startActivity(Intent.createChooser(intent, getString(R.string.share_intent_chooser_title)));
+        } catch (FileNotFoundException e) {
+            Log.e(TAG, String.valueOf(e.getMessage()));
+            //TODO log error in crashlytics
+        }
     }
 
     @Override
@@ -243,20 +219,24 @@ public class EditActivity extends CommonEditActivity implements PhoneTagEditionS
     }
 
     @Override
-    public void shareImage() {
-        try {
-            Intent intent = new SharingHelper().buildShareImageIntent(imageDetails);
-            startActivity(Intent.createChooser(intent, getString(R.string.share_intent_chooser_title)));
-        } catch (FileNotFoundException e) {
-            Log.e(TAG, String.valueOf(e.getMessage()));
-            //TODO log error in crashlytics
-        }
+    public void finishScene() {
+        finish();
     }
 
-    private void setupHomeButton() {
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setDisplayHomeAsUpEnabled(true);
-        }
+    @Override
+    public <T> Observable.Transformer<T, T> bind() {
+        return bindToLifecycle();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        editViewModel.onSaveInstanceState(outState);
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        editViewModel.onRestoreInstanceState(savedInstanceState);
     }
 }

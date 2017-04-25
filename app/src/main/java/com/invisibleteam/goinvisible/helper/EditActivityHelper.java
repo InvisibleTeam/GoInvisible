@@ -18,13 +18,13 @@ import com.invisibleteam.goinvisible.R;
 import com.invisibleteam.goinvisible.model.GeolocationTag;
 import com.invisibleteam.goinvisible.model.Tag;
 import com.invisibleteam.goinvisible.mvvm.common.CommonEditActivity;
+import com.invisibleteam.goinvisible.util.TagUtil;
 import com.invisibleteam.goinvisible.util.location.GoogleLocationApiEstablisher;
 import com.invisibleteam.goinvisible.util.location.GpsEstablisher;
 import com.invisibleteam.goinvisible.util.location.LatLngUtil;
-import com.invisibleteam.goinvisible.util.TagUtil;
 
 import static android.content.Context.LOCATION_SERVICE;
-import static com.invisibleteam.goinvisible.mvvm.edition.EditActivity.PLACE_REQUEST_ID;
+import static com.invisibleteam.goinvisible.mvvm.common.CommonEditActivity.PLACE_REQUEST_ID;
 
 public class EditActivityHelper {
 

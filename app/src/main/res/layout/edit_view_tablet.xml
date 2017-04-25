@@ -7,7 +7,7 @@
 
         <variable
             name="viewModel"
-            type="com.invisibleteam.goinvisible.mvvm.images.tablet.TabletNewEditViewModel"/>
+            type="com.invisibleteam.goinvisible.mvvm.images.tablet.TabletEditViewModel"/>
 
         <import type="android.view.View"/>
     </data>

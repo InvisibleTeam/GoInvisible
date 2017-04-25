@@ -3,6 +3,7 @@ package com.invisibleteam.goinvisible.mvvm.images;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.VisibleForTesting;
 import android.support.design.widget.Snackbar;
 import android.support.media.ExifInterface;
@@ -19,22 +20,19 @@ import android.view.ViewGroup;
 import com.invisibleteam.goinvisible.R;
 import com.invisibleteam.goinvisible.databinding.EditViewTabletBinding;
 import com.invisibleteam.goinvisible.databinding.ImagesViewBinding;
-import com.invisibleteam.goinvisible.helper.NewEditActivityHelper;
+import com.invisibleteam.goinvisible.helper.EditActivityHelper;
 import com.invisibleteam.goinvisible.helper.SharingHelper;
 import com.invisibleteam.goinvisible.model.ImageDetails;
-import com.invisibleteam.goinvisible.mvvm.common.NewCommonEditActivity;
-import com.invisibleteam.goinvisible.mvvm.edition.NewActivity;
-import com.invisibleteam.goinvisible.mvvm.edition.NewEditViewModel;
+import com.invisibleteam.goinvisible.mvvm.common.CommonEditActivity;
+import com.invisibleteam.goinvisible.mvvm.edition.EditActivity;
+import com.invisibleteam.goinvisible.mvvm.edition.EditViewModel;
 import com.invisibleteam.goinvisible.mvvm.edition.TagDiffMicroServiceFactory;
 import com.invisibleteam.goinvisible.mvvm.edition.TagListDiffMicroService;
-import com.invisibleteam.goinvisible.mvvm.edition.callback.RejectEditionChangesCallback;
-import com.invisibleteam.goinvisible.mvvm.edition.callback.TabletEditTagCallback;
-import com.invisibleteam.goinvisible.mvvm.edition.callback.TagEditionStartCallback;
 import com.invisibleteam.goinvisible.mvvm.images.phone.PhoneImagesViewCallback;
 import com.invisibleteam.goinvisible.mvvm.images.phone.PhoneImagesViewModel;
+import com.invisibleteam.goinvisible.mvvm.images.tablet.TabletEditViewModel;
 import com.invisibleteam.goinvisible.mvvm.images.tablet.TabletImagesViewCallback;
 import com.invisibleteam.goinvisible.mvvm.images.tablet.TabletImagesViewModel;
-import com.invisibleteam.goinvisible.mvvm.images.tablet.TabletNewEditViewModel;
 import com.invisibleteam.goinvisible.mvvm.settings.SettingsActivity;
 import com.invisibleteam.goinvisible.util.LifecycleBinder;
 import com.invisibleteam.goinvisible.util.ScreenUtil;
@@ -47,15 +45,15 @@ import javax.annotation.Nullable;
 
 import rx.Observable;
 
-public class ImagesActivity extends NewCommonEditActivity implements PhoneImagesViewCallback, TabletImagesViewCallback,
-        TagEditionStartCallback, TabletEditTagCallback, RejectEditionChangesCallback, NewEditViewModel.EditViewModelCallback,
+public class ImagesActivity extends CommonEditActivity implements PhoneImagesViewCallback, TabletImagesViewCallback,
+        EditViewModel.EditViewModelCallback,
         LifecycleBinder {
 
     private static final String TAG = ImagesActivity.class.getSimpleName();
     private Snackbar snackbar;
     private SwipeRefreshLayout refreshLayout;
     @Nullable
-    private TabletNewEditViewModel editViewModel;
+    private TabletEditViewModel editViewModel;
     private TabletImagesViewModel tabletImagesViewModel;
 
     public static Intent buildIntent(Context context) {
@@ -64,7 +62,7 @@ public class ImagesActivity extends NewCommonEditActivity implements PhoneImages
 
     @Override
     public void openEditScreen(ImageDetails imageDetails) {
-        Intent intent = NewActivity.buildIntent(this, imageDetails);
+        Intent intent = EditActivity.buildIntent(this, imageDetails);
         startActivity(intent);
     }
 
@@ -131,7 +129,7 @@ public class ImagesActivity extends NewCommonEditActivity implements PhoneImages
 
         ViewGroup editViewGroup = (ViewGroup) viewGroup.findViewById(R.id.edit_group);
         EditViewTabletBinding editViewTabletBinding = EditViewTabletBinding.bind(editViewGroup);
-        editViewModel = new TabletNewEditViewModel(
+        editViewModel = new TabletEditViewModel(
                 this,
                 new TagDiffMicroServiceFactory(this),
                 new TagListDiffMicroService(this),
@@ -149,7 +147,7 @@ public class ImagesActivity extends NewCommonEditActivity implements PhoneImages
 
         createRefreshLayout(imagesViewBinding, tabletImagesViewModel);
 
-        NewEditActivityHelper editActivityHelper = new NewEditActivityHelper(this);
+        EditActivityHelper editActivityHelper = new EditActivityHelper(this);
         setEditActivityHelper(editActivityHelper);
         setEditDialogInterface(editViewModel);
     }
@@ -223,21 +221,8 @@ public class ImagesActivity extends NewCommonEditActivity implements PhoneImages
     }
 
     @Override
-    public void changeViewToDefaultMode() {
-        if (editViewModel != null) {
-            //editViewModel.changeViewToDefaultMode();
-        }
-        //onElse TODO Log crashlitycs
-    }
-
-    @Override
     protected void onRejectTagsChangesDialogPositive() {
         tabletImagesViewModel.onRejectTagsChangesDialogPositive();
-    }
-
-    @Override
-    public void onShare(Intent shareIntent) {
-        startActivity(Intent.createChooser(shareIntent, getString(R.string.share_intent_chooser_title)));
     }
 
     @Override
@@ -262,5 +247,27 @@ public class ImagesActivity extends NewCommonEditActivity implements PhoneImages
     @Override
     public <T> Observable.Transformer<T, T> bind() {
         return bindToLifecycle();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        if (tabletImagesViewModel != null) {
+            tabletImagesViewModel.onSaveInstanceState(outState);
+        }
+        if (editViewModel != null) {
+            editViewModel.onSaveInstanceState(outState);
+        }
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        if (tabletImagesViewModel != null) { //order of restoring these viemodels is important
+            tabletImagesViewModel.onRestoreInstanceState(savedInstanceState);
+        }
+        if (editViewModel != null) {
+            editViewModel.onRestoreInstanceState(savedInstanceState, ImagesActivity.this::buildTagsManager);
+        }
     }
 }
