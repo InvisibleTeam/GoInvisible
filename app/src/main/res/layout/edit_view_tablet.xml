@@ -45,23 +45,23 @@
                     android:id="@+id/approve_changes_button"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:layout_margin="@dimen/toolbar_icons_margin"
                     android:onClick="@{(view) -> viewModel.onApproveChangesClick()}"
+                    android:padding="@dimen/toolbar_icons_margin"
                     android:src="@drawable/ic_approve"
                     android:visibility="@{viewModel.inEditState ? View.VISIBLE : View.GONE}"/>
 
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:layout_margin="@dimen/toolbar_icons_margin"
                     android:onClick="@{(view) -> viewModel.onShareClick()}"
+                    android:padding="@dimen/toolbar_icons_margin"
                     android:src="@drawable/ic_share"/>
 
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:layout_margin="@dimen/toolbar_icons_margin"
                     android:onClick="@{(view) -> viewModel.onClearAllClick()}"
+                    android:padding="@dimen/toolbar_icons_margin"
                     android:src="@drawable/ic_multi_broom"/>
 
             </LinearLayout>
