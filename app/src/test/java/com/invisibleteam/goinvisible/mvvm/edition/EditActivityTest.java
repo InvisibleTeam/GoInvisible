@@ -9,10 +9,6 @@ import android.view.MenuItem;
 
 import com.invisibleteam.goinvisible.BuildConfig;
 import com.invisibleteam.goinvisible.model.ImageDetails;
-import com.invisibleteam.goinvisible.model.InputType;
-import com.invisibleteam.goinvisible.model.Tag;
-import com.invisibleteam.goinvisible.model.TagGroupType;
-import com.invisibleteam.goinvisible.model.TagType;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -135,9 +131,5 @@ public class EditActivityTest {
 
         //Then
         verify(spyActivity).prepareView();
-    }
-
-    private Tag createTag(String key, String value) {
-        return new Tag(key, value, TagType.build(InputType.DATETIME_STRING), TagGroupType.ADVANCED);
     }
 }
