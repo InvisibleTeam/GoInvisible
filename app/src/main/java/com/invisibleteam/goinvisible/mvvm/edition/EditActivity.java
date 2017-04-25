@@ -16,7 +16,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.invisibleteam.goinvisible.R;
-import com.invisibleteam.goinvisible.databinding.NewEditViewBinding;
+import com.invisibleteam.goinvisible.databinding.EditViewBinding;
 import com.invisibleteam.goinvisible.helper.EditActivityHelper;
 import com.invisibleteam.goinvisible.helper.SharingHelper;
 import com.invisibleteam.goinvisible.model.ImageDetails;
@@ -56,7 +56,7 @@ public class EditActivity extends CommonEditActivity implements PhoneEditViewMod
 
     @Override
     public void prepareView() {
-        NewEditViewBinding editViewBinding = DataBindingUtil.setContentView(this, R.layout.new_edit_view);
+        EditViewBinding editViewBinding = DataBindingUtil.setContentView(this, R.layout.edit_view);
         setSupportActionBar(editViewBinding.mainToolbar);
 
         boolean bundleExtracted = extractBundle();
@@ -104,7 +104,7 @@ public class EditActivity extends CommonEditActivity implements PhoneEditViewMod
         return false;
     }
 
-    private void prepareViewModels(NewEditViewBinding binding) {
+    private void prepareViewModels(EditViewBinding binding) {
         try {
             TagsManager tagsManager = new TagsManager(new ExifInterface(imageDetails.getPath()));
             editViewModel = new PhoneEditViewModel(
