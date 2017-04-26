@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GpsEstablisher.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">app</a> &gt; <a href="index.source.html" class="el_package">com.invisibleteam.goinvisible.util.location</a> &gt; <span class="el_source">GpsEstablisher.java</span></div><h1>GpsEstablisher.java</h1><pre class="source lang-java linenums">package com.invisibleteam.goinvisible.util.location;
+
+
+import android.app.Activity;
+import android.content.IntentSender;
+import android.location.LocationManager;
+import android.support.annotation.VisibleForTesting;
+import android.util.Log;
+
+import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationSettingsRequest;
+import com.google.android.gms.location.LocationSettingsResult;
+import com.google.android.gms.location.LocationSettingsStatusCodes;
+
+import java.lang.ref.WeakReference;
+
+import javax.annotation.Nullable;
+
+public class GpsEstablisher {
+<span class="fc" id="L23">    private static final String TAG = GpsEstablisher.class.getSimpleName();</span>
+
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    public static final int GPS_REQUEST_CODE_DEFAULT = 1234;
+    private static final long LOCATION_REQUEST_INTERVAL = 100;
+    private static final long LOCATION_REQUEST_FASTEST_INTERVAL = 100;
+
+    private final GoogleLocationApiEstablisher googleLocationApiEstablisher;
+    private final LocationManager locationManager;
+    private final WeakReference&lt;Activity&gt; weakActivityReference;
+    @Nullable
+    private StatusListener statusListener;
+
+    public GpsEstablisher(
+            LocationManager locationManager,
+            GoogleLocationApiEstablisher googleLocationApiEstablisher,
+<span class="fc" id="L39">            Activity activity) {</span>
+<span class="fc" id="L40">        this.googleLocationApiEstablisher = googleLocationApiEstablisher;</span>
+<span class="fc" id="L41">        this.locationManager = locationManager;</span>
+<span class="fc" id="L42">        this.weakActivityReference = new WeakReference&lt;&gt;(activity);</span>
+<span class="fc" id="L43">    }</span>
+
+    public boolean isGpsEstablished() {
+<span class="fc" id="L46">        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);</span>
+    }
+
+    public void requestGpsConnection() {
+<span class="fc bfc" id="L50" title="All 2 branches covered.">        if (!googleLocationApiEstablisher.isApiConnected()) {</span>
+<span class="fc" id="L51">            googleLocationApiEstablisher.setGoogleApiConnectionListener(new GoogleLocationApiEstablisher.GoogleApiConnectionListener() {</span>
+                @Override
+                public void onSuccess() {
+<span class="fc" id="L54">                    requestGps();</span>
+<span class="fc" id="L55">                }</span>
+
+                @Override
+                public void onFailure() {
+<span class="pc bpc" id="L59" title="1 of 2 branches missed.">                    if (statusListener != null) {</span>
+<span class="fc" id="L60">                        statusListener.onGoogleLocationApiConnectionFailure();</span>
+                    }
+<span class="fc" id="L62">                }</span>
+            });
+<span class="fc" id="L64">            googleLocationApiEstablisher.requestConnection();</span>
+        } else {
+<span class="fc" id="L66">            requestGps();</span>
+        }
+<span class="fc" id="L68">    }</span>
+
+    private void requestGps() {
+<span class="fc" id="L71">        PendingResult&lt;LocationSettingsResult&gt; result =</span>
+<span class="fc" id="L72">                buildLocationSettingsResult();</span>
+
+<span class="fc" id="L74">        result.setResultCallback(locationSettingsResult -&gt; {</span>
+<span class="fc" id="L75">            final Status status = locationSettingsResult.getStatus();</span>
+<span class="fc bfc" id="L76" title="All 3 branches covered.">            switch (status.getStatusCode()) {</span>
+                case LocationSettingsStatusCodes.SUCCESS:
+<span class="fc" id="L78">                    onLocationSuccess();</span>
+<span class="fc" id="L79">                    break;</span>
+                case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
+<span class="fc" id="L81">                    onLocationResolutionRequired(status);</span>
+<span class="fc" id="L82">                    break;</span>
+                default:
+<span class="fc" id="L84">                    onGoogleApiConnectionFailure();</span>
+                    break;
+            }
+<span class="fc" id="L87">        });</span>
+<span class="fc" id="L88">    }</span>
+
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    PendingResult&lt;LocationSettingsResult&gt; buildLocationSettingsResult() {
+<span class="nc" id="L92">        LocationRequest locationRequest = buildLocationRequest();</span>
+<span class="nc" id="L93">        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()</span>
+<span class="nc" id="L94">                .addLocationRequest(locationRequest)</span>
+<span class="nc" id="L95">                .setAlwaysShow(true);</span>
+
+<span class="nc" id="L97">        return LocationServices.SettingsApi.checkLocationSettings(</span>
+<span class="nc" id="L98">                googleLocationApiEstablisher.getGoogleApiClient(),</span>
+<span class="nc" id="L99">                builder.build()</span>
+        );
+    }
+
+    private LocationRequest buildLocationRequest() {
+<span class="nc" id="L104">        LocationRequest locationRequest = new LocationRequest();</span>
+<span class="nc" id="L105">        locationRequest.setInterval(LOCATION_REQUEST_INTERVAL);</span>
+<span class="nc" id="L106">        locationRequest.setFastestInterval(LOCATION_REQUEST_FASTEST_INTERVAL);</span>
+<span class="nc" id="L107">        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);</span>
+<span class="nc" id="L108">        return locationRequest;</span>
+    }
+
+    private void onLocationSuccess() {
+<span class="pc bpc" id="L112" title="1 of 2 branches missed.">        if (statusListener != null) {</span>
+<span class="fc" id="L113">            statusListener.onGpsEstablished();</span>
+        }
+<span class="fc" id="L115">    }</span>
+
+    private void onLocationResolutionRequired(Status status) {
+        try {
+<span class="pc bpc" id="L119" title="1 of 2 branches missed.">            if (weakActivityReference.get() != null) {</span>
+<span class="fc" id="L120">                startResolutionForResult(status);</span>
+            } else {
+                //TODO log crashlytics info
+<span class="nc" id="L123">                Log.d(TAG, &quot;No activity when trying to request GPS.&quot;);</span>
+            }
+<span class="nc" id="L125">        } catch (IntentSender.SendIntentException e) {</span>
+            //TODO log crashlytics error
+<span class="nc" id="L127">            Log.e(TAG, e.getMessage(), e);</span>
+<span class="fc" id="L128">        }</span>
+<span class="fc" id="L129">    }</span>
+
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    void startResolutionForResult(Status status) throws IntentSender.SendIntentException {
+<span class="fc" id="L133">        status.startResolutionForResult(</span>
+<span class="fc" id="L134">                weakActivityReference.get(),</span>
+                GPS_REQUEST_CODE_DEFAULT);
+<span class="fc" id="L136">    }</span>
+
+    private void onGoogleApiConnectionFailure() {
+<span class="pc bpc" id="L139" title="1 of 2 branches missed.">        if (statusListener != null) {</span>
+<span class="fc" id="L140">            statusListener.onGoogleLocationApiConnectionFailure();</span>
+        }
+<span class="fc" id="L142">    }</span>
+
+    public void setStatusListener(@Nullable StatusListener listener) {
+<span class="fc" id="L145">        this.statusListener = listener;</span>
+<span class="fc" id="L146">    }</span>
+
+    public interface StatusListener {
+        void onGpsEstablished();
+
+        void onGoogleLocationApiConnectionFailure();
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ClearingTagsReceiverHelper.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">app</a> &gt; <a href="index.source.html" class="el_package">com.invisibleteam.goinvisible.helper</a> &gt; <span class="el_source">ClearingTagsReceiverHelper.java</span></div><h1>ClearingTagsReceiverHelper.java</h1><pre class="source lang-java linenums">package com.invisibleteam.goinvisible.helper;
+
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
+
+import com.invisibleteam.goinvisible.model.ClearingInterval;
+import com.invisibleteam.goinvisible.service.ClearingTagsReceiver;
+import com.invisibleteam.goinvisible.service.ClearingTagsService;
+import com.invisibleteam.goinvisible.util.SharedPreferencesUtil;
+
+<span class="nc" id="L13">public class ClearingTagsReceiverHelper {</span>
+
+    public static void startClearingServiceAlarm(Context context) {
+<span class="fc" id="L16">        boolean isServiceEnabled = SharedPreferencesUtil.isClearingServiceActivated(context);</span>
+<span class="pc bpc" id="L17" title="1 of 2 branches missed.">        if (isServiceEnabled) {</span>
+<span class="nc" id="L18">            return;</span>
+        }
+
+<span class="fc" id="L21">        SharedPreferencesUtil.setClearingServiceActivation(context, true);</span>
+
+<span class="fc" id="L23">        ClearingInterval interval = SharedPreferencesUtil.getInterval(context);</span>
+
+<span class="fc" id="L25">        Intent alarmIntent = new Intent(context, ClearingTagsReceiver.class);</span>
+<span class="fc" id="L26">        alarmIntent.putExtra(ClearingTagsReceiver.CLEARING_TAGS_REQUEST_CODE_KEY,</span>
+                ClearingTagsReceiver.CLEARING_TAGS_REQUEST_CODE);
+
+<span class="fc" id="L29">        PendingIntent pendingIntent = PendingIntent</span>
+<span class="fc" id="L30">                .getBroadcast(context, ClearingTagsReceiver.CLEARING_TAGS_REQUEST_CODE, alarmIntent, 0);</span>
+
+<span class="fc" id="L32">        AlarmManager manager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);</span>
+
+<span class="fc" id="L34">        manager.setRepeating(</span>
+                AlarmManager.RTC_WAKEUP,
+<span class="fc" id="L36">                System.currentTimeMillis(),</span>
+<span class="fc" id="L37">                interval.getInterval(),</span>
+                pendingIntent);
+<span class="fc" id="L39">    }</span>
+
+    public static void stopClearingServiceAlarm(Context context) {
+<span class="fc" id="L42">        SharedPreferencesUtil.setClearingServiceActivation(context, false);</span>
+
+<span class="fc" id="L44">        Intent alarmIntent = new Intent(context, ClearingTagsReceiver.class);</span>
+
+<span class="fc" id="L46">        PendingIntent pendingIntent = PendingIntent</span>
+<span class="fc" id="L47">                .getBroadcast(context, ClearingTagsReceiver.CLEARING_TAGS_REQUEST_CODE, alarmIntent, 0);</span>
+
+<span class="fc" id="L49">        AlarmManager manager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);</span>
+<span class="fc" id="L50">        manager.cancel(pendingIntent);</span>
+
+<span class="fc" id="L52">        Intent intent = new Intent(context, ClearingTagsService.class);</span>
+<span class="fc" id="L53">        context.stopService(intent);</span>
+<span class="fc" id="L54">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

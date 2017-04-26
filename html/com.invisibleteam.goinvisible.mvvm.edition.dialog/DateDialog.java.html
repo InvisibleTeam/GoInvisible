@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DateDialog.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">app</a> &gt; <a href="index.source.html" class="el_package">com.invisibleteam.goinvisible.mvvm.edition.dialog</a> &gt; <span class="el_source">DateDialog.java</span></div><h1>DateDialog.java</h1><pre class="source lang-java linenums">package com.invisibleteam.goinvisible.mvvm.edition.dialog;
+
+import android.app.DatePickerDialog;
+import android.app.Dialog;
+import android.app.TimePickerDialog;
+import android.content.Context;
+
+import com.invisibleteam.goinvisible.model.Tag;
+import com.invisibleteam.goinvisible.mvvm.edition.EditDialogInterface;
+import com.invisibleteam.goinvisible.util.DateFormatterUtil;
+
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+
+class DateDialog {
+
+    private final EditDialogInterface dialogInterface;
+    private final Context context;
+    private Calendar calendar;
+    private Tag tag;
+
+<span class="fc" id="L22">    DateDialog(Context context, Tag tag, EditDialogInterface dialogInterface) {</span>
+<span class="fc" id="L23">        this.context = context;</span>
+<span class="fc" id="L24">        this.tag = tag;</span>
+<span class="fc" id="L25">        this.dialogInterface = dialogInterface;</span>
+<span class="fc" id="L26">        this.calendar = Calendar.getInstance();</span>
+<span class="fc" id="L27">    }</span>
+
+    Dialog createDateDialog() {
+<span class="fc" id="L30">        DatePickerDialog.OnDateSetListener listener = (view, year, month, day) -&gt; {</span>
+<span class="nc" id="L31">            Calendar calendar = new GregorianCalendar(year, month, day, 0, 0, 0);</span>
+<span class="nc" id="L32">            tag.setValue(DateFormatterUtil.format(tag, calendar));</span>
+<span class="nc" id="L33">            dialogInterface.onEditEnded(tag);</span>
+<span class="nc" id="L34">        };</span>
+
+<span class="fc" id="L36">        return createDateTimeDialog(listener);</span>
+    }
+
+    Dialog createTimeDialog() {
+<span class="fc" id="L40">        TimePickerDialog.OnTimeSetListener listener = (view, hour, minute) -&gt; {</span>
+<span class="nc" id="L41">            calendar.set(Calendar.HOUR_OF_DAY, hour);</span>
+<span class="nc" id="L42">            calendar.set(Calendar.MINUTE, minute);</span>
+<span class="nc" id="L43">            tag.setValue(DateFormatterUtil.format(tag, calendar));</span>
+<span class="nc" id="L44">            dialogInterface.onEditEnded(tag);</span>
+<span class="nc" id="L45">        };</span>
+<span class="fc" id="L46">        TimePickerDialog dialog = new TimePickerDialog(</span>
+                context,
+                listener,
+<span class="fc" id="L49">                calendar.get(Calendar.HOUR_OF_DAY),</span>
+<span class="fc" id="L50">                calendar.get(Calendar.MINUTE),</span>
+                true);
+<span class="fc" id="L52">        dialog.setTitle(&quot;&quot;);</span>
+<span class="fc" id="L53">        return dialog;</span>
+    }
+
+    Dialog createDateTimeDialog() {
+<span class="fc" id="L57">        DatePickerDialog.OnDateSetListener listener = (view, year, month, day) -&gt; {</span>
+<span class="nc" id="L58">            calendar.set(Calendar.YEAR, year);</span>
+<span class="nc" id="L59">            calendar.set(Calendar.MONTH, month);</span>
+<span class="nc" id="L60">            calendar.set(Calendar.DAY_OF_MONTH, day);</span>
+<span class="nc" id="L61">            createTimeDialog().show();</span>
+<span class="nc" id="L62">        };</span>
+
+<span class="fc" id="L64">        return createDateTimeDialog(listener);</span>
+    }
+
+    private Dialog createDateTimeDialog(DatePickerDialog.OnDateSetListener listener) {
+<span class="fc" id="L68">        int year = calendar.get(Calendar.YEAR);</span>
+<span class="fc" id="L69">        int month = calendar.get(Calendar.MONTH);</span>
+<span class="fc" id="L70">        int day = calendar.get(Calendar.DAY_OF_MONTH);</span>
+
+<span class="fc" id="L72">        return new DatePickerDialog(context, listener, year, month, day);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

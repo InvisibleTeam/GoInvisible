@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>EditActivity.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">app</a> &gt; <a href="index.source.html" class="el_package">com.invisibleteam.goinvisible.mvvm.edition</a> &gt; <span class="el_source">EditActivity.java</span></div><h1>EditActivity.java</h1><pre class="source lang-java linenums">package com.invisibleteam.goinvisible.mvvm.edition;
+
+
+import android.content.Context;
+import android.content.Intent;
+import android.databinding.DataBindingUtil;
+import android.net.Uri;
+import android.os.Bundle;
+import android.os.Parcelable;
+import android.support.design.widget.Snackbar;
+import android.support.media.ExifInterface;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
+
+import com.invisibleteam.goinvisible.R;
+import com.invisibleteam.goinvisible.databinding.EditViewBinding;
+import com.invisibleteam.goinvisible.helper.EditActivityHelper;
+import com.invisibleteam.goinvisible.helper.SharingHelper;
+import com.invisibleteam.goinvisible.model.ImageDetails;
+import com.invisibleteam.goinvisible.mvvm.common.CommonEditActivity;
+import com.invisibleteam.goinvisible.mvvm.images.ImagesProvider;
+import com.invisibleteam.goinvisible.util.LifecycleBinder;
+import com.invisibleteam.goinvisible.util.TagsManager;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
+import javax.annotation.Nullable;
+
+import rx.Observable;
+
+<span class="fc" id="L35">public class EditActivity extends CommonEditActivity implements PhoneEditViewModel.PhoneViewModelCallback, LifecycleBinder {</span>
+
+<span class="fc" id="L37">    private static final String TAG = EditActivity.class.getSimpleName();</span>
+    private static final String TAG_IMAGE_DETAILS = &quot;extra_image_details&quot;;
+
+    public static Intent buildIntent(Context context, ImageDetails imageDetails) {
+<span class="fc" id="L41">        Bundle bundle = new Bundle();</span>
+<span class="fc" id="L42">        bundle.putParcelable(TAG_IMAGE_DETAILS, imageDetails);</span>
+<span class="fc" id="L43">        Intent intent = new Intent(context, EditActivity.class);</span>
+<span class="fc" id="L44">        intent.putExtras(bundle);</span>
+
+<span class="fc" id="L46">        return intent;</span>
+    }
+
+    private ImageDetails imageDetails;
+    private PhoneEditViewModel editViewModel;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+<span class="fc" id="L54">        super.onCreate(savedInstanceState);</span>
+<span class="fc" id="L55">    }</span>
+
+    @Override
+    public void prepareView() {
+<span class="fc" id="L59">        EditViewBinding editViewBinding = DataBindingUtil.setContentView(this, R.layout.edit_view);</span>
+<span class="fc" id="L60">        setSupportActionBar(editViewBinding.mainToolbar);</span>
+
+<span class="fc" id="L62">        boolean bundleExtracted = extractBundle();</span>
+<span class="fc" id="L63">        boolean shareIntentExtracted = extractShareIntent();</span>
+<span class="pc bpc" id="L64" title="1 of 4 branches missed.">        if (bundleExtracted || shareIntentExtracted) {</span>
+<span class="fc" id="L65">            prepareViewModels(editViewBinding);</span>
+<span class="pc bpc" id="L66" title="1 of 2 branches missed.">            if (bundleExtracted) {</span>
+<span class="fc" id="L67">                setupHomeButton();</span>
+            }
+        } else {
+<span class="fc" id="L70">            showWrongImageDialog();</span>
+        }
+<span class="fc" id="L72">    }</span>
+
+    boolean extractBundle() {
+<span class="fc" id="L75">        Bundle extras = getIntent().getExtras();</span>
+<span class="fc bfc" id="L76" title="All 2 branches covered.">        if (extras != null) {</span>
+<span class="fc" id="L77">            Parcelable extra = extras.getParcelable(TAG_IMAGE_DETAILS);</span>
+<span class="pc bpc" id="L78" title="1 of 4 branches missed.">            if (extra != null &amp;&amp; extra instanceof ImageDetails) {</span>
+<span class="fc" id="L79">                imageDetails = extras.getParcelable(TAG_IMAGE_DETAILS);</span>
+<span class="fc" id="L80">                return true;</span>
+            }
+        }
+<span class="fc" id="L83">        return false;</span>
+    }
+
+    boolean extractShareIntent() {
+<span class="fc" id="L87">        Intent intent = getIntent();</span>
+<span class="fc" id="L88">        String action = intent.getAction();</span>
+<span class="fc" id="L89">        String type = intent.getType();</span>
+
+<span class="pc bpc" id="L91" title="3 of 4 branches missed.">        if (Intent.ACTION_SEND.equals(action) &amp;&amp; type != null) {</span>
+<span class="nc bnc" id="L92" title="All 2 branches missed.">            if (type.startsWith(&quot;image/&quot;)) {</span>
+<span class="nc" id="L93">                Uri imageUri = intent.getParcelableExtra(Intent.EXTRA_STREAM);</span>
+<span class="nc bnc" id="L94" title="All 2 branches missed.">                if (imageUri == null) {</span>
+<span class="nc" id="L95">                    return false;</span>
+                }
+
+<span class="nc" id="L98">                imageDetails = new ImagesProvider(getContentResolver()).getImage(imageUri);</span>
+<span class="nc bnc" id="L99" title="All 4 branches missed.">                if (imageDetails != null &amp;&amp; imageDetails.isJpeg()) {</span>
+<span class="nc" id="L100">                    return true;</span>
+                }
+            }
+        }
+<span class="fc" id="L104">        return false;</span>
+    }
+
+    private void prepareViewModels(EditViewBinding binding) {
+        try {
+<span class="nc" id="L109">            TagsManager tagsManager = new TagsManager(new ExifInterface(imageDetails.getPath()));</span>
+<span class="nc" id="L110">            editViewModel = new PhoneEditViewModel(</span>
+                    imageDetails,
+                    tagsManager,
+                    this,
+                    new TagDiffMicroServiceFactory(this),
+                    new TagListDiffMicroService(this),
+                    this);
+<span class="nc" id="L117">            binding.setViewModel(editViewModel);</span>
+<span class="nc" id="L118">            setEditDialogInterface(editViewModel);</span>
+<span class="nc" id="L119">            setEditActivityHelper(new EditActivityHelper(this));</span>
+<span class="fc" id="L120">        } catch (IOException e) {</span>
+<span class="fc" id="L121">            Log.d(TAG, String.valueOf(e.getMessage()));</span>
+            //TODO log exception to crashlitycs on else.
+<span class="nc" id="L123">        }</span>
+<span class="fc" id="L124">    }</span>
+
+    private void setupHomeButton() {
+<span class="fc" id="L127">        ActionBar actionBar = getSupportActionBar();</span>
+<span class="pc bpc" id="L128" title="1 of 2 branches missed.">        if (actionBar != null) {</span>
+<span class="fc" id="L129">            actionBar.setDisplayHomeAsUpEnabled(true);</span>
+        }
+<span class="fc" id="L131">    }</span>
+
+    private void showWrongImageDialog() {
+<span class="fc" id="L134">        new AlertDialog</span>
+                .Builder(EditActivity.this, R.style.AlertDialogStyle)
+<span class="fc" id="L136">                .setTitle(R.string.wrong_image_error)</span>
+<span class="fc" id="L137">                .setMessage(R.string.wrong_image_error_message)</span>
+<span class="pc" id="L138">                .setPositiveButton(getText(R.string.positive_message), (dialog, which) -&gt; finish())</span>
+<span class="pc" id="L139">                .setOnDismissListener(dialog -&gt; finish())</span>
+<span class="fc" id="L140">                .create()</span>
+<span class="fc" id="L141">                .show();</span>
+<span class="fc" id="L142">    }</span>
+
+    @Override
+    protected void onRejectTagsChangesDialogPositive() {
+<span class="nc" id="L146">        finish();</span>
+<span class="nc" id="L147">    }</span>
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+<span class="fc" id="L151">        getMenuInflater().inflate(R.menu.menu_edit_activity, menu);</span>
+<span class="pc bpc" id="L152" title="3 of 4 branches missed.">        if (editViewModel != null &amp;&amp; editViewModel.isInEditState()) {</span>
+<span class="nc" id="L153">            showSaveChangesMenuItem(menu);</span>
+        }
+
+<span class="fc" id="L156">        return true;</span>
+    }
+
+    private void showSaveChangesMenuItem(Menu menu) {
+<span class="nc" id="L160">        menu.findItem(R.id.menu_item_save_changes).setVisible(true);</span>
+<span class="nc" id="L161">    }</span>
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+<span class="pc bpc" id="L165" title="4 of 5 branches missed.">        switch (item.getItemId()) {</span>
+            case android.R.id.home:
+<span class="nc" id="L167">                onBackPressed();</span>
+<span class="nc" id="L168">                return true;</span>
+            case R.id.menu_item_save_changes:
+<span class="nc bnc" id="L170" title="All 2 branches missed.">                if (editViewModel != null) {</span>
+<span class="nc" id="L171">                    editViewModel.onApproveChangesClick();</span>
+                }
+<span class="nc" id="L173">                return true;</span>
+            case R.id.menu_item_clear_all:
+<span class="nc bnc" id="L175" title="All 2 branches missed.">                if (editViewModel != null) {</span>
+<span class="nc" id="L176">                    editViewModel.onClearAllClick();</span>
+                }
+<span class="nc" id="L178">                return true;</span>
+            case R.id.menu_item_share:
+<span class="nc bnc" id="L180" title="All 2 branches missed.">                if (editViewModel != null) {</span>
+<span class="nc" id="L181">                    editViewModel.onShareClick();</span>
+                }
+<span class="nc" id="L183">                return true;</span>
+            default:
+<span class="fc" id="L185">                return super.onOptionsItemSelected(item);</span>
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+<span class="nc bnc" id="L191" title="All 2 branches missed.">        if (editViewModel != null) {</span>
+<span class="nc" id="L192">            editViewModel.onFinishScene();</span>
+        } else {
+<span class="nc" id="L194">            finish();</span>
+        }
+<span class="nc" id="L196">    }</span>
+
+    @Override
+    public void updateViewState() {
+<span class="nc" id="L200">        invalidateOptionsMenu();</span>
+<span class="nc" id="L201">    }</span>
+
+    public void shareImage(ImageDetails imageDetails) {
+        try {
+<span class="nc" id="L205">            Intent intent = new SharingHelper().buildShareImageIntent(imageDetails);</span>
+<span class="nc" id="L206">            startActivity(Intent.createChooser(intent, getString(R.string.share_intent_chooser_title)));</span>
+<span class="nc" id="L207">        } catch (FileNotFoundException e) {</span>
+<span class="nc" id="L208">            Log.e(TAG, String.valueOf(e.getMessage()));</span>
+            //TODO log error in crashlytics
+<span class="nc" id="L210">        }</span>
+<span class="nc" id="L211">    }</span>
+
+    @Override
+    public void showViewInEditStateInformation() {
+<span class="nc" id="L215">        Snackbar.make(</span>
+<span class="nc" id="L216">                findViewById(android.R.id.content),</span>
+                R.string.save_before_share,
+<span class="nc" id="L218">                Snackbar.LENGTH_LONG).show();</span>
+<span class="nc" id="L219">    }</span>
+
+    @Override
+    public void finishScene() {
+<span class="nc" id="L223">        finish();</span>
+<span class="nc" id="L224">    }</span>
+
+    @Override
+    public &lt;T&gt; Observable.Transformer&lt;T, T&gt; bind() {
+<span class="nc" id="L228">        return bindToLifecycle();</span>
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+<span class="nc" id="L233">        editViewModel.onSaveInstanceState(outState);</span>
+<span class="nc" id="L234">        super.onSaveInstanceState(outState);</span>
+<span class="nc" id="L235">    }</span>
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+<span class="nc" id="L239">        super.onRestoreInstanceState(savedInstanceState);</span>
+<span class="nc" id="L240">        editViewModel.onRestoreInstanceState(savedInstanceState);</span>
+<span class="nc" id="L241">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

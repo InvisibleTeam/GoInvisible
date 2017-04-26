@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>EditViewModel.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">app</a> &gt; <a href="index.source.html" class="el_package">com.invisibleteam.goinvisible.mvvm.edition</a> &gt; <span class="el_source">EditViewModel.java</span></div><h1>EditViewModel.java</h1><pre class="source lang-java linenums">package com.invisibleteam.goinvisible.mvvm.edition;
+
+
+import android.databinding.ObservableArrayList;
+import android.os.Bundle;
+import android.support.media.ExifInterface;
+
+import com.invisibleteam.goinvisible.model.ImageDetails;
+import com.invisibleteam.goinvisible.model.Tag;
+import com.invisibleteam.goinvisible.model.TagGroup;
+import com.invisibleteam.goinvisible.mvvm.common.TagsUpdateStatusCallback;
+import com.invisibleteam.goinvisible.mvvm.edition.adapter.EditItemGroupAdapter;
+import com.invisibleteam.goinvisible.mvvm.edition.callback.RejectEditionChangesCallback;
+import com.invisibleteam.goinvisible.mvvm.edition.callback.TagEditionStartCallback;
+import com.invisibleteam.goinvisible.util.LifecycleBinder;
+import com.invisibleteam.goinvisible.util.TagsManager;
+import com.invisibleteam.goinvisible.util.binding.ObservableString;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Nullable;
+
+import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.exceptions.Exceptions;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
+
+public abstract class EditViewModel
+        implements
+        EditItemGroupAdapter.ItemActionListener,
+        EditDialogInterface,
+        TagChangesStatusProvider {
+
+    private static final String MODEL_LIST_EXTRA_KEY = &quot;model_list_extra&quot;;
+    private static final String DIFF_MAP_EXTRA_KEY = &quot;diff_map_extra&quot;;
+
+<span class="nc" id="L43">    private final ObservableString title = new ObservableString(&quot;&quot;);</span>
+<span class="nc" id="L44">    private final ObservableString imageUrl = new ObservableString(&quot;&quot;);</span>
+<span class="nc" id="L45">    private final ObservableArrayList&lt;TagGroup&gt; modelList = new ObservableArrayList&lt;&gt;();</span>
+<span class="nc" id="L46">    private final ObservableTagGroupDiffResultModel diffList = new ObservableTagGroupDiffResultModel();</span>
+
+    private final TagDiffMicroServiceFactory microServiceFactory;
+    private final TagListDiffMicroService listDiffMicroService;
+    private final LifecycleBinder lifecycleBinder;
+    private TagsManager tagsManager;
+    protected final EditViewModelCallback callback;
+
+<span class="nc" id="L54">    private final HashMap&lt;String, Tag&gt; diffMap = new HashMap&lt;&gt;();</span>
+    private List&lt;TagGroup&gt; originalModelList;
+<span class="nc" id="L56">    private int editedGroupPosition = 0;</span>
+<span class="nc" id="L57">    private int editedChildPosition = 0;</span>
+    @Nullable
+    protected ImageDetails imageDetails;
+
+    public EditViewModel(
+            EditViewModelCallback callback,
+            TagDiffMicroServiceFactory microServiceFactory,
+            TagListDiffMicroService listDiffMicroService,
+<span class="nc" id="L65">            LifecycleBinder lifecycleBinder) {</span>
+<span class="nc" id="L66">        this.callback = callback;</span>
+<span class="nc" id="L67">        this.microServiceFactory = microServiceFactory;</span>
+<span class="nc" id="L68">        this.listDiffMicroService = listDiffMicroService;</span>
+<span class="nc" id="L69">        this.lifecycleBinder = lifecycleBinder;</span>
+
+<span class="nc" id="L71">        setupListDiffMicroService();</span>
+<span class="nc" id="L72">    }</span>
+
+    public void initialize(ImageDetails imageDetails, TagsManager manager) {
+<span class="nc" id="L75">        this.imageDetails = imageDetails;</span>
+<span class="nc" id="L76">        title.set(imageDetails.getName());</span>
+<span class="nc" id="L77">        imageUrl.set(imageDetails.getPath());</span>
+<span class="nc" id="L78">        tagsManager = manager;</span>
+
+<span class="nc" id="L80">        initializeModels();</span>
+<span class="nc" id="L81">        diffMap.clear();</span>
+<span class="nc" id="L82">        updateViewState();</span>
+<span class="nc" id="L83">    }</span>
+
+    private void initializeModels() {
+<span class="nc" id="L86">        List&lt;Tag&gt; allTags = tagsManager.getAllTags();</span>
+<span class="nc" id="L87">        originalModelList = TagGroupUtil.createTagGroups(allTags);</span>
+<span class="nc" id="L88">        List&lt;TagGroup&gt; tagGroups = TagGroupUtil.createTagGroups(TagGroupUtil.deepCopyList(allTags));</span>
+<span class="nc" id="L89">        modelList.clear();</span>
+<span class="nc" id="L90">        modelList.addAll(tagGroups);</span>
+<span class="nc" id="L91">    }</span>
+
+    public ObservableString getTitle() {
+<span class="nc" id="L94">        return title;</span>
+    }
+
+    public ObservableString getImageUrl() {
+<span class="nc" id="L98">        return imageUrl;</span>
+    }
+
+    public ObservableArrayList&lt;TagGroup&gt; getModelList() {
+<span class="nc" id="L102">        return modelList;</span>
+    }
+
+    public ObservableTagGroupDiffResultModel getDiffList() {
+<span class="nc" id="L106">        return diffList;</span>
+    }
+
+    public EditItemGroupAdapter.ItemActionListener getItemActionListener() {
+<span class="nc" id="L110">        return this;</span>
+    }
+
+    @Override
+    public void onItemClick(int parentPosition, int childPosition, Tag tag) {
+<span class="nc" id="L115">        this.editedGroupPosition = parentPosition;</span>
+<span class="nc" id="L116">        this.editedChildPosition = childPosition;</span>
+
+<span class="nc bnc" id="L118" title="All 2 branches missed.">        if (ExifInterface.TAG_GPS_LATITUDE.equals(tag.getKey())) {</span>
+<span class="nc" id="L119">            callback.openPlacePickerView(tag.copy());</span>
+<span class="nc" id="L120">            return;</span>
+        }
+
+<span class="nc bnc" id="L123" title="All 3 branches missed.">        switch (tag.getTagType().getInputType()) {</span>
+            case UNMODIFIABLE:
+<span class="nc" id="L125">                callback.showUnmodifiableTagMessage();</span>
+<span class="nc" id="L126">                break;</span>
+            case INDEFINITE:
+<span class="nc" id="L128">                callback.showTagEditionErrorMessage();</span>
+<span class="nc" id="L129">                break;</span>
+            default:
+<span class="nc" id="L131">                callback.showTagEditionView(tag.copy());</span>
+        }
+<span class="nc" id="L133">    }</span>
+
+    @Override
+    public void onItemClearClick(int parentPosition, int childPosition, Tag tag) {
+<span class="nc" id="L137">        TagGroup tagGroup = modelList.get(parentPosition);</span>
+<span class="nc" id="L138">        Tag tagCopy = tag.copy();</span>
+
+<span class="nc" id="L140">        editTag(</span>
+                parentPosition,
+                childPosition,
+                tagCopy,
+                tagList -&gt; {
+<span class="nc" id="L145">                    tagsManager.clearTag(tagCopy);</span>
+<span class="nc" id="L146">                    tagGroup.getChildList().set(childPosition, tagCopy);</span>
+<span class="nc" id="L147">                });</span>
+<span class="nc" id="L148">    }</span>
+
+    private void setupListDiffMicroService() {
+<span class="nc" id="L151">        listDiffMicroService.setEditListener((tagList, groupPosition, childPosition) -&gt; {</span>
+<span class="nc" id="L152">            Tag tagCopy = tagList.get(childPosition).copy();</span>
+<span class="nc" id="L153">            tagList.set(childPosition, tagCopy);</span>
+<span class="nc" id="L154">            tagsManager.clearTag(tagCopy);</span>
+<span class="nc" id="L155">            checkDifferentFromOriginal(groupPosition, childPosition, tagCopy);</span>
+<span class="nc" id="L156">        });</span>
+<span class="nc" id="L157">    }</span>
+
+    public void onClearAllClick() {
+<span class="nc" id="L160">        listDiffMicroService</span>
+<span class="nc" id="L161">                .buildObservable(modelList)</span>
+<span class="nc" id="L162">                .map(tagDiffResultModels -&gt; {</span>
+<span class="nc" id="L163">                    diffList.clear();</span>
+<span class="nc" id="L164">                    diffList.addAll(tagDiffResultModels);</span>
+<span class="nc" id="L165">                    return tagDiffResultModels;</span>
+                })
+<span class="nc" id="L167">                .observeOn(AndroidSchedulers.mainThread())</span>
+<span class="nc" id="L168">                .subscribe(tagDiffResultModels -&gt; updateViewState());</span>
+<span class="nc" id="L169">    }</span>
+
+    @Override
+    public void onEditError() {
+<span class="nc" id="L173">        callback.showTagEditionErrorMessage();</span>
+<span class="nc" id="L174">    }</span>
+
+    @Override
+    public void onEditEnded(Tag tag) {
+<span class="nc" id="L178">        editTag(</span>
+                editedGroupPosition,
+                editedChildPosition,
+                tag,
+<span class="nc" id="L182">                tagList -&gt; tagList.set(editedChildPosition, tag));</span>
+<span class="nc" id="L183">    }</span>
+
+    public void onApproveChangesClick() {
+<span class="nc" id="L186">        Observable.just(diffMap)</span>
+<span class="nc" id="L187">                .compose(lifecycleBinder.bind())</span>
+<span class="nc" id="L188">                .subscribeOn(Schedulers.computation())</span>
+<span class="nc" id="L189">                .map((Func1&lt;Map&lt;String, Tag&gt;, List&lt;Tag&gt;&gt;) stringTagMap -&gt; new ArrayList&lt;&gt;(diffMap.values()))</span>
+<span class="nc" id="L190">                .map(tags -&gt; {</span>
+<span class="nc bnc" id="L191" title="All 2 branches missed.">                    if (tagsManager.saveTags(tags)) {</span>
+<span class="nc" id="L192">                        return tags;</span>
+                    }
+<span class="nc" id="L194">                    throw Exceptions.propagate(new Exception(&quot;There were problems saving tags.&quot;));</span>
+                })
+<span class="nc" id="L196">                .map(tagList -&gt; {</span>
+<span class="nc" id="L197">                    TagGroupUtil.updateTagList(originalModelList, tagsManager.getAllTags());</span>
+<span class="nc" id="L198">                    diffMap.clear();</span>
+<span class="nc" id="L199">                    return originalModelList;</span>
+                })
+<span class="nc" id="L201">                .observeOn(AndroidSchedulers.mainThread())</span>
+<span class="nc" id="L202">                .subscribe(new Subscriber&lt;List&lt;TagGroup&gt;&gt;() {</span>
+                    @Override
+                    public void onCompleted() {
+
+<span class="nc" id="L206">                    }</span>
+
+                    @Override
+                    public void onError(Throwable e) {
+<span class="nc" id="L210">                        callback.showTagsUpdateFailureMessage();</span>
+<span class="nc" id="L211">                    }</span>
+
+                    @Override
+                    public void onNext(List&lt;TagGroup&gt; tags) {
+<span class="nc" id="L215">                        updateViewState();</span>
+<span class="nc" id="L216">                        callback.showTagsSuccessfullyUpdatedMessage();</span>
+<span class="nc" id="L217">                    }</span>
+                });
+<span class="nc" id="L219">    }</span>
+
+    public void onShareClick() {
+<span class="nc bnc" id="L222" title="All 2 branches missed.">        if (isInEditState()) {</span>
+<span class="nc" id="L223">            callback.showViewInEditStateInformation();</span>
+<span class="nc bnc" id="L224" title="All 2 branches missed.">        } else if (imageDetails != null) {</span>
+<span class="nc" id="L225">            callback.shareImage(imageDetails);</span>
+        }
+<span class="nc" id="L227">    }</span>
+
+    @Override
+    public boolean isInEditState() {
+<span class="nc bnc" id="L231" title="All 2 branches missed.">        return !diffMap.isEmpty();</span>
+    }
+
+    private void editTag(int parentPosition,
+                         int childPosition,
+                         Tag tag,
+                         TagDiffMicroService.EditListener editListener) {
+<span class="nc" id="L238">        TagGroup tagGroup = modelList.get(parentPosition);</span>
+
+<span class="nc" id="L240">        microServiceFactory</span>
+<span class="nc" id="L241">                .buildService(editListener)</span>
+<span class="nc" id="L242">                .buildObservable(tagGroup)</span>
+<span class="nc" id="L243">                .map(diffResult -&gt; {</span>
+<span class="nc" id="L244">                    diffList.clear();</span>
+<span class="nc" id="L245">                    diffList.add(new TagDiffResultModel(parentPosition, diffResult));</span>
+<span class="nc" id="L246">                    checkDifferentFromOriginal(parentPosition, childPosition, tag);</span>
+<span class="nc" id="L247">                    return diffResult;</span>
+                })
+<span class="nc" id="L249">                .observeOn(AndroidSchedulers.mainThread())</span>
+<span class="nc" id="L250">                .subscribe(diffResult -&gt; updateViewState());</span>
+<span class="nc" id="L251">    }</span>
+
+    protected abstract void updateViewState();
+
+    private void checkDifferentFromOriginal(int editedGroupPosition, int editedChildPosition, Tag tag) {
+<span class="nc" id="L256">        Tag originalTag = originalModelList.get(editedGroupPosition).getChildList().get(editedChildPosition);</span>
+<span class="nc bnc" id="L257" title="All 2 branches missed.">        if (originalTag.getFormattedValue().equals(tag.getFormattedValue())) {</span>
+<span class="nc" id="L258">            diffMap.remove(tag.getKey());</span>
+<span class="nc" id="L259">            return;</span>
+        }
+<span class="nc" id="L261">        diffMap.put(tag.getKey(), tag);</span>
+<span class="nc" id="L262">    }</span>
+
+    public void onSaveInstanceState(Bundle bundle) {
+<span class="nc" id="L265">        bundle.putParcelableArrayList(MODEL_LIST_EXTRA_KEY, modelList);</span>
+<span class="nc" id="L266">        bundle.putSerializable(DIFF_MAP_EXTRA_KEY, diffMap);</span>
+
+<span class="nc" id="L268">    }</span>
+
+    public void onRestoreInstanceState(@Nullable Bundle bundle) {
+<span class="nc bnc" id="L271" title="All 2 branches missed.">        if (bundle == null) {</span>
+<span class="nc" id="L272">            return;</span>
+        }
+
+<span class="nc bnc" id="L275" title="All 2 branches missed.">        if (bundle.containsKey(MODEL_LIST_EXTRA_KEY)) {</span>
+<span class="nc" id="L276">            List&lt;TagGroup&gt; savedModelList = bundle.getParcelableArrayList(MODEL_LIST_EXTRA_KEY);</span>
+<span class="nc bnc" id="L277" title="All 2 branches missed.">            if (savedModelList != null) {</span>
+<span class="nc" id="L278">                TagGroupUtil.updateTagGroupList(modelList, savedModelList);</span>
+            }
+        }
+<span class="nc bnc" id="L281" title="All 2 branches missed.">        if (bundle.containsKey(DIFF_MAP_EXTRA_KEY)) {</span>
+<span class="nc" id="L282">            Serializable serializable = bundle.getSerializable(DIFF_MAP_EXTRA_KEY);</span>
+<span class="nc bnc" id="L283" title="All 2 branches missed.">            if (serializable != null) {</span>
+<span class="nc" id="L284">                Map&lt;String, Tag&gt; map = (Map&lt;String, Tag&gt;) serializable;</span>
+<span class="nc" id="L285">                diffMap.putAll(map);</span>
+<span class="nc" id="L286">                updateViewState();</span>
+            }
+        }
+<span class="nc" id="L289">    }</span>
+
+    public interface EditViewModelCallback extends TagEditionStartCallback, TagsUpdateStatusCallback, RejectEditionChangesCallback {
+        void shareImage(ImageDetails imageDetails);
+
+        void showViewInEditStateInformation();
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TagUtil.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">app</a> &gt; <a href="index.source.html" class="el_package">com.invisibleteam.goinvisible.util</a> &gt; <span class="el_source">TagUtil.java</span></div><h1>TagUtil.java</h1><pre class="source lang-java linenums">package com.invisibleteam.goinvisible.util;
+
+
+import android.support.annotation.VisibleForTesting;
+import android.text.TextUtils;
+
+import java.math.BigDecimal;
+import java.util.concurrent.TimeUnit;
+
+import javax.annotation.Nullable;
+
+<span class="nc" id="L12">public class TagUtil {</span>
+
+    private static final String GEO_MINUTES_CHAR = &quot;\'&quot;;
+    private static final String GEO_SECONDS_CHAR = &quot;\'\'&quot;;
+    private static final String DEFAULT_DENOMINATOR = &quot;/1,&quot;;
+    private static final String DENOMINATOR_CHAR = &quot;/&quot;;
+    private static final int MAX_DENOMINATOR_VALUE = 1000000;
+    private static final int SIX_DECIMAL_NUMBER_SCALE = 6;
+    private static final double DEFAULT_DOUBLE_VALUE = 0.0;
+
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    static final char DEGREE_CHAR = (char) 0x00B0;
+
+    static String parseDoubleGPSToGeoGPS(double value) {
+<span class="fc" id="L26">        final StringBuilder geoGPSBuilder = buildGeoGPSValueFromDoubleValue(value);</span>
+<span class="fc" id="L27">        return geoGPSBuilder.toString();</span>
+    }
+
+    private static StringBuilder buildGeoGPSValueFromDoubleValue(double value) {
+<span class="fc" id="L31">        final int[] geoGPS = convertDoubleGPSValueToGeoGPSValue(value);</span>
+
+<span class="fc" id="L33">        int degrees = geoGPS[0];</span>
+<span class="fc" id="L34">        int minutes = geoGPS[1];</span>
+<span class="fc" id="L35">        int seconds = geoGPS[2];</span>
+
+<span class="fc" id="L37">        return new StringBuilder()</span>
+<span class="fc" id="L38">                .append(degrees)</span>
+<span class="fc" id="L39">                .append(DEGREE_CHAR)</span>
+<span class="fc" id="L40">                .append(&quot; &quot;)</span>
+<span class="fc" id="L41">                .append(minutes)</span>
+<span class="fc" id="L42">                .append(GEO_MINUTES_CHAR)</span>
+<span class="fc" id="L43">                .append(&quot; &quot;)</span>
+<span class="fc" id="L44">                .append(seconds)</span>
+<span class="fc" id="L45">                .append(GEO_SECONDS_CHAR);</span>
+    }
+
+    /**
+     * Convert double GPS value to geo GPS value.
+     *
+     * @param value of GPS represented by double
+     * @return an int array with geo GPS components:
+     * 0 - degrees value
+     * 1 - minutes value
+     * 2 - seconds value
+     */
+    private static int[] convertDoubleGPSValueToGeoGPSValue(double value) {
+<span class="fc" id="L58">        final int[] result = new int[3];</span>
+<span class="fc" id="L59">        result[0] = (int) value;</span>
+<span class="fc" id="L60">        result[1] = (int) (TimeUnit.HOURS.toMinutes(1) * (value - result[0]));</span>
+<span class="fc" id="L61">        result[2] = (int) ((TimeUnit.HOURS.toSeconds(1) * (value - result[0]))</span>
+<span class="fc" id="L62">                - (TimeUnit.HOURS.toMinutes(1) * result[1]));</span>
+
+<span class="fc" id="L64">        return result;</span>
+    }
+
+    @Nullable
+    public static String parseRationalGPSToGeoGPS(@Nullable String rational, @Nullable String rationalRef) {
+<span class="fc bfc" id="L69" title="All 2 branches covered.">        if (isRationalValueCorrect(rational)) {</span>
+<span class="fc" id="L70">            return null;</span>
+        }
+
+<span class="fc" id="L73">        final double rationalGPS = parseRationalGPSToDoubleGPS(rational);</span>
+<span class="fc" id="L74">        final StringBuilder geoGPSBuilder = buildGeoGPSValueFromDoubleValue(rationalGPS);</span>
+
+<span class="fc bfc" id="L76" title="All 2 branches covered.">        if (rationalRef != null) {</span>
+<span class="fc" id="L77">            geoGPSBuilder</span>
+<span class="fc" id="L78">                    .append(&quot; &quot;)</span>
+<span class="fc" id="L79">                    .append(rationalRef);</span>
+        } else {
+<span class="fc" id="L81">            geoGPSBuilder.append(&quot;&quot;);</span>
+        }
+
+<span class="fc" id="L84">        return geoGPSBuilder.toString();</span>
+    }
+
+    public static double parseRationalGPSToDoubleGPS(String rational) {
+<span class="fc" id="L88">        String[] rationalParts = rational.split(&quot;,&quot;);</span>
+
+<span class="fc" id="L90">        double degrees = parseRationalValueToDouble(rationalParts[0]);</span>
+<span class="fc" id="L91">        double minutes = parseRationalValueToDouble(rationalParts[1]);</span>
+<span class="fc" id="L92">        minutes /= TimeUnit.HOURS.toMinutes(1);</span>
+<span class="fc" id="L93">        double seconds = parseRationalValueToDouble(rationalParts[2]);</span>
+<span class="fc" id="L94">        seconds /= TimeUnit.HOURS.toSeconds(1);</span>
+
+<span class="fc" id="L96">        double result = degrees + minutes + seconds;</span>
+
+<span class="fc" id="L98">        return new BigDecimal(result).setScale(SIX_DECIMAL_NUMBER_SCALE, BigDecimal.ROUND_HALF_UP).doubleValue();</span>
+    }
+
+    public static double parseRationalValueToDouble(@Nullable String rational) {
+<span class="fc bfc" id="L102" title="All 2 branches covered.">        if (rational == null) {</span>
+<span class="fc" id="L103">            return DEFAULT_DOUBLE_VALUE;</span>
+        }
+
+<span class="fc" id="L106">        String[] rationals = rational.split(&quot;/&quot;);</span>
+
+<span class="pc bpc" id="L108" title="1 of 2 branches missed.">        if (rationals.length != 2) {</span>
+<span class="nc" id="L109">            return DEFAULT_DOUBLE_VALUE;</span>
+        }
+
+<span class="fc" id="L112">        return Double.parseDouble(rationals[0]) / Double.parseDouble(rationals[1]);</span>
+    }
+
+    public static String parseDoubleGPSToRationalGPS(double value) {
+<span class="fc" id="L116">        long degrees = (long) value;</span>
+<span class="fc" id="L117">        long minutes = (long) (TimeUnit.HOURS.toMinutes(1) * (value - degrees));</span>
+<span class="fc" id="L118">        double seconds = Math.abs((TimeUnit.HOURS.toSeconds(1) * (value - degrees))</span>
+<span class="fc" id="L119">                - (TimeUnit.HOURS.toMinutes(1) * minutes));</span>
+
+<span class="fc" id="L121">        long exactSecondsValue = parseDoubleToLong(seconds);</span>
+
+<span class="fc" id="L123">        return new StringBuilder()</span>
+<span class="fc" id="L124">                .append(degrees)</span>
+<span class="fc" id="L125">                .append(DEFAULT_DENOMINATOR)</span>
+<span class="fc" id="L126">                .append(minutes)</span>
+<span class="fc" id="L127">                .append(DEFAULT_DENOMINATOR)</span>
+<span class="fc" id="L128">                .append(exactSecondsValue)</span>
+<span class="fc" id="L129">                .append(DENOMINATOR_CHAR)</span>
+<span class="fc" id="L130">                .append(MAX_DENOMINATOR_VALUE)</span>
+<span class="fc" id="L131">                .toString();</span>
+    }
+
+    private static long parseDoubleToLong(double value) {
+<span class="fc" id="L135">        BigDecimal big = new BigDecimal(value).setScale(SIX_DECIMAL_NUMBER_SCALE, BigDecimal.ROUND_HALF_DOWN);</span>
+<span class="fc" id="L136">        String bigString = big.toString().replace(&quot;.&quot;, &quot;&quot;);</span>
+<span class="fc" id="L137">        return Long.parseLong(bigString);</span>
+    }
+
+    @Nullable
+    static String parseRationalToString(@Nullable String rational) {
+<span class="fc bfc" id="L142" title="All 2 branches covered.">        if (isRationalValueCorrect(rational)) {</span>
+<span class="fc" id="L143">            return null;</span>
+        }
+
+<span class="fc" id="L146">        double result = parseRationalValueToDouble(rational);</span>
+
+<span class="fc" id="L148">        return String.valueOf(result);</span>
+    }
+
+    public static String parseDoubleValueToRational(double value) {
+<span class="fc" id="L152">        long numerator = parseDoubleToLong(value);</span>
+
+<span class="fc" id="L154">        return new StringBuilder()</span>
+<span class="fc" id="L155">                .append(numerator)</span>
+<span class="fc" id="L156">                .append(DENOMINATOR_CHAR)</span>
+<span class="fc" id="L157">                .append(MAX_DENOMINATOR_VALUE)</span>
+<span class="fc" id="L158">                .toString();</span>
+    }
+
+    private static boolean isRationalValueCorrect(@Nullable String rational) {
+<span class="fc bfc" id="L162" title="All 4 branches covered.">        return TextUtils.isEmpty(rational) || !rational.contains(&quot;/&quot;);</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

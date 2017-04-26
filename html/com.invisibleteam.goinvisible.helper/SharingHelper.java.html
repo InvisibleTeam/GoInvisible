@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SharingHelper.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">app</a> &gt; <a href="index.source.html" class="el_package">com.invisibleteam.goinvisible.helper</a> &gt; <span class="el_source">SharingHelper.java</span></div><h1>SharingHelper.java</h1><pre class="source lang-java linenums">package com.invisibleteam.goinvisible.helper;
+
+import android.content.Intent;
+import android.net.Uri;
+
+import com.invisibleteam.goinvisible.model.ImageDetails;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+
+<span class="nc" id="L11">public class SharingHelper {</span>
+
+    private static final String SHARE_IMAGE_JPG_TYPE = &quot;image/jpg&quot;;
+
+    public Intent buildShareImageIntent(ImageDetails details) throws
+            FileNotFoundException {
+<span class="nc" id="L17">        Uri imageUri = Uri.fromFile(new File(details.getPath()));</span>
+<span class="nc" id="L18">        Intent intent = new Intent(Intent.ACTION_SEND);</span>
+<span class="nc" id="L19">        intent.putExtra(Intent.EXTRA_STREAM, imageUri);</span>
+<span class="nc" id="L20">        intent.setType(SHARE_IMAGE_JPG_TYPE);</span>
+
+<span class="nc" id="L22">        return intent;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

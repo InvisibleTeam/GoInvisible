@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>EditActivityHelper.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">app</a> &gt; <a href="index.source.html" class="el_package">com.invisibleteam.goinvisible.helper</a> &gt; <span class="el_source">EditActivityHelper.java</span></div><h1>EditActivityHelper.java</h1><pre class="source lang-java linenums">package com.invisibleteam.goinvisible.helper;
+
+import android.content.Intent;
+import android.location.LocationManager;
+import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
+import android.widget.Toast;
+
+import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesRepairableException;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlacePicker;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
+import com.invisibleteam.goinvisible.R;
+import com.invisibleteam.goinvisible.model.GeolocationTag;
+import com.invisibleteam.goinvisible.model.Tag;
+import com.invisibleteam.goinvisible.mvvm.common.CommonEditActivity;
+import com.invisibleteam.goinvisible.util.TagUtil;
+import com.invisibleteam.goinvisible.util.location.GoogleLocationApiEstablisher;
+import com.invisibleteam.goinvisible.util.location.GpsEstablisher;
+import com.invisibleteam.goinvisible.util.location.LatLngUtil;
+
+import static android.content.Context.LOCATION_SERVICE;
+import static com.invisibleteam.goinvisible.mvvm.common.CommonEditActivity.PLACE_REQUEST_ID;
+
+public class EditActivityHelper {
+
+    private static final int INITIAL_MAP_RADIUS = 20000;
+
+    private CommonEditActivity activity;
+
+<span class="nc" id="L35">    public EditActivityHelper(CommonEditActivity activity) {</span>
+<span class="nc" id="L36">        this.activity = activity;</span>
+<span class="nc" id="L37">    }</span>
+
+    @NonNull
+    public GeolocationTag prepareNewPlacePositionTag(Place place, Tag tag) {
+<span class="nc" id="L41">        GeolocationTag geolocationTag = (GeolocationTag) tag;</span>
+<span class="nc" id="L42">        double latitude = place.getLatLng().latitude;</span>
+<span class="nc" id="L43">        double longitude = place.getLatLng().longitude;</span>
+
+<span class="nc" id="L45">        String newLatitude = TagUtil.parseDoubleGPSToRationalGPS(latitude);</span>
+<span class="nc" id="L46">        geolocationTag.setValue(newLatitude);</span>
+<span class="nc bnc" id="L47" title="All 2 branches missed.">        geolocationTag.setLatitudeRef(latitude &gt; 0.0 ? &quot;N&quot; : &quot;S&quot;);</span>
+
+<span class="nc" id="L49">        String newLongitude = TagUtil.parseDoubleGPSToRationalGPS(longitude);</span>
+<span class="nc" id="L50">        geolocationTag.setSecondValue(newLongitude);</span>
+<span class="nc bnc" id="L51" title="All 2 branches missed.">        geolocationTag.setLongitudeRef(longitude &gt; 0.0 ? &quot;E&quot; : &quot;W&quot;);</span>
+
+<span class="nc" id="L53">        return geolocationTag;</span>
+    }
+
+    public void openPlacePicker(Tag tag) {
+        try {
+<span class="nc" id="L58">            GeolocationTag geolocationTag = (GeolocationTag) tag;</span>
+<span class="nc" id="L59">            PlacePicker.IntentBuilder intentBuilder = new PlacePicker.IntentBuilder();</span>
+<span class="nc bnc" id="L60" title="All 2 branches missed.">            if (geolocationTag.getValue() != null) {</span>
+<span class="nc" id="L61">                LatLng center = new LatLng(</span>
+<span class="nc" id="L62">                        TagUtil.parseRationalGPSToDoubleGPS(geolocationTag.getValue()),</span>
+<span class="nc" id="L63">                        TagUtil.parseRationalGPSToDoubleGPS(geolocationTag.getSecondValue())</span>
+                );
+<span class="nc" id="L65">                LatLngBounds bounds = LatLngUtil.generateBoundsWithZoom(center, INITIAL_MAP_RADIUS);</span>
+<span class="nc" id="L66">                intentBuilder.setLatLngBounds(bounds);</span>
+            }
+
+<span class="nc" id="L69">            Intent intent = intentBuilder.build(activity);</span>
+<span class="nc" id="L70">            activity.startActivityForResult(intent, PLACE_REQUEST_ID);</span>
+<span class="nc" id="L71">        } catch (GooglePlayServicesRepairableException e) {</span>
+<span class="nc" id="L72">            GoogleApiAvailability.getInstance().getErrorDialog(activity, e.getConnectionStatusCode(), 0);</span>
+<span class="nc" id="L73">        } catch (GooglePlayServicesNotAvailableException e) {</span>
+<span class="nc" id="L74">            Toast.makeText(activity, R.string.google_services_error,</span>
+<span class="nc" id="L75">                    Toast.LENGTH_LONG).show();</span>
+<span class="nc" id="L76">        }</span>
+<span class="nc" id="L77">    }</span>
+
+    public Snackbar createGpsSnackBar() {
+<span class="nc" id="L80">        return Snackbar.make(</span>
+<span class="nc" id="L81">                activity.findViewById(android.R.id.content),</span>
+                R.string.google_api_connection_error,
+                Snackbar.LENGTH_LONG);
+    }
+
+    public GpsEstablisher createGpsEstablisher(Tag tag) {
+<span class="nc" id="L87">        Snackbar googleApiFailureSnackbar = createGpsSnackBar();</span>
+<span class="nc" id="L88">        GpsEstablisher.StatusListener gpsStatusListener = new GpsEstablisher.StatusListener() {</span>
+            @Override
+            public void onGpsEstablished() {
+<span class="nc" id="L91">                openPlacePicker(tag);</span>
+<span class="nc" id="L92">            }</span>
+
+            @Override
+            public void onGoogleLocationApiConnectionFailure() {
+<span class="nc" id="L96">                googleApiFailureSnackbar.show();</span>
+<span class="nc" id="L97">            }</span>
+        };
+
+<span class="nc" id="L100">        LocationManager locationManager = (LocationManager) activity.getSystemService(LOCATION_SERVICE);</span>
+<span class="nc" id="L101">        GoogleLocationApiEstablisher googleLocationApiEstablisher =</span>
+                new GoogleLocationApiEstablisher(
+<span class="nc" id="L103">                        new GoogleApiClient.Builder(activity.getApplicationContext()));</span>
+<span class="nc" id="L104">        GpsEstablisher gpsEstablisher = new GpsEstablisher(locationManager, googleLocationApiEstablisher, activity);</span>
+<span class="nc" id="L105">        gpsEstablisher.setStatusListener(gpsStatusListener);</span>
+<span class="nc" id="L106">        return gpsEstablisher;</span>
+    }
+
+    /**
+     * Clears activity reference.
+     * Cannot use this class after calling this method.
+     */
+    public void onStop() {
+<span class="nc" id="L114">        activity = null;</span>
+<span class="nc" id="L115">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

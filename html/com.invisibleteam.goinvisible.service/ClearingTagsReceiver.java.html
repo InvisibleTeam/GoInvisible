@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ClearingTagsReceiver.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">app</a> &gt; <a href="index.source.html" class="el_package">com.invisibleteam.goinvisible.service</a> &gt; <span class="el_source">ClearingTagsReceiver.java</span></div><h1>ClearingTagsReceiver.java</h1><pre class="source lang-java linenums">package com.invisibleteam.goinvisible.service;
+
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
+
+<span class="fc" id="L9">public class ClearingTagsReceiver extends BroadcastReceiver {</span>
+
+    public static final String CLEARING_TAGS_REQUEST_CODE_KEY = &quot;request_code_key&quot;;
+    public static final int CLEARING_TAGS_REQUEST_CODE = 64832;
+
+    @Override
+    public void onReceive(Context context, Intent intent) {
+<span class="fc" id="L16">        Bundle bundle = intent.getExtras();</span>
+<span class="fc bfc" id="L17" title="All 2 branches covered.">        if (containsProperRequestCode(bundle)) {</span>
+<span class="fc" id="L18">            context.startService(new Intent(context, ClearingTagsService.class));</span>
+        }
+<span class="fc" id="L20">    }</span>
+
+    private boolean containsProperRequestCode(@Nullable Bundle bundle) {
+<span class="pc bpc" id="L23" title="1 of 4 branches missed.">        if (bundle == null || !bundle.containsKey(CLEARING_TAGS_REQUEST_CODE_KEY)) {</span>
+<span class="fc" id="L24">            return false;</span>
+        }
+
+<span class="fc" id="L27">        Object requestCode = bundle.get(CLEARING_TAGS_REQUEST_CODE_KEY);</span>
+
+<span class="pc bpc" id="L29" title="1 of 4 branches missed.">        return requestCode instanceof Integer &amp;&amp; (Integer) requestCode == CLEARING_TAGS_REQUEST_CODE;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

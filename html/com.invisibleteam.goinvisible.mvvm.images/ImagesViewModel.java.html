@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ImagesViewModel.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">app</a> &gt; <a href="index.source.html" class="el_package">com.invisibleteam.goinvisible.mvvm.images</a> &gt; <span class="el_source">ImagesViewModel.java</span></div><h1>ImagesViewModel.java</h1><pre class="source lang-java linenums">package com.invisibleteam.goinvisible.mvvm.images;
+
+
+import android.databinding.ObservableBoolean;
+
+import com.invisibleteam.goinvisible.R;
+import com.invisibleteam.goinvisible.model.ImageDetails;
+import com.invisibleteam.goinvisible.mvvm.images.adapter.ImagesCompoundRecyclerView;
+import com.invisibleteam.goinvisible.mvvm.images.adapter.ImagesItemAdapter;
+
+import java.util.List;
+
+public abstract class ImagesViewModel {
+
+<span class="fc" id="L15">    private final ObservableBoolean isInformationTextVisible = new ObservableBoolean(false);</span>
+    private final ImagesCompoundRecyclerView imagesCompoundRecyclerView;
+    private final ImagesProvider imagesProvider;
+    private final ImagesViewCallback imagesViewCallback;
+
+    public ImagesViewModel(ImagesCompoundRecyclerView imagesCompoundRecyclerView,
+                    ImagesProvider imagesProvider,
+<span class="fc" id="L22">                    ImagesViewCallback callback) {</span>
+<span class="fc" id="L23">        this.imagesCompoundRecyclerView = imagesCompoundRecyclerView;</span>
+<span class="fc" id="L24">        this.imagesProvider = imagesProvider;</span>
+<span class="fc" id="L25">        this.imagesViewCallback = callback;</span>
+
+<span class="fc" id="L27">        initRecyclerView();</span>
+<span class="fc" id="L28">    }</span>
+
+    private void initRecyclerView() {
+<span class="fc" id="L31">        List&lt;ImageDetails&gt; imagesDetailsList = imagesProvider.getImagesList();</span>
+<span class="fc" id="L32">        isInformationTextVisible.set(imagesDetailsList.isEmpty());</span>
+<span class="fc" id="L33">        imagesCompoundRecyclerView.updateResults(imagesDetailsList);</span>
+<span class="fc" id="L34">        imagesCompoundRecyclerView.setOnItemClickListener(buildItemClickListener());</span>
+<span class="fc" id="L35">    }</span>
+
+    private ImagesItemAdapter.OnItemClickListener buildItemClickListener() {
+<span class="fc" id="L38">        return new ImagesItemAdapter.OnItemClickListener() {</span>
+            @Override
+            public void onItemClick(ImageDetails imageDetails) {
+<span class="nc" id="L41">                onItemViewClick(imageDetails);</span>
+<span class="nc" id="L42">            }</span>
+
+            @Override
+            public void onUnsupportedItemClick() {
+<span class="fc" id="L46">                imagesViewCallback.prepareSnackBar(R.string.unsupported_extension);</span>
+<span class="fc" id="L47">                imagesViewCallback.showSnackBar();</span>
+<span class="fc" id="L48">            }</span>
+        };
+    }
+
+    public void updateImages() {
+<span class="fc" id="L53">        List&lt;ImageDetails&gt; imagesDetailsList = imagesProvider.getImagesList();</span>
+<span class="fc" id="L54">        isInformationTextVisible.set(imagesDetailsList.isEmpty());</span>
+<span class="fc" id="L55">        imagesCompoundRecyclerView.updateResults(imagesDetailsList);</span>
+<span class="fc" id="L56">        imagesViewCallback.onStopRefreshingImages();</span>
+<span class="fc" id="L57">    }</span>
+
+    protected abstract void onItemViewClick(ImageDetails imageDetails);
+
+    public ObservableBoolean getIsInformationTextVisible() {
+<span class="nc" id="L62">        return isInformationTextVisible;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

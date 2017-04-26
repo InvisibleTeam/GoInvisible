@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DialogFactory.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">app</a> &gt; <a href="index.source.html" class="el_package">com.invisibleteam.goinvisible.mvvm.edition.dialog</a> &gt; <span class="el_source">DialogFactory.java</span></div><h1>DialogFactory.java</h1><pre class="source lang-java linenums">package com.invisibleteam.goinvisible.mvvm.edition.dialog;
+
+import android.app.Dialog;
+import android.app.DialogFragment;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.databinding.DataBindingUtil;
+import android.support.annotation.VisibleForTesting;
+import android.support.v7.app.AlertDialog;
+import android.util.SparseArray;
+import android.view.LayoutInflater;
+
+import com.invisibleteam.goinvisible.R;
+import com.invisibleteam.goinvisible.databinding.TextDialogBinding;
+import com.invisibleteam.goinvisible.model.InputType;
+import com.invisibleteam.goinvisible.model.Tag;
+import com.invisibleteam.goinvisible.mvvm.common.RadioDialogBuilder;
+import com.invisibleteam.goinvisible.mvvm.edition.EditDialogInterface;
+import com.invisibleteam.goinvisible.util.DialogRangedValuesUtil;
+
+import java.util.Map;
+
+import javax.annotation.Nullable;
+
+class DialogFactory {
+
+    private final DialogFragment dialog;
+    private final Context context;
+    private final EditDialogInterface dialogInterface;
+    private DateDialog dateDialog;
+    private Tag tag;
+
+<span class="fc" id="L33">    DialogFactory(DialogFragment dialog, Tag tag, EditDialogInterface viewModel) {</span>
+<span class="fc" id="L34">        this.dialog = dialog;</span>
+<span class="fc" id="L35">        this.tag = tag;</span>
+<span class="fc" id="L36">        this.dialogInterface = viewModel;</span>
+<span class="fc" id="L37">        context = dialog.getActivity();</span>
+<span class="fc" id="L38">    }</span>
+
+    @Nullable
+    Dialog createDialog() {
+<span class="pc bpc" id="L42" title="1 of 2 branches missed.">        if (dateDialog == null) {</span>
+<span class="fc" id="L43">            dateDialog = new DateDialog(context, tag, dialogInterface);</span>
+        }
+<span class="fc" id="L45">        InputType inputType = tag.getTagType().getInputType();</span>
+
+<span class="pc bpc" id="L47" title="1 of 9 branches missed.">        switch (inputType) {</span>
+            case TEXT_STRING:
+<span class="fc" id="L49">                return createDialog(android.text.InputType.TYPE_TEXT_VARIATION_FILTER);</span>
+
+            case VALUE_INTEGER:
+<span class="fc" id="L52">                return createDialog(android.text.InputType.TYPE_CLASS_NUMBER);</span>
+
+            case VALUE_DOUBLE:
+<span class="fc" id="L55">                return createDialog(android.text.InputType.TYPE_CLASS_NUMBER</span>
+                        | android.text.InputType.TYPE_NUMBER_FLAG_DECIMAL);
+
+            case RANGED_INTEGER:
+            case RANGED_STRING:
+<span class="fc" id="L60">                return createRangedDialog(context, tag);</span>
+
+            case TIMESTAMP_STRING:
+<span class="fc" id="L63">                return createTimeDialog();</span>
+
+            case DATETIME_STRING:
+<span class="fc" id="L66">                return createDateTimeDialog();</span>
+
+            case DATE_STRING:
+<span class="fc" id="L69">                return createDateDialog();</span>
+
+            case RATIONAL:
+<span class="nc" id="L72">                return createDialog(android.text.InputType.TYPE_CLASS_NUMBER</span>
+                        | android.text.InputType.TYPE_NUMBER_FLAG_DECIMAL);
+
+            default:
+<span class="fc" id="L76">                return null;</span>
+        }
+    }
+
+    @Nullable
+    Dialog createRangedDialog(Context context, Tag baseTag) {
+<span class="fc" id="L82">        Tag tag = new Tag(baseTag);</span>
+
+<span class="fc" id="L84">        final Map&lt;Integer, Integer&gt; tagsMap = DialogRangedValuesUtil.getTagsMapValues(tag.getKey());</span>
+
+<span class="pc bpc" id="L86" title="1 of 4 branches missed.">        if (tagsMap == null || tagsMap.isEmpty()) {</span>
+<span class="fc" id="L87">            return null;</span>
+        }
+
+<span class="fc" id="L90">        final String[] tagNames = new String[tagsMap.size()];</span>
+<span class="fc" id="L91">        final SparseArray&lt;String&gt; tagValues = new SparseArray&lt;&gt;();</span>
+<span class="fc" id="L92">        int valuesIndex = 0;</span>
+<span class="fc" id="L93">        int selectedValueIndex = 0;</span>
+
+<span class="fc bfc" id="L95" title="All 2 branches covered.">        for (Map.Entry&lt;Integer, Integer&gt; entry : tagsMap.entrySet()) {</span>
+
+<span class="fc" id="L97">            tagNames[valuesIndex] = context.getString(entry.getKey());</span>
+
+<span class="fc" id="L99">            String tagValue = context.getString(entry.getValue());</span>
+<span class="fc" id="L100">            tagValues.append(valuesIndex, tagValue);</span>
+
+<span class="pc bpc" id="L102" title="1 of 2 branches missed.">            if (tagValue.equals(tag.getValue())) {</span>
+<span class="nc" id="L103">                selectedValueIndex = valuesIndex;</span>
+            }
+
+<span class="fc" id="L106">            valuesIndex++;</span>
+<span class="fc" id="L107">        }</span>
+
+<span class="fc" id="L109">        RadioDialogBuilder.RadioDialogCallback callback = createCallback(tag, tagValues);</span>
+
+<span class="fc" id="L111">        return new RadioDialogBuilder(context, tagNames, selectedValueIndex, callback)</span>
+<span class="fc" id="L112">                .setTitle(tag.getKey())</span>
+<span class="fc" id="L113">                .setPositiveButton(context.getText(R.string.positive_message))</span>
+<span class="fc" id="L114">                .setNegativeButton(context.getText(R.string.negative_message))</span>
+<span class="fc" id="L115">                .build();</span>
+    }
+
+    private RadioDialogBuilder.RadioDialogCallback createCallback(Tag tag, SparseArray&lt;String&gt; tagValues) {
+<span class="fc" id="L119">        return new RadioDialogBuilder.RadioDialogCallback() {</span>
+            @Override
+            public void onClick(int index) {
+<span class="nc" id="L122">                tag.setValue(tagValues.get(index));</span>
+<span class="nc" id="L123">            }</span>
+
+            @Override
+            public void onApprove(DialogInterface dialog, int index) {
+<span class="nc" id="L127">                dialogInterface.onEditEnded(tag);</span>
+<span class="nc" id="L128">                dialog.dismiss();</span>
+<span class="nc" id="L129">            }</span>
+
+            @Override
+            public void onCancel(DialogInterface dialog) {
+<span class="nc" id="L133">                dialog.dismiss();</span>
+<span class="nc" id="L134">            }</span>
+        };
+    }
+
+    Dialog createDateDialog() {
+<span class="fc" id="L139">        return dateDialog.createDateDialog();</span>
+    }
+
+    Dialog createTimeDialog() {
+<span class="fc" id="L143">        return dateDialog.createTimeDialog();</span>
+    }
+
+    Dialog createDateTimeDialog() {
+<span class="fc" id="L147">        return dateDialog.createDateTimeDialog();</span>
+    }
+
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    Dialog createDialog(int keyboardInputType) {
+
+        //Viewmodel
+<span class="fc" id="L154">        TextDialogViewModel viewModel = new TextDialogViewModel(tag);</span>
+
+        //Binding configuration
+<span class="fc" id="L157">        TextDialogBinding binding = DataBindingUtil.inflate(</span>
+<span class="fc" id="L158">                LayoutInflater.from(context),</span>
+                R.layout.text_dialog,
+                null,
+                false);
+<span class="fc" id="L162">        binding.setViewModel(viewModel);</span>
+<span class="fc" id="L163">        binding.valueText.setInputType(keyboardInputType);</span>
+<span class="fc" id="L164">        binding.okButton.setOnClickListener(v -&gt; {</span>
+<span class="nc" id="L165">            validateText(binding, viewModel);</span>
+<span class="nc" id="L166">        });</span>
+<span class="pc" id="L167">        binding.cancelButton.setOnClickListener(v -&gt; dialog.dismiss());</span>
+
+        //Dialog builder
+<span class="fc" id="L170">        return new AlertDialog</span>
+                .Builder(context, R.style.AlertDialogStyle)
+<span class="fc" id="L172">                .setView(binding.getRoot())</span>
+<span class="fc" id="L173">                .create();</span>
+    }
+
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    void validateText(TextDialogBinding binding,
+                      TextDialogViewModel viewModel) {
+<span class="fc" id="L179">        String validationRegexp = tag.getTagType().getValidationRegexp();</span>
+<span class="fc" id="L180">        String textValue = binding.valueText.getText().toString();</span>
+
+<span class="fc bfc" id="L182" title="All 2 branches covered.">        if (textValue.matches(validationRegexp)) {</span>
+<span class="fc" id="L183">            tag.setValue(textValue);</span>
+<span class="fc" id="L184">            this.dialogInterface.onEditEnded(tag);</span>
+<span class="fc" id="L185">            dialog.dismiss();</span>
+<span class="fc" id="L186">            return;</span>
+        }
+<span class="fc" id="L188">        viewModel.setIsError(true);</span>
+<span class="fc" id="L189">        binding.valueTextLayout.setError(context.getString(R.string.error_message));</span>
+<span class="fc" id="L190">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

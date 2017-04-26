@@ -1,0 +1,463 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TagsManager.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">app</a> &gt; <a href="index.source.html" class="el_package">com.invisibleteam.goinvisible.util</a> &gt; <span class="el_source">TagsManager.java</span></div><h1>TagsManager.java</h1><pre class="source lang-java linenums">package com.invisibleteam.goinvisible.util;
+
+import android.support.media.ExifInterface;
+import android.util.Log;
+
+import com.invisibleteam.goinvisible.model.GeolocationTag;
+import com.invisibleteam.goinvisible.model.InputType;
+import com.invisibleteam.goinvisible.model.Tag;
+import com.invisibleteam.goinvisible.model.TagGroupType;
+import com.invisibleteam.goinvisible.model.TagType;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static android.support.media.ExifInterface.*;
+import static com.invisibleteam.goinvisible.model.InputType.DATETIME_STRING;
+import static com.invisibleteam.goinvisible.model.InputType.DATE_STRING;
+import static com.invisibleteam.goinvisible.model.InputType.POSITION_DOUBLE;
+import static com.invisibleteam.goinvisible.model.InputType.RANGED_INTEGER;
+import static com.invisibleteam.goinvisible.model.InputType.RATIONAL;
+import static com.invisibleteam.goinvisible.model.InputType.TEXT_STRING;
+import static com.invisibleteam.goinvisible.model.InputType.TIMESTAMP_STRING;
+import static com.invisibleteam.goinvisible.model.InputType.UNMODIFIABLE;
+import static com.invisibleteam.goinvisible.model.InputType.VALUE_DOUBLE;
+import static com.invisibleteam.goinvisible.model.InputType.VALUE_INTEGER;
+import static com.invisibleteam.goinvisible.model.TagGroupType.ADVANCED;
+import static com.invisibleteam.goinvisible.model.TagGroupType.DEVICE_INFO;
+import static com.invisibleteam.goinvisible.model.TagGroupType.IMAGE_INFO;
+import static com.invisibleteam.goinvisible.model.TagGroupType.LOCATION_INFO;
+
+public class TagsManager {
+
+<span class="fc" id="L37">    private static final String TAG = TagsManager.class.getSimpleName();</span>
+    private final ExifInterface exifInterface;
+
+<span class="fc" id="L40">    public TagsManager(ExifInterface exifInterface) {</span>
+<span class="fc" id="L41">        this.exifInterface = exifInterface;</span>
+<span class="fc" id="L42">    }</span>
+
+    private void setExifAttributes(Tag tag) {
+<span class="pc bpc" id="L45" title="1 of 2 branches missed.">        if (tag.getValue() == null) {</span>
+<span class="nc" id="L46">            Log.w(TAG, &quot;Tag value is null&quot;);</span>
+<span class="nc" id="L47">            return;</span>
+        }
+
+<span class="pc bpc" id="L50" title="1 of 2 branches missed.">        if (RATIONAL.equals(tag.getTagType().getInputType())) {</span>
+<span class="nc" id="L51">            double tagValue = Double.parseDouble(tag.getValue());</span>
+<span class="nc" id="L52">            String rationalTagValue = TagUtil.parseDoubleValueToRational(tagValue);</span>
+<span class="nc" id="L53">            exifInterface.setAttribute(tag.getKey(), rationalTagValue);</span>
+<span class="pc bpc" id="L54" title="1 of 2 branches missed.">        } else if (isPositionTag(tag)) {</span>
+<span class="nc" id="L55">            GeolocationTag geolocationTag = (GeolocationTag) tag;</span>
+<span class="nc" id="L56">            exifInterface.setAttribute(geolocationTag.getKey(), geolocationTag.getValue());</span>
+<span class="nc" id="L57">            exifInterface.setAttribute(geolocationTag.getSecondKey(), geolocationTag.getSecondValue());</span>
+<span class="nc" id="L58">            exifInterface.setAttribute(TAG_GPS_LATITUDE_REF, geolocationTag.getLatitudeRef());</span>
+<span class="nc" id="L59">            exifInterface.setAttribute(TAG_GPS_LONGITUDE_REF, geolocationTag.getLongitudeRef());</span>
+<span class="nc" id="L60">        } else {</span>
+<span class="fc" id="L61">            exifInterface.setAttribute(tag.getKey(), tag.getValue());</span>
+        }
+<span class="fc" id="L63">    }</span>
+
+    public boolean saveTags(List&lt;Tag&gt; tags) {
+<span class="pc bpc" id="L66" title="1 of 2 branches missed.">        if (tags.isEmpty()) {</span>
+<span class="nc" id="L67">            return false;</span>
+        }
+
+<span class="fc bfc" id="L70" title="All 2 branches covered.">        for (Tag tag : tags) {</span>
+<span class="fc" id="L71">            setExifAttributes(tag);</span>
+<span class="fc" id="L72">        }</span>
+
+        try {
+<span class="fc" id="L75">            exifInterface.saveAttributes();</span>
+<span class="fc" id="L76">            return true;</span>
+<span class="nc" id="L77">        } catch (IOException e) {</span>
+<span class="nc" id="L78">            Log.d(TAG, String.valueOf(e.getMessage()));</span>
+<span class="nc" id="L79">            return false;</span>
+        }
+    }
+
+    private boolean isPositionTag(Tag tag) {
+<span class="fc" id="L84">        return tag instanceof GeolocationTag;</span>
+    }
+
+    public void clearTags(List&lt;Tag&gt; tagsList) {
+<span class="nc bnc" id="L88" title="All 2 branches missed.">        for (Tag tag : tagsList) {</span>
+<span class="nc" id="L89">            clearTag(tag);</span>
+<span class="nc" id="L90">        }</span>
+<span class="nc" id="L91">    }</span>
+
+    public void clearTag(Tag tag) {
+<span class="pc bpc" id="L94" title="3 of 9 branches missed.">        switch (tag.getTagType().getInputType()) {</span>
+            case TEXT_STRING:
+<span class="fc" id="L96">                tag.setValue(&quot;&quot;);</span>
+<span class="fc" id="L97">                break;</span>
+            case TIMESTAMP_STRING:
+<span class="fc" id="L99">                tag.setValue(&quot;00:00:00&quot;);</span>
+<span class="fc" id="L100">                break;</span>
+            case DATETIME_STRING:
+<span class="fc" id="L102">                tag.setValue(&quot;2001-01-01 00:00:00&quot;);</span>
+<span class="fc" id="L103">                break;</span>
+            case DATE_STRING:
+<span class="fc" id="L105">                tag.setValue(&quot;2001-01-01&quot;);</span>
+<span class="fc" id="L106">                break;</span>
+            case RANGED_STRING:
+            case RANGED_INTEGER:
+            case VALUE_INTEGER:
+<span class="fc" id="L110">                tag.setValue(&quot;0&quot;);</span>
+<span class="fc" id="L111">                break;</span>
+            case VALUE_DOUBLE:
+<span class="fc" id="L113">                tag.setValue(&quot;0.0&quot;);</span>
+<span class="fc" id="L114">                break;</span>
+            case POSITION_DOUBLE:
+<span class="nc" id="L116">                clearPositionTag((GeolocationTag) tag);</span>
+<span class="nc" id="L117">                break;</span>
+            case RATIONAL:
+<span class="nc" id="L119">                tag.setValue(&quot;0.0&quot;);</span>
+<span class="nc" id="L120">                break;</span>
+            default:
+<span class="nc" id="L122">                Log.w(TAG, &quot;Incorrect tag type!&quot;);</span>
+                break;
+        }
+<span class="fc" id="L125">        setExifAttributes(tag);</span>
+<span class="fc" id="L126">    }</span>
+
+    private void clearPositionTag(GeolocationTag tag) {
+<span class="nc" id="L129">        final String defaultGPSValue = TagUtil.parseDoubleGPSToRationalGPS(0.000000);</span>
+<span class="nc" id="L130">        tag.setValue(defaultGPSValue);</span>
+<span class="nc" id="L131">        tag.setSecondValue(defaultGPSValue);</span>
+<span class="nc" id="L132">        final Tag latitudeRef = new Tag(TAG_GPS_LATITUDE_REF, &quot;&quot;, TagType.build(InputType.POSITION_DOUBLE), LOCATION_INFO);</span>
+<span class="nc" id="L133">        setExifAttributes(latitudeRef);</span>
+<span class="nc" id="L134">        final Tag longitudeRef = new Tag(TAG_GPS_LONGITUDE_REF, &quot;&quot;, TagType.build(InputType.POSITION_DOUBLE), LOCATION_INFO);</span>
+<span class="nc" id="L135">        setExifAttributes(longitudeRef);</span>
+<span class="nc" id="L136">    }</span>
+
+    private GeolocationTag getGeolocationTag() {
+<span class="fc" id="L139">        TagType tagType = TagType.build(POSITION_DOUBLE);</span>
+<span class="fc" id="L140">        String rationalLat = exifInterface.getAttribute(TAG_GPS_LATITUDE);</span>
+<span class="fc" id="L141">        String rationalLng = exifInterface.getAttribute(TAG_GPS_LONGITUDE);</span>
+<span class="fc" id="L142">        String latRef = exifInterface.getAttribute(TAG_GPS_LATITUDE_REF);</span>
+<span class="fc" id="L143">        String lngRef = exifInterface.getAttribute(TAG_GPS_LONGITUDE_REF);</span>
+
+<span class="fc" id="L145">        return new GeolocationTag(</span>
+                TAG_GPS_LATITUDE,
+                TAG_GPS_LONGITUDE,
+                rationalLat,
+                rationalLng,
+                latRef,
+                lngRef,
+                tagType);
+    }
+
+    public List&lt;Tag&gt; getAllTags() {
+<span class="fc" id="L156">        List&lt;Tag&gt; tagsList = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L157">        tagsList.add(getGeolocationTag());</span>
+<span class="fc" id="L158">        tagsList.addAll(getAllTags(TAG_LIST, TAG_GROUP_LIST));</span>
+
+<span class="fc" id="L160">        Collections.sort(tagsList, (tag, t1) -&gt; tag.getTagGroupType().ordinal() - t1.getTagGroupType().ordinal());</span>
+
+<span class="fc" id="L162">        return tagsList;</span>
+    }
+
+    private List&lt;Tag&gt; getAllTags(Map&lt;String, InputType&gt; keysList, Map&lt;String, TagGroupType&gt; keysGroupList) {
+<span class="fc" id="L166">        List&lt;Tag&gt; tagsList = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L167" title="All 2 branches covered.">        for (Map.Entry&lt;String, InputType&gt; entry : keysList.entrySet()) {</span>
+<span class="fc" id="L168">            String key = entry.getKey();</span>
+<span class="fc" id="L169">            InputType inputType = entry.getValue();</span>
+            Object tagValue;
+
+<span class="pc bpc" id="L172" title="1 of 5 branches missed.">            switch (inputType) {</span>
+                case TEXT_STRING:
+                case DATE_STRING:
+                case DATETIME_STRING:
+                case TIMESTAMP_STRING:
+<span class="fc" id="L177">                    tagValue = exifInterface.getAttribute(key);</span>
+<span class="fc" id="L178">                    break;</span>
+                case RANGED_INTEGER:
+                case RANGED_STRING:
+                case UNMODIFIABLE:
+                case VALUE_INTEGER:
+<span class="fc" id="L183">                    tagValue = exifInterface.getAttributeInt(key, 0);</span>
+<span class="fc" id="L184">                    break;</span>
+                case VALUE_DOUBLE:
+                case POSITION_DOUBLE:
+<span class="fc" id="L187">                    tagValue = exifInterface.getAttributeDouble(key, 0);</span>
+<span class="fc" id="L188">                    break;</span>
+                case RATIONAL:
+<span class="fc" id="L190">                    tagValue = TagUtil.parseRationalValueToDouble(exifInterface.getAttribute(key));</span>
+<span class="fc" id="L191">                    break;</span>
+                default:
+<span class="nc" id="L193">                    continue;</span>
+            }
+
+<span class="fc" id="L196">            String stringValue = String.valueOf(tagValue);</span>
+<span class="fc" id="L197">            tagsList.add(new Tag(key, stringValue, TagType.build(inputType), keysGroupList.get(key)));</span>
+
+<span class="fc" id="L199">        }</span>
+
+<span class="fc" id="L201">        return tagsList;</span>
+    }
+
+    private static final Map&lt;String, InputType&gt; TAG_LIST;
+    private static final Map&lt;String, TagGroupType&gt; TAG_GROUP_LIST;
+
+    static {
+<span class="fc" id="L208">        TAG_LIST = getTags();</span>
+<span class="fc" id="L209">        TAG_GROUP_LIST = getTagsGroups();</span>
+<span class="fc" id="L210">    }</span>
+
+    static private Map&lt;String, InputType&gt; getTags() {
+<span class="fc" id="L213">        Map&lt;String, InputType&gt; map = new HashMap&lt;&gt;();</span>
+        //location
+<span class="fc" id="L215">        map.put(TAG_GPS_DATESTAMP, DATE_STRING);</span>
+<span class="fc" id="L216">        map.put(TAG_GPS_TIMESTAMP, TIMESTAMP_STRING);</span>
+<span class="fc" id="L217">        map.put(TAG_GPS_PROCESSING_METHOD, TEXT_STRING);</span>
+<span class="fc" id="L218">        map.put(TAG_GPS_ALTITUDE_REF, RANGED_INTEGER);</span>
+<span class="fc" id="L219">        map.put(TAG_GPS_AREA_INFORMATION, TEXT_STRING); // null</span>
+<span class="fc" id="L220">        map.put(TAG_GPS_DEST_DISTANCE_REF, TEXT_STRING);</span>
+<span class="fc" id="L221">        map.put(TAG_GPS_DEST_BEARING, RATIONAL);</span>
+<span class="fc" id="L222">        map.put(TAG_GPS_DEST_DISTANCE, RATIONAL);</span>
+<span class="fc" id="L223">        map.put(TAG_GPS_DEST_LATITUDE_REF, TEXT_STRING);</span>
+<span class="fc" id="L224">        map.put(TAG_GPS_DEST_LATITUDE, RATIONAL);</span>
+<span class="fc" id="L225">        map.put(TAG_GPS_DEST_LONGITUDE_REF, TEXT_STRING);</span>
+<span class="fc" id="L226">        map.put(TAG_GPS_DEST_LONGITUDE, RATIONAL);</span>
+<span class="fc" id="L227">        map.put(TAG_GPS_MAP_DATUM, TEXT_STRING);</span>
+<span class="fc" id="L228">        map.put(TAG_GPS_MEASURE_MODE, TEXT_STRING);</span>
+<span class="fc" id="L229">        map.put(TAG_GPS_SATELLITES, TEXT_STRING);</span>
+<span class="fc" id="L230">        map.put(TAG_GPS_SPEED_REF, TEXT_STRING);</span>
+<span class="fc" id="L231">        map.put(TAG_GPS_SPEED, RATIONAL);</span>
+<span class="fc" id="L232">        map.put(TAG_GPS_STATUS, TEXT_STRING);</span>
+<span class="fc" id="L233">        map.put(TAG_GPS_TRACK_REF, TEXT_STRING);</span>
+<span class="fc" id="L234">        map.put(TAG_GPS_TRACK, RATIONAL);</span>
+<span class="fc" id="L235">        map.put(TAG_GPS_VERSION_ID, TEXT_STRING);</span>
+<span class="fc" id="L236">        map.put(TAG_GPS_DIFFERENTIAL, VALUE_INTEGER);</span>
+<span class="fc" id="L237">        map.put(TAG_GPS_DOP, RATIONAL);</span>
+<span class="fc" id="L238">        map.put(TAG_GPS_IMG_DIRECTION, RATIONAL);</span>
+
+        //image
+<span class="fc" id="L241">        map.put(TAG_USER_COMMENT, TEXT_STRING);</span>
+<span class="fc" id="L242">        map.put(TAG_ARTIST, TEXT_STRING);</span>
+<span class="fc" id="L243">        map.put(TAG_IMAGE_DESCRIPTION, TEXT_STRING);</span>
+<span class="fc" id="L244">        map.put(TAG_COPYRIGHT, TEXT_STRING);</span>
+<span class="fc" id="L245">        map.put(TAG_BRIGHTNESS_VALUE, RATIONAL);</span>
+<span class="fc" id="L246">        map.put(TAG_RESOLUTION_UNIT, RANGED_INTEGER);</span>
+<span class="fc" id="L247">        map.put(TAG_CONTRAST, RANGED_INTEGER);</span>
+<span class="fc" id="L248">        map.put(TAG_SATURATION, RANGED_INTEGER);</span>
+<span class="fc" id="L249">        map.put(TAG_FLASH_ENERGY, RATIONAL);</span>
+<span class="fc" id="L250">        map.put(TAG_EXIF_VERSION, TEXT_STRING);</span>
+<span class="fc" id="L251">        map.put(TAG_ISO_SPEED_RATINGS, VALUE_INTEGER);</span>
+<span class="fc" id="L252">        map.put(TAG_SOFTWARE, TEXT_STRING);</span>
+<span class="fc" id="L253">        map.put(TAG_EXPOSURE_MODE, RANGED_INTEGER);</span>
+<span class="fc" id="L254">        map.put(TAG_EXPOSURE_INDEX, RATIONAL);</span>
+<span class="fc" id="L255">        map.put(TAG_EXPOSURE_PROGRAM, RANGED_INTEGER);</span>
+<span class="fc" id="L256">        map.put(TAG_DATETIME, DATETIME_STRING);</span>
+<span class="fc" id="L257">        map.put(TAG_IMAGE_LENGTH, UNMODIFIABLE);</span>
+<span class="fc" id="L258">        map.put(TAG_IMAGE_WIDTH, UNMODIFIABLE);</span>
+<span class="fc" id="L259">        map.put(TAG_ORIENTATION, RANGED_INTEGER);</span>
+<span class="fc" id="L260">        map.put(TAG_EXPOSURE_TIME, VALUE_DOUBLE);</span>
+
+        //device
+<span class="fc" id="L263">        map.put(TAG_MODEL, TEXT_STRING);</span>
+<span class="fc" id="L264">        map.put(TAG_WHITE_BALANCE, RANGED_INTEGER);</span>
+<span class="fc" id="L265">        map.put(TAG_FLASH, RANGED_INTEGER);</span>
+<span class="fc" id="L266">        map.put(TAG_FOCAL_LENGTH_IN_35MM_FILM, VALUE_INTEGER);</span>
+<span class="fc" id="L267">        map.put(TAG_FOCAL_LENGTH, RATIONAL);</span>
+<span class="fc" id="L268">        map.put(TAG_FOCAL_PLANE_X_RESOLUTION, RATIONAL);</span>
+<span class="fc" id="L269">        map.put(TAG_FOCAL_PLANE_Y_RESOLUTION, RATIONAL);</span>
+<span class="fc" id="L270">        map.put(TAG_FOCAL_PLANE_RESOLUTION_UNIT, VALUE_INTEGER); // 0</span>
+<span class="fc" id="L271">        map.put(TAG_F_NUMBER, VALUE_DOUBLE); // Aperture</span>
+<span class="fc" id="L272">        map.put(TAG_DIGITAL_ZOOM_RATIO, VALUE_DOUBLE);</span>
+<span class="fc" id="L273">        map.put(TAG_MAX_APERTURE_VALUE, RATIONAL);</span>
+<span class="fc" id="L274">        map.put(TAG_APERTURE_VALUE, RATIONAL);</span>
+
+        //advanced
+<span class="fc" id="L277">        map.put(TAG_MAKE, TEXT_STRING);</span>
+<span class="fc" id="L278">        map.put(TAG_DATETIME_DIGITIZED, DATETIME_STRING);</span>
+<span class="fc" id="L279">        map.put(TAG_DATETIME_ORIGINAL, DATETIME_STRING);</span>
+<span class="fc" id="L280">        map.put(TAG_GAIN_CONTROL, RANGED_INTEGER);</span>
+<span class="fc" id="L281">        map.put(TAG_METERING_MODE, RANGED_INTEGER);</span>
+<span class="fc" id="L282">        map.put(TAG_SCENE_CAPTURE_TYPE, RANGED_INTEGER);</span>
+<span class="fc" id="L283">        map.put(TAG_SHARPNESS, RANGED_INTEGER);</span>
+<span class="fc" id="L284">        map.put(TAG_CFA_PATTERN, TEXT_STRING);</span>
+<span class="fc" id="L285">        map.put(TAG_COMPONENTS_CONFIGURATION, TEXT_STRING); // null</span>
+<span class="fc" id="L286">        map.put(TAG_DEVICE_SETTING_DESCRIPTION, TEXT_STRING);</span>
+<span class="fc" id="L287">        map.put(TAG_FILE_SOURCE, TEXT_STRING);</span>
+<span class="fc" id="L288">        map.put(TAG_FLASHPIX_VERSION, TEXT_STRING);</span>
+<span class="fc" id="L289">        map.put(TAG_SPATIAL_FREQUENCY_RESPONSE, TEXT_STRING);</span>
+<span class="fc" id="L290">        map.put(TAG_SPECTRAL_SENSITIVITY, TEXT_STRING);</span>
+<span class="fc" id="L291">        map.put(TAG_SUBSEC_TIME, TEXT_STRING); // null</span>
+<span class="fc" id="L292">        map.put(TAG_SCENE_TYPE, TEXT_STRING);</span>
+<span class="fc" id="L293">        map.put(TAG_RELATED_SOUND_FILE, TEXT_STRING);</span>
+<span class="fc" id="L294">        map.put(TAG_IMAGE_UNIQUE_ID, TEXT_STRING);</span>
+<span class="fc" id="L295">        map.put(TAG_MAKER_NOTE, TEXT_STRING);</span>
+<span class="fc" id="L296">        map.put(TAG_OECF, TEXT_STRING);</span>
+<span class="fc" id="L297">        map.put(TAG_SUBSEC_TIME_DIGITIZED, TEXT_STRING);</span>
+<span class="fc" id="L298">        map.put(TAG_SUBSEC_TIME_ORIGINAL, TEXT_STRING);</span>
+<span class="fc" id="L299">        map.put(TAG_INTEROPERABILITY_INDEX, TEXT_STRING);</span>
+<span class="fc" id="L300">        map.put(TAG_PHOTOMETRIC_INTERPRETATION, VALUE_INTEGER);</span>
+<span class="fc" id="L301">        map.put(TAG_BITS_PER_SAMPLE, VALUE_INTEGER);</span>
+<span class="fc" id="L302">        map.put(TAG_COMPRESSED_BITS_PER_PIXEL, RATIONAL);</span>
+<span class="fc" id="L303">        map.put(TAG_COMPRESSION, VALUE_INTEGER);</span>
+<span class="fc" id="L304">        map.put(TAG_JPEG_INTERCHANGE_FORMAT, UNMODIFIABLE);</span>
+<span class="fc" id="L305">        map.put(TAG_JPEG_INTERCHANGE_FORMAT_LENGTH, UNMODIFIABLE);</span>
+<span class="fc" id="L306">        map.put(TAG_PLANAR_CONFIGURATION, VALUE_INTEGER);</span>
+<span class="fc" id="L307">        map.put(TAG_ROWS_PER_STRIP, VALUE_INTEGER);</span>
+<span class="fc" id="L308">        map.put(TAG_SAMPLES_PER_PIXEL, VALUE_INTEGER);</span>
+<span class="fc" id="L309">        map.put(TAG_STRIP_BYTE_COUNTS, VALUE_INTEGER);</span>
+<span class="fc" id="L310">        map.put(TAG_STRIP_OFFSETS, VALUE_INTEGER);</span>
+<span class="fc" id="L311">        map.put(TAG_TRANSFER_FUNCTION, VALUE_INTEGER);</span>
+<span class="fc" id="L312">        map.put(TAG_Y_CB_CR_POSITIONING, VALUE_INTEGER);</span>
+<span class="fc" id="L313">        map.put(TAG_Y_CB_CR_SUB_SAMPLING, VALUE_INTEGER);</span>
+<span class="fc" id="L314">        map.put(TAG_COLOR_SPACE, VALUE_INTEGER);</span>
+<span class="fc" id="L315">        map.put(TAG_CUSTOM_RENDERED, VALUE_INTEGER);</span>
+<span class="fc" id="L316">        map.put(TAG_LIGHT_SOURCE, VALUE_INTEGER);</span>
+<span class="fc" id="L317">        map.put(TAG_PIXEL_X_DIMENSION, VALUE_INTEGER); // 0</span>
+<span class="fc" id="L318">        map.put(TAG_PIXEL_Y_DIMENSION, VALUE_INTEGER);</span>
+<span class="fc" id="L319">        map.put(TAG_SENSING_METHOD, VALUE_INTEGER);</span>
+<span class="fc" id="L320">        map.put(TAG_SUBJECT_AREA, VALUE_INTEGER);</span>
+<span class="fc" id="L321">        map.put(TAG_SUBJECT_DISTANCE_RANGE, VALUE_INTEGER);</span>
+<span class="fc" id="L322">        map.put(TAG_SUBJECT_LOCATION, VALUE_INTEGER);</span>
+<span class="fc" id="L323">        map.put(TAG_THUMBNAIL_IMAGE_LENGTH, VALUE_INTEGER);</span>
+<span class="fc" id="L324">        map.put(TAG_THUMBNAIL_IMAGE_WIDTH, VALUE_INTEGER);</span>
+<span class="fc" id="L325">        map.put(TAG_DIGITAL_ZOOM_RATIO, VALUE_DOUBLE);</span>
+<span class="fc" id="L326">        map.put(TAG_EXPOSURE_BIAS_VALUE, UNMODIFIABLE);</span>
+<span class="fc" id="L327">        map.put(TAG_PRIMARY_CHROMATICITIES, RATIONAL);</span>
+<span class="fc" id="L328">        map.put(TAG_REFERENCE_BLACK_WHITE, RATIONAL);</span>
+<span class="fc" id="L329">        map.put(TAG_SHUTTER_SPEED_VALUE, RATIONAL);</span>
+<span class="fc" id="L330">        map.put(TAG_WHITE_POINT, RATIONAL);</span>
+<span class="fc" id="L331">        map.put(TAG_X_RESOLUTION, RATIONAL);</span>
+<span class="fc" id="L332">        map.put(TAG_Y_RESOLUTION, RATIONAL);</span>
+
+
+<span class="fc" id="L335">        return Collections.unmodifiableMap(map);</span>
+    }
+
+    static private Map&lt;String, TagGroupType&gt; getTagsGroups() {
+<span class="fc" id="L339">        Map&lt;String, TagGroupType&gt; map = new HashMap&lt;&gt;();</span>
+        //location - 25 items
+<span class="fc" id="L341">        map.put(TAG_GPS_DATESTAMP, LOCATION_INFO);</span>
+<span class="fc" id="L342">        map.put(TAG_GPS_TIMESTAMP, LOCATION_INFO);</span>
+<span class="fc" id="L343">        map.put(TAG_GPS_PROCESSING_METHOD, LOCATION_INFO);</span>
+<span class="fc" id="L344">        map.put(TAG_GPS_ALTITUDE_REF, LOCATION_INFO);</span>
+<span class="fc" id="L345">        map.put(TAG_GPS_AREA_INFORMATION, LOCATION_INFO); // null</span>
+<span class="fc" id="L346">        map.put(TAG_GPS_DEST_DISTANCE_REF, LOCATION_INFO);</span>
+<span class="fc" id="L347">        map.put(TAG_GPS_DEST_BEARING, LOCATION_INFO);</span>
+<span class="fc" id="L348">        map.put(TAG_GPS_DEST_DISTANCE, LOCATION_INFO);</span>
+<span class="fc" id="L349">        map.put(TAG_GPS_DEST_LATITUDE_REF, LOCATION_INFO);</span>
+<span class="fc" id="L350">        map.put(TAG_GPS_DEST_LATITUDE, LOCATION_INFO);</span>
+<span class="fc" id="L351">        map.put(TAG_GPS_DEST_LONGITUDE_REF, LOCATION_INFO);</span>
+<span class="fc" id="L352">        map.put(TAG_GPS_DEST_LONGITUDE, LOCATION_INFO);</span>
+<span class="fc" id="L353">        map.put(TAG_GPS_MAP_DATUM, LOCATION_INFO);</span>
+<span class="fc" id="L354">        map.put(TAG_GPS_MEASURE_MODE, LOCATION_INFO);</span>
+<span class="fc" id="L355">        map.put(TAG_GPS_SATELLITES, LOCATION_INFO);</span>
+<span class="fc" id="L356">        map.put(TAG_GPS_SPEED_REF, LOCATION_INFO);</span>
+<span class="fc" id="L357">        map.put(TAG_GPS_SPEED, LOCATION_INFO);</span>
+<span class="fc" id="L358">        map.put(TAG_GPS_STATUS, LOCATION_INFO);</span>
+<span class="fc" id="L359">        map.put(TAG_GPS_TRACK_REF, LOCATION_INFO);</span>
+<span class="fc" id="L360">        map.put(TAG_GPS_TRACK, LOCATION_INFO);</span>
+<span class="fc" id="L361">        map.put(TAG_GPS_VERSION_ID, LOCATION_INFO);</span>
+<span class="fc" id="L362">        map.put(TAG_GPS_DIFFERENTIAL, LOCATION_INFO);</span>
+<span class="fc" id="L363">        map.put(TAG_GPS_DOP, LOCATION_INFO);</span>
+<span class="fc" id="L364">        map.put(TAG_GPS_IMG_DIRECTION, LOCATION_INFO);</span>
+
+        //image - 20 items
+<span class="fc" id="L367">        map.put(TAG_USER_COMMENT, IMAGE_INFO);</span>
+<span class="fc" id="L368">        map.put(TAG_ARTIST, IMAGE_INFO);</span>
+<span class="fc" id="L369">        map.put(TAG_IMAGE_DESCRIPTION, IMAGE_INFO);</span>
+<span class="fc" id="L370">        map.put(TAG_COPYRIGHT, IMAGE_INFO);</span>
+<span class="fc" id="L371">        map.put(TAG_BRIGHTNESS_VALUE, IMAGE_INFO);</span>
+<span class="fc" id="L372">        map.put(TAG_RESOLUTION_UNIT, IMAGE_INFO);</span>
+<span class="fc" id="L373">        map.put(TAG_CONTRAST, IMAGE_INFO);</span>
+<span class="fc" id="L374">        map.put(TAG_SATURATION, IMAGE_INFO);</span>
+<span class="fc" id="L375">        map.put(TAG_FLASH_ENERGY, IMAGE_INFO);</span>
+<span class="fc" id="L376">        map.put(TAG_EXIF_VERSION, IMAGE_INFO);</span>
+<span class="fc" id="L377">        map.put(TAG_ISO_SPEED_RATINGS, IMAGE_INFO);</span>
+<span class="fc" id="L378">        map.put(TAG_SOFTWARE, IMAGE_INFO);</span>
+<span class="fc" id="L379">        map.put(TAG_EXPOSURE_MODE, IMAGE_INFO);</span>
+<span class="fc" id="L380">        map.put(TAG_EXPOSURE_INDEX, IMAGE_INFO);</span>
+<span class="fc" id="L381">        map.put(TAG_EXPOSURE_PROGRAM, IMAGE_INFO);</span>
+<span class="fc" id="L382">        map.put(TAG_DATETIME, IMAGE_INFO);</span>
+<span class="fc" id="L383">        map.put(TAG_IMAGE_LENGTH, IMAGE_INFO);</span>
+<span class="fc" id="L384">        map.put(TAG_IMAGE_WIDTH, IMAGE_INFO);</span>
+<span class="fc" id="L385">        map.put(TAG_ORIENTATION, IMAGE_INFO);</span>
+<span class="fc" id="L386">        map.put(TAG_EXPOSURE_TIME, IMAGE_INFO);</span>
+
+        //device - 12 items
+<span class="fc" id="L389">        map.put(TAG_MODEL, DEVICE_INFO);</span>
+<span class="fc" id="L390">        map.put(TAG_WHITE_BALANCE, DEVICE_INFO);</span>
+<span class="fc" id="L391">        map.put(TAG_FLASH, DEVICE_INFO);</span>
+<span class="fc" id="L392">        map.put(TAG_FOCAL_LENGTH_IN_35MM_FILM, DEVICE_INFO);</span>
+<span class="fc" id="L393">        map.put(TAG_FOCAL_LENGTH, DEVICE_INFO);</span>
+<span class="fc" id="L394">        map.put(TAG_FOCAL_PLANE_X_RESOLUTION, DEVICE_INFO);</span>
+<span class="fc" id="L395">        map.put(TAG_FOCAL_PLANE_Y_RESOLUTION, DEVICE_INFO);</span>
+<span class="fc" id="L396">        map.put(TAG_FOCAL_PLANE_RESOLUTION_UNIT, DEVICE_INFO); // 0</span>
+<span class="fc" id="L397">        map.put(TAG_F_NUMBER, DEVICE_INFO); // Aperture</span>
+<span class="fc" id="L398">        map.put(TAG_DIGITAL_ZOOM_RATIO, DEVICE_INFO);</span>
+<span class="fc" id="L399">        map.put(TAG_MAX_APERTURE_VALUE, DEVICE_INFO);</span>
+<span class="fc" id="L400">        map.put(TAG_APERTURE_VALUE, DEVICE_INFO);</span>
+
+        //advanced - 55 items
+<span class="fc" id="L403">        map.put(TAG_MAKE, ADVANCED);</span>
+<span class="fc" id="L404">        map.put(TAG_DATETIME_DIGITIZED, ADVANCED);</span>
+<span class="fc" id="L405">        map.put(TAG_DATETIME_ORIGINAL, ADVANCED);</span>
+<span class="fc" id="L406">        map.put(TAG_GAIN_CONTROL, ADVANCED);</span>
+<span class="fc" id="L407">        map.put(TAG_METERING_MODE, ADVANCED);</span>
+<span class="fc" id="L408">        map.put(TAG_SCENE_CAPTURE_TYPE, ADVANCED);</span>
+<span class="fc" id="L409">        map.put(TAG_SHARPNESS, ADVANCED);</span>
+<span class="fc" id="L410">        map.put(TAG_CFA_PATTERN, ADVANCED);</span>
+<span class="fc" id="L411">        map.put(TAG_COMPONENTS_CONFIGURATION, ADVANCED); // null</span>
+<span class="fc" id="L412">        map.put(TAG_DEVICE_SETTING_DESCRIPTION, ADVANCED);</span>
+<span class="fc" id="L413">        map.put(TAG_FILE_SOURCE, ADVANCED);</span>
+<span class="fc" id="L414">        map.put(TAG_FLASHPIX_VERSION, ADVANCED);</span>
+<span class="fc" id="L415">        map.put(TAG_SPATIAL_FREQUENCY_RESPONSE, ADVANCED);</span>
+<span class="fc" id="L416">        map.put(TAG_SPECTRAL_SENSITIVITY, ADVANCED);</span>
+<span class="fc" id="L417">        map.put(TAG_SUBSEC_TIME, ADVANCED); // null</span>
+<span class="fc" id="L418">        map.put(TAG_SCENE_TYPE, ADVANCED);</span>
+<span class="fc" id="L419">        map.put(TAG_RELATED_SOUND_FILE, ADVANCED);</span>
+<span class="fc" id="L420">        map.put(TAG_IMAGE_UNIQUE_ID, ADVANCED);</span>
+<span class="fc" id="L421">        map.put(TAG_MAKER_NOTE, ADVANCED);</span>
+<span class="fc" id="L422">        map.put(TAG_OECF, ADVANCED);</span>
+<span class="fc" id="L423">        map.put(TAG_SUBSEC_TIME_DIGITIZED, ADVANCED);</span>
+<span class="fc" id="L424">        map.put(TAG_SUBSEC_TIME_ORIGINAL, ADVANCED);</span>
+<span class="fc" id="L425">        map.put(TAG_INTEROPERABILITY_INDEX, ADVANCED);</span>
+<span class="fc" id="L426">        map.put(TAG_PHOTOMETRIC_INTERPRETATION, ADVANCED);</span>
+<span class="fc" id="L427">        map.put(TAG_BITS_PER_SAMPLE, ADVANCED);</span>
+<span class="fc" id="L428">        map.put(TAG_COMPRESSED_BITS_PER_PIXEL, ADVANCED);</span>
+<span class="fc" id="L429">        map.put(TAG_COMPRESSION, ADVANCED);</span>
+<span class="fc" id="L430">        map.put(TAG_JPEG_INTERCHANGE_FORMAT, ADVANCED);</span>
+<span class="fc" id="L431">        map.put(TAG_JPEG_INTERCHANGE_FORMAT_LENGTH, ADVANCED);</span>
+<span class="fc" id="L432">        map.put(TAG_PLANAR_CONFIGURATION, ADVANCED);</span>
+<span class="fc" id="L433">        map.put(TAG_ROWS_PER_STRIP, ADVANCED);</span>
+<span class="fc" id="L434">        map.put(TAG_SAMPLES_PER_PIXEL, ADVANCED);</span>
+<span class="fc" id="L435">        map.put(TAG_STRIP_BYTE_COUNTS, ADVANCED);</span>
+<span class="fc" id="L436">        map.put(TAG_STRIP_OFFSETS, ADVANCED);</span>
+<span class="fc" id="L437">        map.put(TAG_TRANSFER_FUNCTION, ADVANCED);</span>
+<span class="fc" id="L438">        map.put(TAG_Y_CB_CR_POSITIONING, ADVANCED);</span>
+<span class="fc" id="L439">        map.put(TAG_Y_CB_CR_SUB_SAMPLING, ADVANCED);</span>
+<span class="fc" id="L440">        map.put(TAG_COLOR_SPACE, ADVANCED);</span>
+<span class="fc" id="L441">        map.put(TAG_CUSTOM_RENDERED, ADVANCED);</span>
+<span class="fc" id="L442">        map.put(TAG_LIGHT_SOURCE, ADVANCED);</span>
+<span class="fc" id="L443">        map.put(TAG_PIXEL_X_DIMENSION, ADVANCED); // 0</span>
+<span class="fc" id="L444">        map.put(TAG_PIXEL_Y_DIMENSION, ADVANCED);</span>
+<span class="fc" id="L445">        map.put(TAG_SENSING_METHOD, ADVANCED);</span>
+<span class="fc" id="L446">        map.put(TAG_SUBJECT_AREA, ADVANCED);</span>
+<span class="fc" id="L447">        map.put(TAG_SUBJECT_DISTANCE_RANGE, ADVANCED);</span>
+<span class="fc" id="L448">        map.put(TAG_SUBJECT_LOCATION, ADVANCED);</span>
+<span class="fc" id="L449">        map.put(TAG_THUMBNAIL_IMAGE_LENGTH, ADVANCED);</span>
+<span class="fc" id="L450">        map.put(TAG_THUMBNAIL_IMAGE_WIDTH, ADVANCED);</span>
+<span class="fc" id="L451">        map.put(TAG_DIGITAL_ZOOM_RATIO, ADVANCED);</span>
+<span class="fc" id="L452">        map.put(TAG_EXPOSURE_BIAS_VALUE, ADVANCED);</span>
+<span class="fc" id="L453">        map.put(TAG_PRIMARY_CHROMATICITIES, ADVANCED);</span>
+<span class="fc" id="L454">        map.put(TAG_REFERENCE_BLACK_WHITE, ADVANCED);</span>
+<span class="fc" id="L455">        map.put(TAG_SHUTTER_SPEED_VALUE, ADVANCED);</span>
+<span class="fc" id="L456">        map.put(TAG_WHITE_POINT, ADVANCED);</span>
+<span class="fc" id="L457">        map.put(TAG_X_RESOLUTION, ADVANCED);</span>
+<span class="fc" id="L458">        map.put(TAG_Y_RESOLUTION, ADVANCED);</span>
+
+<span class="fc" id="L460">        return Collections.unmodifiableMap(map);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

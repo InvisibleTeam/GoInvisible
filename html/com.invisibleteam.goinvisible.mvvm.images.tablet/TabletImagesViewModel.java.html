@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TabletImagesViewModel.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">app</a> &gt; <a href="index.source.html" class="el_package">com.invisibleteam.goinvisible.mvvm.images.tablet</a> &gt; <span class="el_source">TabletImagesViewModel.java</span></div><h1>TabletImagesViewModel.java</h1><pre class="source lang-java linenums">package com.invisibleteam.goinvisible.mvvm.images.tablet;
+
+
+import android.os.Bundle;
+
+import com.invisibleteam.goinvisible.model.ImageDetails;
+import com.invisibleteam.goinvisible.mvvm.edition.TagChangesStatusProvider;
+import com.invisibleteam.goinvisible.mvvm.images.ImagesProvider;
+import com.invisibleteam.goinvisible.mvvm.images.ImagesViewModel;
+import com.invisibleteam.goinvisible.mvvm.images.adapter.ImagesCompoundRecyclerView;
+
+import javax.annotation.Nullable;
+
+public class TabletImagesViewModel extends ImagesViewModel {
+
+    private static final String IMAGE_DETAILS_EXTRA_KEY = &quot;image_details_extra&quot;;
+
+    private final TabletImagesViewCallback imagesViewCallback;
+    private final TagChangesStatusProvider statusProvider;
+<span class="nc" id="L20">    private</span>
+    @Nullable
+    ImageDetails chosenImage = null;
+
+    public TabletImagesViewModel(ImagesCompoundRecyclerView imagesCompoundRecyclerView,
+                                 ImagesProvider imagesProvider,
+                                 TabletImagesViewCallback callback,
+                                 TagChangesStatusProvider statusProvider) {
+<span class="nc" id="L28">        super(imagesCompoundRecyclerView, imagesProvider, callback);</span>
+<span class="nc" id="L29">        this.imagesViewCallback = callback;</span>
+<span class="nc" id="L30">        this.statusProvider = statusProvider;</span>
+<span class="nc" id="L31">    }</span>
+
+    @Override
+    protected void onItemViewClick(ImageDetails imageDetails) {
+<span class="nc" id="L35">        chosenImage = imageDetails;</span>
+<span class="nc bnc" id="L36" title="All 2 branches missed.">        if (statusProvider.isInEditState()) {</span>
+<span class="nc" id="L37">            imagesViewCallback.showRejectChangesDialog();</span>
+        } else {
+<span class="nc" id="L39">            imagesViewCallback.showEditView(imageDetails);</span>
+        }
+<span class="nc" id="L41">    }</span>
+
+    public void onRejectTagsChangesDialogPositive() {
+<span class="nc bnc" id="L44" title="All 2 branches missed.">        if (chosenImage != null) {</span>
+<span class="nc" id="L45">            imagesViewCallback.showEditView(chosenImage);</span>
+        }
+<span class="nc" id="L47">    }</span>
+
+    public void onSaveInstanceState(Bundle bundle) {
+<span class="nc" id="L50">        bundle.putParcelable(IMAGE_DETAILS_EXTRA_KEY, chosenImage);</span>
+<span class="nc" id="L51">    }</span>
+
+    public void onRestoreInstanceState(@Nullable Bundle bundle) {
+<span class="nc bnc" id="L54" title="All 2 branches missed.">        if (bundle == null) {</span>
+<span class="nc" id="L55">            return;</span>
+        }
+
+<span class="nc bnc" id="L58" title="All 2 branches missed.">        if (bundle.containsKey(IMAGE_DETAILS_EXTRA_KEY)) {</span>
+<span class="nc" id="L59">            chosenImage = bundle.getParcelable(IMAGE_DETAILS_EXTRA_KEY);</span>
+        }
+<span class="nc" id="L61">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>EditDialog.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">app</a> &gt; <a href="index.source.html" class="el_package">com.invisibleteam.goinvisible.mvvm.edition.dialog</a> &gt; <span class="el_source">EditDialog.java</span></div><h1>EditDialog.java</h1><pre class="source lang-java linenums">package com.invisibleteam.goinvisible.mvvm.edition.dialog;
+
+import android.app.Dialog;
+import android.app.DialogFragment;
+import android.app.Fragment;
+import android.content.Context;
+import android.os.Bundle;
+import android.os.Parcelable;
+import android.support.annotation.VisibleForTesting;
+import android.util.Log;
+
+import com.invisibleteam.goinvisible.model.Tag;
+import com.invisibleteam.goinvisible.mvvm.edition.EditDialogInterface;
+
+import javax.annotation.Nullable;
+
+<span class="fc" id="L17">public class EditDialog extends DialogFragment {</span>
+
+<span class="fc" id="L19">    public static final String FRAGMENT_TAG = EditDialog.class.getName();</span>
+    public static final String EXTRA_TAG = &quot;extra_tag&quot;;
+<span class="fc" id="L21">    public static final String TAG = EditDialog.class.getSimpleName();</span>
+
+    private EditDialogInterface editDialogInterface;
+
+    public static EditDialog newInstance(Context context, Tag tag) {
+<span class="fc" id="L26">        Bundle bundle = new Bundle();</span>
+<span class="fc" id="L27">        bundle.putParcelable(EditDialog.EXTRA_TAG, tag);</span>
+
+<span class="fc" id="L29">        return (EditDialog) Fragment.instantiate(context, FRAGMENT_TAG, bundle);</span>
+    }
+
+    @Override
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
+<span class="fc" id="L34">        DialogFactory factory = new DialogFactory(this, extractTag(), editDialogInterface);</span>
+
+<span class="fc" id="L36">        Dialog dialog = factory.createDialog();</span>
+<span class="pc bpc" id="L37" title="1 of 2 branches missed.">        if (dialog == null) {</span>
+<span class="nc" id="L38">            onEditError();</span>
+<span class="nc" id="L39">            return super.onCreateDialog(savedInstanceState);</span>
+        }
+<span class="fc" id="L41">        return dialog;</span>
+    }
+
+    private void onEditError() {
+<span class="nc" id="L45">        setShowsDialog(false);</span>
+<span class="nc" id="L46">        dismiss();</span>
+<span class="nc" id="L47">        editDialogInterface.onEditError();</span>
+<span class="nc" id="L48">    }</span>
+
+    @Nullable
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    Tag extractTag() {
+<span class="fc" id="L53">        Bundle bundle = getArguments();</span>
+<span class="fc bfc" id="L54" title="All 4 branches covered.">        if (bundle != null &amp;&amp; !bundle.isEmpty()) {</span>
+<span class="fc" id="L55">            Parcelable extra = bundle.getParcelable(EXTRA_TAG);</span>
+<span class="pc bpc" id="L56" title="1 of 2 branches missed.">            if (extra instanceof Tag) {</span>
+<span class="fc" id="L57">                return (Tag) extra;</span>
+            }
+        }
+<span class="fc" id="L60">        Log.e(TAG, &quot;There is some tag extraction error&quot;);</span>
+<span class="fc" id="L61">        return null;</span>
+    }
+
+    public void setDialogInterface(EditDialogInterface editDialogInterface) {
+<span class="nc" id="L65">        this.editDialogInterface = editDialogInterface;</span>
+<span class="nc" id="L66">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

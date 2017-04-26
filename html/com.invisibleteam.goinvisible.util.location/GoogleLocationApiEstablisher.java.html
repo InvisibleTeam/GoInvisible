@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GoogleLocationApiEstablisher.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">app</a> &gt; <a href="index.source.html" class="el_package">com.invisibleteam.goinvisible.util.location</a> &gt; <span class="el_source">GoogleLocationApiEstablisher.java</span></div><h1>GoogleLocationApiEstablisher.java</h1><pre class="source lang-java linenums">package com.invisibleteam.goinvisible.util.location;
+
+import android.os.Bundle;
+import android.support.annotation.VisibleForTesting;
+
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationServices;
+
+import javax.annotation.Nullable;
+
+public class GoogleLocationApiEstablisher {
+
+    private GoogleApiClient.Builder googleApiClientBuilder;
+    @Nullable
+    private GoogleApiConnectionListener googleApiConnectionListener;
+    @Nullable
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE) GoogleApiClient googleApiClient;
+
+<span class="fc" id="L19">    public GoogleLocationApiEstablisher(GoogleApiClient.Builder googleApiClientBuilder) {</span>
+<span class="fc" id="L20">        this.googleApiClientBuilder = googleApiClientBuilder;</span>
+<span class="fc" id="L21">    }</span>
+
+    public boolean isApiConnected() {
+<span class="fc bfc" id="L24" title="All 4 branches covered.">        return (googleApiClient != null &amp;&amp; googleApiClient.isConnected());</span>
+    }
+
+    public void requestConnection() {
+<span class="fc bfc" id="L28" title="All 2 branches covered.">        if (googleApiClient == null) {</span>
+<span class="fc" id="L29">            buildGoogleApiClient();</span>
+        }
+<span class="fc" id="L31">        googleApiClient.connect();</span>
+<span class="fc" id="L32">    }</span>
+
+    private void buildGoogleApiClient() {
+<span class="fc" id="L35">        googleApiClient = googleApiClientBuilder</span>
+<span class="fc" id="L36">                .addApi(LocationServices.API)</span>
+<span class="fc" id="L37">                .addOnConnectionFailedListener(buildConnectionFailedListener())</span>
+<span class="fc" id="L38">                .addConnectionCallbacks(buildConnectionCallbacks())</span>
+<span class="fc" id="L39">                .build();</span>
+<span class="fc" id="L40">    }</span>
+
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    GoogleApiClient.OnConnectionFailedListener buildConnectionFailedListener() {
+<span class="fc" id="L44">        return connectionResult -&gt; {</span>
+<span class="fc bfc" id="L45" title="All 2 branches covered.">            if (googleApiConnectionListener != null) {</span>
+<span class="fc" id="L46">                googleApiConnectionListener.onFailure();</span>
+            }
+<span class="fc" id="L48">        };</span>
+    }
+
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    GoogleApiClient.ConnectionCallbacks buildConnectionCallbacks() {
+<span class="fc" id="L53">        return new GoogleApiClient.ConnectionCallbacks() {</span>
+            @Override
+            public void onConnected(@Nullable Bundle bundle) {
+<span class="fc bfc" id="L56" title="All 2 branches covered.">                if (googleApiConnectionListener != null) {</span>
+<span class="fc" id="L57">                    googleApiConnectionListener.onSuccess();</span>
+                }
+<span class="fc" id="L59">            }</span>
+
+            @Override
+            public void onConnectionSuspended(int i) {
+
+<span class="fc" id="L64">            }</span>
+        };
+    }
+
+    public void setGoogleApiConnectionListener(GoogleApiConnectionListener listener) {
+<span class="fc" id="L69">        this.googleApiConnectionListener = listener;</span>
+<span class="fc" id="L70">    }</span>
+
+    @Nullable
+    public GoogleApiClient getGoogleApiClient() {
+<span class="fc" id="L74">        return googleApiClient;</span>
+    }
+
+    public interface GoogleApiConnectionListener {
+        void onSuccess();
+
+        void onFailure();
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

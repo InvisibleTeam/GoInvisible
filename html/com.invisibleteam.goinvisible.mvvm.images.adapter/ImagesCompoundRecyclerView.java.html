@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ImagesCompoundRecyclerView.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">app</a> &gt; <a href="index.source.html" class="el_package">com.invisibleteam.goinvisible.mvvm.images.adapter</a> &gt; <span class="el_source">ImagesCompoundRecyclerView.java</span></div><h1>ImagesCompoundRecyclerView.java</h1><pre class="source lang-java linenums">package com.invisibleteam.goinvisible.mvvm.images.adapter;
+
+import android.content.Context;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.util.AttributeSet;
+
+import com.invisibleteam.goinvisible.R;
+import com.invisibleteam.goinvisible.model.ImageDetails;
+import com.invisibleteam.goinvisible.mvvm.common.CompoundRecyclerView;
+import com.invisibleteam.goinvisible.util.ItemDecorationAlbumColumns;
+
+import java.util.List;
+
+public class ImagesCompoundRecyclerView extends CompoundRecyclerView&lt;ImageDetails, ImagesItemAdapter.ViewHolder&gt; {
+
+    private static final int GRID_COLUMN_COUNT = 2;
+
+    private final ImagesItemAdapter itemAdapter;
+
+    public ImagesCompoundRecyclerView(Context context, AttributeSet attrs) {
+<span class="fc" id="L22">        super(context, attrs);</span>
+
+<span class="fc" id="L24">        itemAdapter = new ImagesItemAdapter();</span>
+<span class="fc" id="L25">        init(itemAdapter, new GridLayoutManager(getContext(), GRID_COLUMN_COUNT));</span>
+<span class="fc" id="L26">    }</span>
+
+    @Override
+    protected void initRecyclerViewItemDecorators(RecyclerView recyclerView) {
+<span class="fc" id="L30">        int marginInPixels = getResources().getDimensionPixelSize(R.dimen.images_grid_margin);</span>
+<span class="fc" id="L31">        recyclerView.addItemDecoration(new ItemDecorationAlbumColumns(marginInPixels, GRID_COLUMN_COUNT));</span>
+<span class="fc" id="L32">    }</span>
+
+    @Override
+    public boolean updateResults(List&lt;ImageDetails&gt; imageList) {
+<span class="fc" id="L36">        itemAdapter.updateImageList(imageList);</span>
+<span class="fc" id="L37">        return true;</span>
+    }
+
+    public void setOnItemClickListener(ImagesItemAdapter.OnItemClickListener listener) {
+<span class="fc" id="L41">        itemAdapter.setOnItemClickListener(listener);</span>
+<span class="fc" id="L42">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

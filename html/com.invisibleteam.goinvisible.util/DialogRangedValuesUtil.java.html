@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DialogRangedValuesUtil.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">app</a> &gt; <a href="index.source.html" class="el_package">com.invisibleteam.goinvisible.util</a> &gt; <span class="el_source">DialogRangedValuesUtil.java</span></div><h1>DialogRangedValuesUtil.java</h1><pre class="source lang-java linenums">package com.invisibleteam.goinvisible.util;
+
+import android.annotation.SuppressLint;
+
+import com.invisibleteam.goinvisible.R;
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.annotation.Nullable;
+
+import static android.support.media.ExifInterface.*;
+
+<span class="nc" id="L15">public class DialogRangedValuesUtil {</span>
+
+    @SuppressWarnings(&quot;unchecked&quot;)
+    @Nullable
+    public static Map&lt;Integer, Integer&gt; getTagsMapValues(String key) {
+<span class="pc bpc" id="L20" title="57 of 62 branches missed.">        switch (key) {</span>
+            case TAG_RESOLUTION_UNIT:
+                /*
+                    1 = No absolute unit of measurement. Used for images that may have a non-square aspect ratio, but no
+                    meaningful absolute dimensions.
+                    2 = Inch.
+                    3 = Centimeter.
+                */
+<span class="nc" id="L28">                return getTagExposureTimeMap();</span>
+
+            case TAG_CONTRAST:
+                /*
+                   0 = Normal
+                   1 = Soft
+                   2 = Hard
+                 */
+<span class="nc" id="L36">                return getTagContrastMap();</span>
+
+            case TAG_EXPOSURE_MODE:
+                /*
+                   0 = Auto exposure
+                   1 = Manual exposure
+                   2 = Auto bracket
+                 */
+<span class="nc" id="L44">                return getTagExposureModeMap();</span>
+
+            case TAG_EXPOSURE_PROGRAM:
+                /*
+                    0 = Not defined
+                    1 = Manual
+                    2 = Normal program
+                    3 = Aperture priority
+                    4 = Shutter priority
+                    5 = Creative program (biased toward depth of field)
+                    6 = Action program (biased toward fast shutter speed)
+                    7 = Portrait mode (for closeup photos with the background out of focus)
+                    8 = Landscape mode (for landscape photos with the background in focus)
+                 */
+<span class="nc" id="L58">                return getTagExposureProgramMap();</span>
+
+            case TAG_GAIN_CONTROL:
+                /*
+                    0 = None
+                    1 = Low gain up
+                    2 = High gain up
+                    3 = Low gain down
+                    4 = High gain down
+                 */
+<span class="nc" id="L68">                return getTagGainControlMap();</span>
+
+            case TAG_METERING_MODE:
+                /*
+                    0 = Unknown
+                    1 = Average
+                    2 = CenterWeightedAverage
+                    3 = Spot
+                    4 = MultiSpot
+                    5 = Pattern
+                    6 = Partial
+                    255 = other
+                 */
+<span class="nc" id="L81">                return getTagMeteringModeMap();</span>
+
+            case TAG_SATURATION:
+                /*
+                    0 = Normal
+                    1 = Low saturation
+                    2 = High saturation
+                 */
+<span class="nc" id="L89">                return getTagSaturationMap();</span>
+
+            case TAG_SCENE_CAPTURE_TYPE:
+                /*
+                    0 = Standard
+                    1 = Landscape
+                    2 = Portrait
+                    3 = Night scene
+                 */
+<span class="nc" id="L98">                return getTagSceneCaptureTypeMap();</span>
+
+            case TAG_SHARPNESS:
+                /*
+                    0 = Normal
+                    1 = Soft
+                    2 = Hard
+                 */
+<span class="nc" id="L106">                return getTagSharpnessMap();</span>
+
+            case TAG_WHITE_BALANCE:
+                /*
+                    0 = Auto white balance
+                    1 = Manual white balance
+                 */
+<span class="nc" id="L113">                return getTagWhiteBalanceMap();</span>
+
+            case TAG_FLASH:
+                /*
+                    hex 0000 = Flash did not fire
+                    hex 0001 = Flash fired
+                    hex 0005 = Strobe return light not detected
+                    hex 0007 = Strobe return light detected
+                    hex 0009 = Flash fired, compulsory flash mode
+                    hex 000D = Flash fired, compulsory flash mode, return light not detected
+                    hex 000F = Flash fired, compulsory flash mode, return light detected
+                    hex 0010 = Flash did not fire, compulsory flash mode
+                    hex 0018 = Flash did not fire, auto mode
+                    hex 0019 = Flash fired, auto mode
+                    hex 001D = Flash fired, auto mode, return light not detected
+                    hex 001F = Flash fired, auto mode, return light detected
+                    hex 0020 = No flash function
+                    hex 0041 = Flash fired, red-eye reduction mode
+                    hex 0045 = Flash fired, red-eye reduction mode, return light not detected
+                    hex 0047 = Flash fired, red-eye reduction mode, return light detected
+                    hex 0049 = Flash fired, compulsory flash mode, red-eye reduction mode
+                    hex 004D = Flash fired, compulsory flash mode, red-eye reduction mode, return light not detected
+                    hex 004F = Flash fired, compulsory flash mode, red-eye reduction mode, return light detected
+                    hex 0059 = Flash fired, auto mode, red-eye reduction mode
+                    hex 005D = Flash fired, auto mode, return light not detected, red-eye reduction mode
+                    hex 005F = Flash fired, auto mode, return light detected, red-eye reduction mode
+                 */
+<span class="nc" id="L140">                return getTagFlashMap();</span>
+
+            case TAG_ORIENTATION:
+            case TAG_GPS_ALTITUDE_REF:
+            case TAG_GPS_LATITUDE_REF:
+            case TAG_GPS_LONGITUDE_REF:
+            case TAG_ISO_SPEED_RATINGS:
+<span class="fc" id="L147">                return getDefaultMap();</span>
+
+            default:
+<span class="fc" id="L150">                return null;</span>
+        }
+    }
+
+    @SuppressWarnings(&quot;unchecked&quot;)
+    private static Map&lt;Integer, Integer&gt; getTagExposureTimeMap() {
+<span class="nc" id="L156">        @SuppressLint(&quot;UseSparseArrays&quot;) Map&lt;Integer, Integer&gt; map = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L157">        map.put(R.string.tag_exposure_time_1, R.string.tag_value_1);</span>
+<span class="nc" id="L158">        map.put(R.string.tag_exposure_time_2, R.string.tag_value_2);</span>
+<span class="nc" id="L159">        map.put(R.string.tag_exposure_time_3, R.string.tag_value_3);</span>
+
+<span class="nc" id="L161">        return Collections.unmodifiableMap(map);</span>
+    }
+
+    @SuppressWarnings(&quot;unchecked&quot;)
+    private static Map&lt;Integer, Integer&gt; getTagContrastMap() {
+<span class="nc" id="L166">        @SuppressLint(&quot;UseSparseArrays&quot;) Map&lt;Integer, Integer&gt; map = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L167">        map.put(R.string.tag_contrast_1, R.string.tag_value_1);</span>
+<span class="nc" id="L168">        map.put(R.string.tag_contrast_2, R.string.tag_value_2);</span>
+<span class="nc" id="L169">        map.put(R.string.tag_contrast_3, R.string.tag_value_3);</span>
+
+<span class="nc" id="L171">        return Collections.unmodifiableMap(map);</span>
+    }
+
+    private static Map&lt;Integer, Integer&gt; getTagExposureModeMap() {
+<span class="nc" id="L175">        @SuppressLint(&quot;UseSparseArrays&quot;) Map&lt;Integer, Integer&gt; map = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L176">        map.put(R.string.tag_exposure_mode_0, R.string.tag_value_0);</span>
+<span class="nc" id="L177">        map.put(R.string.tag_exposure_mode_1, R.string.tag_value_1);</span>
+<span class="nc" id="L178">        map.put(R.string.tag_exposure_mode_2, R.string.tag_value_2);</span>
+
+<span class="nc" id="L180">        return Collections.unmodifiableMap(map);</span>
+    }
+
+    private static Map&lt;Integer, Integer&gt; getTagExposureProgramMap() {
+<span class="nc" id="L184">        @SuppressLint(&quot;UseSparseArrays&quot;) Map&lt;Integer, Integer&gt; map = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L185">        map.put(R.string.tag_exposure_program_0, R.string.tag_value_0);</span>
+<span class="nc" id="L186">        map.put(R.string.tag_exposure_program_1, R.string.tag_value_1);</span>
+<span class="nc" id="L187">        map.put(R.string.tag_exposure_program_2, R.string.tag_value_2);</span>
+<span class="nc" id="L188">        map.put(R.string.tag_exposure_program_3, R.string.tag_value_3);</span>
+<span class="nc" id="L189">        map.put(R.string.tag_exposure_program_4, R.string.tag_value_4);</span>
+<span class="nc" id="L190">        map.put(R.string.tag_exposure_program_5, R.string.tag_value_5);</span>
+<span class="nc" id="L191">        map.put(R.string.tag_exposure_program_6, R.string.tag_value_6);</span>
+<span class="nc" id="L192">        map.put(R.string.tag_exposure_program_7, R.string.tag_value_7);</span>
+<span class="nc" id="L193">        map.put(R.string.tag_exposure_program_8, R.string.tag_value_8);</span>
+
+<span class="nc" id="L195">        return Collections.unmodifiableMap(map);</span>
+    }
+
+    private static Map&lt;Integer, Integer&gt; getTagGainControlMap() {
+<span class="nc" id="L199">        @SuppressLint(&quot;UseSparseArrays&quot;) Map&lt;Integer, Integer&gt; map = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L200">        map.put(R.string.tag_gain_control_0, R.string.tag_value_0);</span>
+<span class="nc" id="L201">        map.put(R.string.tag_gain_control_1, R.string.tag_value_1);</span>
+<span class="nc" id="L202">        map.put(R.string.tag_gain_control_2, R.string.tag_value_2);</span>
+<span class="nc" id="L203">        map.put(R.string.tag_gain_control_3, R.string.tag_value_3);</span>
+<span class="nc" id="L204">        map.put(R.string.tag_gain_control_4, R.string.tag_value_4);</span>
+
+<span class="nc" id="L206">        return Collections.unmodifiableMap(map);</span>
+    }
+
+    private static Map&lt;Integer, Integer&gt; getTagMeteringModeMap() {
+<span class="nc" id="L210">        @SuppressLint(&quot;UseSparseArrays&quot;) Map&lt;Integer, Integer&gt; map = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L211">        map.put(R.string.tag_metering_mode_0, R.string.tag_value_0);</span>
+<span class="nc" id="L212">        map.put(R.string.tag_metering_mode_1, R.string.tag_value_1);</span>
+<span class="nc" id="L213">        map.put(R.string.tag_metering_mode_2, R.string.tag_value_2);</span>
+<span class="nc" id="L214">        map.put(R.string.tag_metering_mode_3, R.string.tag_value_3);</span>
+<span class="nc" id="L215">        map.put(R.string.tag_metering_mode_4, R.string.tag_value_4);</span>
+<span class="nc" id="L216">        map.put(R.string.tag_metering_mode_5, R.string.tag_value_5);</span>
+<span class="nc" id="L217">        map.put(R.string.tag_metering_mode_6, R.string.tag_value_6);</span>
+<span class="nc" id="L218">        map.put(R.string.tag_metering_mode_255, R.string.tag_value_255);</span>
+
+<span class="nc" id="L220">        return Collections.unmodifiableMap(map);</span>
+    }
+
+    private static Map&lt;Integer, Integer&gt; getTagSaturationMap() {
+<span class="nc" id="L224">        @SuppressLint(&quot;UseSparseArrays&quot;) Map&lt;Integer, Integer&gt; map = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L225">        map.put(R.string.tag_saturation_0, R.string.tag_value_0);</span>
+<span class="nc" id="L226">        map.put(R.string.tag_saturation_1, R.string.tag_value_1);</span>
+<span class="nc" id="L227">        map.put(R.string.tag_saturation_2, R.string.tag_value_2);</span>
+
+<span class="nc" id="L229">        return Collections.unmodifiableMap(map);</span>
+    }
+
+    private static Map&lt;Integer, Integer&gt; getTagSceneCaptureTypeMap() {
+<span class="nc" id="L233">        @SuppressLint(&quot;UseSparseArrays&quot;) Map&lt;Integer, Integer&gt; map = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L234">        map.put(R.string.tag_scene_capture_type_0, R.string.tag_value_0);</span>
+<span class="nc" id="L235">        map.put(R.string.tag_scene_capture_type_1, R.string.tag_value_1);</span>
+<span class="nc" id="L236">        map.put(R.string.tag_scene_capture_type_2, R.string.tag_value_2);</span>
+<span class="nc" id="L237">        map.put(R.string.tag_scene_capture_type_3, R.string.tag_value_3);</span>
+
+<span class="nc" id="L239">        return Collections.unmodifiableMap(map);</span>
+    }
+
+    @SuppressWarnings(&quot;unchecked&quot;)
+    private static Map&lt;Integer, Integer&gt; getTagSharpnessMap() {
+<span class="nc" id="L244">        @SuppressLint(&quot;UseSparseArrays&quot;) Map&lt;Integer, Integer&gt; map = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L245">        map.put(R.string.tag_sharpness_1, R.string.tag_value_1);</span>
+<span class="nc" id="L246">        map.put(R.string.tag_sharpness_2, R.string.tag_value_2);</span>
+<span class="nc" id="L247">        map.put(R.string.tag_sharpness_3, R.string.tag_value_3);</span>
+
+<span class="nc" id="L249">        return Collections.unmodifiableMap(map);</span>
+    }
+
+    @SuppressWarnings(&quot;unchecked&quot;)
+    private static Map&lt;Integer, Integer&gt; getTagWhiteBalanceMap() {
+<span class="nc" id="L254">        @SuppressLint(&quot;UseSparseArrays&quot;) Map&lt;Integer, Integer&gt; map = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L255">        map.put(R.string.tag_white_balance_0, R.string.tag_value_0);</span>
+<span class="nc" id="L256">        map.put(R.string.tag_white_balance_1, R.string.tag_value_1);</span>
+
+<span class="nc" id="L258">        return Collections.unmodifiableMap(map);</span>
+    }
+
+    @SuppressWarnings(&quot;unchecked&quot;)
+    private static Map&lt;Integer, Integer&gt; getTagFlashMap() {
+<span class="nc" id="L263">        @SuppressLint(&quot;UseSparseArrays&quot;) Map&lt;Integer, Integer&gt; map = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L264">        map.put(R.string.tag_flash_0000, R.string.tag_value_0000);</span>
+<span class="nc" id="L265">        map.put(R.string.tag_flash_0001, R.string.tag_value_0001);</span>
+<span class="nc" id="L266">        map.put(R.string.tag_flash_0005, R.string.tag_value_0005);</span>
+<span class="nc" id="L267">        map.put(R.string.tag_flash_0007, R.string.tag_value_0007);</span>
+<span class="nc" id="L268">        map.put(R.string.tag_flash_0009, R.string.tag_value_0009);</span>
+<span class="nc" id="L269">        map.put(R.string.tag_flash_000D, R.string.tag_value_000D);</span>
+<span class="nc" id="L270">        map.put(R.string.tag_flash_000F, R.string.tag_value_000F);</span>
+<span class="nc" id="L271">        map.put(R.string.tag_flash_0010, R.string.tag_value_0010);</span>
+<span class="nc" id="L272">        map.put(R.string.tag_flash_0018, R.string.tag_value_0018);</span>
+<span class="nc" id="L273">        map.put(R.string.tag_flash_0019, R.string.tag_value_0019);</span>
+<span class="nc" id="L274">        map.put(R.string.tag_flash_001D, R.string.tag_value_001D);</span>
+<span class="nc" id="L275">        map.put(R.string.tag_flash_001F, R.string.tag_value_001F);</span>
+<span class="nc" id="L276">        map.put(R.string.tag_flash_0020, R.string.tag_value_0020);</span>
+<span class="nc" id="L277">        map.put(R.string.tag_flash_0041, R.string.tag_value_0041);</span>
+<span class="nc" id="L278">        map.put(R.string.tag_flash_0045, R.string.tag_value_0045);</span>
+<span class="nc" id="L279">        map.put(R.string.tag_flash_0047, R.string.tag_value_0047);</span>
+<span class="nc" id="L280">        map.put(R.string.tag_flash_0049, R.string.tag_value_0049);</span>
+<span class="nc" id="L281">        map.put(R.string.tag_flash_004D, R.string.tag_value_004D);</span>
+<span class="nc" id="L282">        map.put(R.string.tag_flash_004F, R.string.tag_value_004F);</span>
+<span class="nc" id="L283">        map.put(R.string.tag_flash_0059, R.string.tag_value_0059);</span>
+<span class="nc" id="L284">        map.put(R.string.tag_flash_005D, R.string.tag_value_005D);</span>
+<span class="nc" id="L285">        map.put(R.string.tag_flash_005F, R.string.tag_value_005F);</span>
+
+<span class="nc" id="L287">        return Collections.unmodifiableMap(map);</span>
+    }
+
+    @SuppressWarnings(&quot;unchecked&quot;)
+    private static Map&lt;Integer, Integer&gt; getDefaultMap() {
+<span class="fc" id="L292">        @SuppressLint(&quot;UseSparseArrays&quot;) Map&lt;Integer, Integer&gt; map = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L293">        map.put(R.string.tag_value_0, R.string.tag_value_0);</span>
+<span class="fc" id="L294">        map.put(R.string.tag_value_1, R.string.tag_value_1);</span>
+
+<span class="fc" id="L296">        return Collections.unmodifiableMap(map);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

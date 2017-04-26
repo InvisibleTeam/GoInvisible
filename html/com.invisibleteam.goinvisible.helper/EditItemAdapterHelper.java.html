@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>EditItemAdapterHelper.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">app</a> &gt; <a href="index.source.html" class="el_package">com.invisibleteam.goinvisible.helper</a> &gt; <span class="el_source">EditItemAdapterHelper.java</span></div><h1>EditItemAdapterHelper.java</h1><pre class="source lang-java linenums">package com.invisibleteam.goinvisible.helper;
+
+import com.invisibleteam.goinvisible.model.InputType;
+import com.invisibleteam.goinvisible.model.Tag;
+import com.invisibleteam.goinvisible.model.TagGroupType;
+import com.invisibleteam.goinvisible.model.TagType;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static com.invisibleteam.goinvisible.model.TagGroupType.ADVANCED;
+import static com.invisibleteam.goinvisible.model.TagGroupType.DEVICE_INFO;
+import static com.invisibleteam.goinvisible.model.TagGroupType.IMAGE_INFO;
+import static com.invisibleteam.goinvisible.model.TagGroupType.LOCATION_INFO;
+
+public class EditItemAdapterHelper {
+
+    private List&lt;Tag&gt; imageInfoTagList;
+    private List&lt;Tag&gt; locationInfoTagList;
+    private List&lt;Tag&gt; deviceInfoTagList;
+    private List&lt;Tag&gt; advancedInfoTagList;
+
+    private List&lt;Tag&gt; tagsList;
+
+<span class="fc" id="L25">    public EditItemAdapterHelper() {</span>
+<span class="fc" id="L26">        imageInfoTagList = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L27">        locationInfoTagList = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L28">        deviceInfoTagList = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L29">        advancedInfoTagList = new ArrayList&lt;&gt;();</span>
+
+<span class="fc" id="L31">        tagsList = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L32">    }</span>
+
+    public void createGroups(List&lt;Tag&gt; tags) {
+<span class="fc" id="L35">        clearTagLists();</span>
+<span class="fc" id="L36">        addHeadersToLists();</span>
+<span class="fc bfc" id="L37" title="All 2 branches covered.">        for (Tag tag : tags) {</span>
+<span class="pc bpc" id="L38" title="1 of 5 branches missed.">            switch (tag.getTagGroupType()) {</span>
+                case IMAGE_INFO:
+<span class="fc" id="L40">                    imageInfoTagList.add(tag);</span>
+<span class="fc" id="L41">                    break;</span>
+                case LOCATION_INFO:
+<span class="fc" id="L43">                    locationInfoTagList.add(tag);</span>
+<span class="fc" id="L44">                    break;</span>
+                case DEVICE_INFO:
+<span class="fc" id="L46">                    deviceInfoTagList.add(tag);</span>
+<span class="fc" id="L47">                    break;</span>
+                case ADVANCED:
+<span class="fc" id="L49">                    advancedInfoTagList.add(tag);</span>
+<span class="fc" id="L50">                    break;</span>
+                default:
+                    break;
+            }
+<span class="fc" id="L54">        }</span>
+
+<span class="fc" id="L56">        this.tagsList.clear();</span>
+<span class="fc" id="L57">        this.tagsList.addAll(imageInfoTagList);</span>
+<span class="fc" id="L58">        this.tagsList.addAll(locationInfoTagList);</span>
+<span class="fc" id="L59">        this.tagsList.addAll(deviceInfoTagList);</span>
+<span class="fc" id="L60">        this.tagsList.addAll(advancedInfoTagList);</span>
+<span class="fc" id="L61">    }</span>
+
+    private void addHeadersToLists() {
+<span class="fc" id="L64">        imageInfoTagList.add(createTagWithGroupType(IMAGE_INFO));</span>
+<span class="fc" id="L65">        locationInfoTagList.add(createTagWithGroupType(LOCATION_INFO));</span>
+<span class="fc" id="L66">        deviceInfoTagList.add(createTagWithGroupType(DEVICE_INFO));</span>
+<span class="fc" id="L67">        advancedInfoTagList.add(createTagWithGroupType(ADVANCED));</span>
+<span class="fc" id="L68">    }</span>
+
+    private void clearTagLists() {
+<span class="fc" id="L71">        imageInfoTagList.clear();</span>
+<span class="fc" id="L72">        locationInfoTagList.clear();</span>
+<span class="fc" id="L73">        deviceInfoTagList.clear();</span>
+<span class="fc" id="L74">        advancedInfoTagList.clear();</span>
+<span class="fc" id="L75">    }</span>
+
+    public List&lt;Tag&gt; getTagsList() {
+<span class="fc" id="L78">        return tagsList;</span>
+    }
+
+    private Tag createTagWithGroupType(TagGroupType type) {
+<span class="fc" id="L82">        return new Tag(&quot;&quot;, &quot;&quot;, TagType.build(InputType.INDEFINITE), type);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

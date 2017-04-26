@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ImagesProvider.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">app</a> &gt; <a href="index.source.html" class="el_package">com.invisibleteam.goinvisible.mvvm.images</a> &gt; <span class="el_source">ImagesProvider.java</span></div><h1>ImagesProvider.java</h1><pre class="source lang-java linenums">package com.invisibleteam.goinvisible.mvvm.images;
+
+
+import android.content.ContentResolver;
+import android.database.Cursor;
+import android.net.Uri;
+import android.provider.MediaStore;
+
+import com.invisibleteam.goinvisible.model.ImageDetails;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import javax.annotation.Nullable;
+
+public class ImagesProvider {
+    private final ContentResolver contentResolver;
+
+<span class="fc" id="L20">    public ImagesProvider(ContentResolver contentResolver) {</span>
+<span class="fc" id="L21">        this.contentResolver = contentResolver;</span>
+<span class="fc" id="L22">    }</span>
+
+    @Nullable
+    public ImageDetails getImage(Uri imageUri) {
+<span class="nc" id="L26">        ImageDetails imageDetails = null;</span>
+
+<span class="nc" id="L28">        String[] columns = new String[]{</span>
+                MediaStore.Images.ImageColumns.TITLE,
+                MediaStore.Images.ImageColumns.DATA,
+                MediaStore.Images.ImageColumns.DATE_TAKEN};
+<span class="nc" id="L32">        Cursor cur = contentResolver.query(</span>
+                imageUri,
+                columns,
+                null,
+                null,
+                null);
+<span class="nc bnc" id="L38" title="All 2 branches missed.">        if (cur != null) {</span>
+<span class="nc bnc" id="L39" title="All 2 branches missed.">            if (cur.moveToFirst()) {</span>
+<span class="nc" id="L40">                String title = cur.getString(0);</span>
+<span class="nc" id="L41">                String data = cur.getString(1);</span>
+<span class="nc" id="L42">                int timestamp = cur.getInt(2);</span>
+<span class="nc bnc" id="L43" title="All 2 branches missed.">                if (data != null) {</span>
+<span class="nc bnc" id="L44" title="All 2 branches missed.">                    if (title == null) {</span>
+<span class="nc" id="L45">                        title = Uri.parse(data).getLastPathSegment();</span>
+                    }
+<span class="nc" id="L47">                    imageDetails = new ImageDetails(data, title, timestamp);</span>
+                }
+            }
+<span class="nc" id="L50">            cur.close();</span>
+        }
+<span class="nc" id="L52">        return imageDetails;</span>
+    }
+
+    public List&lt;ImageDetails&gt; getImagesList() {
+<span class="fc" id="L56">        String[] columns = new String[]{</span>
+                MediaStore.Images.ImageColumns.TITLE,
+                MediaStore.Images.ImageColumns.DATA,
+                MediaStore.Images.ImageColumns.DATE_TAKEN};
+<span class="fc" id="L60">        Cursor cur = contentResolver.query(</span>
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                columns,
+                null,
+                null,
+                null);
+<span class="fc" id="L66">        List&lt;ImageDetails&gt; imagesList = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L67" title="All 2 branches covered.">        if (cur != null) {</span>
+<span class="pc bpc" id="L68" title="1 of 2 branches missed.">            if (cur.moveToFirst()) {</span>
+                do {
+<span class="fc" id="L70">                    String title = cur.getString(0);</span>
+<span class="fc" id="L71">                    String data = cur.getString(1);</span>
+<span class="fc" id="L72">                    int timestamp = cur.getInt(2);</span>
+<span class="fc" id="L73">                    imagesList.add(new ImageDetails(data, title, timestamp));</span>
+<span class="pc bpc" id="L74" title="1 of 2 branches missed.">                } while (cur.moveToNext());</span>
+            }
+<span class="fc" id="L76">            cur.close();</span>
+        }
+<span class="fc" id="L78">        return sort(imagesList);</span>
+    }
+
+    private List&lt;ImageDetails&gt; sort(List&lt;ImageDetails&gt; imagesList) {
+<span class="fc" id="L82">        ImageDetails[] array = new ImageDetails[imagesList.size()];</span>
+<span class="fc" id="L83">        imagesList.toArray(array);</span>
+<span class="fc" id="L84">        Arrays.sort(array, (firstItem, secondItem) -&gt; {</span>
+<span class="nc bnc" id="L85" title="All 2 branches missed.">                    if (firstItem.getTimeStamp() &gt; secondItem.getTimeStamp()) {</span>
+<span class="nc" id="L86">                        return -1;</span>
+<span class="nc bnc" id="L87" title="All 2 branches missed.">                    } else if (firstItem.getTimeStamp() == secondItem.getTimeStamp()) {</span>
+<span class="nc" id="L88">                        return 0;</span>
+                    }
+<span class="nc" id="L90">                    return 1;</span>
+                }
+        );
+<span class="fc" id="L93">        return Arrays.asList(array);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

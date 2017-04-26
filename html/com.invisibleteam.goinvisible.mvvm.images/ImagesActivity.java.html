@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ImagesActivity.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">app</a> &gt; <a href="index.source.html" class="el_package">com.invisibleteam.goinvisible.mvvm.images</a> &gt; <span class="el_source">ImagesActivity.java</span></div><h1>ImagesActivity.java</h1><pre class="source lang-java linenums">package com.invisibleteam.goinvisible.mvvm.images;
+
+import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
+import android.support.annotation.VisibleForTesting;
+import android.support.design.widget.Snackbar;
+import android.support.media.ExifInterface;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.ViewGroup;
+
+import com.invisibleteam.goinvisible.R;
+import com.invisibleteam.goinvisible.databinding.EditViewTabletBinding;
+import com.invisibleteam.goinvisible.databinding.ImagesViewBinding;
+import com.invisibleteam.goinvisible.helper.EditActivityHelper;
+import com.invisibleteam.goinvisible.helper.SharingHelper;
+import com.invisibleteam.goinvisible.model.ImageDetails;
+import com.invisibleteam.goinvisible.mvvm.common.CommonEditActivity;
+import com.invisibleteam.goinvisible.mvvm.edition.EditActivity;
+import com.invisibleteam.goinvisible.mvvm.edition.EditViewModel;
+import com.invisibleteam.goinvisible.mvvm.edition.TagDiffMicroServiceFactory;
+import com.invisibleteam.goinvisible.mvvm.edition.TagListDiffMicroService;
+import com.invisibleteam.goinvisible.mvvm.images.phone.PhoneImagesViewCallback;
+import com.invisibleteam.goinvisible.mvvm.images.phone.PhoneImagesViewModel;
+import com.invisibleteam.goinvisible.mvvm.images.tablet.TabletEditViewModel;
+import com.invisibleteam.goinvisible.mvvm.images.tablet.TabletImagesViewCallback;
+import com.invisibleteam.goinvisible.mvvm.images.tablet.TabletImagesViewModel;
+import com.invisibleteam.goinvisible.mvvm.settings.SettingsActivity;
+import com.invisibleteam.goinvisible.util.LifecycleBinder;
+import com.invisibleteam.goinvisible.util.ScreenUtil;
+import com.invisibleteam.goinvisible.util.TagsManager;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
+import javax.annotation.Nullable;
+
+import rx.Observable;
+
+<span class="fc" id="L48">public class ImagesActivity extends CommonEditActivity implements PhoneImagesViewCallback, TabletImagesViewCallback,</span>
+        EditViewModel.EditViewModelCallback,
+        LifecycleBinder {
+
+<span class="fc" id="L52">    private static final String TAG = ImagesActivity.class.getSimpleName();</span>
+    private Snackbar snackbar;
+    private SwipeRefreshLayout refreshLayout;
+    @Nullable
+    private TabletEditViewModel editViewModel;
+    private TabletImagesViewModel tabletImagesViewModel;
+
+    public static Intent buildIntent(Context context) {
+<span class="nc" id="L60">        return new Intent(context, ImagesActivity.class);</span>
+    }
+
+    @Override
+    public void openEditScreen(ImageDetails imageDetails) {
+<span class="nc" id="L65">        Intent intent = EditActivity.buildIntent(this, imageDetails);</span>
+<span class="nc" id="L66">        startActivity(intent);</span>
+<span class="nc" id="L67">    }</span>
+
+    @Override
+    public void showSnackBar() {
+<span class="nc" id="L71">        snackbar.show();</span>
+<span class="nc" id="L72">    }</span>
+
+    @Override
+    public void onStopRefreshingImages() {
+<span class="nc" id="L76">        refreshLayout.setRefreshing(false);</span>
+<span class="nc" id="L77">    }</span>
+
+    @Override
+    public void prepareSnackBar(int messageResId) {
+<span class="nc bnc" id="L81" title="All 2 branches missed.">        if (snackbar == null) {</span>
+<span class="nc" id="L82">            snackbar = Snackbar.make(</span>
+<span class="nc" id="L83">                    findViewById(android.R.id.content),</span>
+                    messageResId,
+                    Snackbar.LENGTH_LONG);
+        }
+<span class="nc" id="L87">        snackbar.setText(messageResId);</span>
+<span class="nc" id="L88">    }</span>
+
+    @Override
+    public void prepareView() {
+<span class="pc bpc" id="L92" title="1 of 2 branches missed.">        if (ScreenUtil.isTablet(this)) {</span>
+<span class="nc" id="L93">            createTabletBinding();</span>
+        } else {
+<span class="fc" id="L95">            createPhoneBinding();</span>
+        }
+
+<span class="fc" id="L98">        prepareToolbar();</span>
+<span class="fc" id="L99">    }</span>
+
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    void prepareToolbar() {
+<span class="fc" id="L103">        Toolbar toolbar = (Toolbar) findViewById(R.id.main_toolbar);</span>
+<span class="fc" id="L104">        setSupportActionBar(toolbar);</span>
+<span class="fc" id="L105">    }</span>
+
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    void createPhoneBinding() {
+        @SuppressLint(&quot;InflateParams&quot;)
+<span class="fc" id="L110">        ViewGroup viewGroup = (ViewGroup) LayoutInflater.from(this).inflate(R.layout.activity_images_phone, null);</span>
+<span class="fc" id="L111">        setContentView(viewGroup);</span>
+
+<span class="fc" id="L113">        ViewGroup imagesViewGroup = (ViewGroup) viewGroup.findViewById(R.id.images_group);</span>
+<span class="fc" id="L114">        ImagesViewBinding imagesViewBinding = ImagesViewBinding.bind(imagesViewGroup);</span>
+
+<span class="fc" id="L116">        ImagesViewModel imagesViewModel = new PhoneImagesViewModel(</span>
+                imagesViewBinding.imagesCompoundRecyclerView,
+<span class="fc" id="L118">                new ImagesProvider(getContentResolver()),</span>
+                this);
+<span class="fc" id="L120">        imagesViewBinding.setViewModel(imagesViewModel);</span>
+
+<span class="fc" id="L122">        createRefreshLayout(imagesViewBinding, imagesViewModel);</span>
+<span class="fc" id="L123">    }</span>
+
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    void createTabletBinding() {
+<span class="nc" id="L127">        ViewGroup viewGroup = (ViewGroup) LayoutInflater.from(this).inflate(R.layout.activity_images_tablet, null);</span>
+<span class="nc" id="L128">        setContentView(viewGroup);</span>
+
+<span class="nc" id="L130">        ViewGroup editViewGroup = (ViewGroup) viewGroup.findViewById(R.id.edit_group);</span>
+<span class="nc" id="L131">        EditViewTabletBinding editViewTabletBinding = EditViewTabletBinding.bind(editViewGroup);</span>
+<span class="nc" id="L132">        editViewModel = new TabletEditViewModel(</span>
+                this,
+                new TagDiffMicroServiceFactory(this),
+                new TagListDiffMicroService(this),
+                this);
+<span class="nc" id="L137">        editViewTabletBinding.setViewModel(editViewModel);</span>
+
+<span class="nc" id="L139">        ViewGroup imagesViewGroup = (ViewGroup) viewGroup.findViewById(R.id.images_group);</span>
+<span class="nc" id="L140">        ImagesViewBinding imagesViewBinding = ImagesViewBinding.bind(imagesViewGroup);</span>
+<span class="nc" id="L141">        tabletImagesViewModel = new TabletImagesViewModel(</span>
+                imagesViewBinding.imagesCompoundRecyclerView,
+<span class="nc" id="L143">                new ImagesProvider(getContentResolver()),</span>
+                this,
+                editViewModel);
+<span class="nc" id="L146">        imagesViewBinding.setViewModel(tabletImagesViewModel);</span>
+
+<span class="nc" id="L148">        createRefreshLayout(imagesViewBinding, tabletImagesViewModel);</span>
+
+<span class="nc" id="L150">        EditActivityHelper editActivityHelper = new EditActivityHelper(this);</span>
+<span class="nc" id="L151">        setEditActivityHelper(editActivityHelper);</span>
+<span class="nc" id="L152">        setEditDialogInterface(editViewModel);</span>
+<span class="nc" id="L153">    }</span>
+
+    private void createRefreshLayout(ImagesViewBinding viewBinding, ImagesViewModel viewModel) {
+<span class="fc" id="L156">        refreshLayout = viewBinding.swipeRefreshLayout;</span>
+<span class="fc" id="L157">        refreshLayout.setOnRefreshListener(viewModel::updateImages);</span>
+<span class="fc" id="L158">        refreshLayout.setColorSchemeColors(ContextCompat.getColor(this, R.color.colorAccent));</span>
+<span class="fc" id="L159">    }</span>
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+<span class="nc bnc" id="L163" title="All 2 branches missed.">        switch (item.getItemId()) {</span>
+            case R.id.settings:
+<span class="nc" id="L165">                openSettingActivity();</span>
+<span class="nc" id="L166">                return true;</span>
+            default:
+<span class="nc" id="L168">                return super.onOptionsItemSelected(item);</span>
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+<span class="nc" id="L174">        MenuInflater inflater = getMenuInflater();</span>
+<span class="nc" id="L175">        inflater.inflate(R.menu.images_menu, menu);</span>
+<span class="nc" id="L176">        return true;</span>
+    }
+
+    private void openSettingActivity() {
+<span class="nc" id="L180">        Intent intent = SettingsActivity.buildIntent(this);</span>
+<span class="nc" id="L181">        startActivity(intent);</span>
+<span class="nc" id="L182">    }</span>
+
+    @VisibleForTesting
+    public void setRefreshLayout(SwipeRefreshLayout layout) {
+<span class="nc" id="L186">        this.refreshLayout = layout;</span>
+<span class="nc" id="L187">    }</span>
+
+    @VisibleForTesting
+    void setSnackbar(Snackbar snackbar) {
+<span class="nc" id="L191">        this.snackbar = snackbar;</span>
+<span class="nc" id="L192">    }</span>
+
+    @VisibleForTesting
+    public Snackbar getSnackbar() {
+<span class="nc" id="L196">        return snackbar;</span>
+    }
+
+    @VisibleForTesting
+    void setTabletImagesViewModel(TabletImagesViewModel imagesViewModel) {
+<span class="nc" id="L201">        this.tabletImagesViewModel = imagesViewModel;</span>
+<span class="nc" id="L202">    }</span>
+
+    @Override
+    public void showEditView(ImageDetails imageDetails) {
+<span class="nc bnc" id="L206" title="All 2 branches missed.">        if (editViewModel != null) {</span>
+            try {
+<span class="nc" id="L208">                editViewModel.initialize(</span>
+                        imageDetails,
+<span class="nc" id="L210">                        buildTagsManager(imageDetails.getPath()));</span>
+<span class="nc" id="L211">            } catch (IOException e) {</span>
+<span class="nc" id="L212">                Log.e(TAG, e.getMessage(), e);</span>
+                //TODO Log crashlitycs
+<span class="nc" id="L214">            }</span>
+        }
+<span class="nc" id="L216">    }</span>
+
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    TagsManager buildTagsManager(String path) throws IOException {
+<span class="nc" id="L220">        return new TagsManager(new ExifInterface(path));</span>
+    }
+
+    @Override
+    protected void onRejectTagsChangesDialogPositive() {
+<span class="nc" id="L225">        tabletImagesViewModel.onRejectTagsChangesDialogPositive();</span>
+<span class="nc" id="L226">    }</span>
+
+    @Override
+    public void shareImage(ImageDetails imageDetails) {
+        try {
+<span class="nc" id="L231">            Intent intent = new SharingHelper().buildShareImageIntent(imageDetails);</span>
+<span class="nc" id="L232">            startActivity(Intent.createChooser(intent, getString(R.string.share_intent_chooser_title)));</span>
+<span class="nc" id="L233">        } catch (FileNotFoundException e) {</span>
+<span class="nc" id="L234">            Log.e(TAG, String.valueOf(e.getMessage()));</span>
+            //TODO log error in crashlytics
+<span class="nc" id="L236">        }</span>
+<span class="nc" id="L237">    }</span>
+
+    @Override
+    public void showViewInEditStateInformation() {
+<span class="nc" id="L241">        Snackbar.make(</span>
+<span class="nc" id="L242">                findViewById(android.R.id.content),</span>
+                R.string.save_before_share,
+<span class="nc" id="L244">                Snackbar.LENGTH_LONG).show();</span>
+<span class="nc" id="L245">    }</span>
+
+    @Override
+    public &lt;T&gt; Observable.Transformer&lt;T, T&gt; bind() {
+<span class="nc" id="L249">        return bindToLifecycle();</span>
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+<span class="nc bnc" id="L254" title="All 2 branches missed.">        if (tabletImagesViewModel != null) {</span>
+<span class="nc" id="L255">            tabletImagesViewModel.onSaveInstanceState(outState);</span>
+        }
+<span class="nc bnc" id="L257" title="All 2 branches missed.">        if (editViewModel != null) {</span>
+<span class="nc" id="L258">            editViewModel.onSaveInstanceState(outState);</span>
+        }
+<span class="nc" id="L260">        super.onSaveInstanceState(outState);</span>
+<span class="nc" id="L261">    }</span>
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+<span class="nc" id="L265">        super.onRestoreInstanceState(savedInstanceState);</span>
+<span class="nc bnc" id="L266" title="All 2 branches missed.">        if (tabletImagesViewModel != null) {</span>
+<span class="nc" id="L267">            tabletImagesViewModel.onRestoreInstanceState(savedInstanceState);</span>
+        }
+<span class="nc bnc" id="L269" title="All 2 branches missed.">        if (editViewModel != null) {</span>
+<span class="nc" id="L270">            editViewModel.onRestoreInstanceState(savedInstanceState, ImagesActivity.this::buildTagsManager);</span>
+        }
+<span class="nc" id="L272">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

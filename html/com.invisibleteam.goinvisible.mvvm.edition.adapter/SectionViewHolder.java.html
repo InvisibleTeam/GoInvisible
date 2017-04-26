@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SectionViewHolder.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">app</a> &gt; <a href="index.source.html" class="el_package">com.invisibleteam.goinvisible.mvvm.edition.adapter</a> &gt; <span class="el_source">SectionViewHolder.java</span></div><h1>SectionViewHolder.java</h1><pre class="source lang-java linenums">package com.invisibleteam.goinvisible.mvvm.edition.adapter;
+
+import android.support.annotation.VisibleForTesting;
+import android.view.View;
+import android.view.animation.RotateAnimation;
+
+import com.bignerdranch.expandablerecyclerview.ParentViewHolder;
+import com.invisibleteam.goinvisible.databinding.SectionEditItemViewBinding;
+
+class SectionViewHolder extends ParentViewHolder {
+
+    private static final float INITIAL_POSITION = 0f;
+    private static final float ROTATED_POSITION = 180f;
+    private final SectionEditItemViewBinding sectionEditItemViewBinding;
+
+    private SectionEditItemViewModel sectionEditItemViewModel;
+
+    SectionViewHolder(View itemView) {
+<span class="fc" id="L19">        super(itemView);</span>
+
+<span class="fc" id="L21">        sectionEditItemViewModel = new SectionEditItemViewModel();</span>
+<span class="fc" id="L22">        sectionEditItemViewBinding = SectionEditItemViewBinding.bind(itemView);</span>
+<span class="fc" id="L23">        sectionEditItemViewBinding.setViewModel(sectionEditItemViewModel);</span>
+<span class="fc" id="L24">        sectionEditItemViewBinding.expandButton.setOnClickListener(v -&gt; {</span>
+<span class="nc bnc" id="L25" title="All 2 branches missed.">            if (isExpanded()) {</span>
+<span class="nc" id="L26">                collapseView();</span>
+            } else {
+<span class="nc" id="L28">                expandView();</span>
+            }
+<span class="nc" id="L30">        });</span>
+<span class="fc" id="L31">    }</span>
+
+    void setSectionName(String name) {
+<span class="fc" id="L34">        sectionEditItemViewModel.setSectionName(name);</span>
+<span class="fc" id="L35">    }</span>
+
+    @VisibleForTesting
+    SectionEditItemViewModel getSectionEditItemViewModel() {
+<span class="fc" id="L39">        return sectionEditItemViewModel;</span>
+    }
+
+    @Override
+    public boolean shouldItemViewClickToggleExpansion() {
+<span class="nc" id="L44">        return false;</span>
+    }
+
+    @Override
+    public void setExpanded(boolean expanded) {
+<span class="nc" id="L49">        super.setExpanded(expanded);</span>
+<span class="nc bnc" id="L50" title="All 2 branches missed.">        if (expanded) {</span>
+<span class="nc" id="L51">            sectionEditItemViewBinding.expandButton.setRotation(ROTATED_POSITION);</span>
+        } else {
+<span class="nc" id="L53">            sectionEditItemViewBinding.expandButton.setRotation(INITIAL_POSITION);</span>
+        }
+<span class="nc" id="L55">    }</span>
+
+    @Override
+    public void onExpansionToggled(boolean expanded) {
+<span class="nc" id="L59">        super.onExpansionToggled(expanded);</span>
+        RotateAnimation rotateAnimation;
+<span class="nc bnc" id="L61" title="All 2 branches missed.">        if (expanded) { // rotate clockwise</span>
+<span class="nc" id="L62">            rotateAnimation = new RotateAnimation(ROTATED_POSITION,</span>
+                    INITIAL_POSITION,
+                    RotateAnimation.RELATIVE_TO_SELF, 0.5f,
+                    RotateAnimation.RELATIVE_TO_SELF, 0.5f);
+        } else { // rotate counterclockwise
+<span class="nc" id="L67">            rotateAnimation = new RotateAnimation(-1 * ROTATED_POSITION,</span>
+                    INITIAL_POSITION,
+                    RotateAnimation.RELATIVE_TO_SELF, 0.5f,
+                    RotateAnimation.RELATIVE_TO_SELF, 0.5f);
+        }
+
+<span class="nc" id="L73">        rotateAnimation.setDuration(200);</span>
+<span class="nc" id="L74">        rotateAnimation.setFillAfter(true);</span>
+<span class="nc" id="L75">        sectionEditItemViewBinding.expandButton.startAnimation(rotateAnimation);</span>
+<span class="nc" id="L76">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>
