@@ -31,6 +31,18 @@ public class GeolocationTag extends Tag {
         formatPositionValue();
     }
 
+    @Override
+    public Tag copy() {
+        return new GeolocationTag(
+                this.getKey(),
+                this.getSecondKey(),
+                this.getValue(),
+                this.getSecondValue(),
+                this.getLatitudeRef(),
+                this.getLongitudeRef(),
+                this.getTagType());
+    }
+
     private void formatPositionValue() {
         String geoLat = TagUtil.parseRationalGPSToGeoGPS(getValue(), latitudeRef);
         String geoLng = TagUtil.parseRationalGPSToGeoGPS(secondValue, longitudeRef);

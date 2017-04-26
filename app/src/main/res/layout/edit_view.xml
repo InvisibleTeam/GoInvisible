@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:bind="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="viewModel"
             type="com.invisibleteam.goinvisible.mvvm.edition.PhoneEditViewModel"/>
@@ -42,8 +44,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/edit_image_size"
                         android:scaleType="centerCrop"
-                        app:imageUrl="@{viewModel.imageUrl}"
-                        app:layout_collapseMode="parallax"/>
+                        app:layout_collapseMode="parallax"
+                        bind:imageUrl="@{viewModel.imageUrl}"/>
 
                     <View
                         android:id="@+id/details_backdrop_gradient"
@@ -65,11 +67,14 @@
 
         </android.support.design.widget.AppBarLayout>
 
-        <com.invisibleteam.goinvisible.mvvm.edition.adapter.EditCompoundRecyclerView
+        <com.invisibleteam.goinvisible.mvvm.edition.adapter.EditRecyclerView
             android:id="@+id/edit_compound_recycler_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            bind:diffList="@{viewModel.diffList}"
+            bind:modelList="@{viewModel.modelList}"
+            bind:onItemAction="@{viewModel.getItemActionListener()}"/>
 
     </android.support.design.widget.CoordinatorLayout>
 

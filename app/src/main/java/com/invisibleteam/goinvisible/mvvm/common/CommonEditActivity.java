@@ -11,10 +11,10 @@ import com.invisibleteam.goinvisible.R;
 import com.invisibleteam.goinvisible.helper.EditActivityHelper;
 import com.invisibleteam.goinvisible.model.GeolocationTag;
 import com.invisibleteam.goinvisible.model.Tag;
-import com.invisibleteam.goinvisible.mvvm.edition.EditViewModel;
-import com.invisibleteam.goinvisible.util.location.GpsEstablisher;
+import com.invisibleteam.goinvisible.mvvm.edition.EditDialogInterface;
 import com.invisibleteam.goinvisible.mvvm.edition.dialog.EditDialog;
 import com.invisibleteam.goinvisible.mvvm.images.ImagesActivity;
+import com.invisibleteam.goinvisible.util.location.GpsEstablisher;
 
 import java.util.Locale;
 
@@ -22,7 +22,7 @@ public abstract class CommonEditActivity extends CommonActivity {
 
     public static final int PLACE_REQUEST_ID = 1;
     private EditActivityHelper editActivityHelper;
-    private EditViewModel editViewModel;
+    private EditDialogInterface editDialogInterface;
     private Tag tag;
 
     @Override
@@ -79,7 +79,7 @@ public abstract class CommonEditActivity extends CommonActivity {
 
     public void showTagEditionView(Tag tag) {
         EditDialog dialog = EditDialog.newInstance(this, tag);
-        dialog.setViewModel(editViewModel);
+        dialog.setDialogInterface(editDialogInterface);
         dialog.show(getFragmentManager(), EditDialog.FRAGMENT_TAG);
     }
 
@@ -99,7 +99,7 @@ public abstract class CommonEditActivity extends CommonActivity {
 
     private void onNewPlace(Place place) {
         GeolocationTag geolocationTag = editActivityHelper.prepareNewPlacePositionTag(place, tag);
-        editViewModel.onEditEnded(geolocationTag);
+        editDialogInterface.onEditEnded(geolocationTag);
     }
 
     protected void showSnackBar(int message) {
@@ -113,8 +113,8 @@ public abstract class CommonEditActivity extends CommonActivity {
         this.editActivityHelper = editActivityHelper;
     }
 
-    public void setEditViewModel(EditViewModel editViewModel) {
-        this.editViewModel = editViewModel;
+    public void setEditDialogInterface(EditDialogInterface editDialogInterface) {
+        this.editDialogInterface = editDialogInterface;
     }
 
     public void showTagsSuccessfullyUpdatedMessage() {

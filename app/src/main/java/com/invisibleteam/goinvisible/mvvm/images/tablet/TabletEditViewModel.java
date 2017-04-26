@@ -1,90 +1,69 @@
 package com.invisibleteam.goinvisible.mvvm.images.tablet;
 
 
-import android.content.Intent;
 import android.databinding.ObservableBoolean;
+import android.os.Bundle;
 import android.util.Log;
 
-import com.invisibleteam.goinvisible.helper.SharingHelper;
 import com.invisibleteam.goinvisible.model.ImageDetails;
-import com.invisibleteam.goinvisible.model.Tag;
 import com.invisibleteam.goinvisible.mvvm.edition.EditViewModel;
-import com.invisibleteam.goinvisible.mvvm.edition.adapter.EditCompoundRecyclerView;
-import com.invisibleteam.goinvisible.mvvm.edition.callback.TabletEditTagCallback;
-import com.invisibleteam.goinvisible.mvvm.edition.callback.TagEditionStartCallback;
+import com.invisibleteam.goinvisible.mvvm.edition.TagDiffMicroServiceFactory;
+import com.invisibleteam.goinvisible.mvvm.edition.TagListDiffMicroService;
+import com.invisibleteam.goinvisible.util.LifecycleBinder;
 import com.invisibleteam.goinvisible.util.TagsManager;
 
-import java.io.FileNotFoundException;
-import java.util.List;
+import java.io.IOException;
+
+import javax.annotation.Nullable;
 
 public class TabletEditViewModel extends EditViewModel {
 
-    private static final String TAG = TabletEditViewModel.class.getName();
+    private static final String TAG = TabletEditViewModel.class.getSimpleName();
+    private static final String IMAGE_DETAILS_EXTRA_KEY = "image_details_extra_key";
 
-    private final ObservableBoolean isInEditMode = new ObservableBoolean(false);
-    private ImageDetails imageDetails;
-    private TabletEditTagCallback tabletEditTagCallback;
-    private SharingHelper sharingHelper;
+    private ObservableBoolean inEditState = new ObservableBoolean(false);
 
-    public TabletEditViewModel(EditCompoundRecyclerView editCompoundRecyclerView, TagEditionStartCallback callback,
-                               SharingHelper sharingHelper) {
-        super(editCompoundRecyclerView, callback);
-        this.sharingHelper = sharingHelper;
-    }
-
-    public void initialize(ImageDetails details, TagsManager manager, TabletEditTagCallback callback) {
-        imageDetails = details;
-        getTitle().set(details.getName());
-        getImageUrl().set(details.getPath());
-        setManager(manager);
-        getEditCompoundRecyclerView().setOnTagActionListener(this);
-        getEditCompoundRecyclerView().prepareTagsList(manager.getAllTags());
-        tabletEditTagCallback = callback;
-    }
-
-    public void onApproveChanges() {
-        if (saveTags()) {
-            getEditCompoundRecyclerView().updateTagListAfterChanges();
-            isInEditMode.set(!getEditCompoundRecyclerView().getChangedTags().isEmpty());
-            tabletEditTagCallback.showTagsSuccessfullyUpdatedMessage();
-        } else {
-            tabletEditTagCallback.showTagsUpdateFailureMessage();
-        }
-    }
-
-    public void onClearAllTags() {
-        onClear(getManager().getAllTags());
-    }
-
-    public void onShare() {
-        if (isInEditMode.get()) {
-            tabletEditTagCallback.showViewInEditStateInformation();
-        } else {
-            try {
-                Intent shareIntent = sharingHelper.buildShareImageIntent(imageDetails);
-                tabletEditTagCallback.onShare(shareIntent);
-            } catch (FileNotFoundException e) {
-                Log.e(TAG, "Error during sharing image", e);
-            }
-        }
-    }
-
-    private boolean saveTags() {
-        List<Tag> changedTags = getEditCompoundRecyclerView().getChangedTags();
-        return getManager().editTags(changedTags);
-    }
-
-    public ObservableBoolean getIsInEditMode() {
-        return isInEditMode;
+    public TabletEditViewModel(
+            EditViewModelCallback callback,
+            TagDiffMicroServiceFactory microServiceFactory,
+            TagListDiffMicroService
+            listDiffMicroService,
+            LifecycleBinder lifecycleBinder) {
+        super(callback, microServiceFactory, listDiffMicroService, lifecycleBinder);
     }
 
     @Override
-    public void onTagsUpdated() {
-        isInEditMode.set(!getEditCompoundRecyclerView().getChangedTags().isEmpty());
-        super.onTagsUpdated();
+    protected void updateViewState() {
+        inEditState.set(isInEditState());
     }
 
-    public void changeViewToDefaultMode() {
-        isInEditMode.set(false);
+    public ObservableBoolean getInEditState() {
+        return inEditState;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle bundle) {
+        bundle.putParcelable(IMAGE_DETAILS_EXTRA_KEY, imageDetails);
+        super.onSaveInstanceState(bundle);
+    }
+
+    public void onRestoreInstanceState(@Nullable Bundle bundle, TagsManagerProvider tagsManagerProvider) {
+        if (bundle != null) {
+            ImageDetails imageDetails = bundle.getParcelable(IMAGE_DETAILS_EXTRA_KEY);
+            if (imageDetails != null) {
+                try {
+                    TagsManager tagsManager = tagsManagerProvider.buildTagsManager(imageDetails.getPath());
+                    initialize(imageDetails, tagsManager);
+                } catch (IOException e) {
+                    Log.e(TAG, e.getMessage(), e);
+                    //TODO Log crashlitycs
+                }
+            }
+        }
+        super.onRestoreInstanceState(bundle);
+    }
+
+    public interface TagsManagerProvider {
+        TagsManager buildTagsManager(String imagePath) throws IOException;
     }
 }

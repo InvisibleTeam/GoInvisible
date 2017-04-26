@@ -6,7 +6,7 @@ import android.app.TimePickerDialog;
 import android.content.Context;
 
 import com.invisibleteam.goinvisible.model.Tag;
-import com.invisibleteam.goinvisible.mvvm.edition.EditViewModel;
+import com.invisibleteam.goinvisible.mvvm.edition.EditDialogInterface;
 import com.invisibleteam.goinvisible.util.DateFormatterUtil;
 
 import java.util.Calendar;
@@ -14,15 +14,15 @@ import java.util.GregorianCalendar;
 
 class DateDialog {
 
-    private final EditViewModel viewModel;
+    private final EditDialogInterface dialogInterface;
     private final Context context;
     private Calendar calendar;
     private Tag tag;
 
-    DateDialog(Context context, Tag tag, EditViewModel viewModel) {
+    DateDialog(Context context, Tag tag, EditDialogInterface dialogInterface) {
         this.context = context;
         this.tag = tag;
-        this.viewModel = viewModel;
+        this.dialogInterface = dialogInterface;
         this.calendar = Calendar.getInstance();
     }
 
@@ -30,7 +30,7 @@ class DateDialog {
         DatePickerDialog.OnDateSetListener listener = (view, year, month, day) -> {
             Calendar calendar = new GregorianCalendar(year, month, day, 0, 0, 0);
             tag.setValue(DateFormatterUtil.format(tag, calendar));
-            viewModel.onEditEnded(tag);
+            dialogInterface.onEditEnded(tag);
         };
 
         return createDateTimeDialog(listener);
@@ -41,7 +41,7 @@ class DateDialog {
             calendar.set(Calendar.HOUR_OF_DAY, hour);
             calendar.set(Calendar.MINUTE, minute);
             tag.setValue(DateFormatterUtil.format(tag, calendar));
-            viewModel.onEditEnded(tag);
+            dialogInterface.onEditEnded(tag);
         };
         TimePickerDialog dialog = new TimePickerDialog(
                 context,

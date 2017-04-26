@@ -9,7 +9,9 @@ import javax.annotation.Nullable;
 public class Tag implements Parcelable {
 
     private String key;
-    private @Nullable String value;
+    private
+    @Nullable
+    String value;
     protected String formattedValue;
     private TagType tagType;
     private TagGroupType tagGroupType;
@@ -32,6 +34,10 @@ public class Tag implements Parcelable {
         this.tagType = tag.getTagType();
         this.formattedValue = tag.getValue();
         this.tagGroupType = tag.getTagGroupType();
+    }
+
+    public Tag copy() {
+        return new Tag(this);
     }
 
     public String getKey() {

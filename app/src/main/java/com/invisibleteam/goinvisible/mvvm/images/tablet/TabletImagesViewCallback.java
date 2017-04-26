@@ -6,6 +6,4 @@ import com.invisibleteam.goinvisible.mvvm.images.ImagesViewCallback;
 
 public interface TabletImagesViewCallback extends ImagesViewCallback, RejectEditionChangesCallback {
     void showEditView(ImageDetails imageDetails);
-
-    void changeViewToDefaultMode();
 }

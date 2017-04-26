@@ -13,7 +13,7 @@ import com.invisibleteam.goinvisible.model.InputType;
 import com.invisibleteam.goinvisible.model.Tag;
 import com.invisibleteam.goinvisible.model.TagGroupType;
 import com.invisibleteam.goinvisible.model.TagType;
-import com.invisibleteam.goinvisible.mvvm.edition.EditViewModel;
+import com.invisibleteam.goinvisible.mvvm.edition.EditDialogInterface;
 import com.invisibleteam.goinvisible.mvvm.edition.callback.EditViewModelCallback;
 
 import org.junit.Before;
@@ -67,7 +67,7 @@ public class DialogFactoryTest {
     public void whenTagWithTextStringInputTypeIsPassed_CreateTextDialogWithTextKeyboardIsCalled() {
         //Given
         Tag tag = createTag(TEXT_STRING);
-        dialogFactory = spy(new DialogFactory(dialog, tag, mock(EditViewModel.class)));
+        dialogFactory = spy(new DialogFactory(dialog, tag, mock(EditDialogInterface.class)));
 
         //When
         dialogFactory.createDialog();
@@ -80,7 +80,7 @@ public class DialogFactoryTest {
     public void whenTagWithValueIntegerInputTypeIsPassed_CreateTextDialogWithNumberKeyboardIsCalled() {
         //Given
         Tag tag = createTag(VALUE_INTEGER);
-        dialogFactory = spy(new DialogFactory(dialog, tag, mock(EditViewModel.class)));
+        dialogFactory = spy(new DialogFactory(dialog, tag, mock(EditDialogInterface.class)));
 
         //When
         dialogFactory.createDialog();
@@ -95,7 +95,7 @@ public class DialogFactoryTest {
         Tag tag = createTag(VALUE_DOUBLE);
 
         //When
-        dialogFactory = spy(new DialogFactory(dialog, tag, mock(EditViewModel.class)));
+        dialogFactory = spy(new DialogFactory(dialog, tag, mock(EditDialogInterface.class)));
         dialogFactory.createDialog();
 
         //Then
@@ -106,7 +106,7 @@ public class DialogFactoryTest {
     public void whenTagWithTimestampStringInputTypeIsPassed_CreateTimeDialogIsCalled() {
         //Given
         Tag tag = createTag(TIMESTAMP_STRING);
-        dialogFactory = spy(new DialogFactory(dialog, tag, mock(EditViewModel.class)));
+        dialogFactory = spy(new DialogFactory(dialog, tag, mock(EditDialogInterface.class)));
 
         //When
         dialogFactory.createDialog();
@@ -119,7 +119,7 @@ public class DialogFactoryTest {
     public void whenTagWithDateStringInputTypeIsPassed_CreateDateDialogIsCalled() {
         //Given
         Tag tag = createTag(DATE_STRING);
-        dialogFactory = spy(new DialogFactory(dialog, tag, mock(EditViewModel.class)));
+        dialogFactory = spy(new DialogFactory(dialog, tag, mock(EditDialogInterface.class)));
 
         //When
         dialogFactory.createDialog();
@@ -132,7 +132,7 @@ public class DialogFactoryTest {
     public void whenTagWithDatetimeStringInputTypeIsPassed_CreateDateTimeDialogIsCalled() {
         //Given
         Tag tag = createTag(DATETIME_STRING);
-        dialogFactory = spy(new DialogFactory(dialog, tag, mock(EditViewModel.class)));
+        dialogFactory = spy(new DialogFactory(dialog, tag, mock(EditDialogInterface.class)));
 
         //When
         dialogFactory.createDialog();
@@ -145,7 +145,7 @@ public class DialogFactoryTest {
     public void whenTagWithRangedIntegerInputTypeWithWrongKeyIsPassed_CreateRangedDialogReturnsNull() {
         //Given
         Tag tag = createTag(RANGED_INTEGER);
-        dialogFactory = spy(new DialogFactory(dialog, tag, mock(EditViewModel.class)));
+        dialogFactory = spy(new DialogFactory(dialog, tag, mock(EditDialogInterface.class)));
 
         //When
         Dialog dialog = dialogFactory.createDialog();
@@ -160,7 +160,7 @@ public class DialogFactoryTest {
         //Given
         TagType tagType = TagType.build(RANGED_INTEGER);
         Tag tag = new Tag(TAG_ORIENTATION, "value", tagType, TagGroupType.ADVANCED);
-        dialogFactory = spy(new DialogFactory(dialog, tag, mock(EditViewModel.class)));
+        dialogFactory = spy(new DialogFactory(dialog, tag, mock(EditDialogInterface.class)));
 
         //When
         Dialog dialog = dialogFactory.createDialog();
@@ -177,7 +177,7 @@ public class DialogFactoryTest {
         //Given
         Tag tag = createTag(INDEFINITE);
         when(dialog.getActivity()).thenReturn(Mockito.mock(Activity.class));
-        dialogFactory = spy(new DialogFactory(dialog, tag, mock(EditViewModel.class)));
+        dialogFactory = spy(new DialogFactory(dialog, tag, mock(EditDialogInterface.class)));
 
         //When
         Dialog dialog = dialogFactory.createDialog();
@@ -189,7 +189,7 @@ public class DialogFactoryTest {
     @Test
     public void whenProperTextIsSet_ValidationPassed() {
         //Given
-        EditViewModel editViewModel = mock(EditViewModel.class);
+        EditDialogInterface editViewModel = mock(EditDialogInterface.class);
         Tag tag = createTag(".*");
 
         dialogFactory = spy(new DialogFactory(dialog, tag, editViewModel));
@@ -213,7 +213,7 @@ public class DialogFactoryTest {
 
         Tag tag = createTag("0|^[1-9]([0-9]{0,5})$");
 
-        dialogFactory = spy(new DialogFactory(dialog, tag, mock(EditViewModel.class)));
+        dialogFactory = spy(new DialogFactory(dialog, tag, mock(EditDialogInterface.class)));
 
         TextDialogViewModel viewModel = new TextDialogViewModel(tag);
 

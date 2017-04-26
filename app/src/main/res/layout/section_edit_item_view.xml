@@ -12,20 +12,42 @@
 
     </data>
 
-    <FrameLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/tag_section_name"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="16dp"
-            android:text="@{viewModel.tagSectionName}"
-            android:textColor="@color/colorPrimary"
-            android:textSize="20sp"
-            android:textStyle="bold|italic"
-            tools:text="Section Name"/>
+            android:layout_height="70dp">
 
-    </FrameLayout>
+            <ImageView
+                android:id="@+id/expandButton"
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:background="?selectableItemBackgroundBorderless"
+                android:padding="16dp"
+                android:src="@drawable/ic_expand"/>
+
+            <TextView
+                android:id="@+id/tag_section_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="16dp"
+                android:layout_toStartOf="@id/expandButton"
+                android:text="@{viewModel.tagSectionName}"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                tools:text="Section Name"/>
+
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/colorWhiteGrey"/>
+    </LinearLayout>
 </layout>

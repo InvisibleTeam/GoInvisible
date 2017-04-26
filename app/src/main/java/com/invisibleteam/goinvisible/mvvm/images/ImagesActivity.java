@@ -3,6 +3,7 @@ package com.invisibleteam.goinvisible.mvvm.images;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.VisibleForTesting;
 import android.support.design.widget.Snackbar;
 import android.support.media.ExifInterface;
@@ -24,31 +25,35 @@ import com.invisibleteam.goinvisible.helper.SharingHelper;
 import com.invisibleteam.goinvisible.model.ImageDetails;
 import com.invisibleteam.goinvisible.mvvm.common.CommonEditActivity;
 import com.invisibleteam.goinvisible.mvvm.edition.EditActivity;
-import com.invisibleteam.goinvisible.mvvm.edition.callback.RejectEditionChangesCallback;
-import com.invisibleteam.goinvisible.mvvm.edition.callback.TabletEditTagCallback;
-import com.invisibleteam.goinvisible.mvvm.edition.callback.TagEditionStartCallback;
+import com.invisibleteam.goinvisible.mvvm.edition.EditViewModel;
+import com.invisibleteam.goinvisible.mvvm.edition.TagDiffMicroServiceFactory;
+import com.invisibleteam.goinvisible.mvvm.edition.TagListDiffMicroService;
 import com.invisibleteam.goinvisible.mvvm.images.phone.PhoneImagesViewCallback;
 import com.invisibleteam.goinvisible.mvvm.images.phone.PhoneImagesViewModel;
 import com.invisibleteam.goinvisible.mvvm.images.tablet.TabletEditViewModel;
 import com.invisibleteam.goinvisible.mvvm.images.tablet.TabletImagesViewCallback;
 import com.invisibleteam.goinvisible.mvvm.images.tablet.TabletImagesViewModel;
 import com.invisibleteam.goinvisible.mvvm.settings.SettingsActivity;
+import com.invisibleteam.goinvisible.util.LifecycleBinder;
 import com.invisibleteam.goinvisible.util.ScreenUtil;
 import com.invisibleteam.goinvisible.util.TagsManager;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import javax.annotation.Nullable;
 
+import rx.Observable;
+
 public class ImagesActivity extends CommonEditActivity implements PhoneImagesViewCallback, TabletImagesViewCallback,
-        TagEditionStartCallback, TabletEditTagCallback, RejectEditionChangesCallback {
+        EditViewModel.EditViewModelCallback,
+        LifecycleBinder {
 
     private static final String TAG = ImagesActivity.class.getSimpleName();
     private Snackbar snackbar;
     private SwipeRefreshLayout refreshLayout;
     @Nullable
-    private
-    TabletEditViewModel editViewModel;
+    private TabletEditViewModel editViewModel;
     private TabletImagesViewModel tabletImagesViewModel;
 
     public static Intent buildIntent(Context context) {
@@ -125,9 +130,10 @@ public class ImagesActivity extends CommonEditActivity implements PhoneImagesVie
         ViewGroup editViewGroup = (ViewGroup) viewGroup.findViewById(R.id.edit_group);
         EditViewTabletBinding editViewTabletBinding = EditViewTabletBinding.bind(editViewGroup);
         editViewModel = new TabletEditViewModel(
-                editViewTabletBinding.editCompoundRecyclerView,
                 this,
-                new SharingHelper());
+                new TagDiffMicroServiceFactory(this),
+                new TagListDiffMicroService(this),
+                this);
         editViewTabletBinding.setViewModel(editViewModel);
 
         ViewGroup imagesViewGroup = (ViewGroup) viewGroup.findViewById(R.id.images_group);
@@ -136,14 +142,14 @@ public class ImagesActivity extends CommonEditActivity implements PhoneImagesVie
                 imagesViewBinding.imagesCompoundRecyclerView,
                 new ImagesProvider(getContentResolver()),
                 this,
-                editViewTabletBinding.editCompoundRecyclerView);
+                editViewModel);
         imagesViewBinding.setViewModel(tabletImagesViewModel);
 
         createRefreshLayout(imagesViewBinding, tabletImagesViewModel);
 
         EditActivityHelper editActivityHelper = new EditActivityHelper(this);
         setEditActivityHelper(editActivityHelper);
-        setEditViewModel(editViewModel);
+        setEditDialogInterface(editViewModel);
     }
 
     private void createRefreshLayout(ImagesViewBinding viewBinding, ImagesViewModel viewModel) {
@@ -195,19 +201,13 @@ public class ImagesActivity extends CommonEditActivity implements PhoneImagesVie
         this.tabletImagesViewModel = imagesViewModel;
     }
 
-    @VisibleForTesting
-    void setTabletEditViewModel(TabletEditViewModel editViewModel) {
-        this.editViewModel = editViewModel;
-    }
-
     @Override
     public void showEditView(ImageDetails imageDetails) {
         if (editViewModel != null) {
             try {
                 editViewModel.initialize(
                         imageDetails,
-                        buildTagsManager(imageDetails.getPath()),
-                        this);
+                        buildTagsManager(imageDetails.getPath()));
             } catch (IOException e) {
                 Log.e(TAG, e.getMessage(), e);
                 //TODO Log crashlitycs
@@ -221,21 +221,19 @@ public class ImagesActivity extends CommonEditActivity implements PhoneImagesVie
     }
 
     @Override
-    public void changeViewToDefaultMode() {
-        if (editViewModel != null) {
-            editViewModel.changeViewToDefaultMode();
-        }
-        //onElse TODO Log crashlitycs
-    }
-
-    @Override
     protected void onRejectTagsChangesDialogPositive() {
         tabletImagesViewModel.onRejectTagsChangesDialogPositive();
     }
 
     @Override
-    public void onShare(Intent shareIntent) {
-        startActivity(Intent.createChooser(shareIntent, getString(R.string.share_intent_chooser_title)));
+    public void shareImage(ImageDetails imageDetails) {
+        try {
+            Intent intent = new SharingHelper().buildShareImageIntent(imageDetails);
+            startActivity(Intent.createChooser(intent, getString(R.string.share_intent_chooser_title)));
+        } catch (FileNotFoundException e) {
+            Log.e(TAG, String.valueOf(e.getMessage()));
+            //TODO log error in crashlytics
+        }
     }
 
     @Override
@@ -244,5 +242,32 @@ public class ImagesActivity extends CommonEditActivity implements PhoneImagesVie
                 findViewById(android.R.id.content),
                 R.string.save_before_share,
                 Snackbar.LENGTH_LONG).show();
+    }
+
+    @Override
+    public <T> Observable.Transformer<T, T> bind() {
+        return bindToLifecycle();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        if (tabletImagesViewModel != null) {
+            tabletImagesViewModel.onSaveInstanceState(outState);
+        }
+        if (editViewModel != null) {
+            editViewModel.onSaveInstanceState(outState);
+        }
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        if (tabletImagesViewModel != null) {
+            tabletImagesViewModel.onRestoreInstanceState(savedInstanceState);
+        }
+        if (editViewModel != null) {
+            editViewModel.onRestoreInstanceState(savedInstanceState, ImagesActivity.this::buildTagsManager);
+        }
     }
 }

@@ -15,7 +15,7 @@ import com.invisibleteam.goinvisible.databinding.TextDialogBinding;
 import com.invisibleteam.goinvisible.model.InputType;
 import com.invisibleteam.goinvisible.model.Tag;
 import com.invisibleteam.goinvisible.mvvm.common.RadioDialogBuilder;
-import com.invisibleteam.goinvisible.mvvm.edition.EditViewModel;
+import com.invisibleteam.goinvisible.mvvm.edition.EditDialogInterface;
 import com.invisibleteam.goinvisible.util.DialogRangedValuesUtil;
 
 import java.util.Map;
@@ -26,21 +26,21 @@ class DialogFactory {
 
     private final DialogFragment dialog;
     private final Context context;
-    private final EditViewModel viewModel;
+    private final EditDialogInterface dialogInterface;
     private DateDialog dateDialog;
     private Tag tag;
 
-    DialogFactory(DialogFragment dialog, Tag tag, EditViewModel viewModel) {
+    DialogFactory(DialogFragment dialog, Tag tag, EditDialogInterface viewModel) {
         this.dialog = dialog;
         this.tag = tag;
-        this.viewModel = viewModel;
+        this.dialogInterface = viewModel;
         context = dialog.getActivity();
     }
 
     @Nullable
     Dialog createDialog() {
         if (dateDialog == null) {
-            dateDialog = new DateDialog(context, tag, viewModel);
+            dateDialog = new DateDialog(context, tag, dialogInterface);
         }
         InputType inputType = tag.getTagType().getInputType();
 
@@ -124,7 +124,7 @@ class DialogFactory {
 
             @Override
             public void onApprove(DialogInterface dialog, int index) {
-                viewModel.onEditEnded(tag);
+                dialogInterface.onEditEnded(tag);
                 dialog.dismiss();
             }
 
@@ -181,7 +181,7 @@ class DialogFactory {
 
         if (textValue.matches(validationRegexp)) {
             tag.setValue(textValue);
-            this.viewModel.onEditEnded(tag);
+            this.dialogInterface.onEditEnded(tag);
             dialog.dismiss();
             return;
         }

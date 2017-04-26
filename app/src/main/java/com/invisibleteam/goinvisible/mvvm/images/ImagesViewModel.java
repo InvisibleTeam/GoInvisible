@@ -51,6 +51,7 @@ public abstract class ImagesViewModel {
 
     public void updateImages() {
         List<ImageDetails> imagesDetailsList = imagesProvider.getImagesList();
+        isInformationTextVisible.set(imagesDetailsList.isEmpty());
         imagesCompoundRecyclerView.updateResults(imagesDetailsList);
         imagesViewCallback.onStopRefreshingImages();
     }
