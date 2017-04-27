@@ -5,16 +5,72 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.2.3'
-
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
+        // Exclude the version that the android plugin depends on.
+        classpath 'com.android.tools.build:gradle:2.3.1'
+        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
+        classpath 'me.tatarka:gradle-retrolambda:3.4.0'
+        classpath 'me.tatarka.retrolambda.projectlombok:lombok.ast:0.2.3.a2'
+        configurations.classpath.exclude group: 'com.android.tools.external.lombok'
     }
 }
 
 allprojects {
     repositories {
         jcenter()
+    }
+}
+
+configure(allprojects) {
+    apply plugin: 'findbugs'
+    apply plugin: 'checkstyle'
+
+    findbugs {
+        toolVersion = '3.0.1'
+    }
+
+    checkstyle {
+        toolVersion = '6.9'
+        configFile = file("${project.rootDir}/config/checkstyle/checkstyle.xml")
+    }
+
+    task findbugs(type: FindBugs) {
+        def classesPath = new File("$project.buildDir/intermediates/classes/")
+        if (classesPath.exists() && classesPath.listFiles().length != 0) {
+            ignoreFailures = false
+            effort = "max"
+            reportLevel = "high"
+            excludeFilter = new File("${project.rootDir}/config/findbugs/findbugs-excluded.xml")
+            classes = files(classesPath)
+
+            source 'src'
+            include '**/*.java'
+            exclude '**/gen/**'
+
+            reports {
+                xml.enabled = false
+                html {
+                    enabled = true
+                    destination "$project.buildDir/reports/findbugs/findbugs.html"
+                }
+            }
+            classpath = files()
+        }
+    }
+
+    task checkstyle(type: Checkstyle) {
+
+        source 'src'
+        include '**/*.java'
+        exclude '**/gen/**'
+
+        reports {
+            xml.enabled = true
+            html.enabled = true
+        }
+
+        classpath = files()
     }
 }
 

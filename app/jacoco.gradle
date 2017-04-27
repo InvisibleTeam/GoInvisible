@@ -1,0 +1,49 @@
+apply plugin: 'jacoco'
+
+jacoco {
+    toolVersion = '0.7.8'
+}
+
+android {
+    testOptions {
+        unitTests.all {
+            jacoco {
+                includeNoLocationClasses = true
+            }
+        }
+    }
+}
+
+task testReport(type: JacocoReport, dependsOn: "testDebugUnitTest") {
+    group = "Reporting"
+    description = "Generate Jacoco coverage reports for unit tests"
+
+    classDirectories = fileTree(
+            dir: "$projectDir/build/intermediates/classes/debug",
+            excludes: ['**/R.class',
+                       '**/R$*.class',
+                       '**/*$ViewInjector*.*',
+                       '**/BuildConfig.*',
+                       '**/Manifest*.*',
+                       //excluded data binding auto generated classes
+                       '**/android/*',
+                       '**/databinding/*',
+                       '**/*BR.class',
+                       '**/model/*', //excluded model classes
+                       '**/*BindingAdapter.class'
+            ]
+    )
+
+    sourceDirectories = files("$projectDir/src/main/java")
+    executionData = fileTree(dir: project.projectDir, includes: ['**/*.exec'])
+
+
+    reports {
+        html.enabled = true
+    }
+
+    doLast({
+        println "Report file: file://$projectDir/build/reports/jacoco/testReport/html/index.html"
+    })
+}
+

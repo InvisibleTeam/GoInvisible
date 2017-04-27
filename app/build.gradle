@@ -1,8 +1,11 @@
 apply plugin: 'com.android.application'
+apply from: 'nonnull.gradle'
+apply plugin: 'me.tatarka.retrolambda'
+apply from: 'jacoco.gradle'
 
 android {
     compileSdkVersion 25
-    buildToolsVersion "25.0.0"
+    buildToolsVersion "25.0.2"
     defaultConfig {
         applicationId "com.invisibleteam.goinvisible"
         minSdkVersion 21
@@ -17,13 +20,54 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    lintOptions {
+        disable 'GoogleAppIndexingWarning', 'ContentDescription'
+        abortOnError true
+        warningsAsErrors true
+        showAll true
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    dataBinding {
+        enabled = true
+    }
+    sourceSets {
+        debug { assets.srcDirs = ['src/debug/assets/'] }
+    }
 }
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile 'com.android.support:appcompat-v7:25.2.0'
+    compile ('com.google.code.findbugs:annotations:3.0.1u2') {
+        exclude group: 'net.jcip', module: 'jcip-annotations'
+        exclude group: 'com.google.code.findbugs', module: 'jsr305'
+    }
+    compile 'com.android.support:recyclerview-v7:25.2.0'
+    compile 'com.squareup.picasso:picasso:2.5.2'
+    compile 'com.android.support:design:25.2.0'
+    compile 'com.google.android.gms:play-services-places:10.2.0'
+    compile 'com.google.android.gms:play-services-location:10.2.0'
+    compile 'com.google.maps.android:android-maps-utils:0.5'
+    compile 'com.squareup.leakcanary:leakcanary-android:1.5'
+    compile "com.android.support:exifinterface:25.2.0"
+    compile 'com.bignerdranch.android:expandablerecyclerview:3.0.0-RC1'
+    compile 'io.reactivex:rxandroid:1.2.1'
+    compile 'io.reactivex:rxjava:1.2.0'
+    compile('com.trello:rxlifecycle-components:1.0') {
+        exclude module: 'jsr305'
+        exclude module: 'jcip-annotations'
+    }
+
+    testCompile 'junit:junit:4.12'
+    testCompile 'org.mockito:mockito-core:2.6.5'
+    testCompile "org.robolectric:robolectric:3.3"
+    testCompile 'com.googlecode.zohhak:zohhak:1.1.1'
+
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile 'com.android.support:appcompat-v7:25.1.0'
-    testCompile 'junit:junit:4.12'
+    androidTestCompile 'com.android.support.test.uiautomator:uiautomator-v18:2.1.2'
 }
